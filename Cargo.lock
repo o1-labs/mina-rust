@@ -10468,9 +10468,11 @@ version = "0.15.0"
 dependencies = [
  "aes 0.8.3",
  "aes-gcm 0.10.3",
+ "anyhow",
  "cbc",
  "clap 4.5.20",
  "ctrlc",
+ "elliptic-curve 0.13.8",
  "env_logger",
  "etherparse",
  "hex",
@@ -10485,6 +10487,7 @@ dependencies = [
  "sha2 0.10.8",
  "sudo",
  "thiserror 2.0.11",
+ "x25519-dalek",
 ]
 
 [[package]]

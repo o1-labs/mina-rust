@@ -11,7 +11,8 @@ use super::{
 };
 
 pub struct State {
-    rng_seed: [u8; 32],
+    initial_seed: [u8; 32],
+    final_seed: [u8; 32],
     inner: Option<Inner>,
 }
 
@@ -50,9 +51,10 @@ struct BothKey {
 }
 
 impl State {
-    pub fn new(rng_seed: [u8; 32]) -> Self {
+    pub fn new(initial_seed: [u8; 32]) -> Self {
         State {
-            rng_seed,
+            initial_seed,
+            final_seed: [0; 32],
             inner: Some(Inner::Initial),
         }
     }
@@ -119,13 +121,11 @@ impl State {
                     digest::{FixedOutput, Update},
                     Sha256,
                 };
-                let seed = Sha256::default()
-                    .chain(self.rng_seed)
+                self.final_seed = Sha256::default()
+                    .chain(self.initial_seed)
                     .chain(&msg.cookie)
                     .finalize_fixed()
                     .into();
-                dbg!(format!("{seed:x?}"));
-                let _rng = StdRng::from_seed(seed);
 
                 let _ = (
                     msg.session_id,
@@ -173,11 +173,13 @@ impl State {
                 },
                 HandshakeInner::ClientKeyExchange(msg),
             ) => {
-                let keys = BothKey {
+                let mut keys = BothKey {
                     curve_name,
                     server_pk,
                     client_pk: msg.public_key,
                 };
+                let _pre_master_secret = keys.compute_pre_master_secret(self.final_seed).unwrap();
+                log::info!("pre_master_secret={}", hex::encode(_pre_master_secret));
                 Inner::BothKey { hello, keys }
             }
             (state, _) => {
@@ -186,5 +188,80 @@ impl State {
             }
         };
         self.inner = Some(state);
+    }
+}
+
+impl BothKey {
+    fn compute_pre_master_secret(&mut self, seed: [u8; 32]) -> anyhow::Result<Vec<u8>> {
+        let mut rng = StdRng::from_seed(seed);
+        let secret = match self.curve_name {
+            23 => ss::ss::<p256::NistP256>(&mut rng, &self.client_pk, &self.server_pk)?,
+            24 => ss::ss::<p384::NistP384>(&mut rng, &self.client_pk, &self.server_pk)?,
+            29 => {
+                let secret_key = x25519_dalek::StaticSecret::random_from_rng(rng);
+                let public_key = x25519_dalek::PublicKey::from(&secret_key);
+                let public_key_bytes = public_key.as_bytes();
+
+                let pub_key: [u8; 32] = if self.client_pk.eq(public_key_bytes.as_ref()) {
+                    self.server_pk
+                        .as_slice()
+                        .try_into()
+                        .map_err(|_| anyhow::anyhow!("wrong size of pk"))?
+                } else if self.server_pk.eq(public_key_bytes.as_ref()) {
+                    self.client_pk
+                        .as_slice()
+                        .try_into()
+                        .map_err(|_| anyhow::anyhow!("wrong size of pk"))?
+                } else {
+                    return Err(anyhow::anyhow!("missing correct seed"));
+                };
+
+                let other_public_key = x25519_dalek::PublicKey::from(pub_key);
+                secret_key
+                    .diffie_hellman(&other_public_key)
+                    .as_bytes()
+                    .to_vec()
+            }
+            c => return Err(anyhow::anyhow!("curve {c} is not supported")),
+        };
+
+        Ok(secret)
+    }
+}
+
+mod ss {
+    use elliptic_curve::{
+        ecdh::EphemeralSecret,
+        point::PointCompression,
+        rand_core::CryptoRngCore,
+        sec1::{EncodedPoint, FromEncodedPoint, ModulusSize, ToEncodedPoint},
+        Curve, CurveArithmetic, PublicKey,
+    };
+
+    pub fn ss<C>(
+        rng: &mut impl CryptoRngCore,
+        client_pk: &[u8],
+        server_pk: &[u8],
+    ) -> anyhow::Result<Vec<u8>>
+    where
+        C: CurveArithmetic + Curve + PointCompression,
+        <C as Curve>::FieldBytesSize: ModulusSize,
+        <C as CurveArithmetic>::AffinePoint: FromEncodedPoint<C> + ToEncodedPoint<C>,
+    {
+        let secret_key = EphemeralSecret::<C>::random(rng);
+        let public_key = EncodedPoint::<C>::from(secret_key.public_key());
+        let public_key_bytes = public_key.to_bytes();
+
+        let other_public_key = if client_pk.eq(public_key_bytes.as_ref()) {
+            PublicKey::<C>::from_sec1_bytes(&server_pk)?
+        } else if server_pk.eq(public_key_bytes.as_ref()) {
+            PublicKey::<C>::from_sec1_bytes(&client_pk)?
+        } else {
+            return Err(anyhow::anyhow!("missing correct seed"));
+        };
+        Ok(secret_key
+            .diffie_hellman(&other_public_key)
+            .raw_secret_bytes()
+            .to_vec())
     }
 }
