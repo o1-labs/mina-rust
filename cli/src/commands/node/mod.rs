@@ -172,6 +172,7 @@ pub struct Node {
     #[arg(long, env)]
     pub archive_aws_storage: bool,
 
+    /// Do not use in production.
     #[arg(long, env)]
     pub rng_seed: Option<String>,
 }
