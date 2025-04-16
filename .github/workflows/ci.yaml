@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   ledger-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -44,7 +44,7 @@ jobs:
           cargo test --release -- -Z unstable-options --report-time
 
   ledger-32x9-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -78,7 +78,7 @@ jobs:
           cargo test --release -- -Z unstable-options --report-time
 
   vrf-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -101,7 +101,7 @@ jobs:
           cargo test --release -- -Z unstable-options --report-time
 
   tx-fuzzer-check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -120,7 +120,7 @@ jobs:
           cargo check
 
   p2p-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -146,7 +146,7 @@ jobs:
 
 
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -177,7 +177,7 @@ jobs:
           path: target/release/openmina
 
   build_wasm:
-   runs-on: ubuntu-20.04
+   runs-on: ubuntu-22.04
    steps:
      - name: Git checkout
        uses: actions/checkout@v4
@@ -206,7 +206,7 @@ jobs:
          wasm-bindgen --keep-debug --web --out-dir pkg ../../target/wasm32-unknown-unknown/release/openmina_node_web.wasm
 
   build-tests:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -242,7 +242,7 @@ jobs:
           path: target/release/tests
 
   build-tests-webrtc:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -279,7 +279,7 @@ jobs:
 
   p2p-scenario-tests:
     needs: [ build-tests, build-tests-webrtc ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.0.4-alpha1-889607b-bullseye-devnet
       options: --volume debugger_data:/tmp/db
@@ -331,7 +331,7 @@ jobs:
         if: ${{ always() }}
 
   k8s-peers:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     # TODO: query cluster for actual addresses, or specify then on deployment
     env:
       PEERS: |
@@ -361,7 +361,7 @@ jobs:
       - k8s-peers
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.0.4-alpha1-889607b-bullseye-devnet
       options: --volume debugger_data:/tmp/db
@@ -441,7 +441,7 @@ jobs:
       - k8s-peers
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.0.4-alpha1-889607b-bullseye-devnet
     env:
@@ -471,7 +471,7 @@ jobs:
 
   bootstrap-test:
     needs: [ k8s-peers, build, build-tests ]
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       PEERS_LIST: ${{ needs.k8s-peers.outputs.peers }}
       PEER_LIST_FILE: peer-list.txt
