@@ -23,6 +23,7 @@ pub fn devnet() -> Vec<ListenerNode> {
         .split_whitespace()
         .map(P2pConnectionOutgoingInitOpts::from_str)
         .filter_map(Result::ok)
+        .filter_map(|p| p.with_host_resolved())
         .map(Into::into)
         .collect()
 }
