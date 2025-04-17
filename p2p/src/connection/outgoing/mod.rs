@@ -39,6 +39,16 @@ pub enum P2pConnectionOutgoingInitOpts {
     LibP2P(P2pConnectionOutgoingInitLibp2pOpts),
 }
 
+impl P2pConnectionOutgoingInitOpts {
+    pub fn with_host_resolved(self) -> Option<Self> {
+        if let Self::LibP2P(libp2p_opts) = self {
+            Some(Self::LibP2P(libp2p_opts.with_host_resolved()?))
+        } else {
+            Some(self)
+        }
+    }
+}
+
 #[derive(BinProtWrite, BinProtRead, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
 pub struct P2pConnectionOutgoingInitLibp2pOpts {
     pub peer_id: PeerId,
@@ -79,6 +89,11 @@ impl P2pConnectionOutgoingInitLibp2pOpts {
                 self.host = new;
             }
         }
+    }
+
+    pub fn with_host_resolved(mut self) -> Option<Self> {
+        self.host = self.host.resolve()?;
+        Some(self)
     }
 }
 
@@ -446,11 +461,7 @@ impl TryFrom<&multiaddr::Multiaddr> for P2pConnectionOutgoingInitLibp2pOpts {
             host: match iter.next() {
                 Some(Protocol::Ip4(v)) => Host::Ipv4(v),
                 Some(Protocol::Dns(v) | Protocol::Dns4(v) | Protocol::Dns6(v)) => {
-                    Host::Domain(v.to_string()).resolve().ok_or(
-                        P2pConnectionOutgoingInitOptsParseError::Other(format!(
-                            "cannot resolve host {v}"
-                        )),
-                    )?
+                    Host::Domain(v.to_string())
                 }
                 Some(_) => {
                     return Err(P2pConnectionOutgoingInitOptsParseError::Other(

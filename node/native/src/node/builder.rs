@@ -392,12 +392,25 @@ fn peers_from_reader(
     peers: &mut Vec<P2pConnectionOutgoingInitOpts>,
     read: impl Read,
 ) -> anyhow::Result<()> {
-    let read = BufReader::new(read);
-    for line in read.lines() {
+    let reader = BufReader::new(read);
+    for line in reader.lines() {
         let line = line.context("reading line")?;
-        let l = line.trim();
-        if !l.is_empty() {
-            peers.push(l.parse().context(anyhow::anyhow!("parsing entry"))?);
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        match trimmed.parse::<P2pConnectionOutgoingInitOpts>() {
+            Ok(opts) => {
+                if let Some(opts) = opts.with_host_resolved() {
+                    peers.push(opts);
+                } else {
+                    openmina_core::warn!(
+                        "Peer address name resolution failed, skipping: {:?}",
+                        trimmed
+                    );
+                }
+            }
+            Err(e) => openmina_core::warn!("Peer address parse error: {:?}", e),
         }
     }
     Ok(())
