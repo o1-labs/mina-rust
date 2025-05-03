@@ -1,93 +1,112 @@
 # OpenMina Project Component Map
 
-## Component Implementation Summary
-
-| Component                         | State Machine Logic                               | Service / Library Logic                                         |
-| :-------------------------------- | :------------------------------------------------ | :-------------------------------------------------------------- |
-| P2P Networking                  | Peer/Connection/Channel State Management          | Network I/O (Service), Protocol Handling (Service)              |
-| Block Production                | Scheduling Logic, Production State                | Prover Interaction (Service)                                    |
-| SNARK Work/Verification         | Job Tracking, Pool Management, Worker State       | Verification/Proving (Service), External Comm (Service)         |
-| Ledger Interaction              | Transaction/Block Application Control Flow        | Core Ledger Ops (Library), DB I/O (Service), Proofs (Service) |
-| RPC Interface                   | Request State Tracking                            | HTTP Transport (Service), Request Processing (Service)          |
-| Transition Frontier (Consensus) | Consensus Rules, Block Selection, Chain State     | *(Relies on Ledger/P2P services)*                               |
-| Transaction Pool                | Pool State Management (Pending Txs)               | Validation Logic (Ledger Library via Service)                   |
-
----
-
 This document outlines the high-level components of the OpenMina node and indicates whether they are primarily implemented within the core state machine (Redux-style store) or as separate services/modules interacting with the state machine, following the architecture described in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 ## Core Node ([`node/`](node/))
 
-*   **State Machine Core ([`node/src/state.rs`](node/src/state.rs), [`node/src/reducer.rs`](node/src/reducer.rs), [`node/src/action.rs`](node/src/action.rs))**: Manages the overall node state, transitions, and dispatches actions.
-    *   **Implemented:** Within the State Machine
-*   **Service Layer ([`node/src/service.rs`](node/src/service.rs))**: Orchestrates various services and interacts with the state machine via actions and state access.
-    *   **Implemented:** Service (acts as a coordinator)
-*   **P2P Integration ([`node/src/p2p/`](node/src/p2p/))**: State machine logic for handling P2P events and dispatching P2P actions within the main node context.
-    *   **Implemented:** Within the State Machine
-*   **Block Producer ([`node/src/block_producer/`](node/src/block_producer/), [`node/src/block_producer_effectful/`](node/src/block_producer_effectful/))**: Stateful logic for block production scheduling and state management (`block_producer/`), and effectful logic for interacting with services like provers (`block_producer_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
-*   **SNARK Integration ([`node/src/snark/`](node/src/snark/))**: State machine logic for handling SNARK-related events (like verification results) and dispatching actions to the SNARK component.
-    *   **Implemented:** Within the State Machine
-*   **External SNARK Worker Coordination ([`node/src/external_snark_worker/`](node/src/external_snark_worker/), [`node/src/external_snark_worker_effectful/`](node/src/external_snark_worker_effectful/))**: Stateful logic for managing external worker state (`external_snark_worker/`) and effectful logic for communication (`external_snark_worker_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
-*   **RPC ([`node/src/rpc/`](node/src/rpc/), [`node/src/rpc_effectful/`](node/src/rpc_effectful/))**: Stateful logic for handling RPC request state (`rpc/`) and effectful logic for processing requests and interacting with the underlying transport (`rpc_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
-*   **Ledger Interaction ([`node/src/ledger/`](node/src/ledger/), [`node/src/ledger_effectful/`](node/src/ledger_effectful/))**: Stateful logic for ledger-related operations (`ledger/`) and effectful logic for interacting with the ledger service/database (`ledger_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
+### State Machine Components
+
+*   **Core State/Reducer/Action ([`node/src/state.rs`](node/src/state.rs), [`node/src/reducer.rs`](node/src/reducer.rs), [`node/src/action.rs`](node/src/action.rs))**: Manages the overall node state, transitions, and dispatches actions.
+    * Interacts with: P2P Service, Block Production Service, SNARK Service, Ledger Service, RPC Service, External SNARK Worker Service
+*   **Block Producer ([`node/src/block_producer/`](node/src/block_producer/), [`node/src/block_producer_effectful/`](node/src/block_producer_effectful/))**: Manages block production scheduling and state (stateful part), and handles interactions with provers (effectful part).
+    * Interacts with: Block Production Service
+*   **External SNARK Worker Coordination ([`node/src/external_snark_worker/`](node/src/external_snark_worker/), [`node/src/external_snark_worker_effectful/`](node/src/external_snark_worker_effectful/))**: Manages external worker state (stateful part) and handles communication with external SNARK workers (effectful part).
+    * Interacts with: External SNARK Worker Service
+*   **RPC ([`node/src/rpc/`](node/src/rpc/), [`node/src/rpc_effectful/`](node/src/rpc_effectful/))**: Handles RPC request state (stateful part) and handles RPC request processing and transport interaction (effectful part).
+    * Interacts with: RPC Service
+*   **Ledger Interaction ([`node/src/ledger/`](node/src/ledger/), [`node/src/ledger_effectful/`](node/src/ledger_effectful/))**: Manages state related to ledger operations (stateful part) and handles interactions with the ledger database/library (effectful part).
+    * Interacts with: Ledger Service
 *   **Snark Pool ([`node/src/snark_pool/`](node/src/snark_pool/))**: Manages the pool of available SNARK work.
-    *   **Implemented:** Within the State Machine
-*   **Transaction Pool ([`node/src/transaction_pool/`](node/src/transaction_pool/))**: Manages the pool of pending transactions. The state machine tracks the transactions in the pool, while the core validation logic (determining which transactions are valid according to the current ledger state) resides in the [`ledger/`](ledger/) library and is invoked via service calls.
-    *   **Implemented:** State Machine & Library/Service Interaction
-*   **Transition Frontier ([`node/src/transition_frontier/`](node/src/transition_frontier/))**: Manages the blockchain state, including consensus and block application.
-    *   **Implemented:** Within the State Machine
-*   **Event Source ([`node/src/event_source/`](node/src/event_source/))**: Handles incoming events from services.
-    *   **Implemented:** Within the State Machine
-*   **HTTP Server ([`node/src/http/`](node/src/http/))**: Provides the HTTP interface for RPC and other interactions.
-    *   **Implemented:** Service
-*   **Logger ([`node/src/logger/`](node/src/logger/))**: Handles logging.
-    *   **Implemented:** Service
-*   **Recorder ([`node/src/recorder/`](node/src/recorder/))**: Records state machine actions and events for replay/debugging.
-    *   **Implemented:** Service
-*   **Stats ([`node/src/stats/`](node/src/stats/))**: Gathers and potentially exposes node statistics.
-    *   **Implemented:** Service
+    * Interacts with: SNARK Service
+*   **Transaction Pool ([`node/src/transaction_pool/`](node/src/transaction_pool/))**: Manages the state of pending transactions.
+    * Interacts with: Ledger Service (for validation)
+*   **Transition Frontier ([`node/src/transition_frontier/`](node/src/transition_frontier/))**: Manages the blockchain state, consensus, and block application.
+    * Interacts with: Ledger Service, P2P Service
+*   **Event Source ([`node/src/event_source/`](node/src/event_source/))**: Handles incoming events from services and integrates them into the state machine.
+    * Interacts with: All Services (indirectly via the Event Source Service)
 *   **Watched Accounts ([`node/src/watched_accounts/`](node/src/watched_accounts/))**: Manages accounts being watched for changes.
-    *   **Implemented:** Within the State Machine
+    * Interacts with: Ledger Service
+
+### Service Components
+
+*   **Block Production:**
+    *   **Block Production Service ([`node/src/block_producer_effectful/block_producer_effectful_service.rs`](node/src/block_producer_effectful/block_producer_effectful_service.rs))**: Defines the interface for interacting with provers during block production.
+    *   **Block Producer VRF Evaluator Service ([`node/src/block_producer_effectful/vrf_evaluator_effectful/block_producer_vrf_evaluator_effectful_service.rs`](node/src/block_producer_effectful/vrf_evaluator_effectful/block_producer_vrf_evaluator_effectful_service.rs))**: Defines the interface for evaluating VRFs during block production.
+*   **External SNARK Worker Service ([`node/src/external_snark_worker_effectful/external_snark_worker_service.rs`](node/src/external_snark_worker_effectful/external_snark_worker_service.rs))**: Defines the interface for communicating with external SNARK workers.
+*   **RPC Service ([`node/src/rpc_effectful/rpc_service.rs`](node/src/rpc_effectful/rpc_service.rs))**: Defines the interface for handling RPC requests.
+*   **Ledger Service ([`node/src/ledger/ledger_service.rs`](node/src/ledger/ledger_service.rs))**: Defines the interface for interacting with the ledger database and core logic.
+*   **SNARK Pool Service ([`node/src/snark_pool/snark_pool_service.rs`](node/src/snark_pool/snark_pool_service.rs))**: Defines the interface for interacting with the SNARK pool (e.g., adding work, getting work).
+*   **Transaction Pool Service ([`node/src/transaction_pool/transaction_pool_service.rs`](node/src/transaction_pool/transaction_pool_service.rs))**: Defines the interface for interacting with the transaction pool (e.g., adding transactions).
+*   **Transition Frontier:**
+    *   **Sync Ledger Staged Service ([`node/src/transition_frontier/sync/ledger/staged/transition_frontier_sync_ledger_staged_service.rs`](node/src/transition_frontier/sync/ledger/staged/transition_frontier_sync_ledger_staged_service.rs))**: Defines the interface for syncing the staged ledger part of the transition frontier.
+    *   **Sync Ledger Snarked Service ([`node/src/transition_frontier/sync/ledger/snarked/transition_frontier_sync_ledger_snarked_service.rs`](node/src/transition_frontier/sync/ledger/snarked/transition_frontier_sync_ledger_snarked_service.rs))**: Defines the interface for syncing the SNARKed ledger part of the transition frontier.
+    *   **Archive Service ([`node/src/transition_frontier/archive/archive_service.rs`](node/src/transition_frontier/archive/archive_service.rs))**: Defines the interface for interacting with the transition frontier archive.
+    *   **Genesis Service ([`node/src/transition_frontier/genesis_effectful/transition_frontier_genesis_service.rs`](node/src/transition_frontier/genesis_effectful/transition_frontier_genesis_service.rs))**: Defines the interface for handling genesis-related operations for the transition frontier.
+*   **Event Source Service ([`node/src/event_source/event_source_service.rs`](node/src/event_source/event_source_service.rs))**: Defines the interface for receiving events from various node services.
+*   **Error Sink Service ([`node/src/error_sink/error_sink_service.rs`](node/src/error_sink/error_sink_service.rs))**: Defines the interface for reporting and handling internal errors.
 
 ## P2P ([`p2p/`](p2p/))
 
-*   **State Machine Core ([`p2p/src/p2p_state.rs`](p2p/src/p2p_state.rs), [`p2p/src/p2p_reducer.rs`](p2p/src/p2p_reducer.rs), [`p2p/src/p2p_actions.rs`](p2p/src/p2p_actions.rs))**: Manages P2P-specific state (peers, connections, channels).
-    *   **Implemented:** Within the State Machine
-*   **Service Layer ([`p2p/src/p2p_service.rs`](p2p/src/p2p_service.rs), [`p2p/src/service_impl/`](p2p/src/service_impl/))**: Implements the P2P service interface, handling network I/O.
-    *   **Implemented:** Service
-*   **Connection Management ([`p2p/src/connection/`](p2p/src/connection/))**: Stateful logic for connection states.
-    *   **Implemented:** Within the State Machine (interacts heavily with Service)
-*   **Disconnection ([`p2p/src/disconnection/`](p2p/src/disconnection/), [`p2p/src/disconnection_effectful/`](p2p/src/disconnection_effectful/))**: Stateful logic for disconnection (`disconnection/`) and effectful service interactions (`disconnection_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
+### State Machine Components
+
+*   **Core State/Reducer/Action ([`p2p/src/p2p_state.rs`](p2p/src/p2p_state.rs), [`p2p/src/p2p_reducer.rs`](p2p/src/p2p_reducer.rs), [`p2p/src/p2p_actions.rs`](p2p/src/p2p_actions.rs))**: Manages P2P-specific state (peers, connections, channels).
+    * Interacts with: P2P Service Layer
+*   **Connection Management ([`p2p/src/connection/`](p2p/src/connection/))**: Manages state related to peer connections.
+    * Interacts with: P2P Service Layer
+*   **Disconnection ([`p2p/src/disconnection/`](p2p/src/disconnection/), [`p2p/src/disconnection_effectful/`](p2p/src/disconnection_effectful/))**: Manages disconnection state (stateful part) and handles service interactions for disconnection (effectful part).
+    * Interacts with: P2P Disconnection Service
 *   **Channels ([`p2p/src/channels/`](p2p/src/channels/))**: Manages P2P communication channels (Best Practices, RPC, etc.).
-    *   **Implemented:** Within the State Machine
+    * Interacts with: P2P Service Layer
 *   **Libp2p Identify Protocol ([`p2p/src/identify/`](p2p/src/identify/))**: Handles the state and logic for the standard libp2p Identify protocol exchange.
-    *   **Implemented:** State Machine & Service Interaction
-*   **Peer Identity Management ([`p2p/src/identity/`](p2p/src/identity/))**: Manages the node's cryptographic P2P identity (keys).
-    *   **Implemented:** Service
-*   **Network Layer ([`p2p/src/network/`](p2p/src/network/))**: Abstraction over the network transport layer, including lower-level identification.
-    *   **Network Identify ([`p2p/src/network/identify/`](p2p/src/network/identify/))**: Handles identification aspects within the network transport layer.
-        *   **Implemented:** Service
-    *   **Implemented:** Service
-*   **Peer Management ([`p2p/src/peer/`](p2p/src/peer/))**: Stateful logic for managing peer information.
-    *   **Implemented:** Within the State Machine
-*   **WebRTC ([`p2p/src/webrtc/`](p2p/src/webrtc/))**: Handles WebRTC signaling and connections.
-    *   **Implemented:** Service
+    * Interacts with: P2P Service Layer
+*   **Peer Management ([`p2p/src/peer/`](p2p/src/peer/))**: Manages state related to known peers.
+    * Interacts with: P2P Service Layer
+*   **Network Layer**: Components managing interactions with the underlying libp2p network stack.
+    *   **Private Network (Pnet) ([`p2p/src/network/pnet/`](p2p/src/network/pnet/), [`p2p/src/network/pnet_effectful/`](p2p/src/network/pnet_effectful/))**: Manages state for private network configuration (stateful part) and interacts with the network layer for enforcement (effectful part).
+        * Interacts with: Network Layer Service
+    *   **Network Scheduler ([`p2p/src/network/scheduler/`](p2p/src/network/scheduler/), [`p2p/src/network/scheduler_effectful/`](p2p/src/network/scheduler_effectful/))**: Manages state for scheduling network events (stateful part) and interacts with the underlying timer/event system (effectful part).
+        * Interacts with: Network Layer Service
+    *   **Kademlia DHT ([`p2p/src/network/kad/`](p2p/src/network/kad/))**: Manages state related to peer discovery and routing via Kademlia (e.g., routing table).
+        * Interacts with: Network Layer Service
+    *   **Gossipsub ([`p2p/src/network/pubsub/`](p2p/src/network/pubsub/))**: Manages state related to message broadcasting and topic subscriptions.
+        * Interacts with: Network Layer Service
+    *   **Network RPC ([`p2p/src/network/rpc/`](p2p/src/network/rpc/))**: Manages state for ongoing RPC requests/responses within the network layer.
+        * Interacts with: Network Layer Service
+    *   **Network Identify ([`p2p/src/network/identify/`](p2p/src/network/identify/))**: Manages state related to the libp2p Identify protocol execution (e.g., received peer info).
+        * Interacts with: Network Layer Service
+    *   **Noise Protocol ([`p2p/src/network/noise/`](p2p/src/network/noise/))**: Manages state during the Noise protocol handshake for secure channel establishment.
+        * Interacts with: Network Layer Service
+    *   **Protocol Selection ([`p2p/src/network/select/`](p2p/src/network/select/))**: Manages state during protocol negotiation (e.g., multistream-select).
+        * Interacts with: Network Layer Service
+    *   **Yamux Multiplexing ([`p2p/src/network/yamux/`](p2p/src/network/yamux/))**: Manages state for multiplexed streams over a single connection.
+        * Interacts with: Network Layer Service
+
+### Service Components
+
+*   **P2P Service Layer ([`p2p/src/p2p_service.rs`](p2p/src/p2p_service.rs), [`p2p/src/service_impl/`](p2p/src/service_impl/))**: Implements the P2P service interface, handling network I/O and protocol multiplexing.
+*   **P2P Channels Service ([`p2p/src/channels/p2p_channels_service.rs`](p2p/src/channels/p2p_channels_service.rs))**: Defines the interface for managing P2P communication channels.
+*   **P2P Disconnection Service ([`p2p/src/disconnection_effectful/p2p_disconnection_effectful_service.rs`](p2p/src/disconnection_effectful/p2p_disconnection_effectful_service.rs))**: Defines the interface for triggering peer disconnections.
+*   **Network Layer Service ([`p2p/src/network/p2p_network_service.rs`](p2p/src/network/p2p_network_service.rs))**: Defines the service interface for interacting with the underlying libp2p network stack.
 
 ## SNARK ([`snark/`](snark/))
 
-*   **State Machine Core ([`snark/src/snark_state.rs`](snark/src/snark_state.rs), [`snark/src/snark_reducer.rs`](snark/src/snark_reducer.rs), [`snark/src/snark_actions.rs`](snark/src/snark_actions.rs))**: Manages overall SNARK-related state.
-    *   **Implemented:** Within the State Machine
-*   **Block Verification ([`snark/src/block_verify/`](snark/src/block_verify/), [`snark/src/block_verify_effectful/`](snark/src/block_verify_effectful/))**: Stateful logic for tracking verification jobs (`block_verify/`) and effectful logic for calling the verifier service (`block_verify_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
-*   **Work Verification ([`snark/src/work_verify/`](snark/src/work_verify/), [`snark/src/work_verify_effectful/`](snark/src/work_verify_effectful/))**: Stateful logic for tracking SNARK work verification jobs (`work_verify/`) and effectful logic for calling the verifier service (`work_verify_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
-*   **User Command Verification ([`snark/src/user_command_verify/`](snark/src/user_command_verify/), [`snark/src/user_command_verify_effectful/`](snark/src/user_command_verify_effectful/))**: Stateful logic for tracking transaction verification jobs (`user_command_verify/`) and effectful logic for calling the verifier service (`user_command_verify_effectful/`).
-    *   **Implemented:** State Machine & Service Interaction
+### State Machine Components
+
+*   **Core State/Reducer/Action ([`snark/src/snark_state.rs`](snark/src/snark_state.rs), [`snark/src/snark_reducer.rs`](snark/src/snark_reducer.rs), [`snark/src/snark_actions.rs`](snark/src/snark_actions.rs))**: Manages overall SNARK-related state within this crate.
+    * Interacts with: SNARK Verifier/Prover Services
+*   **Block Verification ([`snark/src/block_verify/`](snark/src/block_verify/), [`snark/src/block_verify_effectful/`](snark/src/block_verify_effectful/))**: Manages block verification state (stateful part) and calls the verifier service (effectful part).
+    * Interacts with: SNARK Block Verifier Service (likely part of Ledger Service)
+*   **Work Verification ([`snark/src/work_verify/`](snark/src/work_verify/), [`snark/src/work_verify_effectful/`](snark/src/work_verify_effectful/))**: Manages SNARK work verification state (stateful part) and calls the verifier service (effectful part).
+    * Interacts with: SNARK Work Verifier Service
+*   **User Command Verification ([`snark/src/user_command_verify/`](snark/src/user_command_verify/), [`snark/src/user_command_verify_effectful/`](snark/src/user_command_verify_effectful/))**: Manages transaction verification state (stateful part) and calls the verifier service (effectful part).
+    * Interacts with: SNARK User Command Verifier Service
+
+### Service Components
+
+*   **SNARK Block Verify Service ([`snark/src/block_verify_effectful/snark_block_verify_service.rs`](snark/src/block_verify_effectful/snark_block_verify_service.rs))**: Defines the interface for verifying SNARKs related to blocks.
+*   **SNARK Work Verifier Service ([`snark/src/work_verify_effectful/snark_work_verify_service.rs`](snark/src/work_verify_effectful/snark_work_verify_service.rs))**: Defines the interface for verifying completed SNARK work.
+*   **SNARK User Command Verifier Service ([`snark/src/user_command_verify_effectful/snark_user_command_verify_service.rs`](snark/src/user_command_verify_effectful/snark_user_command_verify_service.rs))**: Defines the interface for verifying SNARKs within user commands (transactions).
+*   *(Note: The SNARK Block Verifier service interface is defined above. Block verification is tightly coupled with ledger state but has its own service interface within the `snark` crate.)*
 
 ## Interfaces
 
