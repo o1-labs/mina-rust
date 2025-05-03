@@ -2,6 +2,25 @@
 
 This document outlines the high-level components of the OpenMina node and indicates whether they are primarily implemented within the core state machine (Redux-style store) or as separate services/modules interacting with the state machine, following the architecture described in [`ARCHITECTURE.md`](ARCHITECTURE.md).
 
+## State Machine vs. Service Components
+
+The architecture distinguishes between components primarily responsible for managing the application's state and logic (State Machine Components) and those handling interactions with the external environment or performing heavy tasks (Service Components). This separation is reinforced by the distinction between *stateful* and *effectful* actions.
+
+*   **State Machine Components (Stateful Actions):**
+    *   Manage the core application `State` through *stateful* `Actions`.
+    *   Logic resides in `reducer` functions which receive a `Substate` context (providing controlled access to state and the dispatcher) to compute the next state based on the action.
+    *   Contain the primary business logic and control flow, designed for determinism.
+    *   Interact with services indirectly by dispatching *effectful* actions.
+
+*   **Service Components (Effectful Actions):**
+    *   Handle interactions with the "outside world" (e.g., network, disk, intensive computations, external processes).
+    *   Interactions are triggered by *effectful* `Actions` dispatched from state machine components.
+    *   The `effects` functions associated with effectful actions act as thin wrappers that call the appropriate `Service` methods.
+    *   Services themselves contain the I/O or computational logic and aim for minimal internal state; decision-making belongs in state machine components.
+    *   Communicate results or occurrences back to the state machine primarily through `Events`, which are then wrapped in actions (like `EventSourceNewEventAction`) and dispatched.
+
+This division ensures core state management is deterministic and testable, while side effects are handled controllably and decoupled.
+
 ## Core Node ([`node/`](node/))
 
 ### State Machine Components
