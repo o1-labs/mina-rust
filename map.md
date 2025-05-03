@@ -21,6 +21,25 @@ The architecture distinguishes between components primarily responsible for mana
 
 This division ensures core state management is deterministic and testable, while side effects are handled controllably and decoupled.
 
+## Testing Framework and the Role of the State Machine
+
+The testing framework aims to ensure the node's correctness, security, and performance, with a strong focus on P2P interactions and OCaml node interoperability. It employs several approaches:
+
+*   **Scenarios:** Specific network setups and event sequences defined in code (`node/testing/src/scenarios/`) to verify particular behaviors (e.g., connection handling, peer discovery).
+*   **Simulator:** A network simulator (`node/testing/src/simulator/`) creates controlled environments with multiple nodes (Rust and potentially mocked/real OCaml) for deterministic testing of complex interactions.
+*   **Solo Node Tests:** Deploying a single Rust node against an existing OCaml network (like a testnet) to validate real-world interoperability.
+*   **Multi-Node Tests:** Deploying networks of only Rust nodes to test Rust-specific interactions in isolation.
+
+The state machine architecture is fundamental to this testing approach:
+
+*   **Determinism:** Because state transitions are purely determined by the current state and the incoming action (`reducer(state, action) -> state`), the state machine's behavior is predictable. Given the same initial state and sequence of inputs (actions, events), it will always produce the same final state and sequence of effects.
+*   **Input Recording & Replay:** The deterministic nature allows all inputs (events, time-based triggers) to the state machine to be recorded. These recordings can be replayed later (`cli/src/commands/replay/`), exactly reproducing a specific execution flow. This is invaluable for debugging complex scenarios or failures observed in testing or production.
+*   **Separation of Concerns:** The clear distinction between pure state logic (reducers for stateful actions) and side effects (effects functions for effectful actions calling services) makes testing easier. State logic can be tested in isolation without needing real services, while service interactions can be mocked or tested separately.
+*   **Testable State:** Tests can directly inspect the state machine's state (`p2p/src/`, `node/src/state.rs`) at various points during a scenario to verify that components like peer management, Kademlia, or connection states are correct according to the expected behavior.
+*   **Invariant Checking:** The testing framework also utilizes invariant checks. Invariants are rules or conditions about the system's state that must always hold true. During tests (especially fuzzing, see `tools/fuzzing/`), the framework checks the state *before* and *after* operations. It verifies that the state transitions performed by the state machine adhere to fundamental protocol rules (e.g., ensuring account modifications respect permissions, as seen in `tools/fuzzing/src/transaction_fuzzer/invariants.rs`). The `InvariantService` trait (`core/src/invariants.rs`) provides infrastructure for managing invariant-related state within the testing environment. If an invariant is violated, it indicates a bug in the state transition logic.
+
+This combination of simulation, real-world testing, and leveraging the state machine's properties allows for comprehensive validation of the node's behavior under diverse conditions.
+
 ## Core Node ([`node/`](node/))
 
 ### State Machine Components
