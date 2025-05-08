@@ -29,6 +29,10 @@ The testing framework aims to ensure the node's correctness, security, and perfo
 *   **Simulator:** A network simulator (`node/testing/src/simulator/`) creates controlled environments with multiple nodes (Rust and potentially mocked/real OCaml) for deterministic testing of complex interactions.
 *   **Solo Node Tests:** Deploying a single Rust node against an existing OCaml network (like a testnet) to validate real-world interoperability.
 *   **Multi-Node Tests:** Deploying networks of only Rust nodes to test Rust-specific interactions in isolation.
+*   **Fuzz Testing:** The framework incorporates fuzz testing to uncover unexpected behaviors and vulnerabilities by providing mutated or random data to various components. Key fuzzers include:
+    *   **Transaction Fuzzer ([`tools/fuzzing/src/transaction_fuzzer/`](tools/fuzzing/src/transaction_fuzzer/)):** This fuzzer specifically targets transaction processing logic. It employs *differential fuzzing*, where the behavior of the Rust implementation when processing fuzzed transactions is compared against the OCaml implementation to ensure consistency and correctness.
+    *   **P2P Fuzzers ([`p2p/src/fuzzer.rs`](p2p/src/fuzzer.rs)):** These fuzzers mutate various aspects of P2P communication protocols (e.g., `pnet`, `noise`, `yamux`, Kademlia messages, RPC messages, pubsub data) to test the robustness of the networking layer.
+    *   A foundational fuzzing library ([`fuzzer/`](fuzzer/)) provides generic utilities and mutation strategies for these more specific fuzzers.
 
 The state machine architecture is fundamental to this testing approach:
 
