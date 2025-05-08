@@ -1,5 +1,3 @@
-use std::{future::ready, time::Duration};
-
 use p2p::{P2pNetworkConnectionState, PeerId};
 use p2p_testing::{
     cluster::{Cluster, ClusterBuilder, ClusterEvent, NodeId},
@@ -15,6 +13,7 @@ use p2p_testing::{
         wait_for_all_nodes_to_listen,
     },
 };
+use std::{future::ready, time::Duration};
 
 /// Asserts that Rust node `id` has a peer `peer_id`, and it is in ready state.
 fn assert_peer_is_ready(cluster: &Cluster, id: RustNodeId, peer_id: PeerId) {

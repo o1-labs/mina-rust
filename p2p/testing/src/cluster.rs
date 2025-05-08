@@ -1,11 +1,13 @@
-use std::{
-    collections::BTreeMap,
-    net::{IpAddr, Ipv4Addr, SocketAddr},
-    ops::Range,
-    task::{ready, Context, Poll},
-    time::{Duration, Instant},
+use crate::{
+    event::{event_mapper_effect, RustNodeEvent},
+    libp2p_node::{create_swarm, Libp2pEvent, Libp2pNode, Libp2pNodeConfig, Libp2pNodeId},
+    redux::State,
+    redux::{log_action, Action},
+    rust_node::{RustNode, RustNodeConfig, RustNodeId},
+    service::ClusterService,
+    stream::{ClusterStreamExt, MapErrors, TakeDuring},
+    test_node::TestNode,
 };
-
 use futures::StreamExt;
 use libp2p::{multiaddr::multiaddr, swarm::DialError, Multiaddr};
 use openmina_core::channels::mpsc;
@@ -19,16 +21,12 @@ use p2p::{
     P2pCallbacks, P2pConfig, P2pMeshsubConfig, P2pState, PeerId,
 };
 use redux::SystemTime;
-
-use crate::{
-    event::{event_mapper_effect, RustNodeEvent},
-    libp2p_node::{create_swarm, Libp2pEvent, Libp2pNode, Libp2pNodeConfig, Libp2pNodeId},
-    redux::State,
-    redux::{log_action, Action},
-    rust_node::{RustNode, RustNodeConfig, RustNodeId},
-    service::ClusterService,
-    stream::{ClusterStreamExt, MapErrors, TakeDuring},
-    test_node::TestNode,
+use std::{
+    collections::BTreeMap,
+    net::{IpAddr, Ipv4Addr, SocketAddr},
+    ops::Range,
+    task::{ready, Context, Poll},
+    time::{Duration, Instant},
 };
 
 #[derive(Debug, Default, Clone)]

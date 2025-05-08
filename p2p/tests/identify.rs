@@ -1,8 +1,3 @@
-use std::{
-    collections::{BTreeSet, HashSet},
-    time::Duration,
-};
-
 use multiaddr::{multiaddr, Multiaddr};
 use p2p::{
     network::identify::{
@@ -23,6 +18,10 @@ use p2p_testing::{
     test_node::TestNode,
 };
 use redux::{ActionWithMeta, Store};
+use std::{
+    collections::{BTreeSet, HashSet},
+    time::Duration,
+};
 
 #[tokio::test]
 async fn rust_node_to_rust_node() -> anyhow::Result<()> {
