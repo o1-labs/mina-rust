@@ -13,12 +13,16 @@ use crate::{
     scenarios::ClusterRunner,
 };
 
-/// Local test to ensure that the Openmina node can connect to an existing OCaml testnet.
-/// Launch an Openmina node and connect it to seed nodes of the public (or private) OCaml testnet.
+/// Local test to ensure that the Openmina node can connect to an existing OCaml
+/// testnet.
+/// Launch an Openmina node and connect it to seed nodes of the public (or
+/// private) OCaml testnet.
 /// Run the simulation until:
-/// * Number of known peers is greater than or equal to the maximum number of peers.
+/// * Number of known peers is greater than or equal to the maximum number of
+/// peers.
 /// * Number of connected peers is greater than or equal to some threshold.
-/// Fail the test if the specified number of steps occur but the condition is not met.
+/// Fail the test if the specified number of steps occur but the condition is
+/// not met.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct SoloNodeBasicConnectivityInitialJoining;
 

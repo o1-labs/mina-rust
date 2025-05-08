@@ -11,7 +11,8 @@ use crate::{
     scenarios::ClusterRunner,
 };
 
-/// Set up single Rust node and bootstrap snarked ledger, bootstrap ledger and blocks.
+/// Set up single Rust node and bootstrap snarked ledger, bootstrap ledger and
+/// blocks.
 ///
 /// 1. Node will connect to replayer.
 /// 2. Observe that stacking ledger is synchronized.

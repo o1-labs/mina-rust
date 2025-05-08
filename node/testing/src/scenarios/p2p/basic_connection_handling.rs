@@ -18,7 +18,8 @@ fn has_active_peer(p2p_state: &P2pState, peer_id: &PeerId) -> bool {
     p2p_state.ready_peers_iter().any(|(id, _)| id == peer_id)
 }
 
-/// Two nodes should properly handle a situation when they are connecting to each other simultaneously.
+/// Two nodes should properly handle a situation when they are connecting to
+/// each other simultaneously.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct SimultaneousConnections;
 
@@ -83,7 +84,9 @@ impl SimultaneousConnections {
     }
 }
 
-/// Connections between all peers are symmetric, i.e. iff the node1 has the node2 among its active peers, then the node2 should have the node1 as its active peers.
+/// Connections between all peers are symmetric, i.e. iff the node1 has the
+/// node2 among its active peers, then the node2 should have the node1 as its
+/// active peers.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct AllNodesConnectionsAreSymmetric;
 

@@ -24,9 +24,12 @@ use crate::{
 /// Set up single Rust node and sync up root snarked ledger.
 ///
 /// 1. Node will connect to 2 peers (replayers).
-/// 2. At some chosen height, node will receive all hashes before receiving the first one.
-/// 3. At next height, node will receive all hashes before receiving the last hash on that height.
-/// 4. At next height we will do same above 2 steps, except those first and last hash requests will timeout instead of being received at the end.
+/// 2. At some chosen height, node will receive all hashes before receiving the
+/// first one.
+/// 3. At next height, node will receive all hashes before receiving the last
+/// hash on that height.
+/// 4. At next height we will do same above 2 steps, except those first and last
+/// hash requests will timeout instead of being received at the end.
 /// 5. Continue till we are done syncing root snarked ledger.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct SoloNodeSyncRootSnarkedLedger;

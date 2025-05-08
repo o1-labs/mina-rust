@@ -39,13 +39,14 @@ We should accept an incoming connection from an arbitrary node.
 - [p2p_basic_incoming(accept_connection)](../node/testing/src/scenarios/p2p/basic_incoming_connections.rs#L16)
 - [p2p_basic_incoming(accept_multiple_connections)](../node/testing/src/scenarios/p2p/basic_incoming_connections.rs#L62)
 - [solo_node_accept_incoming](../node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs)
-- [multi_node_connection_discovery/OCamlToRust](../node/testing/src/scenarios/multi_node/connection_discovery.rs#L127) (should be replaced with one with non-OCaml peer)
+- [multi_node_connection_discovery/OCamlToRust](../node/testing/src/scenarios/multi_node/connection_discovery.rs#L127)
+  (should be replaced with one with non-OCaml peer)
 - TODO: fast-running short test
 
 ### Node shouldn't accept duplicate incoming connections
 
-The Rust node should reject a connection from a peer if there is one with the same
-peer ID already.
+The Rust node should reject a connection from a peer if there is one with the
+same peer ID already.
 
 **Tests:** TODO
 
@@ -68,7 +69,8 @@ malicious node that uses the same peer ID.
 
 ### Node shouldn't try to make outgoing connection using its own peer_id
 
-The node can obtain its address from other peers. It shouldn't use it when connecting to new peers.
+The node can obtain its address from other peers. It shouldn't use it when
+connecting to new peers.
 
 **Tests:**
 - [`p2p_basic_outgoing(dont_connect_to_node_same_id)`](node/testing/src/scenarios/p2p/basic_outgoing_connections.rs#L134)
@@ -108,7 +110,8 @@ node shouldn't reconnect too soon to a node that dropped the connection.
 
 ### Node advertises itself through Kademlia
 
-- [solo_node_accept_incoming](../node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs) (TODO: should be replaced by one with Rust-only peer)
+- [solo_node_accept_incoming](../node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs)
+  (TODO: should be replaced by one with Rust-only peer)
 
 ### Node should be able to perform initial peer selection (Kademlia "bootstrap")
 
@@ -127,8 +130,10 @@ that returns a list of peers that are "close" to some random peer.
 
 This step starts after Kademlia initialization is complete.
 
-- [multi_node_peer_discovery](../node/testing/src/scenarios/multi_node/basic_connectivity_peer_discovery.rs) (partially, should be replaced with one with a non-OCaml peer)
-- [multi_node_connection_discovery/OCamlToRust](../node/testing/src/scenarios/multi_node/connection_discovery.rs#L127) (indirectly, should be replaced with one with a non-OCaml peer)
+- [multi_node_peer_discovery](../node/testing/src/scenarios/multi_node/basic_connectivity_peer_discovery.rs)
+  (partially, should be replaced with one with a non-OCaml peer)
+- [multi_node_connection_discovery/OCamlToRust](../node/testing/src/scenarios/multi_node/connection_discovery.rs#L127)
+  (indirectly, should be replaced with one with a non-OCaml peer)
 - TODO: fast-running Rust-only test
 
 ### Node should only advertise its "real" address
