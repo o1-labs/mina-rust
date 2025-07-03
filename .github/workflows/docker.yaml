@@ -23,7 +23,7 @@ jobs:
           - platform: linux/amd64
             runs-on: ubuntu-latest
           - platform: linux/arm64
-            runs-on: ubuntu-arm64
+            runs-on: ubuntu-24.04-arm
     runs-on: ${{ matrix.arch.runs-on }}
     steps:
       - name: Prepare
@@ -125,7 +125,7 @@ jobs:
           - platform: linux/amd64
             runs-on: ubuntu-latest
           - platform: linux/arm64
-            runs-on: ubuntu-arm64
+            runs-on: ubuntu-24.04-arm
         configuration:
           - build_configuration: production
     runs-on: ${{ matrix.arch.runs-on }}
