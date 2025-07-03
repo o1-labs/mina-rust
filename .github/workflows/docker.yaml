@@ -33,7 +33,7 @@ jobs:
 
       - name: Git checkout
         uses: actions/checkout@v3
-      
+
       # This is needed so that we can get the current version with vergen
       - name: Fetch tag for current commit
         run: |
