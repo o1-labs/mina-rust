@@ -21,7 +21,7 @@ export const WEBNODE_TITLE: string = APP_TITLE + ' - Web Node';
 export const FUZZING_TITLE: string = APP_TITLE + ' - Fuzzing';
 
 
-function generateRoutes(): Routes {
+export function generateRoutes(): Routes {
   const routes: Routes = [
     {
       path: 'dashboard',

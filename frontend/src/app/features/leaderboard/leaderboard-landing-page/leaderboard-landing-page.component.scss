@@ -1,11 +1,11 @@
-@import 'leaderboard-variables';
+@use 'leaderboard-variables';
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap');
 
 
 :host {
-  background-color: $mina-cta-primary;
-  color: $mina-base-primary;
+  background-color: leaderboard-variables.$mina-cta-primary;
+  color: leaderboard-variables.$mina-base-primary;
   font-family: "IBM Plex Sans", sans-serif;
 }
 
@@ -39,10 +39,10 @@ mina-leaderboard-footer {
 
 .button-description {
   a {
-    color: $mina-cta-primary;
+    color: leaderboard-variables.$mina-cta-primary;
     padding: 0 36px;
     height: 62px;
-    background-color: $mina-base-primary;
+    background-color: leaderboard-variables.$mina-base-primary;
     border-radius: 44px;
     font-size: 20px;
     line-height: 20px;
@@ -51,12 +51,12 @@ mina-leaderboard-footer {
     min-width: 240px;
 
     &:hover {
-      background-color: $black;
+      background-color: leaderboard-variables.$black;
     }
   }
 
   p {
-    color: $black;
+    color: leaderboard-variables.$black;
     font-size: 16px;
     font-weight: 300;
     margin-bottom: 80px;
@@ -65,18 +65,18 @@ mina-leaderboard-footer {
 
 .overflow-y-scroll {
   padding-bottom: 72px;
-  background-color: $mina-cta-primary;
+  background-color: leaderboard-variables.$mina-cta-primary;
 
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: $white4;
+    background-color: leaderboard-variables.$white4;
   }
 
   &::-webkit-scrollbar-thumb:hover {
-    background-color: $mina-base-secondary;
+    background-color: leaderboard-variables.$mina-base-secondary;
   }
 }
 
@@ -109,7 +109,7 @@ section {
 }
 
 .cards-section {
-  color: $mina-base-primary;
+  color: leaderboard-variables.$mina-base-primary;
   padding: 40px 0;
   gap: 32px;
   background-position: -48px -48px;
@@ -120,7 +120,7 @@ section {
   }
 
   .card {
-    background: $mina-base-container;
+    background: leaderboard-variables.$mina-base-container;
     border-radius: 20px;
     border: 1px solid #b7cdd8;
     box-shadow: 0 11.614px 24.121px -4.467px rgba(183, 205, 216, 0.20);
@@ -152,7 +152,7 @@ section {
 
 .run-web-node {
   height: 574px;
-  color: $mina-base-primary;
+  color: leaderboard-variables.$mina-base-primary;
   background-position: -48px -48px;
   background-size: calc(100% + 48px) calc(100% + 48px);
 
@@ -169,14 +169,14 @@ section {
     }
 
     span {
-      color: $black5;
+      color: leaderboard-variables.$black5;
     }
   }
 }
 
 .mina {
   padding: 80px 0;
-  background: $mina-brand-gradient2;
+  background: leaderboard-variables.$mina-brand-gradient2;
   gap: 48px;
   margin-top: 24px;
 
@@ -234,7 +234,7 @@ section {
         font-weight: 300;
         font-size: 20px;
         gap: 4px;
-        color: $mina-base-primary;
+        color: leaderboard-variables.$mina-base-primary;
         position: relative;
         text-decoration: none;
       }
@@ -246,7 +246,7 @@ section {
         height: 2px;
         bottom: -2px;
         left: 0;
-        background-color: $mina-base-primary;
+        background-color: leaderboard-variables.$mina-base-primary;
         transition: width 0.3s ease-in-out;
       }
 

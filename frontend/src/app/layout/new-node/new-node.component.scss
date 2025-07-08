@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   width: 100%;
@@ -12,12 +12,12 @@
 }
 
 .feature {
-  color: $base-tertiary;
+  color: openmina.$base-tertiary;
 
   .fx-row-full-cent {
     width: 16px;
     height: 16px;
-    border: 2px solid $base-divider;
+    border: 2px solid openmina.$base-divider;
     border-radius: 6px;
   }
 
@@ -27,14 +27,14 @@
   }
 
   &.checked {
-    color: $base-primary;
+    color: openmina.$base-primary;
 
     .mina-icon {
       display: block;
     }
 
     .fx-row-full-cent {
-      background-color: $selected-container;
+      background-color: openmina.$selected-container;
       border: none;
     }
   }

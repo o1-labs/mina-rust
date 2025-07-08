@@ -1,14 +1,14 @@
-import { NgModule } from '@angular/core';
-import { ServerModule } from '@angular/platform-server';
-
-import { AppModule } from './app.module';
+import { bootstrapApplication } from '@angular/platform-browser';
+import { provideServerRendering } from '@angular/platform-server';
 import { AppComponent } from './app.component';
+import { appConfig } from '@app/app.config';
 
-@NgModule({
-  imports: [
-    AppModule,
-    ServerModule,
+const serverConfig = {
+  ...appConfig,
+  providers: [
+    ...appConfig.providers,
+    provideServerRendering(),
   ],
-  bootstrap: [AppComponent],
-})
-export class AppServerModule {}
+};
+
+export default () => bootstrapApplication(AppComponent, serverConfig);

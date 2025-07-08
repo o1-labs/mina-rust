@@ -4,30 +4,31 @@ import { getMergedRoute, isDesktop, MergedRoute } from '@openmina/shared';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'mina-leaderboard-header',
-  templateUrl: './leaderboard-header.component.html',
-  styleUrl: './leaderboard-header.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column' },
-  animations: [
-    trigger('dropdownAnimation', [
-      state('closed', style({
-        height: '0',
-        opacity: '0',
-        overflow: 'hidden',
-      })),
-      state('open', style({
-        height: '*',
-        opacity: '1',
-      })),
-      transition('closed => open', [
-        animate('300ms ease-out'),
-      ]),
-      transition('open => closed', [
-        animate('200ms ease-in'),
-      ]),
-    ]),
-  ],
+    selector: 'mina-leaderboard-header',
+    templateUrl: './leaderboard-header.component.html',
+    styleUrl: './leaderboard-header.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column' },
+    animations: [
+        trigger('dropdownAnimation', [
+            state('closed', style({
+                height: '0',
+                opacity: '0',
+                overflow: 'hidden',
+            })),
+            state('open', style({
+                height: '*',
+                opacity: '1',
+            })),
+            transition('closed => open', [
+                animate('300ms ease-out'),
+            ]),
+            transition('open => closed', [
+                animate('200ms ease-in'),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class LeaderboardHeaderComponent extends StoreDispatcher implements OnInit {
 

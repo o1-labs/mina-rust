@@ -10,21 +10,22 @@ import { AppNodeDetails, AppNodeStatus } from '@shared/types/app/app-node-detail
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'mina-block-production-won-slots',
-  templateUrl: './block-production-won-slots.component.html',
-  styleUrls: ['./block-production-won-slots.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('400ms ease-in', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        animate('400ms ease-out', style({ opacity: 0 })),
-      ]),
-    ]),
-  ],
+    selector: 'mina-block-production-won-slots',
+    templateUrl: './block-production-won-slots.component.html',
+    styleUrls: ['./block-production-won-slots.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('400ms ease-in', style({ opacity: 1 })),
+            ]),
+            transition(':leave', [
+                animate('400ms ease-out', style({ opacity: 0 })),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class BlockProductionWonSlotsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 $blue: #57d7ff;
 $pink: #fda2ff;
@@ -16,20 +16,20 @@ $orange: #ff833d;
 :host ::ng-deep {
   .mina-table .row.active > span.Produced.Block,
   .Produced.Block {
-    color: $success-primary !important;
+    color: openmina.$success-primary !important;
   }
 
   .mina-table .row.active > span.Orphaned,
   .mina-table .row.active > span.Discarded,
   .Orphaned,
   .Discarded {
-    color: $aware-primary !important;
+    color: openmina.$aware-primary !important;
   }
 
   .Scheduled,
   .Waiting,
   .Produced:not(.Block) {
-    color: $base-primary !important;
+    color: openmina.$base-primary !important;
   }
 
   cdk-virtual-scroll-viewport {
@@ -37,7 +37,7 @@ $orange: #ff833d;
   }
 
   .mina-table .row.active mina-loading-spinner span {
-    border-color: $selected-primary !important;
+    border-color: openmina.$selected-primary !important;
     border-top-color: transparent !important;
   }
 

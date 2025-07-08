@@ -19,11 +19,12 @@ import { Routes } from '@shared/enums/routes.enum';
 
 
 @Component({
-  selector: 'mina-network-node-dht-table',
-  templateUrl: './network-node-dht-table.component.html',
-  styleUrls: ['./network-node-dht-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 w-100 flex-1' },
+    selector: 'mina-network-node-dht-table',
+    templateUrl: './network-node-dht-table.component.html',
+    styleUrls: ['./network-node-dht-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 w-100 flex-1' },
+    standalone: false
 })
 export class NetworkNodeDhtTableComponent extends MinaTableRustWrapper<NetworkNodeDhtPeer> implements OnInit {
 

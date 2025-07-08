@@ -18,11 +18,12 @@ import { Routes } from '@shared/enums/routes.enum';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'mina-network-bootstrap-stats-table',
-  templateUrl: './network-bootstrap-stats-table.component.html',
-  styleUrls: ['./network-bootstrap-stats-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-network-bootstrap-stats-table',
+    templateUrl: './network-bootstrap-stats-table.component.html',
+    styleUrls: ['./network-bootstrap-stats-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class NetworkBootstrapStatsTableComponent extends MinaTableRustWrapper<NetworkBootstrapStatsRequest> {
 

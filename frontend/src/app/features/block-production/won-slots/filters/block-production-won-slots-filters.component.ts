@@ -11,11 +11,12 @@ import {
 } from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
 
 @Component({
-  selector: 'mina-block-production-won-slots-filters',
-  templateUrl: './block-production-won-slots-filters.component.html',
-  styleUrls: ['./block-production-won-slots-filters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-xl w-100 flex-row border-top border-bottom' },
+    selector: 'mina-block-production-won-slots-filters',
+    templateUrl: './block-production-won-slots-filters.component.html',
+    styleUrls: ['./block-production-won-slots-filters.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-xl w-100 flex-row border-top border-bottom' },
+    standalone: false
 })
 export class BlockProductionWonSlotsFiltersComponent extends StoreDispatcher implements OnInit {
 

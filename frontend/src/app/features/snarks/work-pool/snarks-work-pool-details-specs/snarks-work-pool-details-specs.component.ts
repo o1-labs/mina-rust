@@ -10,10 +10,11 @@ import { RustService } from '@core/services/rust.service';
 import { WorkPoolDetail } from '@shared/types/snarks/work-pool/work-pool-detail.type';
 
 @Component({
-  selector: 'mina-snarks-work-pool-details-specs',
-  templateUrl: './snarks-work-pool-details-specs.component.html',
-  styleUrls: ['./snarks-work-pool-details-specs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-snarks-work-pool-details-specs',
+    templateUrl: './snarks-work-pool-details-specs.component.html',
+    styleUrls: ['./snarks-work-pool-details-specs.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SnarksWorkPoolDetailsSpecsComponent extends StoreDispatcher implements OnInit {
 

@@ -20,11 +20,12 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { NumberInput } from '@angular/cdk/coercion';
 
 @Component({
-  selector: 'mina-scan-state-toolbar',
-  templateUrl: './scan-state-toolbar.component.html',
-  styleUrls: ['./scan-state-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-xl fx-row-vert-cent' },
+    selector: 'mina-scan-state-toolbar',
+    templateUrl: './scan-state-toolbar.component.html',
+    styleUrls: ['./scan-state-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-xl fx-row-vert-cent' },
+    standalone: false
 })
 export class ScanStateToolbarComponent extends StoreDispatcher implements OnInit {
 

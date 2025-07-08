@@ -1,11 +1,11 @@
-@import 'leaderboard-variables';
+@use 'leaderboard-variables';
 
 .mina-icon {
   font-variation-settings: 'FILL' 1, 'wght' 400 !important;
 }
 
 .row.head span {
-  color: $black;
+  color: leaderboard-variables.$black;
   font-size: 16px;
   font-weight: 400;
 }
@@ -26,7 +26,7 @@
   }
 
   &.odd:not(.head) {
-    background-color: $mina-base-container;
+    background-color: leaderboard-variables.$mina-base-container;
   }
 }
 
@@ -48,7 +48,7 @@
   }
 
   span {
-    color: $black;
+    color: leaderboard-variables.$black;
 
     &:not(.mina-icon) {
       @media (max-width: 676px) {
@@ -62,15 +62,15 @@
 
   .circle {
     &.blue {
-      color: $mina-brand-cyan;
+      color: leaderboard-variables.$mina-brand-cyan;
     }
 
     &.purple {
-      color: $mina-access-primary;
+      color: leaderboard-variables.$mina-access-primary;
     }
 
     &.dark-red {
-      color: $mina-brand-orchid;
+      color: leaderboard-variables.$mina-brand-orchid;
     }
   }
 
@@ -105,15 +105,15 @@
 }
 
 :host ::ng-deep mina-loading-spinner .loading {
-  border: 1px solid $mina-base-primary !important;
+  border: 1px solid leaderboard-variables.$mina-base-primary !important;
   border-top-color: transparent !important;
 }
 
 .p-absolute {
-  background-color: $mina-cta-primary;
+  background-color: leaderboard-variables.$mina-cta-primary;
 }
 
 mina-loading-spinner + div {
   font-family: "IBM Plex Sans", sans-serif;
-  color: $mina-base-primary;
+  color: leaderboard-variables.$mina-base-primary;
 }

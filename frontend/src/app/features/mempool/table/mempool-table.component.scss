@@ -1,7 +1,7 @@
-@import 'openmina';
+@use 'openmina';
 
 :host ::ng-deep .mina-table .row.active > span > span {
-  color: $selected-primary !important;
+  color: openmina.$selected-primary !important;
 }
 
 .mina-icon {
@@ -15,13 +15,13 @@
 }
 
 .benchmark {
-  background-color: $selected-container;
-  color: $selected-primary;
+  background-color: openmina.$selected-container;
+  color: openmina.$selected-primary;
 }
 
 .account {
-  background-color: $special-selected-alt-2-container;
-  color: $special-selected-alt-2-primary;
+  background-color: openmina.$special-selected-alt-2-container;
+  color: openmina.$special-selected-alt-2-primary;
 }
 
 .status {
@@ -29,12 +29,12 @@
   border-radius: 4px;
 
   &.ZKApp {
-    background-color: $special-selected-alt-1-container;
-    color: $special-selected-alt-1-primary;
+    background-color: openmina.$special-selected-alt-1-container;
+    color: openmina.$special-selected-alt-1-primary;
   }
 
   &.Payment {
-    background-color: $special-selected-alt-3-container;
-    color: $special-selected-alt-3-primary;
+    background-color: openmina.$special-selected-alt-3-container;
+    color: openmina.$special-selected-alt-3-primary;
   }
 }

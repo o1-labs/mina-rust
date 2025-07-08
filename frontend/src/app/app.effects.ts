@@ -16,9 +16,7 @@ import { catchErrorAndRepeat2 } from '@shared/constants/store-functions';
 import { MinaErrorType } from '@shared/types/error-preview/mina-error-type.enum';
 import { AppNodeStatus } from '@shared/types/app/app-node-details.type';
 
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class AppEffects extends BaseEffect {
 
   readonly init$: Effect;

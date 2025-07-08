@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-  selector: 'mina-card',
-  templateUrl: './mina-card.component.html',
-  styleUrls: ['./mina-card.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column flex-between pt-8 pb-8 pl-12 border-rad-8' },
+    selector: 'mina-card',
+    templateUrl: './mina-card.component.html',
+    styleUrls: ['./mina-card.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column flex-between pt-8 pb-8 pl-12 border-rad-8' },
+    standalone: false
 })
 export class MinaCardComponent {
 

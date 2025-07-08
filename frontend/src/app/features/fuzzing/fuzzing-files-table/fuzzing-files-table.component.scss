@@ -1,9 +1,9 @@
-@import 'openmina';
+@use 'openmina';
 
 span.border-rad-4 {
   width: 80px;
   height: 16px;
-  background-color: $warn-tertiary;
+  background-color: openmina.$warn-tertiary;
   position: relative;
   overflow: hidden;
 
@@ -11,19 +11,19 @@ span.border-rad-4 {
     position: absolute;
     left: 0;
     height: 100%;
-    background-color: $base-surface;
+    background-color: openmina.$base-surface;
 
     &::after {
       content: '';
       position: absolute;
       width: 100%;
       height: 100%;
-      background-color: $success-secondary;
+      background-color: openmina.$success-secondary;
     }
   }
 }
 
 :host span b {
-  color: $selected-primary;
-  background: $selected-container;
+  color: openmina.$selected-primary;
+  background: openmina.$selected-container;
 }

@@ -1,9 +1,9 @@
-@import 'openmina';
+@use 'openmina';
 
 
 .chip {
   gap: 4px;
-  background-color: $base-surface;
+  background-color: openmina.$base-surface;
 
   &::before {
     content: '';
@@ -13,36 +13,36 @@
     width: 100%;
     height: 100%;
     border-radius: 6px;
-    background-color: $success-container;
+    background-color: openmina.$success-container;
   }
 
   div {
-    color: $success-primary;
+    color: openmina.$success-primary;
   }
 
   span {
-    color: $success-secondary;
+    color: openmina.$success-secondary;
 
     &.mina-icon {
-      color: $success-primary;
+      color: openmina.$success-primary;
     }
   }
 
   &.aware {
     &::before {
-      background-color: $aware-container;
+      background-color: openmina.$aware-container;
     }
 
     div {
-      color: $aware-primary;
+      color: openmina.$aware-primary;
     }
 
     span {
-      color: $aware-secondary;
+      color: openmina.$aware-secondary;
 
       &.mina-icon {
         display: none;
-        color: $aware-primary;
+        color: openmina.$aware-primary;
       }
     }
   }

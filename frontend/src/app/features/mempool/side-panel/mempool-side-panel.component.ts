@@ -8,11 +8,12 @@ import { MempoolSelectors } from '@app/features/mempool/mempool.state';
 import { MempoolTransaction, SignedCommand, ZkappCommand } from '@shared/types/mempool/mempool-transaction.type';
 
 @Component({
-  selector: 'mina-mempool-side-panel',
-  templateUrl: './mempool-side-panel.component.html',
-  styleUrls: ['./mempool-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column' },
+    selector: 'mina-mempool-side-panel',
+    templateUrl: './mempool-side-panel.component.html',
+    styleUrls: ['./mempool-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column' },
+    standalone: false
 })
 export class MempoolSidePanelComponent extends StoreDispatcher implements OnInit {
 

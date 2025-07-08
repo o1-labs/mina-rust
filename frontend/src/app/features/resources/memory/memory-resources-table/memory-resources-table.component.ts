@@ -7,11 +7,12 @@ import { MemoryResourcesSetActiveResource } from '@resources/memory/memory-resou
 import { DOCUMENT } from '@angular/common';
 
 @Component({
-  selector: 'app-memory-resources-table',
-  templateUrl: './memory-resources-table.component.html',
-  styleUrls: ['./memory-resources-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 border-top' },
+    selector: 'app-memory-resources-table',
+    templateUrl: './memory-resources-table.component.html',
+    styleUrls: ['./memory-resources-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 border-top' },
+    standalone: false
 })
 export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryResource> implements OnDestroy {
 

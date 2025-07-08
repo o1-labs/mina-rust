@@ -16,11 +16,12 @@ import { AppSelectors } from '@app/app.state';
 import { isSubFeatureEnabled } from '@shared/constants/config';
 
 @Component({
-  selector: 'mina-network-bootstrap-stats-side-panel',
-  templateUrl: './network-bootstrap-stats-side-panel.component.html',
-  styleUrls: ['./network-bootstrap-stats-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-network-bootstrap-stats-side-panel',
+    templateUrl: './network-bootstrap-stats-side-panel.component.html',
+    styleUrls: ['./network-bootstrap-stats-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class NetworkBootstrapStatsSidePanelComponent extends StoreDispatcher implements OnInit {
 

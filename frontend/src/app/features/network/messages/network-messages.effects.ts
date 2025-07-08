@@ -50,7 +50,7 @@ import {
   switchMap,
   takeUntil,
   tap,
-  timer
+  timer,
 } from 'rxjs';
 import { NetworkMessage } from '@shared/types/network/messages/network-message.type';
 import { catchErrorAndRepeat } from '@shared/constants/store-functions';
@@ -87,9 +87,10 @@ export class NetworkMessagesEffects extends MinaRustBaseEffect<NetworkMessagesAc
 
     this.init$ = createEffect(() => this.actions$.pipe(
       ofType(NETWORK_INIT),
-      this.latestStateSlice<NetworkMessagesState, NetworkMessagesInit>('network.messages'),
-      tap(state => {
-        this.streamActive = state.stream;
+      // this.latestStateSlice<NetworkMessagesState, NetworkMessagesInit>('network.messages'),
+      this.latestActionState<any>(),
+      tap(({ state }) => {
+        this.streamActive = state.network.messages.stream;
         this.networkDestroy$ = new Subject<void>();
       }),
       switchMap(() =>
@@ -158,8 +159,8 @@ export class NetworkMessagesEffects extends MinaRustBaseEffect<NetworkMessagesAc
 
     this.setActiveRow$ = createEffect(() => this.actions$.pipe(
       ofType(NETWORK_SET_ACTIVE_ROW, NETWORK_CHANGE_TAB),
-      this.latestStateSlice<NetworkMessagesState, NetworkMessagesSetActiveRow | NetworkMessagesChangeTab>('network.messages'),
-      filter((state: NetworkMessagesState) => !!state.activeRow),
+      this.latestActionState<any>(),
+      filter(({ state }: any) => !!state.network.messages.activeRow),
       switchMap((state: NetworkMessagesState) => {
         switch (state.activeTab) {
           case 1:

@@ -7,11 +7,12 @@ import { selectNodesLiveFilteredEvents, selectNodesLiveSort } from '@nodes/live/
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-nodes-live-events-table',
-  templateUrl: './nodes-live-events-table.component.html',
-  styleUrls: ['./nodes-live-events-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-minus-lg flex-column' },
+    selector: 'mina-nodes-live-events-table',
+    templateUrl: './nodes-live-events-table.component.html',
+    styleUrls: ['./nodes-live-events-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-minus-lg flex-column' },
+    standalone: false
 })
 export class NodesLiveEventsTableComponent extends MinaTableRustWrapper<NodesLiveBlockEvent> implements OnInit {
 

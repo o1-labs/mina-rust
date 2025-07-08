@@ -13,11 +13,12 @@ import { ScanStateLeaf } from '@shared/types/snarks/scan-state/scan-state-leaf.t
 import { getMergedRoute, MergedRoute, isMobile } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-scan-state-tree-list',
-  templateUrl: './scan-state-tree-list.component.html',
-  styleUrls: ['./scan-state-tree-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-minus-xl flex-column p-relative' },
+    selector: 'mina-scan-state-tree-list',
+    templateUrl: './scan-state-tree-list.component.html',
+    styleUrls: ['./scan-state-tree-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-minus-xl flex-column p-relative' },
+    standalone: false
 })
 export class ScanStateTreeListComponent extends StoreDispatcher implements OnInit {
 

@@ -8,11 +8,12 @@ import { delay } from 'rxjs';
 
 
 @Component({
-  selector: 'mina-state-actions-graph-list',
-  templateUrl: './state-actions-graph-list.component.html',
-  styleUrls: ['./state-actions-graph-list.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'p-relative' },
+    selector: 'mina-state-actions-graph-list',
+    templateUrl: './state-actions-graph-list.component.html',
+    styleUrls: ['./state-actions-graph-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'p-relative' },
+    standalone: false
 })
 export class StateActionsGraphListComponent extends StoreDispatcher implements OnInit {
 

@@ -12,11 +12,12 @@ import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-network-blocks',
-  templateUrl: './network-blocks.component.html',
-  styleUrls: ['./network-blocks.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 w-100' },
+    selector: 'mina-network-blocks',
+    templateUrl: './network-blocks.component.html',
+    styleUrls: ['./network-blocks.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 w-100' },
+    standalone: false
 })
 export class NetworkBlocksComponent extends StoreDispatcher implements OnInit, AfterViewInit, OnDestroy {
 

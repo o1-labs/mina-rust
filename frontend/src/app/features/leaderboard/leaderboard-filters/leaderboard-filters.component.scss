@@ -1,4 +1,4 @@
-@import 'leaderboard-variables';
+@use 'leaderboard-variables';
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap');
@@ -11,22 +11,22 @@
 
     div.filters {
       padding: 16px 0;
-      border-bottom: 1px solid $black6;
+      border-bottom: 1px solid leaderboard-variables.$black6;
 
       .sort {
         box-shadow: 0 0 0 0 transparent;
         padding: 0 24px;
         border-radius: 44px;
         font-size: 16px;
-        background-color: $mina-base-divider;
-        color: $black;
+        background-color: leaderboard-variables.$mina-base-divider;
+        color: leaderboard-variables.$black;
         cursor: pointer;
         position: relative;
         overflow: hidden;
         transition: all 0.15s ease;
 
         &:hover {
-          box-shadow: 0 2px 4px 0 $black3;
+          box-shadow: 0 2px 4px 0 leaderboard-variables.$black3;
         }
 
         .sort-content {
@@ -59,8 +59,8 @@
         }
 
         &.active {
-          background-color: $mina-base-primary;
-          color: $mina-cta-primary;
+          background-color: leaderboard-variables.$mina-base-primary;
+          color: leaderboard-variables.$mina-cta-primary;
           padding-left: 16px;
 
           .sort-content {
@@ -78,7 +78,7 @@
         height: 32px;
 
         .mina-icon {
-          color: $black;
+          color: leaderboard-variables.$black;
           width: 24px;
           height: 24px;
         }
@@ -90,7 +90,7 @@
           font-size: 16px;
 
           &::placeholder {
-            color: $mina-base-secondary;
+            color: leaderboard-variables.$mina-base-secondary;
             font-size: 16px;
             font-weight: 400;
           }

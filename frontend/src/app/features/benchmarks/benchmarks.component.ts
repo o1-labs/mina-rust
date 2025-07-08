@@ -3,11 +3,12 @@ import { BenchmarksWalletsService } from '@benchmarks/wallets/benchmarks-wallets
 import { ONE_BILLION } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-benchmarks',
-  templateUrl: './benchmarks.component.html',
-  styleUrls: ['./benchmarks.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-benchmarks',
+    templateUrl: './benchmarks.component.html',
+    styleUrls: ['./benchmarks.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class BenchmarksComponent implements OnInit {
 

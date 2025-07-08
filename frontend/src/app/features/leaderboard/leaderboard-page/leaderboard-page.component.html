@@ -9,9 +9,7 @@
     <mina-leaderboard-title></mina-leaderboard-title>
     <!--    <ng-container *ngTemplateOutlet="liveResultsInfo"></ng-container>-->
     <!--    <ng-container *ngTemplateOutlet="download"></ng-container>-->
-    @if (canDownloadCSV) {
-      <ng-container *ngTemplateOutlet="downloadRestricted"></ng-container>
-    }
+    <ng-container *ngTemplateOutlet="downloadCsvRef"></ng-container>
     <mina-leaderboard-filters></mina-leaderboard-filters>
     <mina-leaderboard-table></mina-leaderboard-table>
   </main>
@@ -35,13 +33,14 @@
         <li>Final results will be published after the program ends and complete chain verification</li>
       </ul>
       <p>To learn more about how uptime is tracked, please refer to the <a
-        href="https://docs.google.com/document/d/1RcLo6NMZzTHixI3Q6lyzhib1oHJKDyrqMscEmXmS9NE/edit?usp=sharing">How Uptime Tracking Works</a> section in the
+        href="https://docs.google.com/document/d/1RcLo6NMZzTHixI3Q6lyzhib1oHJKDyrqMscEmXmS9NE/edit?usp=sharing">How
+        Uptime Tracking Works</a> section in the
         program details.</p>
     </div>
   </div>
 </ng-template>
 
-<ng-template #downloadRestricted>
+<ng-template #downloadCsvRef>
   <div class="flex-column">
     <div class="download-btns fx-row-vert-cent">
       <button class="fx-row-vert-cent h-lg mr-8" (click)="downloadAll()">

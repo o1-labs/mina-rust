@@ -6,11 +6,12 @@ import { TableColumnList } from '@openmina/shared';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-benchmarks-wallets-table',
-  templateUrl: './benchmarks-wallets-table.component.html',
-  styleUrls: ['./benchmarks-wallets-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-benchmarks-wallets-table',
+    templateUrl: './benchmarks-wallets-table.component.html',
+    styleUrls: ['./benchmarks-wallets-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class BenchmarksWalletsTableComponent extends MinaTableRustWrapper<BenchmarksWallet> implements OnInit {
 

@@ -35,11 +35,12 @@ import { NetworkMessagesDirection } from '@shared/types/network/messages/network
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-network-messages-table',
-  templateUrl: './network-messages-table.component.html',
-  styleUrls: ['./network-messages-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-network-messages-table',
+    templateUrl: './network-messages-table.component.html',
+    styleUrls: ['./network-messages-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class NetworkMessagesTableComponent extends MinaTableRustWrapper<NetworkMessage> implements OnInit {
 

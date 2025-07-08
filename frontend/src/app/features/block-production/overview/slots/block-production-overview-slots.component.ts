@@ -23,11 +23,12 @@ type MouseEventWithTarget = MouseEvent & {
 };
 
 @Component({
-  selector: 'mina-block-production-overview-slots',
-  templateUrl: './block-production-overview-slots.component.html',
-  styleUrls: ['./block-production-overview-slots.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column flex-grow pb-5 pl-12 p-relative' },
+    selector: 'mina-block-production-overview-slots',
+    templateUrl: './block-production-overview-slots.component.html',
+    styleUrls: ['./block-production-overview-slots.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column flex-grow pb-5 pl-12 p-relative' },
+    standalone: false
 })
 export class BlockProductionOverviewSlotsComponent extends StoreDispatcher implements AfterViewInit {
   @ViewChild('graph') private svgHolder: ElementRef<HTMLDivElement>;

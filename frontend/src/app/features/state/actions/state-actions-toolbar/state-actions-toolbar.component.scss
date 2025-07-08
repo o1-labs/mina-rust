@@ -1,84 +1,84 @@
-@import 'openmina';
+@use 'openmina';
 
 .pagination-group {
-	button {
-		background-color: transparent;
-		color: $selected-primary;
+  button {
+    background-color: transparent;
+    color: openmina.$selected-primary;
 
-		&:hover {
-			background-color: $selected-container;
-		}
-	}
+    &:hover {
+      background-color: openmina.$selected-container;
+    }
+  }
 
-	.selected-primary {
-		min-width: 85px;
-	}
+  .selected-primary {
+    min-width: 85px;
+  }
 }
 
 .sort {
-	width: 58px;
+  width: 58px;
 
-	.mina-icon {
-		width: 0;
-		opacity: 0;
-		transition: 200ms;
-	}
+  .mina-icon {
+    width: 0;
+    opacity: 0;
+    transition: 200ms;
+  }
 
-	&.active .mina-icon {
-		width: 18px;
-		opacity: 1;
-	}
+  &.active .mina-icon {
+    width: 18px;
+    opacity: 1;
+  }
 
-	&.active {
-		background-color: $selected-container;
-		color: $selected-primary !important;
-	}
+  &.active {
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary !important;
+  }
 
-	&.rev .mina-icon {
-		transform: rotateX(180deg);
-	}
+  &.rev .mina-icon {
+    transform: rotateX(180deg);
+  }
 }
 
 form {
-	width: 200px;
-	background-color: $base-container;
-	color: $base-tertiary;
+  width: 200px;
+  background-color: openmina.$base-container;
+  color: openmina.$base-tertiary;
 
-	&:hover {
-		background-color: $base-divider;
-	}
+  &:hover {
+    background-color: openmina.$base-divider;
+  }
 
-	input {
-		outline: none;
-		color: inherit;
-		background-color: unset;
-		padding-left: 35px;
-		padding-right: 25px;
+  input {
+    outline: none;
+    color: inherit;
+    background-color: unset;
+    padding-left: 35px;
+    padding-right: 25px;
 
-		&::placeholder {
-			font-weight: 400;
-		}
-	}
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
 
-	.p-absolute:first-child {
-		left: 5px;
-		top: 50%;
-		transform: translateY(-50%);
-	}
+  .p-absolute:first-child {
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
 
-	.p-absolute:last-child {
-		right: 5px;
-		top: 50%;
-		transform: translateY(-50%);
-		display: none;
-	}
+  .p-absolute:last-child {
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+  }
 
-	&.active {
-		background-color: $selected-container;
-		color: $selected-primary;
+  &.active {
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary;
 
-		.p-absolute:last-child {
-			display: block;
-		}
-	}
+    .p-absolute:last-child {
+      display: block;
+    }
+  }
 }

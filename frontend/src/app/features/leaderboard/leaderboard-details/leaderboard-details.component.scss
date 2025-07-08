@@ -1,11 +1,11 @@
-@import 'leaderboard-variables';
+@use 'leaderboard-variables';
 
 :host {
   display: block;
   height: 100%;
   padding-top: 52px;
-  background-color: $mina-cta-primary;
-  color: $mina-base-primary;
+  background-color: leaderboard-variables.$mina-cta-primary;
+  color: leaderboard-variables.$mina-base-primary;
   font-family: "IBM Plex Sans", sans-serif;
 }
 
@@ -25,7 +25,7 @@ mina-leaderboard-footer {
 h2 {
   margin-top: 72px;
   margin-bottom: 16px;
-  color: $mina-base-secondary;
+  color: leaderboard-variables.$mina-base-secondary;
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
@@ -34,7 +34,7 @@ h2 {
 h1 {
   margin-top: 0;
   margin-bottom: 80px;
-  color: $mina-base-primary;
+  color: leaderboard-variables.$mina-base-primary;
   font-size: 80px;
   font-weight: 300;
   line-height: 80px;

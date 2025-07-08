@@ -11,10 +11,11 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-nodes-bootstrap',
-  templateUrl: './nodes-bootstrap.component.html',
-  styleUrls: ['./nodes-bootstrap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-bootstrap',
+    templateUrl: './nodes-bootstrap.component.html',
+    styleUrls: ['./nodes-bootstrap.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesBootstrapComponent extends StoreDispatcher implements OnInit, OnDestroy {
 
