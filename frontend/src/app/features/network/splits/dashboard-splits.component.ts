@@ -4,11 +4,12 @@ import { DashboardSplitsClose, DashboardSplitsGetSplits } from '@network/splits/
 import { selectDashboardSplitsOpenSidePanel } from '@network/splits/dashboard-splits.state';
 
 @Component({
-  selector: 'mina-splits',
-  templateUrl: './dashboard-splits.component.html',
-  styleUrls: ['./dashboard-splits.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 w-100' },
+    selector: 'mina-splits',
+    templateUrl: './dashboard-splits.component.html',
+    styleUrls: ['./dashboard-splits.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 w-100' },
+    standalone: false
 })
 export class DashboardSplitsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

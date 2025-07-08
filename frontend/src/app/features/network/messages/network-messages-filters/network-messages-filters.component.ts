@@ -315,17 +315,18 @@ export const networkAvailableFilters: NetworkMessagesFilterCategory[][] = [
 ];
 
 @Component({
-  selector: 'mina-network-messages-filters',
-  templateUrl: './network-messages-filters.component.html',
-  styleUrls: ['./network-messages-filters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  animations: [
-    trigger('panelHeight', [
-      state('collapsed', style({ height: '36px', overflow: 'hidden' })),
-      state('expanded', style({ height: '*' })),
-      transition('collapsed <=> expanded', animate('250ms ease-out')),
-    ]),
-  ],
+    selector: 'mina-network-messages-filters',
+    templateUrl: './network-messages-filters.component.html',
+    styleUrls: ['./network-messages-filters.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    animations: [
+        trigger('panelHeight', [
+            state('collapsed', style({ height: '36px', overflow: 'hidden' })),
+            state('expanded', style({ height: '*' })),
+            transition('collapsed <=> expanded', animate('250ms ease-out')),
+        ]),
+    ],
+    standalone: false
 })
 export class NetworkMessagesFiltersComponent extends StoreDispatcher implements OnInit {
 

@@ -7,6 +7,8 @@ import { CONFIG, getAvailableFeatures } from '@shared/constants/config';
 import { FeatureType, MinaNode } from '@shared/types/core/environment/mina-env.type';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
+import { RouterLink } from '@angular/router';
+import { NgForOf, NgIf } from '@angular/common';
 
 interface SubMenu {
   name: string;
@@ -19,6 +21,13 @@ interface SubMenu {
   styleUrls: ['./submenu-tabs.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'fx-row-vert-cent flex-grow' },
+  standalone: true,
+  imports: [
+    HorizontalMenuComponent,
+    RouterLink,
+    NgForOf,
+    NgIf,
+  ],
 })
 export class SubmenuTabsComponent extends StoreDispatcher implements OnInit {
 

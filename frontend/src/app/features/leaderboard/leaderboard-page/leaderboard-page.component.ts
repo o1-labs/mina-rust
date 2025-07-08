@@ -9,39 +9,40 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { LeaderboardService } from '@leaderboard/leaderboard.service';
 
 @Component({
-  selector: 'mina-leaderboard-page',
-  templateUrl: './leaderboard-page.component.html',
-  styleUrl: './leaderboard-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
-  animations: [
-    trigger('expandCollapse', [
-      state('false', style({
-        height: '0',
-        overflow: 'hidden',
-        opacity: '0',
-      })),
-      state('true', style({
-        height: '*',
-        opacity: '1',
-      })),
-      transition('false <=> true', [
-        animate('200ms ease-in-out'),
-      ]),
-    ]),
-    trigger('rotateIcon', [
-      state('false', style({ transform: 'rotate(0)' })),
-      state('true', style({ transform: 'rotate(90deg)' })),
-      transition('false <=> true', [
-        animate('200ms'),
-      ]),
-    ]),
-  ],
+    selector: 'mina-leaderboard-page',
+    templateUrl: './leaderboard-page.component.html',
+    styleUrl: './leaderboard-page.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    animations: [
+        trigger('expandCollapse', [
+            state('false', style({
+                height: '0',
+                overflow: 'hidden',
+                opacity: '0',
+            })),
+            state('true', style({
+                height: '*',
+                opacity: '1',
+            })),
+            transition('false <=> true', [
+                animate('200ms ease-in-out'),
+            ]),
+        ]),
+        trigger('rotateIcon', [
+            state('false', style({ transform: 'rotate(0)' })),
+            state('true', style({ transform: 'rotate(90deg)' })),
+            transition('false <=> true', [
+                animate('200ms'),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class LeaderboardPageComponent extends StoreDispatcher implements OnInit, AfterViewInit {
   isExpanded = false;
   showBanner: boolean = false;
-  canDownloadCSV = localStorage.getItem('download_leaderboard') === 'true';
+  // canDownloadCSV = localStorage.getItem('download_leaderboard') === 'true';
 
   private readonly SCROLL_THRESHOLD = 100;
   @ViewChild('scrollContainer') private scrollContainer!: ElementRef;

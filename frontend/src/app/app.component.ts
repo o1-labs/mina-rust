@@ -1,5 +1,15 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { any, getMergedRoute, getWindow, isBrowser, isDesktop, MAX_WIDTH_700, MergedRoute, safelyExecuteInBrowser } from '@openmina/shared';
+import {
+  any,
+  getMergedRoute,
+  getWindow,
+  isBrowser,
+  isDesktop,
+  MAX_WIDTH_700,
+  MergedRoute,
+  OpenminaEagerSharedModule,
+  safelyExecuteInBrowser,
+} from '@openmina/shared';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { BreakpointObserver, BreakpointState } from '@angular/cdk/layout';
 import { AppSelectors } from '@app/app.state';
@@ -7,9 +17,18 @@ import { AppActions } from '@app/app.actions';
 import { filter, map, Observable, Subscription, take, timer } from 'rxjs';
 import { CONFIG } from '@shared/constants/config';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 import { WebNodeService } from '@core/services/web-node.service';
+import { CommonModule } from '@angular/common';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MenuComponent } from '@app/layout/menu/menu.component';
+import { ToolbarComponent } from '@app/layout/toolbar/toolbar.component';
+import { SubmenuTabsComponent } from '@app/layout/submenu-tabs/submenu-tabs.component';
+import { WebNodeLandingPageComponent } from '@app/layout/web-node-landing-page/web-node-landing-page.component';
+import { MenuTabsComponent } from '@app/layout/menu-tabs/menu-tabs.component';
+import { LeaderboardModule } from '@leaderboard/leaderboard.module';
 
 declare var AOS: any;
 
@@ -19,6 +38,23 @@ declare var AOS: any;
   styleUrls: ['./app.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'd-block h-100 w-100' },
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    MatSidenavModule,
+    ReactiveFormsModule,
+
+    // Your components
+    MenuComponent,
+    ToolbarComponent,
+    SubmenuTabsComponent,
+    WebNodeLandingPageComponent,
+    MenuTabsComponent,
+    // Modules
+    OpenminaEagerSharedModule,
+    LeaderboardModule,
+  ],
 })
 export class AppComponent extends StoreDispatcher implements OnInit {
 

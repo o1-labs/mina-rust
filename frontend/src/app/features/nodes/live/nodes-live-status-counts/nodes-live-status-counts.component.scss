@@ -1,27 +1,27 @@
-@import 'openmina';
+@use 'openmina';
 
 .circle {
-	width: 10px;
-	height: 10px;
-	border-radius: 12px;
+  width: 10px;
+  height: 10px;
+  border-radius: 12px;
 
-	&.red {
-		background-color: $warn-primary;
-	}
+  &.red {
+    background-color: openmina.$warn-primary;
+  }
 
-	&.gray {
-		background-color: $base-tertiary;
-	}
+  &.gray {
+    background-color: openmina.$base-tertiary;
+  }
 
-	&.white {
-		background-color: $base-primary;
-	}
+  &.white {
+    background-color: openmina.$base-primary;
+  }
 
-	&.blue {
-		background-color: $selected-primary;
-	}
+  &.blue {
+    background-color: openmina.$selected-primary;
+  }
 
-	&.green {
-		background-color: $success-primary;
-	}
+  &.green {
+    background-color: openmina.$success-primary;
+  }
 }

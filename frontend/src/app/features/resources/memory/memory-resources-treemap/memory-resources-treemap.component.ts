@@ -36,10 +36,11 @@ import { isDesktop, safelyExecuteInBrowser, TooltipService } from '@openmina/sha
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'app-memory-resources-treemap',
-  templateUrl: './memory-resources-treemap.component.html',
-  styleUrls: ['./memory-resources-treemap.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-memory-resources-treemap',
+    templateUrl: './memory-resources-treemap.component.html',
+    styleUrls: ['./memory-resources-treemap.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MemoryResourcesTreemapComponent extends StoreDispatcher implements AfterViewInit {
 

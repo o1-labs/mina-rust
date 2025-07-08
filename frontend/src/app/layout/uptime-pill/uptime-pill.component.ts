@@ -8,13 +8,13 @@ import { sendSentryEvent } from '@shared/helpers/webnode.helper';
 @UntilDestroy()
 @Component({
   selector: 'mina-uptime-pill',
-  standalone: true,
   imports: [
     OpenminaEagerSharedModule,
   ],
   templateUrl: './uptime-pill.component.html',
   styleUrl: './uptime-pill.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class UptimePillComponent extends ManualDetection implements OnInit {
 

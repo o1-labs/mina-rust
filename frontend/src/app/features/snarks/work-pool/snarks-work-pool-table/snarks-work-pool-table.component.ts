@@ -18,10 +18,11 @@ import {
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-snarks-work-pool-table',
-  templateUrl: './snarks-work-pool-table.component.html',
-  styleUrls: ['./snarks-work-pool-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-snarks-work-pool-table',
+    templateUrl: './snarks-work-pool-table.component.html',
+    styleUrls: ['./snarks-work-pool-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool> implements OnInit {
 

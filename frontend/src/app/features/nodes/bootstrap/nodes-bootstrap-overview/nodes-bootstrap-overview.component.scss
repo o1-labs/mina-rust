@@ -1,13 +1,13 @@
-@import 'openmina';
+@use 'openmina';
 
 .stats span {
-	&:nth-child(even) {
-		color: $base-primary;
-		margin-right: 20px;
-		margin-left: 5px;
-	}
+  &:nth-child(even) {
+    color: openmina.$base-primary;
+    margin-right: 20px;
+    margin-left: 5px;
+  }
 
-	&:nth-child(odd) {
-		color: $base-tertiary;
-	}
+  &:nth-child(odd) {
+    color: openmina.$base-tertiary;
+  }
 }

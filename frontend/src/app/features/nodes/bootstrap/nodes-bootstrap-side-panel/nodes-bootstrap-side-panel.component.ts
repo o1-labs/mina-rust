@@ -7,11 +7,12 @@ import { NodesBootstrapSetActiveBlock, NodesBootstrapToggleSidePanel } from '@no
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-  selector: 'mina-nodes-bootstrap-side-panel',
-  templateUrl: './nodes-bootstrap-side-panel.component.html',
-  styleUrls: ['./nodes-bootstrap-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column' },
+    selector: 'mina-nodes-bootstrap-side-panel',
+    templateUrl: './nodes-bootstrap-side-panel.component.html',
+    styleUrls: ['./nodes-bootstrap-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column' },
+    standalone: false
 })
 export class NodesBootstrapSidePanelComponent extends StoreDispatcher implements OnInit {
 

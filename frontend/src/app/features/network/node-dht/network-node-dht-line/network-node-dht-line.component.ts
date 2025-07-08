@@ -24,11 +24,12 @@ interface DhtPoint {
 }
 
 @Component({
-  selector: 'mina-network-node-dht-line',
-  templateUrl: './network-node-dht-line.component.html',
-  styleUrls: ['./network-node-dht-line.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column w-100 pl-12 pr-12' },
+    selector: 'mina-network-node-dht-line',
+    templateUrl: './network-node-dht-line.component.html',
+    styleUrls: ['./network-node-dht-line.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column w-100 pl-12 pr-12' },
+    standalone: false
 })
 export class NetworkNodeDhtLineComponent extends StoreDispatcher implements AfterViewInit {
 

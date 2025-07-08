@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 div {
   white-space: nowrap;
@@ -13,11 +13,11 @@ span.mr-5 {
 
 form {
   width: 200px;
-  background-color: $base-container;
-  color: $base-tertiary;
+  background-color: openmina.$base-container;
+  color: openmina.$base-tertiary;
 
   &:hover {
-    background-color: $base-divider;
+    background-color: openmina.$base-divider;
   }
 
   input {
@@ -45,13 +45,13 @@ form {
     display: none;
 
     &:hover {
-      color: $base-primary;
+      color: openmina.$base-primary;
     }
   }
 
   &.active {
-    background-color: $selected-container;
-    color: $selected-primary;
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary;
 
     .p-absolute:last-child {
       display: block;

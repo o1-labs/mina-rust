@@ -17,11 +17,12 @@ export type DhtGraphNode = {
 };
 
 @Component({
-  selector: 'mina-network-dht-graph-binary-tree',
-  templateUrl: './network-dht-graph-binary-tree.component.html',
-  styleUrls: ['./network-dht-graph-binary-tree.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column' },
+    selector: 'mina-network-dht-graph-binary-tree',
+    templateUrl: './network-dht-graph-binary-tree.component.html',
+    styleUrls: ['./network-dht-graph-binary-tree.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column' },
+    standalone: false
 })
 export class NetworkDhtGraphBinaryTreeComponent extends StoreDispatcher implements AfterViewInit {
   @ViewChild('graph') private graph: ElementRef<HTMLDivElement>;

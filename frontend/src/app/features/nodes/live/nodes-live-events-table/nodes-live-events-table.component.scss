@@ -1,37 +1,37 @@
-@import 'openmina';
+@use 'openmina';
 
 span {
 
-	&.Fetching {
-		color: $base-tertiary;
-	}
+  &.Fetching {
+    color: openmina.$base-tertiary;
+  }
 
-	&.Fetched {
-		color: $base-secondary;
-	}
+  &.Fetched {
+    color: openmina.$base-secondary;
+  }
 
-	&.Applying {
-		color: $selected-primary;
-	}
+  &.Applying {
+    color: openmina.$selected-primary;
+  }
 
   &.Applied {
-		color: $success-primary;
-	}
+    color: openmina.$success-primary;
+  }
 
-	.height {
-		color: $base-primary;
-		background-color: $base-container;
-	}
+  .height {
+    color: openmina.$base-primary;
+    background-color: openmina.$base-container;
+  }
 
-	.best-tip span {
-		color: $special-selected-alt-1-primary;
-		background-color: $special-selected-alt-1-container;
-	}
+  .best-tip span {
+    color: openmina.$special-selected-alt-1-primary;
+    background-color: openmina.$special-selected-alt-1-container;
+  }
 
-	.height,
-	.best-tip span {
-		margin-right: 5px;
-		border-radius: 4px;
-		padding: 3px;
-	}
+  .height,
+  .best-tip span {
+    margin-right: 5px;
+    border-radius: 4px;
+    padding: 3px;
+  }
 }

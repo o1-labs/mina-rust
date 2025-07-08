@@ -1,27 +1,27 @@
-@import 'openmina';
+@use 'openmina';
 
 .pagination-group {
-  background-color: $base-container;
-  color: $base-tertiary;
+  background-color: openmina.$base-container;
+  color: openmina.$base-tertiary;
 
   button {
     background-color: transparent;
-    color: $base-tertiary;
+    color: openmina.$base-tertiary;
 
     &:hover {
-      background-color: $base-container;
+      background-color: openmina.$base-container;
     }
   }
 
   &.selected {
-    background-color: $selected-container;
-    color: $selected-primary;
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary;
 
     button {
-      color: $selected-primary;
+      color: openmina.$selected-primary;
 
       &:hover {
-        background-color: $selected-container;
+        background-color: openmina.$selected-container;
       }
     }
   }
@@ -29,11 +29,11 @@
 
 form {
   width: 150px;
-  background-color: $base-container;
-  color: $base-tertiary;
+  background-color: openmina.$base-container;
+  color: openmina.$base-tertiary;
 
   &:hover {
-    background-color: $base-divider;
+    background-color: openmina.$base-divider;
   }
 
   input {
@@ -62,8 +62,8 @@ form {
   }
 
   &.active {
-    background-color: $selected-container;
-    color: $selected-primary;
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary;
 
     .p-absolute:last-child {
       display: block;
@@ -72,21 +72,21 @@ form {
 }
 
 .condensed {
-  background-color: $base-container;
+  background-color: openmina.$base-container;
 
   .mina-icon {
-    color: $base-tertiary;
+    color: openmina.$base-tertiary;
   }
 
   &:hover:not(.active) .mina-icon {
-    color: $base-primary;
+    color: openmina.$base-primary;
   }
 
   &.active {
-    background-color: $selected-container;
+    background-color: openmina.$selected-container;
 
     .mina-icon {
-      color: $selected-primary;
+      color: openmina.$selected-primary;
     }
   }
 }

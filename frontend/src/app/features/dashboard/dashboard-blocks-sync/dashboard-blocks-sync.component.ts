@@ -14,10 +14,11 @@ const PENDING = 'Pending';
 const SYNCED = 'Synced';
 
 @Component({
-  selector: 'mina-dashboard-blocks-sync',
-  templateUrl: './dashboard-blocks-sync.component.html',
-  styleUrls: ['./dashboard-blocks-sync.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-dashboard-blocks-sync',
+    templateUrl: './dashboard-blocks-sync.component.html',
+    styleUrls: ['./dashboard-blocks-sync.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DashboardBlocksSyncComponent extends StoreDispatcher implements OnInit {
 

@@ -1,97 +1,97 @@
-@import 'openmina';
+@use 'openmina';
 
 .h-minus-lg {
-	.fx-row-vert-cent {
-		.circle {
-			width: 8px;
-			height: 8px;
-			border-radius: 50%;
-		}
+  .fx-row-vert-cent {
+    .circle {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
 
-		&:nth-child(2) .circle {
-			background-color: $warn-primary;
-		}
+    &:nth-child(2) .circle {
+      background-color: openmina.$warn-primary;
+    }
 
-		&:nth-child(3) .circle {
-			background-color: $base-tertiary;
-		}
+    &:nth-child(3) .circle {
+      background-color: openmina.$base-tertiary;
+    }
 
-		&:nth-child(4) .circle {
-			background-color: $base-secondary;
-		}
+    &:nth-child(4) .circle {
+      background-color: openmina.$base-secondary;
+    }
 
-		&:nth-child(5) .circle {
-			background-color: $selected-primary;
-		}
+    &:nth-child(5) .circle {
+      background-color: openmina.$selected-primary;
+    }
 
-		&:nth-child(6) .circle {
-			background-color: $success-primary;
-		}
-	}
+    &:nth-child(6) .circle {
+      background-color: openmina.$success-primary;
+    }
+  }
 
-	.squares {
-		> div {
-			position: relative;
-			cursor: pointer;
-			width: 18px;
-			height: 18px;
-			border: 1px solid $base-background;
+  .squares {
+    > div {
+      position: relative;
+      cursor: pointer;
+      width: 18px;
+      height: 18px;
+      border: 1px solid openmina.$base-background;
 
-			&::before {
-				position: absolute;
-				content: '';
-				width: 4px;
-				height: 4px;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%, -50%);
-				transition: all 0.1s ease-in-out;
-			}
+      &::before {
+        position: absolute;
+        content: '';
+        width: 4px;
+        height: 4px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all 0.1s ease-in-out;
+      }
 
-			&:hover::before {
-				width: 100%;
-				height: 100%;
-			}
+      &:hover::before {
+        width: 100%;
+        height: 100%;
+      }
 
-			&.Missing {
-				background-color: $warn-container;
+      &.Missing {
+        background-color: openmina.$warn-container;
 
-				&::before {
-					background-color: $warn-secondary;
-				}
-			}
+        &::before {
+          background-color: openmina.$warn-secondary;
+        }
+      }
 
-			&.Fetching {
-				background-color: $base-container;
+      &.Fetching {
+        background-color: openmina.$base-container;
 
-				&::before {
-					background-color: $base-tertiary
-				}
-			}
+        &::before {
+          background-color: openmina.$base-tertiary
+        }
+      }
 
-			&.Fetched {
-				background-color: $base-container;
+      &.Fetched {
+        background-color: openmina.$base-container;
 
-				&::before {
-					background-color: $base-secondary;
-				}
-			}
+        &::before {
+          background-color: openmina.$base-secondary;
+        }
+      }
 
-			&.Applying {
-				background-color: $selected-container;
+      &.Applying {
+        background-color: openmina.$selected-container;
 
-				&::before {
-					background-color: $selected-secondary
-				}
-			}
+        &::before {
+          background-color: openmina.$selected-secondary
+        }
+      }
 
-			&.Applied {
-				background-color: $success-container;
+      &.Applied {
+        background-color: openmina.$success-container;
 
-				&::before {
-					background-color: $success-secondary;
-				}
-			}
-		}
-	}
+        &::before {
+          background-color: openmina.$success-secondary;
+        }
+      }
+    }
+  }
 }

@@ -8,11 +8,12 @@ import { getMergedRoute } from '@openmina/shared';
 import { FuzzingFile } from '@shared/types/fuzzing/fuzzing-file.type';
 
 @Component({
-  selector: 'mina-fuzzing',
-  templateUrl: './fuzzing.component.html',
-  styleUrls: ['./fuzzing.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column w-100 h-100' },
+    selector: 'mina-fuzzing',
+    templateUrl: './fuzzing.component.html',
+    styleUrls: ['./fuzzing.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column w-100 h-100' },
+    standalone: false
 })
 export class FuzzingComponent extends StoreDispatcher implements OnInit {
 

@@ -1,35 +1,35 @@
-@import 'openmina';
+@use 'openmina';
 
 .submenus {
-	.a-wrap {
-		min-width: 116px;
-	}
+  .a-wrap {
+    min-width: 116px;
+  }
 
-	a {
-		background-color: transparent;
-		color: $base-secondary;
-		border-radius: 6px;
-		position: relative;
-		height: 24px;
-		line-height: 24px;
+  a {
+    background-color: transparent;
+    color: openmina.$base-secondary;
+    border-radius: 6px;
+    position: relative;
+    height: 24px;
+    line-height: 24px;
 
-		&:hover {
-			background-color: $base-container;
-		}
+    &:hover {
+      background-color: openmina.$base-container;
+    }
 
-		&.active {
-			color: $selected-primary;
-			background-color: $selected-container;
-		}
+    &.active {
+      color: openmina.$selected-primary;
+      background-color: openmina.$selected-container;
+    }
 
-		@media (max-width: 700px) {
-			height: 40px;
-			line-height: 40px;
-		}
-	}
+    @media (max-width: 700px) {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
 
-	.bar {
-		width: 8px;
-		height: 20px;
-	}
+  .bar {
+    width: 8px;
+    height: 20px;
+  }
 }

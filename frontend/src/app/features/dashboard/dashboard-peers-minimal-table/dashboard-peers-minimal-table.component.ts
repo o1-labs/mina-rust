@@ -7,11 +7,12 @@ import { selectDashboardPeers, selectDashboardPeersSort } from '@dashboard/dashb
 import { filter } from 'rxjs';
 
 @Component({
-  selector: 'mina-dashboard-peers-minimal-table',
-  templateUrl: './dashboard-peers-minimal-table.component.html',
-  styleUrls: ['./dashboard-peers-minimal-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-dashboard-peers-minimal-table',
+    templateUrl: './dashboard-peers-minimal-table.component.html',
+    styleUrls: ['./dashboard-peers-minimal-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class DashboardPeersMinimalTableComponent extends MinaTableRustWrapper<DashboardPeer> {
 

@@ -8,11 +8,12 @@ import { downloadJson, ExpandTracking, MinaJsonViewerComponent } from '@openmina
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-  selector: 'mina-network-connections-side-panel',
-  templateUrl: './network-connections-side-panel.component.html',
-  styleUrls: ['./network-connections-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column border-left' },
+    selector: 'mina-network-connections-side-panel',
+    templateUrl: './network-connections-side-panel.component.html',
+    styleUrls: ['./network-connections-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column border-left' },
+    standalone: false
 })
 export class NetworkConnectionsSidePanelComponent extends StoreDispatcher implements OnInit {
 

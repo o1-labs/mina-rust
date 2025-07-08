@@ -9,11 +9,12 @@ import { getMergedRoute, MergedRoute, TableColumnList } from '@openmina/shared';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-fuzzing-directories-table',
-  templateUrl: './fuzzing-directories-table.component.html',
-  styleUrls: ['./fuzzing-directories-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 border-right' },
+    selector: 'mina-fuzzing-directories-table',
+    templateUrl: './fuzzing-directories-table.component.html',
+    styleUrls: ['./fuzzing-directories-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 border-right' },
+    standalone: false
 })
 export class FuzzingDirectoriesTableComponent extends MinaTableRustWrapper<FuzzingDirectory> implements OnInit {
 

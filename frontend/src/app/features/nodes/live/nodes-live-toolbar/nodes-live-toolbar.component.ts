@@ -9,11 +9,12 @@ import { getMergedRoute, MergedRoute } from '@openmina/shared';
 import { filter, take } from 'rxjs';
 
 @Component({
-  selector: 'mina-nodes-live-toolbar',
-  templateUrl: './nodes-live-toolbar.component.html',
-  styleUrls: ['./nodes-live-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-lg fx-row-vert-cent' },
+    selector: 'mina-nodes-live-toolbar',
+    templateUrl: './nodes-live-toolbar.component.html',
+    styleUrls: ['./nodes-live-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-lg fx-row-vert-cent' },
+    standalone: false
 })
 export class NodesLiveToolbarComponent extends StoreDispatcher implements OnInit {
 

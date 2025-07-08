@@ -4,11 +4,12 @@ import { HeartbeatSummary } from '@shared/types/leaderboard/heartbeat-summary.ty
 import { LeaderboardSelectors } from '@leaderboard/leaderboard.state';
 
 @Component({
-  selector: 'mina-leaderboard-title',
-  templateUrl: './leaderboard-title.component.html',
-  styleUrl: './leaderboard-title.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column' },
+    selector: 'mina-leaderboard-title',
+    templateUrl: './leaderboard-title.component.html',
+    styleUrl: './leaderboard-title.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column' },
+    standalone: false
 })
 export class LeaderboardTitleComponent extends StoreDispatcher implements OnInit {
 

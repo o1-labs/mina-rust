@@ -9,10 +9,11 @@ import {
 import { SEC_CONFIG_GRAY_PALETTE, SecDurationConfig, sort, SortDirection, TableSort } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-nodes-bootstrap-blocks',
-  templateUrl: './nodes-bootstrap-blocks.component.html',
-  styleUrls: ['./nodes-bootstrap-blocks.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-bootstrap-blocks',
+    templateUrl: './nodes-bootstrap-blocks.component.html',
+    styleUrls: ['./nodes-bootstrap-blocks.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesBootstrapBlocksComponent extends StoreDispatcher implements OnInit {
 

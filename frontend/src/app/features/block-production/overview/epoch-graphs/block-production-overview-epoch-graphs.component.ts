@@ -7,11 +7,12 @@ import {
 import { filter } from 'rxjs';
 
 @Component({
-  selector: 'mina-block-production-overview-epoch-graphs',
-  templateUrl: './block-production-overview-epoch-graphs.component.html',
-  styleUrls: ['./block-production-overview-epoch-graphs.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-row pl-12 mr-16' },
+    selector: 'mina-block-production-overview-epoch-graphs',
+    templateUrl: './block-production-overview-epoch-graphs.component.html',
+    styleUrls: ['./block-production-overview-epoch-graphs.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-row pl-12 mr-16' },
+    standalone: false
 })
 export class BlockProductionOverviewEpochGraphsComponent extends StoreDispatcher implements OnInit {
 

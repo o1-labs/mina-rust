@@ -14,11 +14,12 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { isBrowser } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-dashboard',
-  templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 w-100 flex-column' },
+    selector: 'mina-dashboard',
+    templateUrl: './dashboard.component.html',
+    styleUrls: ['./dashboard.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 w-100 flex-column' },
+    standalone: false
 })
 export class DashboardComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

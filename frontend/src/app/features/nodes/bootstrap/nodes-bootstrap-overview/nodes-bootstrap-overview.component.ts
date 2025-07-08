@@ -6,11 +6,12 @@ import { filter } from 'rxjs';
 import { BarGraphComponent } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-nodes-bootstrap-overview',
-  templateUrl: './nodes-bootstrap-overview.component.html',
-  styleUrls: ['./nodes-bootstrap-overview.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-minus-xl' },
+    selector: 'mina-nodes-bootstrap-overview',
+    templateUrl: './nodes-bootstrap-overview.component.html',
+    styleUrls: ['./nodes-bootstrap-overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-minus-xl' },
+    standalone: false
 })
 export class NodesBootstrapOverviewComponent extends StoreDispatcher implements OnInit {
 

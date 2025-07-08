@@ -1,33 +1,33 @@
-@import 'openmina';
+@use 'openmina';
 
 .acc-row {
-	height: 36px;
-	line-height: 36px;
-	color: $base-tertiary;
+  height: 36px;
+  line-height: 36px;
+  color: openmina.$base-tertiary;
 
-	&:not(.head) {
-		cursor: pointer;
+  &:not(.head) {
+    cursor: pointer;
 
-		&:hover {
-			background-color: $base-container;
-		}
-	}
+    &:hover {
+      background-color: openmina.$base-container;
+    }
+  }
 }
 
 :host > div {
-	margin-right: 2px;
+  margin-right: 2px;
 
-	&.open {
-		margin-bottom: 5px;
-		background-color: $base-container !important;
-		border-radius: 6px;
+  &.open {
+    margin-bottom: 5px;
+    background-color: openmina.$base-container !important;
+    border-radius: 6px;
 
-		.acc-row {
-			color: $base-primary !important;
+    .acc-row {
+      color: openmina.$base-primary !important;
 
-			.mina-icon {
-				rotate: 90deg;
-			}
-		}
-	}
+      .mina-icon {
+        rotate: 90deg;
+      }
+    }
+  }
 }
