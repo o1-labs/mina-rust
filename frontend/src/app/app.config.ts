@@ -2,7 +2,7 @@ import { ApplicationConfig, ErrorHandler, importProvidersFrom, Injectable, LOCAL
 import { provideRouter, Router } from '@angular/router';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
-import { provideClientHydration } from '@angular/platform-browser';
+import { provideClientHydration, withIncrementalHydration } from '@angular/platform-browser';
 import { provideStore } from '@ngrx/store';
 import { EffectsModule, provideEffects } from '@ngrx/effects';
 import { provideRouterStore, routerReducer, RouterStateSerializer } from '@ngrx/router-store';
@@ -128,7 +128,7 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(generateRoutes()),
     provideAnimations(),
-    provideClientHydration(),
+    provideClientHydration(withIncrementalHydration()),
     provideHttpClient(withInterceptorsFromDi()),
     provideStore({
       ...reducers,

@@ -41,7 +41,7 @@ describe('DASHBOARD LEDGERS', () => {
       .then(getDashboard)
       .then((state: DashboardState) => {
         if (condition(state)) {
-          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(1) div.primary')
+          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(1) div.success-primary')
             .then((el: any) => {
               let stakingProgress;
               stakingProgress = state.rpcStats.stakingLedger?.fetched / state.rpcStats.stakingLedger?.estimation * 100 || 0;
@@ -63,7 +63,7 @@ describe('DASHBOARD LEDGERS', () => {
       .then(getDashboard)
       .then((state: DashboardState) => {
         if (condition(state)) {
-          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(2) div.primary')
+          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(2) div.success-primary')
             .then((el: any) => {
               let progress;
               progress = state.rpcStats.nextLedger?.fetched / state.rpcStats.nextLedger?.estimation * 100 || 0;
@@ -85,7 +85,7 @@ describe('DASHBOARD LEDGERS', () => {
       .then(getDashboard)
       .then((state: DashboardState) => {
         if (condition(state)) {
-          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(3) div.primary')
+          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(3) div.success-primary')
             .then((el: any) => {
               let progress;
               progress = state.rpcStats.snarkedRootLedger?.fetched / state.rpcStats.snarkedRootLedger?.estimation * 100 || 0;
@@ -107,7 +107,7 @@ describe('DASHBOARD LEDGERS', () => {
       .then(getDashboard)
       .then((state: DashboardState) => {
         if (condition(state)) {
-          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(4) div.primary')
+          cy.get('mina-dashboard-ledger > div:first-child > div.h-minus-xl > .group:nth-child(4) div.success-primary')
             .then((el: any) => {
               let progress;
               progress = state.nodes[0].ledgers.rootStaged.staged.fetchPartsEnd ? 50 : 0;

@@ -51,8 +51,8 @@ describe('BLOCK PRODUCTION WON SLOTS TABLE', () => {
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          cy.get('mina-toolbar span')
-            .then((span: any) => expect(span).contain('Block Production'));
+          cy.get('mina-toolbar span.title')
+            .then((span: any) => expect(span.text()).contain('block production'));
         }
       });
   }));
@@ -83,92 +83,141 @@ describe('BLOCK PRODUCTION WON SLOTS TABLE', () => {
   }));
 
   it('sort by name', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(1)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'message', Sort.DSC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(1)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state2: BlockProductionWonSlotsState) => {
+              if (condition(state2)) {
+                checkSorting(state2.filteredSlots, 'message', Sort.DSC);
+              }
+            });
         }
       });
   }));
 
   it('sort by height', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(3)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'height', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(3)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'height', Sort.ASC);
+              }
+            });
         }
       });
   }));
 
   it('sort by global slot', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(4)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'globalSlot', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(4)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'globalSlot', Sort.ASC);
+              }
+            });
         }
       });
   }));
 
   it('sort by transactions', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(6)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'transactionsTotal', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(6)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'transactionsTotal', Sort.ASC);
+              }
+            });
         }
       });
   }));
 
   it('sort by snark fees', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(8)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'snarkFees', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(8)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'snarkFees', Sort.ASC);
+              }
+            });
         }
       });
   }));
 
   it('sort by snark coinbase rewards', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(9)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'coinbaseRewards', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(9)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'coinbaseRewards', Sort.ASC);
+              }
+            });
         }
       });
   }));
 
   it('sort by snark tx fees rewards', () => execute(() => {
-    cy.get('mina-block-production-won-slots-table .head > span:nth-child(10)')
-      .click()
-      .window()
+    cy.window()
       .its('store')
       .then(getBPWonSlots)
       .then((state: BlockProductionWonSlotsState) => {
         if (condition(state)) {
-          checkSorting(state.filteredSlots, 'txFeesRewards', Sort.ASC);
+          cy.get('mina-block-production-won-slots-table .head > span:nth-child(10)')
+            .click()
+            .window()
+            .its('store')
+            .then(getBPWonSlots)
+            .then((state: BlockProductionWonSlotsState) => {
+              if (condition(state)) {
+                checkSorting(state.filteredSlots, 'txFeesRewards', Sort.ASC);
+              }
+            });
         }
       });
   }));

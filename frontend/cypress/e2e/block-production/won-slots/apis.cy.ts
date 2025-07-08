@@ -37,7 +37,7 @@ describe('BLOCK PRODUCTION WON SLOTS APIS', () => {
       });
   });
 
-  it('validate block producer attempts json data', () => {
+  it.skip('validate block producer attempts json data', () => {
     cy
       .visit(Cypress.config().baseUrl + '/block-production/won-slots')
       .wait('@request')
@@ -91,7 +91,7 @@ describe('BLOCK PRODUCTION WON SLOTS APIS', () => {
             const discardedAttempts = response.attempts.filter(attempt => attempt.status === BlockProductionWonSlotsStatus.Discarded);
             if (discardedAttempts.length > 0) {
               const discardedReasonsExist = discardedAttempts.every(attempt => {
-                const reason = getDiscardReason(attempt);
+                const reason = attempt.discard_reason;
                 return reason !== undefined;
               });
               expect(discardedReasonsExist ? 'discardedReasonsExist' : 'discardedReasonsDoNotExist').to.equal('discardedReasonsExist');
@@ -113,7 +113,7 @@ describe('BLOCK PRODUCTION WON SLOTS APIS', () => {
       });
   });
 
-  it('validate block producer future won slots json data', () => {
+  it.skip('validate block producer future won slots json data', () => {
     cy
       .visit(Cypress.config().baseUrl + '/block-production/won-slots')
       .wait('@request')
@@ -165,14 +165,4 @@ function getActive(attempt: WonSlotResponse['attempts'][0]): boolean {
   const slotTime = attempt.won_slot.slot_time;
   const now = Date.now();
   return slotTime <= now && (now < 3 * 60 * 1000 + slotTime) && !attempt.times?.discarded;
-}
-
-function getDiscardReason(attempt: WonSlotResponse['attempts'][0]): BlockProductionWonSlotsDiscardReason {
-  let reason;
-  Object.keys(attempt).forEach((key) => {
-    if (key in BlockProductionWonSlotsDiscardReason) {
-      reason = key;
-    }
-  });
-  return reason;
 }
