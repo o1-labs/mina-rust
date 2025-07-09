@@ -11,15 +11,10 @@ export const environment: Readonly<MinaEnv> = {
   globalConfig: {
     features: {
       dashboard: [],
-      // nodes: ['overview', 'live', 'bootstrap'],
       state: ['actions'],
-      // network: ['messages', 'connections', 'blocks', 'topology', 'node-dht', 'graph-overview', 'bootstrap-stats'],
-      // snarks: ['scan-state', 'work-pool'],
-      // resources: ['memory'],
       'block-production': ['won-slots'],
       mempool: [],
       benchmarks: ['wallets'],
-      // fuzzing: [],
     },
     firebase: {
       apiKey: 'AIzaSyBZzFsHjIbQVbBP0N-KkUsEvHRVU_wwd7g',
@@ -30,28 +25,9 @@ export const environment: Readonly<MinaEnv> = {
       appId: '1:1016673359357:web:bbd2cbf3f031756aec7594',
       measurementId: 'G-ENDBL923XT',
     },
-    heartbeats: true,
-    graphQL: 'https://adonagy.com/graphql',
-    // graphQL: 'https://api.minascan.io/node/devnet/v1/graphql',
-    // graphQL: 'http://65.109.105.40:5000/graphql',
+    heartbeats: false,
   },
   configs: [
-    // {
-    //   name: 'staging-devnet-bp-0',
-    //   url: 'https://staging-devnet-openmina-bp-0.minaprotocol.network',
-    // },
-    // {
-    //   name: 'staging-devnet-bp-1',
-    //   url: 'https://staging-devnet-openmina-bp-1.minaprotocol.network',
-    // },
-    // {
-    //   name: 'staging-devnet-bp-2',
-    //   url: 'https://staging-devnet-openmina-bp-2.minaprotocol.network',
-    // },
-    // {
-    //   name: 'staging-devnet-bp-3',
-    //   url: 'https://staging-devnet-openmina-bp-3.minaprotocol.network',
-    // },
     {
       name: 'Web Node',
       isWebNode: true,
