@@ -26,6 +26,7 @@ use crate::{
 use super::{
     archive::{config::ArchiveStorageOptions, ArchiveService},
     block_producer::BlockProducerService,
+    error_sink::ErrorSinkService,
 };
 
 pub struct NodeServiceCommonBuilder {
@@ -41,6 +42,7 @@ pub struct NodeServiceCommonBuilder {
     p2p: Option<P2pServiceCtx>,
     gather_stats: bool,
     rpc: RpcService,
+    error_sink: Option<ErrorSinkService>,
 }
 
 #[derive(thiserror::Error, Debug, Clone)]
@@ -59,6 +61,7 @@ impl NodeServiceCommonBuilder {
             rng: StdRng::from_seed(rng_seed),
             event_sender,
             event_receiver: event_receiver.into(),
+            error_sink: None,
             ledger_manager: None,
             block_producer: None,
             archive: None,
@@ -83,6 +86,12 @@ impl NodeServiceCommonBuilder {
             ctx.set_archive_mode();
         };
         self.ledger_manager = Some(LedgerManager::spawn(ctx));
+        self
+    }
+
+    pub fn error_sink_init(&mut self, error_sink_url: String) -> &mut Self {
+        let error_sink = ErrorSinkService::start(error_sink_url);
+        self.error_sink = Some(error_sink);
         self
     }
 
@@ -144,6 +153,7 @@ impl NodeServiceCommonBuilder {
             snark_block_proof_verify: NodeService::snark_block_proof_verifier_spawn(
                 self.event_sender,
             ),
+            error_sink: self.error_sink,
             ledger_manager,
             block_producer: self.block_producer,
             // initialized in state machine.

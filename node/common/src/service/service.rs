@@ -20,6 +20,7 @@ use crate::rpc::RpcReceiver;
 use super::{
     archive::ArchiveService,
     block_producer::BlockProducerService,
+    error_sink::ErrorSinkService,
     p2p::webrtc_with_libp2p::P2pServiceCtx,
     replay::ReplayerState,
     rpc::{RpcSender, RpcService},
@@ -40,6 +41,8 @@ pub struct NodeService {
     pub event_receiver: EventReceiver,
 
     pub snark_block_proof_verify: mpsc::TrackedUnboundedSender<SnarkBlockVerifyArgs>,
+
+    pub error_sink: Option<ErrorSinkService>,
 
     pub ledger_manager: LedgerManager,
     pub snark_worker: Option<SnarkWorker>,
@@ -118,6 +121,7 @@ impl NodeService {
             event_receiver: mpsc::unbounded_channel().1.into(),
             snark_block_proof_verify: mpsc::unbounded_channel().0,
             ledger_manager: LedgerManager::spawn(Default::default()),
+            error_sink: None,
             snark_worker: None,
             block_producer: None,
             archive: None,
@@ -184,6 +188,25 @@ impl redux::TimeService for NodeService {
             .as_ref()
             .map(|v| v.next_monotonic_time())
             .unwrap_or_else(redux::Instant::now)
+    }
+}
+
+impl node::service::ErrorSinkService for NodeService {
+    fn submit_error_report_payload(&mut self, category: &str, payload: Vec<u8>) {
+        if let Some(error_sink) = &self.error_sink {
+            if let Err(err) = error_sink.submit_error_report(category, payload) {
+                openmina_core::error!(
+                    message = "Failed to queue error report",
+                    category = category,
+                    error = format!("{}", err)
+                );
+            }
+        } else {
+            openmina_core::warn!(
+                message = "Error sink not initialized, dropping error report",
+                category = category
+            );
+        }
     }
 }
 

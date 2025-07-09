@@ -3,6 +3,7 @@ pub use event_receiver::*;
 
 pub mod archive;
 pub mod block_producer;
+pub mod error_sink;
 pub mod p2p;
 pub mod record;
 pub mod replay;

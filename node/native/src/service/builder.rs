@@ -45,6 +45,11 @@ impl NodeServiceBuilder {
         self
     }
 
+    pub fn error_sink_init(&mut self, error_sink_url: String) -> &mut Self {
+        self.common.error_sink_init(error_sink_url);
+        self
+    }
+
     pub fn block_producer_init(
         &mut self,
         keypair: AccountSecretKey,

@@ -190,6 +190,12 @@ impl NodeBuilder {
         Ok(self)
     }
 
+    /// Set up error sink.
+    pub fn error_sink(&mut self, error_sink_url: String) -> &mut Self {
+        self.service.error_sink_init(error_sink_url);
+        self
+    }
+
     /// Set up block producer.
     pub fn block_producer(
         &mut self,
