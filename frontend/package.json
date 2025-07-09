@@ -1,10 +1,11 @@
 {
   "name": "frontend",
-  "version": "1.0.180",
+  "version": "1.0.183",
   "scripts": {
     "install:deps": "npm install",
     "start": "npm install && ng serve --configuration local --open",
     "start:dev": "ng serve --configuration development",
+    "start:webnode": "ng serve --configuration webnodelocal",
     "start:dev:mobile": "ng serve --configuration development --host 0.0.0.0",
     "start:fuzzing": "npm run install:deps && ng build --configuration fuzzing && npm run start:bundle",
     "build": "ng build",
