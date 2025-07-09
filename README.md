@@ -21,6 +21,7 @@ _Currently in **public beta**, join our [Discord community](https://discord.com/
 ### Building from Source
 
 - [Rust Node](/docs/building-from-source-guide.md#how-to-build-and-launch-a-node-from-source) and [Dashboards](./docs/building-from-source-guide.md#how-to-launch-the-ui)
+- [Web Node](/docs/local-webnode.md)
 
 ### Run Node on Devnet via Docker
 
