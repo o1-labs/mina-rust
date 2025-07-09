@@ -5,7 +5,7 @@
     "install:deps": "npm install",
     "start": "npm install && ng serve --configuration local --open",
     "start:dev": "ng serve --configuration development",
-    "start:webnode": "ng serve --configuration webnodelocal",
+    "start:webnode": "npm install && ng serve --configuration webnodelocal --open",
     "start:dev:mobile": "ng serve --configuration development --host 0.0.0.0",
     "start:fuzzing": "npm run install:deps && ng build --configuration fuzzing && npm run start:bundle",
     "build": "ng build",
