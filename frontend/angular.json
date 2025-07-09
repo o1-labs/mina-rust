@@ -90,6 +90,15 @@
               ],
               "outputHashing": "all"
             },
+            "webnodelocal": {
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.webnodelocal.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
             "fuzzing": {
               "fileReplacements": [
                 {
@@ -119,6 +128,9 @@
             },
             "development": {
               "browserTarget": "frontend:build:development"
+            },
+            "webnodelocal": {
+              "browserTarget": "frontend:build:webnodelocal"
             },
             "local": {
               "browserTarget": "frontend:build:local"
