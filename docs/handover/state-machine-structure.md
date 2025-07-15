@@ -225,6 +225,8 @@ The `Substate` system enforces the two-phase reducer pattern through its API des
 
 1. **Phase 1 - State Updates**: `state_context.get_substate_mut()` provides mutable access to state
 2. **Phase 2 - Action Dispatching**: `state_context.into_dispatcher()` consumes the context and returns a dispatcher
+   - Use `into_dispatcher()` for simple action dispatching
+   - Use `into_dispatcher_and_state()` when you need read-only access to global state for coordination
 
 This design makes it impossible to mix state updates and action dispatching:
 - Once you call `into_dispatcher()`, you can no longer access mutable state
@@ -238,6 +240,8 @@ state.field = new_value; // ✓ Allowed
 
 // Phase 2: Action dispatching only  
 let dispatcher = state_context.into_dispatcher();
+// Or for global state access:
+// let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
 dispatcher.push(SomeAction { ... }); // ✓ Allowed
 // state.field = other_value; // ✗ Compiler error - state no longer accessible
 ```

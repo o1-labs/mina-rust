@@ -122,6 +122,8 @@ impl ComponentState {
                 
                 // Phase 2: Dispatch follow-up actions
                 let dispatcher = state_context.into_dispatcher();
+                // Or use into_dispatcher_and_state() for global state access
+                // let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
                 dispatcher.push(ComponentAction::NextAction { ... });
             }
         }

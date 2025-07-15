@@ -239,6 +239,51 @@ The codebase uses callbacks for decoupled component communication. The `redux::c
 
 For detailed callback patterns and examples, see [Architecture Walkthrough](architecture-walkthrough.md#callbacks-pattern).
 
+### Global State Access Pattern
+
+When reducers need to access multiple parts of the global state or coordinate between different subsystems, use `into_dispatcher_and_state()` instead of `into_dispatcher()`.
+
+**When to use `into_dispatcher_and_state()`:**
+- Generating request IDs from other subsystems
+- Reading configuration from other state machines
+- Coordinating between multiple components
+- Accessing peer information or network state
+
+**Common use cases:**
+```rust
+// Getting request IDs from other subsystems
+let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
+let req_id = global_state.snark.user_command_verify.next_req_id();
+dispatcher.push(SnarkUserCommandVerifyAction::Init { req_id, ... });
+
+// Accessing peer information for P2P operations
+let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
+for peer_id in global_state.p2p.ready_peers() {
+    dispatcher.push(TransactionPoolAction::P2pSend { peer_id });
+}
+
+// Coordinating between multiple state machines
+let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
+let best_tip = global_state.transition_frontier.best_tip()?;
+let cur_slot = global_state.cur_global_slot()?;
+// Use both pieces of information for decision making
+```
+
+**Pattern structure:**
+```rust
+let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
+// Read from global state
+let info = global_state.some_subsystem.get_info();
+// Dispatch actions using that information
+dispatcher.push(SomeAction::WithInfo { info });
+```
+
+**Important notes:**
+- Only use when you need to read from global state
+- Prefer `into_dispatcher()` for simple action dispatching
+- The global state reference is read-only
+- Common in P2P, block producer, and transaction pool reducers
+
 ## Basic Debugging
 
 For comprehensive debugging tools and troubleshooting, see [State Machine Debugging Guide](state-machine-debugging-guide.md).
@@ -272,6 +317,8 @@ pub enum YourAction {
 - [ ] Add `#[action_event(level = debug)]` for logging
 - [ ] Implement enabling condition in `EnablingCondition` trait
 - [ ] Add handler in reducer with proper state access pattern
+  - Use `into_dispatcher()` for simple action dispatching
+  - Use `into_dispatcher_and_state()` when needing global state access
 - [ ] Test enabling condition logic matches reducer expectations
 - [ ] Add documentation comment explaining the action's purpose
 
