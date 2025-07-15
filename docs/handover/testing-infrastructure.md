@@ -93,6 +93,67 @@ Features:
 - Network topology control
 - Debugger integration
 
+### OCaml Node Limitations
+
+When including OCaml nodes in test scenarios, there are several important limitations compared to Rust nodes:
+
+**Time Control:**
+- OCaml nodes use real wall-clock time and cannot be controlled via `AdvanceTime` or `AdvanceNodeTime` steps
+- Only Rust nodes support deterministic time advancement
+- This can cause timing-dependent test failures when OCaml and Rust nodes get out of sync
+
+**Visibility and Debugging:**
+- OCaml nodes are "black boxes" - we cannot inspect their internal state like we can with Rust nodes
+- No access to OCaml node's internal execution, state changes, or data structures
+- Limited logging and debugging capabilities compared to Rust nodes
+- Cannot use invariant checking on OCaml node state
+
+**Network Control:**
+- Cannot manually disconnect OCaml peers using test framework commands
+- Network topology changes must be done externally or through OCaml node's own mechanisms
+- Limited control over OCaml node's P2P behavior and connection management
+
+**Behavioral Control:**
+- No control over OCaml node's internal execution flow or decision-making
+- Cannot trigger specific OCaml node behaviors on demand
+- Cannot guarantee that expected operations will be executed at all
+- This limits the determinism of tests involving OCaml nodes
+
+**Testing Implications:**
+- Tests with OCaml nodes are inherently less deterministic
+- Focus should be on testing interoperability rather than detailed protocol behavior
+- Use OCaml nodes primarily for cross-implementation validation
+- Consider using Rust-only scenarios when precise control is needed
+
+### Potential OCaml Node Testing Improvements
+
+To improve OCaml node testing capabilities, the following changes could be made to the OCaml implementation:
+
+**Deterministic Time Control:**
+- Add support for controllable time advancement instead of wall-clock time
+- Implement time mocking or virtual time system that can be controlled by the test framework
+- This would enable synchronization between OCaml and Rust nodes in tests
+
+**Testing API:**
+- Expose internal state inspection endpoints for testing purposes
+- Add hooks or callbacks for test frameworks to monitor internal execution
+- Implement test-specific logging and debugging interfaces
+
+**Network Control:**
+- Add testing APIs to manually control P2P connections
+- Implement test hooks for network topology manipulation
+- Provide mechanisms to trigger specific network behaviors on demand
+
+**Behavioral Control:**
+- Add test-specific triggers for protocol operations
+- Implement deterministic execution modes for testing
+- Provide APIs to control or observe internal decision-making processes
+
+**Implementation Notes:**
+- These improvements would require coordination with the OCaml Mina team
+- Changes should be designed to not affect production behavior
+- Testing improvements could be implemented as optional testing-only features
+
 ## Invariant Checking System
 
 ### What are Invariants?
