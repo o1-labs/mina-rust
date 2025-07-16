@@ -16,7 +16,7 @@ build-ledger: download-circuits ## Build the ledger binary and library, requires
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
-	cargo build --release --bin openmina
+	cargo build --release --package=cli --bin openmina
 
 .PHONY: build-tests-webrtc
 build-tests-webrtc: ## Build tests for WebRTC
