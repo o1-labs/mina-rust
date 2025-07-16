@@ -3,6 +3,7 @@ FROM rust:bullseye AS build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends protobuf-compiler && \
     apt-get clean
+
 WORKDIR /openmina
 
 COPY rust-toolchain.toml .
@@ -12,6 +13,7 @@ RUN RUST_VERSION=$(grep 'channel = ' rust-toolchain.toml | \
         sed 's/channel = "\(.*\)"/\1/') && \
     rustup default "$RUST_VERSION" && \
     rustup component add rustfmt
+
 COPY . .
 # Build with cache mount
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
