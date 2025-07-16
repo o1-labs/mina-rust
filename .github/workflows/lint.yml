@@ -7,19 +7,43 @@ on:
 
 jobs:
   lint:
-    name: Lint
-    runs-on: ubuntu-latest
+    name: Lint - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        toolchain: [1.84]
     steps:
       - uses: actions/checkout@v4
       - name: Setup build dependencies
         run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+          sudo apt update || true
+          sudo apt install -y protobuf-compiler || true
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.84
+          toolchain: ${{ matrix.toolchain }}
           components: clippy, rustfmt
-      - name: check
+      - name: Run make check
         run: make check
-      - name: clippy
+      - name: Run make lint
         run: make lint
+
+  lint-tx-fuzzing:
+    name: Lint transaction Fuzzing - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        toolchain: [nightly]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup build dependencies
+        run: |
+          sudo apt update || true
+          sudo apt install -y protobuf-compiler || true
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: ${{ matrix.toolchain }}
+          components: clippy, rustfmt
+      - name: Run transaction Fuzzing check
+        run: make check-tx-fuzzing

@@ -24,6 +24,10 @@ build-wasm: ## Build WebAssembly node
 check: ## Check code for compilation errors
 	cargo check --all-targets
 
+.PHONY: check-tx-fuzzing
+check-tx-fuzzing: ## Check the transaction fuzzing tools, requires nightly Rust
+	@cd tools/fuzzing && cargo +nightly check
+
 .PHONY: check-format
 check-format: ## Check code formatting
 	cargo +nightly fmt -- --check

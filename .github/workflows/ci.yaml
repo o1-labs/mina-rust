@@ -100,25 +100,6 @@ jobs:
           cd vrf
           cargo test --release -- -Z unstable-options --report-time
 
-  tx-fuzzer-check:
-    runs-on: ubuntu-22.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v4
-      - name: Setup build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
-      - name: Setup Rust
-        run: |
-          rustup install nightly
-          rustup override set nightly
-          rustup component add --toolchain nightly-x86_64-unknown-linux-gnu rustfmt
-      - name: Check for compilation errors in transaction fuzzer
-        run: |
-          cd tools/fuzzing
-          cargo check
-
   p2p-tests:
     runs-on: ubuntu-22.04
     steps:
