@@ -35,7 +35,7 @@ RUN apt -y update && \
     liblmdb-dev \
     rsync
 
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 RUN yes "" | sh <(curl -fsSL https://raw.githubusercontent.com/ocaml/opam/master/shell/install.sh)
