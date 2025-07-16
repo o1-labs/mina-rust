@@ -1,5 +1,7 @@
 # OpenMina Makefile
 
+NIGHTLY_RUST_VERSION = "nightly"
+
 .PHONY: help
 help: ## Ask for help!
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -89,6 +91,25 @@ format-md: ## Format all markdown files to wrap at 80 characters
 .PHONY: lint
 lint: ## Run linter (clippy)
 	cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
+
+.PHONY: setup-wasm-toolchain
+setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
+		@ARCH=$$(uname -m); \
+		OS=$$(uname -s | tr A-Z a-z); \
+		case $$OS in \
+			linux) OS_PART="unknown-linux-gnu" ;; \
+			darwin) OS_PART="apple-darwin" ;; \
+			*) echo "Unsupported OS: $$OS" && exit 1 ;; \
+		esac; \
+		case $$ARCH in \
+			x86_64) ARCH_PART="x86_64" ;; \
+			aarch64) ARCH_PART="aarch64" ;; \
+			arm64) ARCH_PART="aarch64" ;; \
+			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
+		esac; \
+		TARGET="$$ARCH_PART-$$OS_PART"; \
+		echo "Installing rust-src and rustfmt for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
+		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET
 
 .PHONY: test
 test: ## Run tests
