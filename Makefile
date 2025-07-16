@@ -95,6 +95,14 @@ format-md: ## Format all markdown files to wrap at 80 characters
 lint: ## Run linter (clippy)
 	cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
 
+.PHONY: lint-dockerfiles
+lint-dockerfiles: ## Check all Dockerfiles using hadolint
+	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
+		find . -name "Dockerfile*" -type f -exec hadolint {} \;; \
+	else \
+		find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;; \
+	fi
+
 .PHONY: setup-wasm-toolchain
 setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
 		@ARCH=$$(uname -m); \
