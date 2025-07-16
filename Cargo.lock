@@ -2465,19 +2465,24 @@ dependencies = [
 
 [[package]]
 name = "documented"
-version = "0.1.2"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8b63340daf5dcf33de57808d5ef35097131359dcccd7d9b208d4101e134bca4a"
+checksum = "feadfed35b96a5634e08fc503677ded669549ae2cf7f0b01d5964f09d95487fd"
 dependencies = [
- "documented-derive",
+ "documented-macros",
+ "phf",
+ "thiserror 1.0.60",
 ]
 
 [[package]]
-name = "documented-derive"
-version = "0.1.2"
+name = "documented-macros"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f87ab5c4c35c1d2fc7928e96d1cee3786a9bc9571ebaf4bf8f4207e6271165fa"
+checksum = "973659d4a62084e32a7f9332509455436d33684b316bb3bc2bb6dcea51a68c63"
 dependencies = [
+ "convert_case 0.6.0",
+ "optfield",
+ "proc-macro2 1.0.93",
  "quote 1.0.35",
  "syn 2.0.96",
 ]
@@ -6320,6 +6325,17 @@ dependencies = [
  "libc",
  "pkg-config",
  "vcpkg",
+]
+
+[[package]]
+name = "optfield"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fa59f025cde9c698fcb4fcb3533db4621795374065bee908215263488f2d2a1d"
+dependencies = [
+ "proc-macro2 1.0.93",
+ "quote 1.0.35",
+ "syn 2.0.96",
 ]
 
 [[package]]
