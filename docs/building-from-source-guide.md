@@ -1,6 +1,7 @@
 # How to build and launch a node from source
 
-This installation guide has been tested on Debian and Ubuntu and should work on most distributions of Linux.
+This installation guide has been tested on Debian and Ubuntu and should work on
+most distributions of Linux.
 
 ## Prerequisites
 
@@ -73,7 +74,8 @@ nvm install 20.11.1
 
 #### Windows
 
-Download [Node.js v20.11.1](https://nodejs.org/) from the official website, open the installer and follow the prompts to complete the installation.
+Download [Node.js v20.11.1](https://nodejs.org/) from the official website, open
+the installer and follow the prompts to complete the installation.
 
 ### 2. Angular CLI v16.2.0
 

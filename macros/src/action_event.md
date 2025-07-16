@@ -4,7 +4,6 @@ Derives `[openmina_core::ActionEvent]` trait implementation for action.
 
 For action containers, it simply delegates to inner actions.
 
-
 ```rust
 # use openmina_core::ActionEvent;
 #
@@ -81,7 +80,6 @@ impl openmina_core::ActionEvent for Action {
 
 ### Summary field
 
-
 If an action has doc-comment, its first line will be used for `summary` field of
 tracing events for the action.
 
@@ -116,7 +114,8 @@ impl openmina_core::ActionEvent for Action {
 
 ### Fields
 
-Certain fields can be added to the tracing event, using `#[action_event(fields(...))]` attribute.
+Certain fields can be added to the tracing event, using
+`#[action_event(fields(...))]` attribute.
 
 ```rust
 #[derive(openmina_core::ActionEvent)]

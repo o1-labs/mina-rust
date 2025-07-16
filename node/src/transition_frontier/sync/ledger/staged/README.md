@@ -1,9 +1,10 @@
 ## Sync Staged Ledger
 
-At this point, we already have synced snarked ledger that the staged
-ledger builds on top of. Now we need to:
-1. Fetch additional parts (scan state, pending coinbases, etc...)
-   necessary for reconstructing staged ledger.
+At this point, we already have synced snarked ledger that the staged ledger
+builds on top of. Now we need to:
+
+1. Fetch additional parts (scan state, pending coinbases, etc...) necessary for
+   reconstructing staged ledger.
 2. Use fetched parts along with already synced snarked ledger in order to
    reconstruct staged ledger.
 
@@ -43,3 +44,4 @@ LedgerService-- send result --> event_source
 event_source-.->StagedReconstructError--->wait
 event_source--->StagedReconstructSuccess-->cont
 end
+```

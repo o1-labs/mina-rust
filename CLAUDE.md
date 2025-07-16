@@ -4,16 +4,19 @@ This file helps understand and navigate the OpenMina codebase structure.
 
 ## Project Overview
 
-OpenMina is a Rust implementation of the Mina Protocol, a lightweight
-blockchain using zero-knowledge proofs. It follows a Redux-style state machine
-architecture for predictable, debuggable behavior.
+OpenMina is a Rust implementation of the Mina Protocol, a lightweight blockchain
+using zero-knowledge proofs. It follows a Redux-style state machine architecture
+for predictable, debuggable behavior.
 
-*For detailed architecture documentation, see [`docs/handover/`](docs/handover/)*
+_For detailed architecture documentation, see
+[`docs/handover/`](docs/handover/)_
 
 ## Architecture Overview
 
 ### State Machine Pattern
+
 The codebase follows Redux principles:
+
 - **State** - Centralized, immutable data structure
 - **Actions** - Events that trigger state changes
 - **Enabling Conditions** - Guards that prevent invalid state transitions
@@ -22,7 +25,9 @@ The codebase follows Redux principles:
 - **Services** - Separate threads handling I/O and heavy computation
 
 ### Architecture Styles
-- **New Style**: Unified reducers that handle both state updates and action dispatch
+
+- **New Style**: Unified reducers that handle both state updates and action
+  dispatch
 - **Old Style**: Separate reducer and effects files (being migrated)
 
 ## Project Structure
@@ -30,6 +35,7 @@ The codebase follows Redux principles:
 ### Core Components
 
 **node/** - Main node logic
+
 - `block_producer/` - Block production
 - `transaction_pool/` - Transaction mempool
 - `transition_frontier/` - Consensus and blockchain state
@@ -40,6 +46,7 @@ The codebase follows Redux principles:
 - `service/` - Service implementations
 
 **p2p/** - Networking layer
+
 - Dual transport: libp2p and WebRTC
 - Channel abstractions for message types
 - Peer discovery and connection management
@@ -54,6 +61,7 @@ logic, staged ledger, scan state, and proof verification
 ## Code Organization
 
 ### File Patterns
+
 - `*_state.rs` - State definitions
 - `*_actions.rs` - Action types
 - `*_reducer.rs` - State transitions
@@ -62,6 +70,7 @@ logic, staged ledger, scan state, and proof verification
 - `summary.md` - Component documentation and technical debt notes
 
 ### Key Files
+
 - `node/src/state.rs` - Global state structure
 - `node/src/action.rs` - Top-level action enum
 - `node/src/reducer.rs` - Main reducer dispatch
@@ -77,14 +86,17 @@ logic, staged ledger, scan state, and proof verification
 ## Key Patterns
 
 ### Defensive Programming
+
 - `bug_condition!` macro marks theoretically unreachable code paths
 - Used after enabling condition checks for invariant validation
 
 ### State Methods
+
 - Complex logic extracted from reducers into state methods
 - Keeps reducers focused on orchestration
 
 ### Callbacks
+
 - Enable decoupled component communication
 - Used for async operation completion
 
@@ -107,6 +119,7 @@ find . -name "summary.md" -path "*/component/*"
 ## Component Documentation
 
 Each component directory contains a `summary.md` file documenting:
+
 - Component purpose and responsibilities
 - Known technical debt
 - Implementation notes

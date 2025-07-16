@@ -1,16 +1,19 @@
 # Run Archive Node on Devnet
 
-This guide is intended for setting up archive nodes on **Mina Devnet** only. Do not use this guide for Mina Mainnet
+This guide is intended for setting up archive nodes on **Mina Devnet** only. Do
+not use this guide for Mina Mainnet
 
 ## Archive Mode Configuration
 
-We start archive mode in openmina by setting one of the following flags along with their associated environment variables:
+We start archive mode in openmina by setting one of the following flags along
+with their associated environment variables:
 
 ### Archiver Process (`--archive-archiver-process`)
 
 Stores blocks in a database by receiving them directly from the openmina node
 
 **Required Environment Variables**:
+
 - `OPENMINA_ARCHIVE_ADDRESS`: Network address for the archiver service
 
 ### Local Storage (`--archive-local-storage`)
@@ -18,16 +21,20 @@ Stores blocks in a database by receiving them directly from the openmina node
 Stores blocks in the local filesystem
 
 **Required Environment Variables**:
+
 - (None)
 
 **Optional Environment Variables**:
-- `OPENMINA_ARCHIVE_LOCAL_STORAGE_PATH`: Custom path for block storage (default: ~/.openmina/archive-precomputed)
+
+- `OPENMINA_ARCHIVE_LOCAL_STORAGE_PATH`: Custom path for block storage (default:
+  ~/.openmina/archive-precomputed)
 
 ### GCP Storage (`--archive-gcp-storage`)
 
 Uploads blocks to a Google Cloud Platform bucket
 
 **Required Environment Variables**:
+
 - `GCP_CREDENTIALS_JSON`: Service account credentials JSON
 - `GCP_BUCKET_NAME`: Target storage bucket name
 
@@ -36,6 +43,7 @@ Uploads blocks to a Google Cloud Platform bucket
 Uploads blocks to an AWS S3 bucket
 
 **Required Environment Variables**:
+
 - `AWS_ACCESS_KEY_ID`: IAM user access key
 - `AWS_SECRET_ACCESS_KEY`: IAM user secret key
 - `AWS_DEFAULT_REGION`: AWS region name
@@ -44,17 +52,22 @@ Uploads blocks to an AWS S3 bucket
 
 ## Redundancy
 
-The archive mode is designed to be redundant. We can combine the flags to have multiple options running simultaneously.
+The archive mode is designed to be redundant. We can combine the flags to have
+multiple options running simultaneously.
 
 ## Prerequisites
 
-Ensure Docker and Docker Compose are installed on your system - [Docker Installation Guide](./docker-installation.md)
+Ensure Docker and Docker Compose are installed on your system -
+[Docker Installation Guide](./docker-installation.md)
 
 ## Docker compose setup (with archiver process)
 
-The compose file sets up a PG database, the archiver process and the openmina node. The archiver process is responsible for storing the blocks in the database by receiving the blocks from the openmina node.
+The compose file sets up a PG database, the archiver process and the openmina
+node. The archiver process is responsible for storing the blocks in the database
+by receiving the blocks from the openmina node.
 
-See [docker-compose.archive.devnet.yml](../docker-compose.archive.devnet.yml) for more details.
+See [docker-compose.archive.devnet.yml](../docker-compose.archive.devnet.yml)
+for more details.
 
 ### Starting the setup
 
