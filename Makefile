@@ -24,12 +24,14 @@ build-tests-webrtc: ## Build tests for WebRTC
 	@cargo build --release --tests \
 		--package=openmina-node-testing \
 		--package=cli
+# Update ./.gitignore accordingly if cargo-build-test.json is changed
 	@cargo build --release \
 		--features=scenario-generators,p2p-webrtc \
 		--package=openmina-node-testing \
 		--tests \
 		--message-format=json \
 		> cargo-build-test.json
+# Update ./.gitignore accordingly if tests.json is changed
 	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' cargo-build-test.json > tests.tsv
 	@while read NAME FILE; do \
 		cp -a $$FILE target/release/tests/webrtc_$$NAME; \

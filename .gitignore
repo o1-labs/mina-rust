@@ -7,3 +7,7 @@ node_modules
 
 # Output of build-wasm
 pkg/
+
+# Outputs of build-tests-webrtc
+cargo-build-test.json
+tests.tsv
