@@ -3,11 +3,10 @@ FROM node:18 AS BUILD_IMAGE
 ARG BUILD_CONFIGURATION=production
 WORKDIR /app
 COPY . .
-RUN npm install
-RUN node_modules/.bin/ng build --configuration ${BUILD_CONFIGURATION}
-RUN npm prune --production
-
-RUN echo "---------- USING APACHE ----------"
+RUN npm install && \
+    node_modules/.bin/ng build --configuration ${BUILD_CONFIGURATION} && \
+    npm prune --production && \
+    echo "---------- USING APACHE ----------"
 
 
 FROM httpd:2.4

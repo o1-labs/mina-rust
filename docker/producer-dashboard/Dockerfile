@@ -59,11 +59,11 @@ RUN curl -s -L https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-
 
 RUN apt-get -y --no-install-recommends install m4 pkg-config
 
-RUN opam init --disable-sandboxing
-RUN opam switch create .
-RUN eval "$(opam config env)"
-RUN opam switch import -y opam.export
-RUN ./scripts/pin-external-packages.sh
+RUN opam init --disable-sandboxing && \
+    opam switch create . && \
+    eval "$(opam config env)" && \
+    opam switch import -y opam.export && \
+    ./scripts/pin-external-packages.sh
 
 RUN curl -L https://go.dev/dl/go1.19.linux-amd64.tar.gz -o go1.19.tar.gz \
     && tar -C /usr/local -xzf go1.19.tar.gz \

@@ -5,8 +5,8 @@ WORKDIR /usr/src/app
 RUN apt-get update && apt-get install -y --no-install-recommends pkg-config libssl-dev && rm -rf /var/lib/apt/lists/*
 
 COPY . .
-RUN ls -la tools/heartbeats-processor
-RUN cargo build --release -p heartbeats-processor
+RUN ls -la tools/heartbeats-processor && \
+    cargo build --release -p heartbeats-processor
 
 # Runtime stage
 FROM debian:bookworm-slim
