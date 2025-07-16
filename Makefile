@@ -98,9 +98,17 @@ lint: ## Run linter (clippy)
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
-		find . -name "Dockerfile*" -type f -exec hadolint {} \;; \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		if [ -n "$$OUTPUT" ]; then \
+			echo "$$OUTPUT"; \
+			exit 1; \
+		fi; \
 	else \
-		find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;; \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		if [ -n "$$OUTPUT" ]; then \
+			echo "$$OUTPUT"; \
+			exit 1; \
+		fi; \
 	fi
 
 .PHONY: setup-wasm-toolchain
