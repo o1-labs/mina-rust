@@ -26,7 +26,7 @@ check: ## Check code for compilation errors
 
 .PHONY: check-format
 check-format: ## Check code formatting
-	cargo fmt --all -- --check
+	cargo +nightly fmt -- --check
 
 .PHONY: clean
 clean: ## Clean build artifacts
@@ -34,7 +34,7 @@ clean: ## Clean build artifacts
 
 .PHONY: format
 format: ## Format code using rustfmt
-	cargo fmt --all
+	cargo +nightly fmt
 
 .PHONY: lint
 lint: ## Run linter (clippy)
