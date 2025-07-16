@@ -2,8 +2,6 @@ name: OpenMina Docker Build
 on:
   workflow_dispatch: {}
   push:
-    branches: [ main, develop ]
-    tags: [ "*" ]
     paths-ignore:
       - "helm/**"
       - "*.md"
@@ -54,7 +52,12 @@ jobs:
           platforms: ${{ matrix.arch.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=image,name=${{ env.REGISTRY_NODE_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          # :warning:
+          # Push only if:
+          # - main
+          # - develop
+          # - a tag
+          outputs: type=image,name=${{ env.REGISTRY_NODE_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/') }}
 
       - name: Export digest
         run: |
@@ -72,6 +75,12 @@ jobs:
 
   merge-openmina-node-image:
     runs-on: ubuntu-latest
+    # :warning:
+    # Only if:
+    # - main
+    # - develop
+    # - a tag
+    if: github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/')
     needs:
       - build-openmina-node-image
     steps:
@@ -155,7 +164,11 @@ jobs:
             BUILD_CONFIGURATION=${{ matrix.configuration.build_configuration }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=true
+          # Only if:
+          # - main
+          # - develop
+          # - a tag
+          outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/') }}
 
       - name: Export digest
         run: |
@@ -176,11 +189,8 @@ jobs:
       matrix:
         configuration:
           - build_configuration: production
-          # - build_configuration: compose
-          #   tag_suffix: ""
-          # - build_configuration: staging
-          #   tag_suffix: ""
     runs-on: ubuntu-latest
+    if: github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/')
     needs:
       - build-openmina-frontend-image
     steps:
@@ -199,9 +209,6 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: ${{ env.REGISTRY_FRONTEND_IMAGE }}
-          # flavor: |
-          #   suffix=${{ matrix.configuration.tag_suffix }},onlatest=true
-          # generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
             type=sha,format=short
