@@ -16,21 +16,17 @@ RUN RUST_VERSION=$(grep 'channel = ' rust-toolchain.toml | \
 
 COPY . .
 
-# Build with cache mount
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/openmina/target,id=rust-target \
-    make build-release && \
+RUN make build-release && \
+    mkdir -p /openmina/release-bin && \
     cp /openmina/target/release/openmina /openmina/release-bin/openmina
 
-RUN --mount=type=cache,target=/usr/local/cargo/registry \
-    --mount=type=cache,target=/openmina/target,id=rust-target \
-    make build-testing && \
+RUN make build-testing && \
+    mkdir -p /openmina/testing-release-bin && \
     cp /openmina/target/release/openmina-node-testing \
-    /openmina/testing-release-bin/
+        /openmina/testing-release-bin/openmina-node-testing
 
 # necessary for proof generation when running a block producer.
-RUN git clone --depth 1 \
-        https://github.com/openmina/circuit-blobs.git && \
+RUN make download-circuits && \
     rm -rf circuit-blobs/berkeley_rc1 circuit-blobs/*/tests
 
 FROM debian:bullseye
