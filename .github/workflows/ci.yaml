@@ -26,10 +26,9 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Download circuits files
         run: |
           make download-circuits
@@ -50,10 +49,9 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Download circuits files
         run: |
           make download-circuits
@@ -81,10 +79,9 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Build vrf tests
         run: |
           make build-vrf
@@ -104,9 +101,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -129,9 +127,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -160,9 +159,13 @@ jobs:
          sudo apt install -y protobuf-compiler
 
      - name: Setup Rust
+       uses: dtolnay/rust-toolchain@stable
+       with:
+         components: rustfmt, rust-src
+         toolchain: nightly
+
+     - name: Install wasm32 and wasm-bindgen-cli
        run: |
-         rustup default nightly
-         rustup component add rustfmt rust-src
          rustup target add wasm32-unknown-unknown
          cargo install -f wasm-bindgen-cli --version 0.2.99
 
@@ -173,7 +176,6 @@ jobs:
 
      - name: Release build
        run: |
-         rustup component add rust-src rustfmt --toolchain nightly-x86_64-unknown-linux-gnu
          make build-wasm
 
   build-tests:
@@ -188,9 +190,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -224,9 +227,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
