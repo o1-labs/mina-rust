@@ -1,10 +1,8 @@
 use serde::{Deserialize, Serialize};
 
-use crate::user_command_verify::SnarkUserCommandVerifyState;
-use crate::SnarkConfig;
+use crate::{user_command_verify::SnarkUserCommandVerifyState, SnarkConfig};
 
-use super::block_verify::SnarkBlockVerifyState;
-use super::work_verify::SnarkWorkVerifyState;
+use super::{block_verify::SnarkBlockVerifyState, work_verify::SnarkWorkVerifyState};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct SnarkState {

@@ -23,16 +23,20 @@ use crate::{
     p2p_ready,
     snark_pool::candidate::SnarkPoolCandidateAction,
     transaction_pool::candidate::TransactionPoolCandidateAction,
-    transition_frontier::candidate::{allow_block_too_late, TransitionFrontierCandidateAction},
-    transition_frontier::sync::{
-        ledger::{
-            snarked::{
-                PeerLedgerQueryError, PeerLedgerQueryResponse,
-                TransitionFrontierSyncLedgerSnarkedAction,
+    transition_frontier::{
+        candidate::{allow_block_too_late, TransitionFrontierCandidateAction},
+        sync::{
+            ledger::{
+                snarked::{
+                    PeerLedgerQueryError, PeerLedgerQueryResponse,
+                    TransitionFrontierSyncLedgerSnarkedAction,
+                },
+                staged::{
+                    PeerStagedLedgerPartsFetchError, TransitionFrontierSyncLedgerStagedAction,
+                },
             },
-            staged::{PeerStagedLedgerPartsFetchError, TransitionFrontierSyncLedgerStagedAction},
+            PeerBlockFetchError, TransitionFrontierSyncAction,
         },
-        PeerBlockFetchError, TransitionFrontierSyncAction,
     },
     watched_accounts::{
         WatchedAccountLedgerInitialState, WatchedAccountsLedgerInitialStateGetError,

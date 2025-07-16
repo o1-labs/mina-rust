@@ -1,4 +1,4 @@
-name: lint
+name: Lint
 
 on:
   push:
@@ -18,12 +18,8 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: 1.84
-          components: rustfmt, clippy
-      - name: rustfmt
-        run: cargo fmt --all -- --check
+          components: clippy, rustfmt
       - name: check
-        run: cargo check --all-targets
-        env:
-          RUSTFLAGS: -D warnings
+        run: make check
       - name: clippy
-        run: cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
+        run: make lint

@@ -450,8 +450,7 @@ fn get_feature_flag<F: FieldWitness>(
     feature: &kimchi::circuits::expr::FeatureFlag,
     w: &mut Witness<F>,
 ) -> Option<Boolean> {
-    use kimchi::circuits::expr::FeatureFlag::*;
-    use kimchi::circuits::lookup::lookups::LookupPattern;
+    use kimchi::circuits::{expr::FeatureFlag::*, lookup::lookups::LookupPattern};
 
     match feature {
         RangeCheck0 => Some(feature_flags.features.range_check0),

@@ -1,5 +1,4 @@
-use node::core::thread;
-use node::p2p::service_impl::TaskSpawner;
+use node::{core::thread, p2p::service_impl::TaskSpawner};
 use openmina_core::channels::Aborted;
 
 #[derive(Clone)]

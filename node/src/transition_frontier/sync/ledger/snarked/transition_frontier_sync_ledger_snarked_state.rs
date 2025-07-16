@@ -4,11 +4,12 @@ use mina_p2p_messages::v2::LedgerHash;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use crate::ledger::{tree_height_for_num_accounts, LedgerAddress};
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::rpc::LedgerSyncProgress;
-use crate::transition_frontier::sync::ledger::SyncLedgerTarget;
+use crate::{
+    ledger::{tree_height_for_num_accounts, LedgerAddress},
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    rpc::LedgerSyncProgress,
+    transition_frontier::sync::ledger::SyncLedgerTarget,
+};
 
 use super::{PeerLedgerQueryError, ACCOUNT_SUBTREE_HEIGHT};
 

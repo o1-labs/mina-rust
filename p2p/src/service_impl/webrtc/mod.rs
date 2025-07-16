@@ -5,10 +5,7 @@ mod webrtc_cpp;
 #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs"))]
 mod webrtc_rs;
 
-use std::future::Future;
-use std::pin::Pin;
-use std::sync::Arc;
-use std::{collections::BTreeMap, time::Duration};
+use std::{collections::BTreeMap, future::Future, pin::Pin, sync::Arc, time::Duration};
 
 use openmina_core::bug_condition;
 use serde::Serialize;
@@ -21,13 +18,13 @@ use wasm_bindgen_futures::spawn_local;
 
 use openmina_core::channels::{mpsc, oneshot, Aborted, Aborter};
 
-use crate::identity::{EncryptableType, PublicKey};
-use crate::webrtc::{ConnectionAuth, ConnectionAuthEncrypted};
 use crate::{
     channels::{ChannelId, ChannelMsg, MsgId},
     connection::outgoing::P2pConnectionOutgoingInitOpts,
-    identity::SecretKey,
-    webrtc, P2pChannelEvent, P2pConnectionEvent, P2pEvent, PeerId,
+    identity::{EncryptableType, PublicKey, SecretKey},
+    webrtc,
+    webrtc::{ConnectionAuth, ConnectionAuthEncrypted},
+    P2pChannelEvent, P2pConnectionEvent, P2pEvent, PeerId,
 };
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs"))]

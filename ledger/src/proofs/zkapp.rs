@@ -1445,8 +1445,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
 
         assert!(lookup.is_none());
 
-        use mina_p2p_messages::bigint::BigInt;
-        use mina_p2p_messages::pseq::PaddedSeq;
+        use mina_p2p_messages::{bigint::BigInt, pseq::PaddedSeq};
         use std::array;
 
         let to_tuple = |g: &GroupAffine<Fp>| -> (BigInt, BigInt) { (g.x.into(), g.y.into()) };

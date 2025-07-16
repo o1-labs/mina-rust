@@ -6,8 +6,10 @@ use serde::{Deserialize, Serialize};
 
 use crate::P2pTimeouts;
 
-use super::incoming::{P2pConnectionIncomingInitOpts, P2pConnectionIncomingState};
-use super::outgoing::{P2pConnectionOutgoingInitOpts, P2pConnectionOutgoingState};
+use super::{
+    incoming::{P2pConnectionIncomingInitOpts, P2pConnectionIncomingState},
+    outgoing::{P2pConnectionOutgoingInitOpts, P2pConnectionOutgoingState},
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone, MallocSizeOf)]
 #[serde(tag = "direction")]

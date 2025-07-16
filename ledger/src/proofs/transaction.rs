@@ -46,19 +46,14 @@ use crate::{
 
 use super::{
     constants::ProofConstants,
-    field::GroupAffine,
+    field::{field, Boolean, CircuitVar, FieldWitness, GroupAffine, ToBoolean},
     public_input::messages::{dummy_ipa_step_sg, MessagesForNextWrapProof},
+    step,
+    step::{InductiveRule, OptFlag, StepProof},
     to_field_elements::{ToFieldElements, ToFieldElementsDebug},
     unfinalized::Unfinalized,
     witness::Witness,
     wrap::WrapProof,
-};
-use super::{
-    field::{field, Boolean, CircuitVar, FieldWitness, ToBoolean},
-    step,
-};
-use super::{
-    step::{InductiveRule, OptFlag, StepProof},
     ProverIndex,
 };
 
@@ -2541,8 +2536,7 @@ pub mod transaction_snark {
         inputs: legacy::Inputs<Fp>,
         w: &mut Witness<Fp>,
     ) -> Fp {
-        use ::poseidon::fp_legacy::params;
-        use ::poseidon::PlonkSpongeConstantsLegacy as Constants;
+        use ::poseidon::{fp_legacy::params, PlonkSpongeConstantsLegacy as Constants};
 
         let initial_state: [Fp; 3] = param.state();
         let mut sponge =
@@ -4043,8 +4037,7 @@ pub(super) fn create_proof<C: ProofConstants, F: FieldWitness>(
 pub mod debug {
     use super::*;
 
-    use mina_p2p_messages::bigint::BigInt;
-    use mina_p2p_messages::binprot;
+    use mina_p2p_messages::{bigint::BigInt, binprot};
     use sha2::Digest;
 
     fn hash_field<F: FieldWitness>(state: &mut sha2::Sha256, f: &F) {
@@ -4927,9 +4920,11 @@ pub(super) mod tests {
     #[test]
     #[ignore]
     fn make_rsa_key() {
-        use rsa::pkcs1::{EncodeRsaPrivateKey, EncodeRsaPublicKey};
-        use rsa::pkcs8::LineEnding::LF;
-        use rsa::{RsaPrivateKey, RsaPublicKey};
+        use rsa::{
+            pkcs1::{EncodeRsaPrivateKey, EncodeRsaPublicKey},
+            pkcs8::LineEnding::LF,
+            RsaPrivateKey, RsaPublicKey,
+        };
 
         let mut rng = rand::thread_rng();
         let bits = 2048;
@@ -4947,8 +4942,7 @@ pub(super) mod tests {
     #[test]
     fn add_private_key_to_block_proof_input() {
         use mina_p2p_messages::binprot::BinProtWrite;
-        use rsa::pkcs1::DecodeRsaPrivateKey;
-        use rsa::Pkcs1v15Encrypt;
+        use rsa::{pkcs1::DecodeRsaPrivateKey, Pkcs1v15Encrypt};
 
         #[derive(binprot::macros::BinProtRead)]
         struct DumpBlockProof {

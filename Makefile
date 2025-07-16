@@ -24,13 +24,17 @@ build-wasm: ## Build WebAssembly node
 check: ## Check code for compilation errors
 	cargo check --all-targets
 
+.PHONY: check-format
+check-format: ## Check code formatting
+	cargo +nightly fmt -- --check
+
 .PHONY: clean
 clean: ## Clean build artifacts
 	cargo clean
 
-.PHONY: fmt
-fmt: ## Format code using rustfmt
-	cargo fmt --all
+.PHONY: format
+format: ## Format code using rustfmt
+	cargo +nightly fmt
 
 .PHONY: lint
 lint: ## Run linter (clippy)

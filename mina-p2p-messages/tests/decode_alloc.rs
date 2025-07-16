@@ -1,20 +1,22 @@
 mod decode_bench;
-use std::collections::BTreeMap;
-use std::fs;
+use std::{collections::BTreeMap, fs};
 
 use binprot::BinProtWrite;
 use decode_bench::*;
 
-use alloc_test::alloc::measure::MemoryTracingHooks;
 use alloc_test::{
-    alloc::compare::{AllocThresholds, AllocThresholdsBuilder, AllocThresholdsError},
+    alloc::{
+        compare::{AllocThresholds, AllocThresholdsBuilder, AllocThresholdsError},
+        measure::MemoryTracingHooks,
+    },
     alloc_bench,
     threshold::{CheckThresholdError, Threshold},
 };
-use mina_p2p_messages::rpc_kernel::Message;
-use mina_p2p_messages::utils::{FromBinProtStream, Greedy};
-use time::format_description::well_known::Rfc3339;
-use time::OffsetDateTime;
+use mina_p2p_messages::{
+    rpc_kernel::Message,
+    utils::{FromBinProtStream, Greedy},
+};
+use time::{format_description::well_known::Rfc3339, OffsetDateTime};
 
 #[global_allocator]
 static ALLOCATOR: alloc_test::alloc::allocator::TracingAllocator<

@@ -1,5 +1,7 @@
-use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
-use mina_p2p_messages::v2::{CurrencyFeeStableV1, NonZeroCurvePoint};
+use mina_p2p_messages::{
+    binprot::macros::{BinProtRead, BinProtWrite},
+    v2::{CurrencyFeeStableV1, NonZeroCurvePoint},
+};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 

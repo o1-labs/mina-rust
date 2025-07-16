@@ -1,14 +1,16 @@
 use std::sync::Arc;
 
 use malloc_size_of::MallocSizeOf;
-use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
-use mina_p2p_messages::v2::{
-    CurrencyFeeStableV1, MinaBaseFeeWithProverStableV1,
-    MinaStateBlockchainStateValueStableV2LedgerProofStatement, MinaStateSnarkedLedgerStateStableV2,
-    MinaStateSnarkedLedgerStateWithSokStableV2,
-    NetworkPoolSnarkPoolDiffVersionedStableV2AddSolvedWork1, NonZeroCurvePoint,
-    TransactionSnarkWorkStatementStableV2, TransactionSnarkWorkTStableV2,
-    TransactionSnarkWorkTStableV2Proofs,
+use mina_p2p_messages::{
+    binprot::macros::{BinProtRead, BinProtWrite},
+    v2::{
+        CurrencyFeeStableV1, MinaBaseFeeWithProverStableV1,
+        MinaStateBlockchainStateValueStableV2LedgerProofStatement,
+        MinaStateSnarkedLedgerStateStableV2, MinaStateSnarkedLedgerStateWithSokStableV2,
+        NetworkPoolSnarkPoolDiffVersionedStableV2AddSolvedWork1, NonZeroCurvePoint,
+        TransactionSnarkWorkStatementStableV2, TransactionSnarkWorkTStableV2,
+        TransactionSnarkWorkTStableV2Proofs,
+    },
 };
 use serde::{Deserialize, Serialize};
 

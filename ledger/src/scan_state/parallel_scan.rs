@@ -1,14 +1,17 @@
-use std::collections::{BTreeMap, VecDeque};
-use std::fmt::Debug;
-use std::io::Write;
-use std::ops::ControlFlow;
-use std::sync::Arc;
+use std::{
+    collections::{BTreeMap, VecDeque},
+    fmt::Debug,
+    io::Write,
+    ops::ControlFlow,
+    sync::Arc,
+};
 
 use itertools::Itertools;
 use serde::{Deserialize, Serialize};
-use sha2::digest::generic_array::GenericArray;
-use sha2::digest::typenum::U32;
-use sha2::{Digest, Sha256};
+use sha2::{
+    digest::{generic_array::GenericArray, typenum::U32},
+    Digest, Sha256,
+};
 use ControlFlow::{Break, Continue};
 
 use super::scan_state::transaction_snark::{LedgerProofWithSokMessage, TransactionWithWitness};

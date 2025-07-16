@@ -1,8 +1,7 @@
 use std::borrow::Cow;
 
 use ark_ff::Zero;
-use mina_hasher::Fp;
-use mina_hasher::{create_legacy, Hashable, Hasher, ROInput};
+use mina_hasher::{create_legacy, Fp, Hashable, Hasher, ROInput};
 use mina_signer::CompressedPubKey;
 use o1_utils::FieldHelpers;
 

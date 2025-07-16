@@ -1,33 +1,42 @@
-use p2p::channels::signaling::discovery::P2pChannelsSignalingDiscoveryAction;
-use p2p::channels::signaling::exchange::P2pChannelsSignalingExchangeAction;
-use p2p::channels::snark::P2pChannelsSnarkAction;
-use p2p::channels::streaming_rpc::P2pChannelsStreamingRpcAction;
-use p2p::channels::transaction::P2pChannelsTransactionAction;
+use p2p::channels::{
+    signaling::{
+        discovery::P2pChannelsSignalingDiscoveryAction,
+        exchange::P2pChannelsSignalingExchangeAction,
+    },
+    snark::P2pChannelsSnarkAction,
+    streaming_rpc::P2pChannelsStreamingRpcAction,
+    transaction::P2pChannelsTransactionAction,
+};
 use snark::user_command_verify::{SnarkUserCommandVerifyAction, SnarkUserCommandVerifyError};
 
-use crate::action::CheckTimeoutsAction;
-use crate::block_producer::vrf_evaluator::BlockProducerVrfEvaluatorAction;
-use crate::block_producer::{BlockProducerEvent, BlockProducerVrfEvaluatorEvent};
-use crate::external_snark_worker_effectful::ExternalSnarkWorkerEvent;
-use crate::ledger::read::LedgerReadAction;
-use crate::ledger::write::LedgerWriteAction;
-use crate::p2p::channels::best_tip::P2pChannelsBestTipAction;
-use crate::p2p::channels::rpc::P2pChannelsRpcAction;
-use crate::p2p::channels::snark_job_commitment::P2pChannelsSnarkJobCommitmentAction;
-use crate::p2p::channels::{ChannelId, P2pChannelsMessageReceivedAction};
-use crate::p2p::connection::incoming::P2pConnectionIncomingAction;
-use crate::p2p::connection::outgoing::P2pConnectionOutgoingAction;
-use crate::p2p::connection::{P2pConnectionErrorResponse, P2pConnectionResponse};
-use crate::p2p::disconnection::{P2pDisconnectionAction, P2pDisconnectionReason};
-use crate::p2p::P2pChannelEvent;
 #[cfg(feature = "p2p-libp2p")]
 use crate::p2p::{MioEvent, P2pNetworkSchedulerAction};
-use crate::rpc::{RpcAction, RpcRequest};
-use crate::snark::block_verify::SnarkBlockVerifyAction;
-use crate::snark::work_verify::SnarkWorkVerifyAction;
-use crate::snark::SnarkEvent;
-use crate::transition_frontier::genesis::TransitionFrontierGenesisAction;
-use crate::{BlockProducerAction, ExternalSnarkWorkerAction, Service, Store};
+use crate::{
+    action::CheckTimeoutsAction,
+    block_producer::{
+        vrf_evaluator::BlockProducerVrfEvaluatorAction, BlockProducerEvent,
+        BlockProducerVrfEvaluatorEvent,
+    },
+    external_snark_worker_effectful::ExternalSnarkWorkerEvent,
+    ledger::{read::LedgerReadAction, write::LedgerWriteAction},
+    p2p::{
+        channels::{
+            best_tip::P2pChannelsBestTipAction, rpc::P2pChannelsRpcAction,
+            snark_job_commitment::P2pChannelsSnarkJobCommitmentAction, ChannelId,
+            P2pChannelsMessageReceivedAction,
+        },
+        connection::{
+            incoming::P2pConnectionIncomingAction, outgoing::P2pConnectionOutgoingAction,
+            P2pConnectionErrorResponse, P2pConnectionResponse,
+        },
+        disconnection::{P2pDisconnectionAction, P2pDisconnectionReason},
+        P2pChannelEvent,
+    },
+    rpc::{RpcAction, RpcRequest},
+    snark::{block_verify::SnarkBlockVerifyAction, work_verify::SnarkWorkVerifyAction, SnarkEvent},
+    transition_frontier::genesis::TransitionFrontierGenesisAction,
+    BlockProducerAction, ExternalSnarkWorkerAction, Service, Store,
+};
 
 use super::{
     Event, EventSourceAction, EventSourceActionWithMeta, LedgerEvent, P2pConnectionEvent, P2pEvent,

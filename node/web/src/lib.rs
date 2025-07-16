@@ -9,9 +9,11 @@ pub use rayon::init_rayon;
 mod node;
 pub use node::{Node, NodeBuilder};
 
-use ::node::account::AccountSecretKey;
-use ::node::core::thread;
-use ::node::snark::{BlockVerifier, TransactionVerifier};
+use ::node::{
+    account::AccountSecretKey,
+    core::thread,
+    snark::{BlockVerifier, TransactionVerifier},
+};
 use anyhow::Context;
 use gloo_utils::format::JsValueSerdeExt;
 use ledger::proofs::provers::BlockProver;

@@ -2,18 +2,14 @@ mod p2p_network_kad_stream_state;
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use crate::ConnectionAddr;
-use crate::P2pNetworkKademliaAction;
-use crate::PeerId;
-use crate::StreamId;
+use crate::{ConnectionAddr, P2pNetworkKademliaAction, PeerId, StreamId};
 
 pub use self::p2p_network_kad_stream_state::*;
 
 mod p2p_network_kad_stream_actions;
 pub use self::p2p_network_kad_stream_actions::*;
 
-use super::P2pNetworkKadEntry;
-use super::CID;
+use super::{P2pNetworkKadEntry, CID};
 
 #[cfg(feature = "p2p-libp2p")]
 mod p2p_network_kad_stream_reducer;

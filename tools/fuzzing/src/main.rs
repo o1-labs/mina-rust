@@ -26,10 +26,10 @@ pub mod transaction_fuzzer {
     use mina_hasher::Fp;
     use mina_p2p_messages::bigint::BigInt;
     use openmina_core::constants::ConstraintConstantsUnversioned;
-    use std::io::{Read, Write};
-    use std::panic;
     use std::{
         env,
+        io::{Read, Write},
+        panic,
         process::{ChildStdin, ChildStdout},
     };
 

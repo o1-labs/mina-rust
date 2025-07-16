@@ -1,13 +1,13 @@
 use ledger::scan_state::currency::{Amount, Signed};
 use mina_p2p_messages::{list::List, v2};
 use openmina_core::{
-    block::ArcBlockWithHash, consensus::ConsensusConstants, constants::constraint_constants,
-};
-use openmina_core::{
+    block::ArcBlockWithHash,
     bug_condition,
     consensus::{
         global_sub_window, in_same_checkpoint_window, in_seed_update_range, relative_sub_window,
+        ConsensusConstants,
     },
+    constants::constraint_constants,
 };
 use p2p::P2pNetworkPubsubAction;
 use redux::{callback, Dispatcher, Timestamp};

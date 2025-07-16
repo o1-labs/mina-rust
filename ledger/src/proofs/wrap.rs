@@ -196,8 +196,7 @@ pub fn create_oracle_with_public_input<F: FieldWitness>(
     proof: &ProverProof<F>,
     public_input: &[F],
 ) -> Oracles<F> {
-    use mina_poseidon::constants::PlonkSpongeConstantsKimchi;
-    use mina_poseidon::sponge::DefaultFrSponge;
+    use mina_poseidon::{constants::PlonkSpongeConstantsKimchi, sponge::DefaultFrSponge};
     use poly_commitment::commitment::shift_scalar;
 
     // TODO: Don't clone the SRS here

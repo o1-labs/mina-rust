@@ -1,8 +1,10 @@
 use ledger::scan_state::transaction_logic::valid;
 use serde::{Deserialize, Serialize};
 
-use super::block_verify::{SnarkBlockVerifyError, SnarkBlockVerifyId};
-use super::work_verify::{SnarkWorkVerifyError, SnarkWorkVerifyId};
+use super::{
+    block_verify::{SnarkBlockVerifyError, SnarkBlockVerifyId},
+    work_verify::{SnarkWorkVerifyError, SnarkWorkVerifyId},
+};
 use crate::user_command_verify::SnarkUserCommandVerifyId;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

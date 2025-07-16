@@ -6,10 +6,9 @@ pub use p2p_connection_outgoing_actions::*;
 
 mod p2p_connection_outgoing_reducer;
 
-use std::net::IpAddr;
 #[cfg(feature = "p2p-libp2p")]
 use std::net::SocketAddr;
-use std::{fmt, str::FromStr};
+use std::{fmt, net::IpAddr, str::FromStr};
 
 use binprot_derive::{BinProtRead, BinProtWrite};
 use multiaddr::{Multiaddr, Protocol};

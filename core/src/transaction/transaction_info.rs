@@ -1,8 +1,10 @@
-use mina_p2p_messages::binprot::{
-    self,
-    macros::{BinProtRead, BinProtWrite},
+use mina_p2p_messages::{
+    binprot::{
+        self,
+        macros::{BinProtRead, BinProtWrite},
+    },
+    v2::NonZeroCurvePoint,
 };
-use mina_p2p_messages::v2::NonZeroCurvePoint;
 use serde::{Deserialize, Serialize};
 
 use super::{Transaction, TransactionHash};

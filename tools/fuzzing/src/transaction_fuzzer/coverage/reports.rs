@@ -1,8 +1,10 @@
 use super::cov::FileDump;
 use itertools::Itertools;
-use std::fs::File;
-use std::io::{BufRead, BufReader, Write};
-use std::{env, fmt, fs};
+use std::{
+    env, fmt, fs,
+    fs::File,
+    io::{BufRead, BufReader, Write},
+};
 
 //#[derive(Debug, Clone, Serialize)]
 pub struct LineCounter {

@@ -1,12 +1,15 @@
 use std::cmp::Ordering;
 
-use openmina_core::snark::{Snark, SnarkInfo, SnarkJobId};
-use openmina_core::ActionEvent;
+use openmina_core::{
+    snark::{Snark, SnarkInfo, SnarkJobId},
+    ActionEvent,
+};
 use serde::{Deserialize, Serialize};
 
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::snark::work_verify::SnarkWorkVerifyId;
+use crate::{
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    snark::work_verify::SnarkWorkVerifyId,
+};
 
 use super::SnarkPoolCandidateState;
 

@@ -1,12 +1,12 @@
 #![forbid(unsafe_code)]
 
 pub use libp2p::identity::{ed25519, Keypair};
-use libp2p::swarm::NetworkBehaviour;
-use libp2p::Swarm;
-use libp2p::{core::upgrade, noise, pnet, tcp, yamux, Transport};
 use libp2p::{
+    core::upgrade,
     futures::{AsyncRead, AsyncWrite},
-    identity, Multiaddr, SwarmBuilder,
+    identity, noise, pnet,
+    swarm::NetworkBehaviour,
+    tcp, yamux, Multiaddr, Swarm, SwarmBuilder, Transport,
 };
 
 pub use libp2p::futures;

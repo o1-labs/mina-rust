@@ -4,10 +4,9 @@ use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field};
 use mina_p2p_messages::v2::BlockTimeTimeStableV1;
 use rand::Rng;
 
-use crate::proofs::field::FieldWitness;
-use crate::proofs::to_field_elements::ToFieldElements;
-use crate::proofs::transaction::Check;
-use crate::proofs::witness::Witness;
+use crate::proofs::{
+    field::FieldWitness, to_field_elements::ToFieldElements, transaction::Check, witness::Witness,
+};
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum Sgn {

@@ -45,8 +45,10 @@ pub mod ro {
     }
 
     pub fn bits_random_oracle<const N: usize>(s: &str) -> [bool; N] {
-        use blake2::digest::{Update, VariableOutput};
-        use blake2::Blake2sVar;
+        use blake2::{
+            digest::{Update, VariableOutput},
+            Blake2sVar,
+        };
 
         let mut hasher = Blake2sVar::new(32).unwrap();
         hasher.update(s.as_bytes());

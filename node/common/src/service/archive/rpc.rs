@@ -1,11 +1,13 @@
 use binprot::BinProtWrite;
-use mina_p2p_messages::rpc_kernel::{Message, NeedsLength, Query, RpcMethod};
-use mina_p2p_messages::v2::{self, ArchiveRpc};
-use mio::event::Event;
-use mio::net::TcpStream;
-use mio::{Events, Interest, Poll, Registry, Token};
-use std::io::{self, Read, Write};
-use std::net::SocketAddr;
+use mina_p2p_messages::{
+    rpc_kernel::{Message, NeedsLength, Query, RpcMethod},
+    v2::{self, ArchiveRpc},
+};
+use mio::{event::Event, net::TcpStream, Events, Interest, Poll, Registry, Token};
+use std::{
+    io::{self, Read, Write},
+    net::SocketAddr,
+};
 
 const MAX_RECURSION_DEPTH: u8 = 25;
 

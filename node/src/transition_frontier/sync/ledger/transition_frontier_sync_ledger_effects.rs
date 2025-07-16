@@ -2,9 +2,10 @@ use redux::ActionMeta;
 
 use crate::Store;
 
-use super::snarked::TransitionFrontierSyncLedgerSnarkedAction;
-use super::staged::TransitionFrontierSyncLedgerStagedAction;
-use super::TransitionFrontierSyncLedgerAction;
+use super::{
+    snarked::TransitionFrontierSyncLedgerSnarkedAction,
+    staged::TransitionFrontierSyncLedgerStagedAction, TransitionFrontierSyncLedgerAction,
+};
 
 // TODO(refactor): all this should be in the reducers?
 

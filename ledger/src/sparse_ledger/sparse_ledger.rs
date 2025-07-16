@@ -295,9 +295,10 @@ impl LedgerIntf for SparseLedger {
 
 impl From<&SparseLedger> for mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2 {
     fn from(value: &SparseLedger) -> Self {
-        use mina_p2p_messages::v2::MinaBaseAccountBinableArgStableV2;
-        use mina_p2p_messages::v2::MinaBaseAccountIdStableV2;
-        use mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2Tree;
+        use mina_p2p_messages::v2::{
+            MinaBaseAccountBinableArgStableV2, MinaBaseAccountIdStableV2,
+            MinaBaseSparseLedgerBaseStableV2Tree,
+        };
 
         let value = value.inner.try_lock().unwrap();
 
@@ -389,8 +390,10 @@ impl TryFrom<&mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2> for Spars
     fn try_from(
         value: &mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2,
     ) -> Result<Self, Self::Error> {
-        use mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2Tree;
-        use mina_p2p_messages::v2::MinaBaseSparseLedgerBaseStableV2Tree::{Account, Hash, Node};
+        use mina_p2p_messages::v2::{
+            MinaBaseSparseLedgerBaseStableV2Tree,
+            MinaBaseSparseLedgerBaseStableV2Tree::{Account, Hash, Node},
+        };
 
         fn build_matrix(
             matrix: &mut HashesMatrix,

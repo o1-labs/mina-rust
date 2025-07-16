@@ -1,33 +1,38 @@
-use std::collections::{BTreeMap, HashMap, HashSet};
-use std::fmt::Display;
+use std::{
+    collections::{BTreeMap, HashMap, HashSet},
+    fmt::Display,
+};
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use ark_ff::Zero;
+use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
 use itertools::{FoldWhile, Itertools};
 use mina_hasher::{Fp, Hashable, ROInput};
-use mina_p2p_messages::binprot;
-use mina_p2p_messages::v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2};
-use mina_signer::CompressedPubKey;
-use mina_signer::NetworkId;
+use mina_p2p_messages::{
+    binprot,
+    v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2},
+};
+use mina_signer::{CompressedPubKey, NetworkId};
 use openmina_core::constants::ConstraintConstants;
 use openmina_macros::SerdeYojsonEnum;
-use poseidon::hash::params::{CODA_RECEIPT_UC, MINA_ZKAPP_MEMO};
-use poseidon::hash::{hash_noinputs, hash_with_kimchi, Inputs};
+use poseidon::hash::{
+    hash_noinputs, hash_with_kimchi,
+    params::{CODA_RECEIPT_UC, MINA_ZKAPP_MEMO},
+    Inputs,
+};
 
-use crate::proofs::witness::Witness;
-use crate::scan_state::transaction_logic::transaction_partially_applied::FullyApplied;
-use crate::scan_state::transaction_logic::zkapp_command::MaybeWithStatus;
-use crate::zkapps::non_snark::{LedgerNonSnark, ZkappNonSnark};
 use crate::{
-    scan_state::transaction_logic::transaction_applied::{CommandApplied, Varying},
+    proofs::witness::Witness,
+    scan_state::transaction_logic::{
+        transaction_applied::{CommandApplied, Varying},
+        transaction_partially_applied::FullyApplied,
+        zkapp_command::MaybeWithStatus,
+    },
     sparse_ledger::{LedgerIntf, SparseLedger},
-    Account, AccountId, ReceiptChainHash, Timing, TokenId,
-};
-use crate::{
-    zkapps, AccountIdOrderable, AppendToInputs, BaseLedger, ControlTag, VerificationKeyWire,
+    zkapps,
+    zkapps::non_snark::{LedgerNonSnark, ZkappNonSnark},
+    Account, AccountId, AccountIdOrderable, AppendToInputs, BaseLedger, ControlTag,
+    ReceiptChainHash, Timing, TokenId, VerificationKeyWire,
 };
 
-use self::zkapp_command::AccessedOrNot;
 use self::{
     local_state::{CallStack, LocalStateEnv, StackFrame},
     protocol_state::{GlobalState, ProtocolStateView},
@@ -37,14 +42,13 @@ use self::{
         TransactionApplied, ZkappCommandApplied,
     },
     transaction_union_payload::TransactionUnionPayload,
-    zkapp_command::{AccountUpdate, WithHash, ZkAppCommand},
+    zkapp_command::{AccessedOrNot, AccountUpdate, WithHash, ZkAppCommand},
 };
 
-use super::currency::SlotSpan;
-use super::fee_rate::FeeRate;
 use super::{
-    currency::{Amount, Balance, Fee, Index, Length, Magnitude, Nonce, Signed, Slot},
+    currency::{Amount, Balance, Fee, Index, Length, Magnitude, Nonce, Signed, Slot, SlotSpan},
     fee_excess::FeeExcess,
+    fee_rate::FeeRate,
     scan_state::transaction_snark::OneOrTwo,
 };
 use crate::zkapps::zkapp_logic::ZkAppCommandElt;
@@ -7562,8 +7566,9 @@ pub fn checked_cons_signed_command_payload(
     last_receipt_chain_hash: ReceiptChainHash,
     w: &mut Witness<Fp>,
 ) -> ReceiptChainHash {
-    use crate::proofs::transaction::legacy_input::CheckedLegacyInput;
-    use crate::proofs::transaction::transaction_snark::checked_legacy_hash;
+    use crate::proofs::transaction::{
+        legacy_input::CheckedLegacyInput, transaction_snark::checked_legacy_hash,
+    };
     use ::poseidon::hash::legacy;
 
     let mut inputs = payload.to_checked_legacy_input_owned(w);

@@ -1,8 +1,9 @@
 use mina_p2p_messages::v2::{self};
-use node::core::{channels::mpsc, thread};
-use node::ledger::write::BlockApplyResult;
-use std::env;
-use std::io::Write;
+use node::{
+    core::{channels::mpsc, thread},
+    ledger::write::BlockApplyResult,
+};
+use std::{env, io::Write};
 
 use mina_p2p_messages::v2::PrecomputedBlock;
 use openmina_core::NetworkConfig;
@@ -315,8 +316,10 @@ impl node::transition_frontier::archive::archive_service::ArchiveService for Nod
 mod rpc {}
 
 fn write_to_local_storage(base_path: &str, key: &str, data: &[u8]) -> Result<(), Error> {
-    use std::fs::{create_dir_all, File};
-    use std::path::Path;
+    use std::{
+        fs::{create_dir_all, File},
+        path::Path,
+    };
 
     let path = Path::new(base_path).join(key);
     if let Some(parent) = path.parent() {

@@ -7,8 +7,7 @@ use crate::{
     bigint::BigInt,
     list::List,
     number::{Int32, Int64, UInt32, UInt64},
-    string::ByteString,
-    string::ZkAppUri,
+    string::{ByteString, ZkAppUri},
 };
 
 /// Difference with `ToInputs` in `ledger` is that it can fail here, due

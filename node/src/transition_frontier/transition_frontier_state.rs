@@ -5,14 +5,16 @@ use mina_p2p_messages::v2::{
     MinaStateProtocolStateBodyValueStableV2, MinaStateProtocolStateValueStableV2, StateHash,
     TransactionHash,
 };
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
-use openmina_core::bug_condition;
+use openmina_core::{
+    block::{AppliedBlock, ArcBlockWithHash},
+    bug_condition,
+};
 use serde::{Deserialize, Serialize};
 
-use super::candidate::TransitionFrontierCandidatesState;
-use super::genesis::TransitionFrontierGenesisState;
-use super::sync::TransitionFrontierSyncState;
-use super::TransitionFrontierConfig;
+use super::{
+    candidate::TransitionFrontierCandidatesState, genesis::TransitionFrontierGenesisState,
+    sync::TransitionFrontierSyncState, TransitionFrontierConfig,
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct TransitionFrontierState {

@@ -4,10 +4,12 @@ use std::time::Duration;
 
 use node::p2p::PeerId;
 
-use crate::cluster::ClusterOcamlNodeId;
-use crate::node::{DaemonJson, OcamlNodeTestingConfig, OcamlStep};
-use crate::scenarios::ClusterRunner;
-use crate::{node::RustNodeTestingConfig, scenario::ScenarioStep};
+use crate::{
+    cluster::ClusterOcamlNodeId,
+    node::{DaemonJson, OcamlNodeTestingConfig, OcamlStep, RustNodeTestingConfig},
+    scenario::ScenarioStep,
+    scenarios::ClusterRunner,
+};
 
 /// Global test with OCaml nodes.
 /// Run an OCaml node as a seed node. Run three normal OCaml nodes connecting only to the seed node.

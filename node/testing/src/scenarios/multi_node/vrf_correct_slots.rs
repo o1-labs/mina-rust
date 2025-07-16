@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, str::FromStr, time::Duration};
 
-use node::account::AccountSecretKey;
 use node::{
+    account::AccountSecretKey,
     block_producer::{
         vrf_evaluator::VrfEvaluationOutputWithHash, BlockProducerEvent,
         BlockProducerVrfEvaluatorEvent,

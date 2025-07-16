@@ -4,19 +4,25 @@ pub use config::*;
 mod event;
 pub use event::*;
 
-use node::event_source::EventSourceAction;
-use node::p2p::connection::outgoing::{
-    P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts,
+use node::{
+    event_source::EventSourceAction,
+    p2p::{
+        connection::outgoing::{
+            P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts,
+        },
+        webrtc::SignalingMethod,
+        PeerId,
+    },
+    service::P2pDisconnectionService,
+    Action, CheckTimeoutsAction, State, Store,
 };
-use node::p2p::webrtc::SignalingMethod;
-use node::p2p::PeerId;
-use node::service::P2pDisconnectionService;
-use node::{Action, CheckTimeoutsAction, State, Store};
 use redux::EnablingCondition;
 use temp_dir::TempDir;
 
-use crate::cluster::ClusterNodeId;
-use crate::service::{DynEffects, NodeTestingService, PendingEventId};
+use crate::{
+    cluster::ClusterNodeId,
+    service::{DynEffects, NodeTestingService, PendingEventId},
+};
 
 pub struct Node {
     work_dir: TempDir,

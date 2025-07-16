@@ -11,11 +11,12 @@ use node::{
 use openmina_node_account::AccountPublicKey;
 use reqwest::Url;
 
-use node::core::log::inner::Level;
-use node::p2p::connection::outgoing::P2pConnectionOutgoingInitOpts;
-use node::p2p::identity::SecretKey;
-use node::service::Recorder;
-use node::SnarkerStrategy;
+use node::{
+    core::log::inner::Level,
+    p2p::{connection::outgoing::P2pConnectionOutgoingInitOpts, identity::SecretKey},
+    service::Recorder,
+    SnarkerStrategy,
+};
 
 use openmina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
 

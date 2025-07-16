@@ -23,46 +23,54 @@ pub use crate::cluster::runner::*;
 
 use strum_macros::{EnumIter, EnumString, IntoStaticStr};
 
-use crate::cluster::{Cluster, ClusterConfig};
-use crate::scenario::{Scenario, ScenarioId, ScenarioStep};
+use crate::{
+    cluster::{Cluster, ClusterConfig},
+    scenario::{Scenario, ScenarioId, ScenarioStep},
+};
 
-use self::multi_node::basic_connectivity_initial_joining::MultiNodeBasicConnectivityInitialJoining;
-use self::multi_node::basic_connectivity_peer_discovery::MultiNodeBasicConnectivityPeerDiscovery;
-use self::multi_node::connection_discovery::RustNodeAsSeed as P2pConnectionDiscoveryRustNodeAsSeed;
-use self::multi_node::connection_discovery::{
-    OCamlToRust, OCamlToRustViaSeed, RustToOCaml, RustToOCamlViaSeed,
-};
-use self::multi_node::pubsub_advanced::MultiNodePubsubPropagateBlock;
-use self::multi_node::sync_4_block_producers::MultiNodeSync4BlockProducers;
-use self::multi_node::vrf_correct_ledgers::MultiNodeVrfGetCorrectLedgers;
-use self::multi_node::vrf_correct_slots::MultiNodeVrfGetCorrectSlots;
-use self::multi_node::vrf_epoch_bounds_correct_ledgers::MultiNodeVrfEpochBoundsCorrectLedger;
-use self::multi_node::vrf_epoch_bounds_evaluation::MultiNodeVrfEpochBoundsEvaluation;
-use self::p2p::basic_connection_handling::{
-    AllNodesConnectionsAreSymmetric, MaxNumberOfPeersIncoming, MaxNumberOfPeersIs1,
-    SeedConnectionsAreSymmetric, SimultaneousConnections,
-};
-use self::p2p::basic_incoming_connections::{
-    AcceptIncomingConnection, AcceptMultipleIncomingConnections,
-};
-use self::p2p::basic_outgoing_connections::{
-    ConnectToInitialPeers, ConnectToInitialPeersBecomeReady, ConnectToUnavailableInitialPeers,
-    DontConnectToInitialPeerWithSameId, DontConnectToNodeWithSameId, DontConnectToSelfInitialPeer,
-    MakeMultipleOutgoingConnections, MakeOutgoingConnection,
-};
-use self::p2p::kademlia::KademliaBootstrap;
-use self::p2p::pubsub::P2pReceiveMessage;
-use self::p2p::signaling::P2pSignaling;
-use self::record_replay::block_production::RecordReplayBlockProduction;
-use self::record_replay::bootstrap::RecordReplayBootstrap;
-use self::simulation::small::SimulationSmall;
-use self::simulation::small_forever_real_time::SimulationSmallForeverRealTime;
-use self::solo_node::sync_to_genesis::SoloNodeSyncToGenesis;
-use self::solo_node::sync_to_genesis_custom::SoloNodeSyncToGenesisCustom;
-use self::solo_node::{
-    basic_connectivity_accept_incoming::SoloNodeBasicConnectivityAcceptIncoming,
-    basic_connectivity_initial_joining::SoloNodeBasicConnectivityInitialJoining,
-    bootstrap::SoloNodeBootstrap, sync_root_snarked_ledger::SoloNodeSyncRootSnarkedLedger,
+use self::{
+    multi_node::{
+        basic_connectivity_initial_joining::MultiNodeBasicConnectivityInitialJoining,
+        basic_connectivity_peer_discovery::MultiNodeBasicConnectivityPeerDiscovery,
+        connection_discovery::{
+            OCamlToRust, OCamlToRustViaSeed,
+            RustNodeAsSeed as P2pConnectionDiscoveryRustNodeAsSeed, RustToOCaml,
+            RustToOCamlViaSeed,
+        },
+        pubsub_advanced::MultiNodePubsubPropagateBlock,
+        sync_4_block_producers::MultiNodeSync4BlockProducers,
+        vrf_correct_ledgers::MultiNodeVrfGetCorrectLedgers,
+        vrf_correct_slots::MultiNodeVrfGetCorrectSlots,
+        vrf_epoch_bounds_correct_ledgers::MultiNodeVrfEpochBoundsCorrectLedger,
+        vrf_epoch_bounds_evaluation::MultiNodeVrfEpochBoundsEvaluation,
+    },
+    p2p::{
+        basic_connection_handling::{
+            AllNodesConnectionsAreSymmetric, MaxNumberOfPeersIncoming, MaxNumberOfPeersIs1,
+            SeedConnectionsAreSymmetric, SimultaneousConnections,
+        },
+        basic_incoming_connections::{AcceptIncomingConnection, AcceptMultipleIncomingConnections},
+        basic_outgoing_connections::{
+            ConnectToInitialPeers, ConnectToInitialPeersBecomeReady,
+            ConnectToUnavailableInitialPeers, DontConnectToInitialPeerWithSameId,
+            DontConnectToNodeWithSameId, DontConnectToSelfInitialPeer,
+            MakeMultipleOutgoingConnections, MakeOutgoingConnection,
+        },
+        kademlia::KademliaBootstrap,
+        pubsub::P2pReceiveMessage,
+        signaling::P2pSignaling,
+    },
+    record_replay::{
+        block_production::RecordReplayBlockProduction, bootstrap::RecordReplayBootstrap,
+    },
+    simulation::{small::SimulationSmall, small_forever_real_time::SimulationSmallForeverRealTime},
+    solo_node::{
+        basic_connectivity_accept_incoming::SoloNodeBasicConnectivityAcceptIncoming,
+        basic_connectivity_initial_joining::SoloNodeBasicConnectivityInitialJoining,
+        bootstrap::SoloNodeBootstrap, sync_root_snarked_ledger::SoloNodeSyncRootSnarkedLedger,
+        sync_to_genesis::SoloNodeSyncToGenesis,
+        sync_to_genesis_custom::SoloNodeSyncToGenesisCustom,
+    },
 };
 
 #[derive(EnumIter, EnumString, IntoStaticStr, derive_more::From, Clone, Copy)]

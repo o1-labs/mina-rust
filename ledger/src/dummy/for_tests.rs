@@ -1,5 +1,4 @@
-use mina_p2p_messages::binprot::BinProtRead;
-use mina_p2p_messages::v2::MinaBaseUserCommandStableV2;
+use mina_p2p_messages::{binprot::BinProtRead, v2::MinaBaseUserCommandStableV2};
 
 use crate::scan_state::transaction_logic::valid;
 

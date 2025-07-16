@@ -1,7 +1,6 @@
 use std::net::IpAddr;
 
-use libp2p::multiaddr::multiaddr;
-use libp2p::Multiaddr;
+use libp2p::{multiaddr::multiaddr, Multiaddr};
 use p2p::{
     connection::outgoing::{P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts},
     PeerId,

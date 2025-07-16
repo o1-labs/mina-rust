@@ -1,18 +1,23 @@
-use std::fmt;
-use std::net::{IpAddr, SocketAddr};
+use std::{
+    fmt,
+    net::{IpAddr, SocketAddr},
+};
 
 use derive_more::From;
 use serde::{Deserialize, Serialize};
 
-use crate::channels::signaling::discovery::SignalingDiscoveryChannelMsg;
-use crate::channels::signaling::exchange::SignalingExchangeChannelMsg;
-use crate::channels::streaming_rpc::StreamingRpcChannelMsg;
-use crate::webrtc::ConnectionAuthEncrypted;
-use crate::ConnectionAddr;
 use crate::{
-    channels::{transaction::TransactionPropagationChannelMsg, ChannelId, ChannelMsg, MsgId},
+    channels::{
+        signaling::{
+            discovery::SignalingDiscoveryChannelMsg, exchange::SignalingExchangeChannelMsg,
+        },
+        streaming_rpc::StreamingRpcChannelMsg,
+        transaction::TransactionPropagationChannelMsg,
+        ChannelId, ChannelMsg, MsgId,
+    },
     connection::P2pConnectionResponse,
-    PeerId,
+    webrtc::ConnectionAuthEncrypted,
+    ConnectionAddr, PeerId,
 };
 
 #[derive(Serialize, Deserialize, From, Debug, Clone)]
@@ -123,10 +128,11 @@ impl fmt::Display for P2pConnectionEvent {
 
 impl fmt::Display for P2pChannelEvent {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        use crate::channels::best_tip::BestTipPropagationChannelMsg;
-        use crate::channels::rpc::RpcChannelMsg;
-        use crate::channels::snark::SnarkPropagationChannelMsg;
-        use crate::channels::snark_job_commitment::SnarkJobCommitmentPropagationChannelMsg;
+        use crate::channels::{
+            best_tip::BestTipPropagationChannelMsg, rpc::RpcChannelMsg,
+            snark::SnarkPropagationChannelMsg,
+            snark_job_commitment::SnarkJobCommitmentPropagationChannelMsg,
+        };
 
         write!(f, "Channel, ")?;
         match self {

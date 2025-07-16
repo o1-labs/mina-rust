@@ -1,12 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-use crate::block_verify_effectful::SnarkBlockVerifyEffectfulAction;
-use crate::user_command_verify::SnarkUserCommandVerifyAction;
-use crate::user_command_verify_effectful::SnarkUserCommandVerifyEffectfulAction;
-use crate::work_verify_effectful::SnarkWorkVerifyEffectfulAction;
+use crate::{
+    block_verify_effectful::SnarkBlockVerifyEffectfulAction,
+    user_command_verify::SnarkUserCommandVerifyAction,
+    user_command_verify_effectful::SnarkUserCommandVerifyEffectfulAction,
+    work_verify_effectful::SnarkWorkVerifyEffectfulAction,
+};
 
-use super::block_verify::SnarkBlockVerifyAction;
-use super::work_verify::SnarkWorkVerifyAction;
+use super::{block_verify::SnarkBlockVerifyAction, work_verify::SnarkWorkVerifyAction};
 
 pub type SnarkActionWithMeta = redux::ActionWithMeta<SnarkAction>;
 pub type SnarkActionWithMetaRef<'a> = redux::ActionWithMeta<&'a SnarkAction>;

@@ -2,20 +2,18 @@ use mina_hasher::Fp;
 use mina_signer::CompressedPubKey;
 use openmina_core::constants::constraint_constants;
 
-use crate::scan_state::transaction_logic::zkapp_command::{Actions, SetOrKeep};
-use crate::scan_state::transaction_logic::TimingValidation;
 use crate::{
     scan_state::{
         currency::{Fee, Magnitude, SlotSpan},
         transaction_logic::{
-            protocol_state::GlobalStateSkeleton, zkapp_command::CheckAuthorizationResult,
-            TransactionFailure,
+            protocol_state::GlobalStateSkeleton,
+            zkapp_command::{Actions, CheckAuthorizationResult, SetOrKeep},
+            TimingValidation, TransactionFailure,
         },
     },
     zkapps::intefaces::*,
-    AuthRequired, MyCow, TokenId,
+    AuthRequired, MyCow, Permissions, SetVerificationKey, TokenId, VerificationKeyWire,
 };
-use crate::{Permissions, SetVerificationKey, VerificationKeyWire};
 
 use crate::proofs::{
     field::{Boolean, ToBoolean},

@@ -1,11 +1,11 @@
 use std::{fmt, str::FromStr};
 
-use mina_p2p_messages::binprot::{
-    self,
-    macros::{BinProtRead, BinProtWrite},
-};
 use mina_p2p_messages::{
     b58::FromBase58CheckError,
+    binprot::{
+        self,
+        macros::{BinProtRead, BinProtWrite},
+    },
     v2::{NonZeroCurvePoint, NonZeroCurvePointUncompressedStableV1},
 };
 use serde::{Deserialize, Serialize};

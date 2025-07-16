@@ -1,10 +1,11 @@
-use std::fs;
-use std::path::Path;
+use std::{fs, path::Path};
 
 use argon2::{password_hash::SaltString, Argon2, PasswordHasher};
 use base64::Engine;
-use crypto_secretbox::aead::{Aead, OsRng};
-use crypto_secretbox::{AeadCore, KeyInit, XSalsa20Poly1305};
+use crypto_secretbox::{
+    aead::{Aead, OsRng},
+    AeadCore, KeyInit, XSalsa20Poly1305,
+};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug)]

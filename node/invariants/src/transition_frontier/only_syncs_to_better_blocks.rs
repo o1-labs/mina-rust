@@ -1,6 +1,7 @@
-use node::core::block::ArcBlockWithHash;
-use node::core::consensus::consensus_take;
-use node::{ActionKind, ActionWithMeta, Store};
+use node::{
+    core::{block::ArcBlockWithHash, consensus::consensus_take},
+    ActionKind, ActionWithMeta, Store,
+};
 
 use crate::{Invariant, InvariantResult};
 

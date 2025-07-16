@@ -272,8 +272,7 @@ fn create_fee_transfers<'a>(
 fn check_coinbase<A, B>(
     (fst, snd): &(PreDiffTwo<A, B>, Option<PreDiffOne<A, B>>),
 ) -> Result<(), PreDiffError> {
-    use diff::AtMostOne as O;
-    use diff::AtMostTwo::*;
+    use diff::{AtMostOne as O, AtMostTwo::*};
 
     match (
         &fst.coinbase,

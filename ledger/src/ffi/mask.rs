@@ -11,8 +11,7 @@ use crate::{
     account::{Account, AccountId},
     address::Address,
     base::{AccountIndex, BaseLedger, MerklePath},
-    ffi::util::*,
-    ffi::DatabaseFFI,
+    ffi::{util::*, DatabaseFFI},
     short_backtrace, Mask, UnregisterBehavior,
 };
 

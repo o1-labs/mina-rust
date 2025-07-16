@@ -2,9 +2,10 @@ pub mod bootstrap;
 pub mod request;
 pub mod stream;
 
-pub use self::bootstrap::P2pNetworkKadBootstrapAction;
-pub use self::request::P2pNetworkKadRequestAction;
-pub use self::stream::P2pNetworkKademliaStreamAction;
+pub use self::{
+    bootstrap::P2pNetworkKadBootstrapAction, request::P2pNetworkKadRequestAction,
+    stream::P2pNetworkKademliaStreamAction,
+};
 
 mod p2p_network_kad_state;
 pub use self::p2p_network_kad_state::*;

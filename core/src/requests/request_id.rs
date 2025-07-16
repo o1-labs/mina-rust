@@ -1,5 +1,4 @@
-use std::fmt;
-use std::marker::PhantomData;
+use std::{fmt, marker::PhantomData};
 
 pub trait RequestIdType {
     fn request_id_type() -> &'static str;

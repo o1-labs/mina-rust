@@ -1,8 +1,7 @@
 use core::slice;
 use std::{
     collections::HashMap,
-    io::Read,
-    io::{Cursor, Seek, SeekFrom},
+    io::{Cursor, Read, Seek, SeekFrom},
     path::Path,
 };
 

@@ -60,8 +60,7 @@ impl LockedFile {
 
 #[cfg(unix)]
 mod sys {
-    use std::fs::File;
-    use std::os::unix::io::AsRawFd;
+    use std::{fs::File, os::unix::io::AsRawFd};
 
     fn flock(file: &File, flag: libc::c_int) -> std::io::Result<()> {
         let ret = unsafe { libc::flock(file.as_raw_fd(), flag) };
@@ -99,13 +98,13 @@ mod sys {
 
 #[cfg(windows)]
 mod sys {
-    use std::fs::File;
-    use std::mem;
-    use std::os::windows::io::AsRawHandle;
+    use std::{fs::File, mem, os::windows::io::AsRawHandle};
 
-    use windows_sys::Win32::Foundation::HANDLE;
-    use windows_sys::Win32::Storage::FileSystem::{
-        LockFileEx, UnlockFile, LOCKFILE_EXCLUSIVE_LOCK, LOCKFILE_FAIL_IMMEDIATELY,
+    use windows_sys::Win32::{
+        Foundation::HANDLE,
+        Storage::FileSystem::{
+            LockFileEx, UnlockFile, LOCKFILE_EXCLUSIVE_LOCK, LOCKFILE_FAIL_IMMEDIATELY,
+        },
     };
 
     pub(super) fn try_lock_exclusive(file: &File) -> std::io::Result<()> {

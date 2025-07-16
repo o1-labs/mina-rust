@@ -3,19 +3,25 @@ use std::marker::PhantomData;
 use mina_hasher::Fp;
 use mina_signer::CompressedPubKey;
 
-use crate::proofs::field::{Boolean, FieldWitness};
-use crate::proofs::to_field_elements::ToFieldElements;
-use crate::proofs::transaction::Check;
-
-use crate::scan_state::currency::{self, SlotSpan, TxnVersion};
-use crate::zkapps::zkapp_logic;
-
-use crate::scan_state::transaction_logic::zkapp_command::{
-    self, CheckAuthorizationResult, SetOrKeep,
+use crate::proofs::{
+    field::{Boolean, FieldWitness},
+    to_field_elements::ToFieldElements,
+    transaction::Check,
 };
-use crate::scan_state::transaction_logic::{TimingValidation, TransactionFailure};
-use crate::sparse_ledger::LedgerIntf;
-use crate::{AccountId, AuthRequired, MyCow, ReceiptChainHash, TokenId, ZkAppAccount};
+
+use crate::{
+    scan_state::currency::{self, SlotSpan, TxnVersion},
+    zkapps::zkapp_logic,
+};
+
+use crate::{
+    scan_state::transaction_logic::{
+        zkapp_command::{self, CheckAuthorizationResult, SetOrKeep},
+        TimingValidation, TransactionFailure,
+    },
+    sparse_ledger::LedgerIntf,
+    AccountId, AuthRequired, MyCow, ReceiptChainHash, TokenId, ZkAppAccount,
+};
 
 pub trait WitnessGenerator<F: FieldWitness>
 where

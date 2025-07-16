@@ -1,10 +1,13 @@
 use clap::Parser;
 
 use node::p2p::webrtc::Host;
-use openmina_node_testing::cluster::{Cluster, ClusterConfig};
-use openmina_node_testing::scenario::Scenario;
-use openmina_node_testing::scenarios::Scenarios;
-use openmina_node_testing::{exit_with_error, server, setup};
+use openmina_node_testing::{
+    cluster::{Cluster, ClusterConfig},
+    exit_with_error,
+    scenario::Scenario,
+    scenarios::Scenarios,
+    server, setup,
+};
 
 pub type CommandError = anyhow::Error;
 

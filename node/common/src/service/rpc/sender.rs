@@ -4,16 +4,16 @@ use serde::Serialize;
 #[cfg(target_family = "wasm")]
 use wasm_bindgen::prelude::*;
 
-use node::core::channels::{mpsc, oneshot};
-use node::p2p::connection::outgoing::P2pConnectionOutgoingInitOpts;
-use node::rpc::*;
+use node::{
+    core::channels::{mpsc, oneshot},
+    p2p::connection::outgoing::P2pConnectionOutgoingInitOpts,
+    rpc::*,
+};
 
-use super::ledger::Ledger;
-use super::state::State;
-use super::stats::Stats;
-use super::transaction_pool::TransactionPool;
-use super::transition_frontier::TransitionFrontier;
-use super::NodeRpcRequest;
+use super::{
+    ledger::Ledger, state::State, stats::Stats, transaction_pool::TransactionPool,
+    transition_frontier::TransitionFrontier, NodeRpcRequest,
+};
 
 #[derive(Clone)]
 #[cfg_attr(target_family = "wasm", wasm_bindgen)]

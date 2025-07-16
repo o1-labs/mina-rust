@@ -501,8 +501,7 @@ fn verify_with(
     proof: &ProverProof<Fq>,
     public_input: &[Fq],
 ) -> Result<(), VerifyError> {
-    use kimchi::groupmap::GroupMap;
-    use kimchi::mina_curves::pasta::PallasParameters;
+    use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
     use poly_commitment::evaluation_proof::OpeningProof;
 
@@ -527,9 +526,7 @@ pub struct VerificationContext<'a> {
 }
 
 fn batch_verify(proofs: &[VerificationContext]) -> Result<(), VerifyError> {
-    use kimchi::groupmap::GroupMap;
-    use kimchi::mina_curves::pasta::PallasParameters;
-    use kimchi::verifier::Context;
+    use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters, verifier::Context};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
     use poly_commitment::evaluation_proof::OpeningProof;
 
@@ -933,8 +930,10 @@ mod on_fail {
         zkapp_statement: &ZkappStatement,
         sideloaded_proof: &PicklesProofProofsVerified2ReprStableV2,
     ) {
-        use mina_p2p_messages::binprot;
-        use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
+        use mina_p2p_messages::{
+            binprot,
+            binprot::macros::{BinProtRead, BinProtWrite},
+        };
 
         #[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]
         struct VerifyZkapp {
@@ -1046,8 +1045,10 @@ mod tests {
 
     #[test]
     fn test_verify_zkapp() {
-        use mina_p2p_messages::binprot;
-        use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
+        use mina_p2p_messages::{
+            binprot,
+            binprot::macros::{BinProtRead, BinProtWrite},
+        };
 
         #[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]
         struct VerifyZkapp {

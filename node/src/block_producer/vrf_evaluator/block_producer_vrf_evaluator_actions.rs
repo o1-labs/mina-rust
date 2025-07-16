@@ -1,23 +1,18 @@
 use std::sync::Arc;
 
-use crate::account::AccountPublicKey;
-use crate::block_producer::vrf_evaluator::BlockProducerVrfEvaluatorStatus;
-use crate::block_producer::vrf_evaluator::EpochContext;
+use crate::{
+    account::AccountPublicKey,
+    block_producer::vrf_evaluator::{BlockProducerVrfEvaluatorStatus, EpochContext},
+};
 use mina_p2p_messages::v2::{
     ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
     ConsensusProofOfStakeDataEpochDataStakingValueVersionedValueStableV1, LedgerHash,
 };
-use openmina_core::action_info;
-use openmina_core::action_trace;
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::ActionEvent;
+use openmina_core::{action_info, action_trace, block::ArcBlockWithHash, ActionEvent};
 use serde::{Deserialize, Serialize};
-use vrf::VrfEvaluationOutput;
-use vrf::VrfWonSlot;
+use vrf::{VrfEvaluationOutput, VrfWonSlot};
 
-use super::DelegatorTable;
-use super::InterruptReason;
-use super::{EpochData, VrfEvaluatorInput};
+use super::{DelegatorTable, EpochData, InterruptReason, VrfEvaluatorInput};
 
 pub type BlockProducerVrfEvaluatorActionWithMeta =
     redux::ActionWithMeta<BlockProducerVrfEvaluatorAction>;

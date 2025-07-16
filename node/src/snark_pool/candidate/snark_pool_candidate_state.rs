@@ -4,9 +4,10 @@ use openmina_core::snark::{Snark, SnarkInfo, SnarkJobId};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::snark::work_verify::SnarkWorkVerifyId;
+use crate::{
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    snark::work_verify::SnarkWorkVerifyId,
+};
 
 static EMPTY_PEER_WORK_CANDIDATES: BTreeMap<SnarkJobId, SnarkPoolCandidateState> = BTreeMap::new();
 

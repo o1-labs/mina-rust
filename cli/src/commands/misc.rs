@@ -1,6 +1,5 @@
 use libp2p_identity::PeerId;
-use node::account::AccountSecretKey;
-use node::p2p::identity::SecretKey;
+use node::{account::AccountSecretKey, p2p::identity::SecretKey};
 
 #[derive(Debug, clap::Args)]
 pub struct Misc {

@@ -4,25 +4,27 @@ pub use ledger_read_actions::*;
 
 mod ledger_read_state;
 pub use ledger_read_state::*;
-use openmina_core::block::AppliedBlock;
-use openmina_core::requests::{RequestId, RpcId, RpcIdType};
-use p2p::channels::rpc::P2pRpcId;
-use p2p::PeerId;
+use openmina_core::{
+    block::AppliedBlock,
+    requests::{RequestId, RpcId, RpcIdType},
+};
+use p2p::{channels::rpc::P2pRpcId, PeerId};
 use redux::Callback;
 
 mod ledger_read_reducer;
 
-use std::collections::BTreeMap;
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
 use mina_p2p_messages::v2;
 use serde::{Deserialize, Serialize};
 
-use crate::account::AccountPublicKey;
-use crate::block_producer::vrf_evaluator::DelegatorTable;
-use crate::ledger::LedgerAddress;
-use crate::p2p::channels::rpc::StagedLedgerAuxAndPendingCoinbases;
-use crate::rpc::{AccountQuery, RpcScanStateSummaryScanStateJob};
+use crate::{
+    account::AccountPublicKey,
+    block_producer::vrf_evaluator::DelegatorTable,
+    ledger::LedgerAddress,
+    p2p::channels::rpc::StagedLedgerAuxAndPendingCoinbases,
+    rpc::{AccountQuery, RpcScanStateSummaryScanStateJob},
+};
 
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy)]
 pub enum LedgerReadKind {
