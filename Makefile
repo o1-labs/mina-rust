@@ -32,6 +32,12 @@ check-tx-fuzzing: ## Check the transaction fuzzing tools, requires nightly Rust
 check-format: ## Check code formatting
 	cargo +nightly fmt -- --check
 
+.PHONY: check-md
+check-md: ## Check if markdown files are properly formatted
+	@echo "Checking markdown formatting..."
+	npx prettier --check "**/*.md"
+	@echo "Markdown format check completed."
+
 .PHONY: clean
 clean: ## Clean build artifacts
 	cargo clean
@@ -39,6 +45,12 @@ clean: ## Clean build artifacts
 .PHONY: format
 format: ## Format code using rustfmt
 	cargo +nightly fmt
+
+.PHONY: format-md
+format-md: ## Format all markdown files to wrap at 80 characters
+	@echo "Formatting markdown files..."
+	npx prettier --write "**/*.md"
+	@echo "Markdown files have been formatted to 80 characters."
 
 .PHONY: lint
 lint: ## Run linter (clippy)

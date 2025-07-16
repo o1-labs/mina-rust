@@ -1,13 +1,16 @@
 # Run Block Producing Node on Devnet
 
-This guide is intended for setting up block producer nodes on **Mina Devnet** only.  
-Do not use this guide for Mina Mainnet until necessary security audits are complete.
+This guide is intended for setting up block producer nodes on **Mina Devnet**
+only.  
+Do not use this guide for Mina Mainnet until necessary security audits are
+complete.
 
 ---
 
 ## Prerequisites
 
-Ensure Docker and Docker Compose are installed on your system - [Docker Installation Guide](./docker-installation.md)
+Ensure Docker and Docker Compose are installed on your system -
+[Docker Installation Guide](./docker-installation.md)
 
 ## Download & Start the Node
 
@@ -25,18 +28,22 @@ Ensure Docker and Docker Compose are installed on your system - [Docker Installa
 
 2. **Prepare Your Keys**
 
-   [Docker Compose](../docker-compose.block-producer.yml) references `openmina-workdir`. It stores a private key and logs for block production.
-   Place your block producer's private key into the `openmina-workdir` directory and name it `producer-key`:
+   [Docker Compose](../docker-compose.block-producer.yml) references
+   `openmina-workdir`. It stores a private key and logs for block production.
+   Place your block producer's private key into the `openmina-workdir` directory
+   and name it `producer-key`:
 
    ```bash
    cp /path/to/your/private_key openmina-workdir/producer-key
    ```
 
-   Replace `/path/to/your/private_key` with the actual path to your private key file.
+   Replace `/path/to/your/private_key` with the actual path to your private key
+   file.
 
 3. **Launch Block Producer**
 
-   Use `MINA_PRIVKEY_PASS` to set the private key password. Optionally, use `COINBASE_RECEIVER` to set a different coinbase receiver:
+   Use `MINA_PRIVKEY_PASS` to set the private key password. Optionally, use
+   `COINBASE_RECEIVER` to set a different coinbase receiver:
 
    ```bash
    env COINBASE_RECEIVER="YourWalletAddress" MINA_PRIVKEY_PASS="YourPassword" \
@@ -45,18 +52,24 @@ Ensure Docker and Docker Compose are installed on your system - [Docker Installa
 
    Optional parameters:
 
-   `OPENMINA_LIBP2P_EXTERNAL_IP` Sets your node’s external IP address to help other nodes find it.
+   `OPENMINA_LIBP2P_EXTERNAL_IP` Sets your node’s external IP address to help
+   other nodes find it.
 
    `OPENMINA_LIBP2P_PORT` Sets the port for Libp2p communication.
 
 4. **Go to Dashboard**
 
-   Visit [http://localhost:8070](http://localhost:8070) to [monitor sync](http://localhost:8070/dashboard) and [block production](http://localhost:8070/block-production).
+   Visit [http://localhost:8070](http://localhost:8070) to
+   [monitor sync](http://localhost:8070/dashboard) and
+   [block production](http://localhost:8070/block-production).
 
 ### Access Logs
 
-Logs are stored in `openmina-workdir` with filenames like `openmina.log.2024-10-14`, `openmina.log.2024-10-15`, etc.
+Logs are stored in `openmina-workdir` with filenames like
+`openmina.log.2024-10-14`, `openmina.log.2024-10-15`, etc.
 
 ### Provide Feedback
 
-Collect logs from `openmina-workdir` and report issues on the [rust-node-testing](https://discord.com/channels/484437221055922177/1290662938734231552) discord channel. Include reproduction steps if possible.
+Collect logs from `openmina-workdir` and report issues on the
+[rust-node-testing](https://discord.com/channels/484437221055922177/1290662938734231552)
+discord channel. Include reproduction steps if possible.
