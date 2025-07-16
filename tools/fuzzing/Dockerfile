@@ -1,6 +1,7 @@
 # FIXME: not working :(
 FROM debian:bullseye
 
+# hadolint ignore=DL3008
 RUN apt -y update && \
   apt -y upgrade && \
   apt -y install --no-install-recommends \

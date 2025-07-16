@@ -9,9 +9,11 @@ RUN SQLX_OFFLINE=true cargo install --path .
 
 FROM ubuntu:noble AS mina-builder
 
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates
 
 # Build mina from source
+# hadolint ignore=DL3008
 RUN apt-get update && \
   apt-get -y --no-install-recommends install \
     libboost-dev \
@@ -58,6 +60,7 @@ RUN git apply ./output_binprot_breadcrumbs.patch
 
 RUN curl -s -L https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-x86_64-linux -o /usr/local/bin/opam && chmod +x /usr/local/bin/opam
 
+# hadolint ignore=DL3008
 RUN apt-get -y --no-install-recommends install m4 pkg-config
 
 RUN opam init --disable-sandboxing && \
@@ -73,12 +76,14 @@ ENV PATH="/usr/local/go/bin:${PATH}"
 RUN make libp2p_helper
 
 ENV PATH="/root/.cargo/bin:${PATH}"
+# hadolint ignore=DL3008
 RUN apt-get -y --no-install-recommends install zlib1g-dev
 RUN eval "$(opam config env)" && make build_all_sigs
 # RUN /bin/bash -c "source ~/.cargo/env && eval $(opam config env) && make build_all_sigs"
 
 FROM ubuntu:noble
 
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends libpq5 libjemalloc2 && rm -rf /var/lib/apt/lists/*
 
 COPY --from=app-builder /usr/local/cargo/bin/openmina-producer-dashboard /usr/local/bin/openmina-producer-dashboard

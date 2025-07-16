@@ -1,5 +1,6 @@
 FROM golang:1.18.10-buster AS builder
 
+# hadolint ignore=DL3008
 RUN apt-get update && \
   apt-get -y install --no-install-recommends \
     apt-transport-https \

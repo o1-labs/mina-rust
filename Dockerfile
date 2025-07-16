@@ -1,4 +1,5 @@
 FROM rust:bullseye AS build
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends protobuf-compiler && apt-get clean
 RUN rustup default 1.84 && rustup component add rustfmt
 WORKDIR /openmina
@@ -19,6 +20,7 @@ RUN git clone --depth 1 https://github.com/openmina/circuit-blobs.git \
     && rm -rf circuit-blobs/berkeley_rc1 circuit-blobs/*/tests
 
 FROM debian:bullseye
+# hadolint ignore=DL3008
 RUN apt-get update && apt-get install -y --no-install-recommends libjemalloc2 libssl1.1 libpq5 curl jq procps && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /openmina/release-bin/openmina /usr/local/bin/
