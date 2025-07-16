@@ -17,7 +17,7 @@ jobs:
           sudo apt install -y protobuf-compiler
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: 1.84
+          toolchain: nightly
           components: rustfmt, clippy
       - name: rustfmt
         run: make check-format
