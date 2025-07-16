@@ -43,6 +43,7 @@ build-vrf: ## Build the VRF package
 build-wasm: ## Build WebAssembly node
 	@cd node/web && cargo +nightly build \
 		--release --target wasm32-unknown-unknown
+# Update ./.gitignore accordingly if the out-dir is changed
 	@wasm-bindgen --keep-debug --web \
 		--out-dir pkg \
 		target/wasm32-unknown-unknown/release/openmina_node_web.wasm

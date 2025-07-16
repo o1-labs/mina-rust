@@ -4,3 +4,6 @@ circuit-blobs
 .DS_Store
 *.profraw
 node_modules
+
+# Output of build-wasm
+pkg/
