@@ -26,4 +26,4 @@ jobs:
         env:
           RUSTFLAGS: -D warnings
       - name: clippy
-        run: cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
+        run: make lint
