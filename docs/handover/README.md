@@ -43,6 +43,7 @@ This directory contains comprehensive documentation for understanding and workin
 - [Component Summaries](#component-summaries)
 - [Git Workflow](#git-workflow)
 - [P2P Evolution Plan](#p2p-evolution-plan)
+- [OCaml Coordination](#ocaml-coordination)
 
 ---
 
@@ -200,6 +201,13 @@ Evolution plan for Mina's P2P networking layer:
 - Four-phase implementation strategy with QUIC transport integration
 - Migration from libp2p to unified protocol across OCaml and Rust nodes
 - Requires coordination with OCaml Mina team for ecosystem adoption
+
+### [OCaml Coordination](ocaml-coordination.md)
+Coordination needs between OCaml and Rust implementations:
+- Maintenance burden coordination (circuit generation and fuzzer branches)
+- Cross-implementation testing challenges and potential improvements
+- Shared infrastructure dependencies (P2P evolution, archive service)
+- Protocol compatibility coordination (hardfork handling)
 
 ## Recommended Reading Order
 
