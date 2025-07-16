@@ -1,8 +1,9 @@
 pub use redux::TimeService;
 
-pub use crate::channels::P2pChannelsService;
-pub use crate::connection::P2pConnectionService;
-pub use crate::disconnection_effectful::P2pDisconnectionService;
+pub use crate::{
+    channels::P2pChannelsService, connection::P2pConnectionService,
+    disconnection_effectful::P2pDisconnectionService,
+};
 
 #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-libp2p"))]
 pub use crate::{P2pCryptoService, P2pMioService, P2pNetworkService};

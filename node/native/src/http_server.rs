@@ -9,8 +9,7 @@ use warp::{
     Filter, Rejection, Reply,
 };
 
-use node::core::snark::SnarkJobId;
-use node::rpc::*;
+use node::{core::snark::SnarkJobId, rpc::*};
 
 use openmina_node_common::rpc::{
     RpcActionStatsGetResponse, RpcSender, RpcSnarkPoolGetResponse, RpcSnarkerJobCommitResponse,
@@ -737,8 +736,10 @@ async fn recover(rejection: warp::Rejection) -> Result<impl warp::Reply, warp::R
     }
 }
 
-use warp::filters::BoxedFilter;
-use warp::reply::{json, Json, WithStatus};
+use warp::{
+    filters::BoxedFilter,
+    reply::{json, Json, WithStatus},
+};
 
 fn optq<T: 'static + Default + Send + DeserializeOwned>() -> BoxedFilter<(T,)> {
     warp::any()

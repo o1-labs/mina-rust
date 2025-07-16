@@ -1,16 +1,22 @@
-use openmina_core::log::inner::field::{display, DisplayValue};
-use openmina_core::log::inner::Value;
-use openmina_core::log::{time_to_str, ActionEvent, EventContext};
-use p2p::connection::P2pConnectionEffectfulAction;
-use p2p::{P2pNetworkConnectionError, P2pNetworkSchedulerAction, PeerId};
+use openmina_core::log::{
+    inner::{
+        field::{display, DisplayValue},
+        Value,
+    },
+    time_to_str, ActionEvent, EventContext,
+};
+use p2p::{
+    connection::P2pConnectionEffectfulAction, P2pNetworkConnectionError, P2pNetworkSchedulerAction,
+    PeerId,
+};
 
-use crate::p2p::channels::P2pChannelsAction;
-use crate::p2p::connection::P2pConnectionAction;
-use crate::p2p::network::P2pNetworkAction;
-use crate::p2p::P2pAction;
-use crate::snark::SnarkAction;
-use crate::transition_frontier::candidate::TransitionFrontierCandidateAction;
 use crate::{
+    p2p::{
+        channels::P2pChannelsAction, connection::P2pConnectionAction, network::P2pNetworkAction,
+        P2pAction,
+    },
+    snark::SnarkAction,
+    transition_frontier::candidate::TransitionFrontierCandidateAction,
     Action, ActionWithMetaRef, BlockProducerAction, Service, Store, TransitionFrontierAction,
 };
 

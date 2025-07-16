@@ -1,12 +1,12 @@
 use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
-use crate::transition_frontier::sync::TransitionFrontierSyncAction;
-use crate::TransitionFrontierAction;
+use crate::{transition_frontier::sync::TransitionFrontierSyncAction, TransitionFrontierAction};
 
-use super::snarked::TransitionFrontierSyncLedgerSnarkedAction;
-use super::staged::TransitionFrontierSyncLedgerStagedAction;
-use super::TransitionFrontierSyncLedgerState;
+use super::{
+    snarked::TransitionFrontierSyncLedgerSnarkedAction,
+    staged::TransitionFrontierSyncLedgerStagedAction, TransitionFrontierSyncLedgerState,
+};
 
 pub type TransitionFrontierSyncLedgerActionWithMeta =
     redux::ActionWithMeta<TransitionFrontierSyncLedgerAction>;

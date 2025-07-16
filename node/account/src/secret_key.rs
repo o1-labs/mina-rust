@@ -1,10 +1,10 @@
 use std::{fmt, fs, io, path::Path, str::FromStr};
 
 use mina_p2p_messages::{bigint::BigInt, v2::SignatureLibPrivateKeyStableV1};
-use mina_signer::seckey::SecKeyError;
-use mina_signer::{keypair::KeypairError, CompressedPubKey, Keypair};
-use openmina_core::constants::GENESIS_PRODUCER_SK;
-use openmina_core::{EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError};
+use mina_signer::{keypair::KeypairError, seckey::SecKeyError, CompressedPubKey, Keypair};
+use openmina_core::{
+    constants::GENESIS_PRODUCER_SK, EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError,
+};
 use rand::{rngs::StdRng, CryptoRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 

@@ -2,8 +2,7 @@ use mina_p2p_messages::v2::{
     MinaBaseProtocolConstantsCheckedValueStableV1, StateHash, UnsignedExtendedUInt32StableV1,
 };
 use multihash::{Blake2b256, Hasher};
-use time::macros::format_description;
-use time::OffsetDateTime;
+use time::{macros::format_description, OffsetDateTime};
 
 use std::{
     fmt::{self, Debug, Display, Formatter},

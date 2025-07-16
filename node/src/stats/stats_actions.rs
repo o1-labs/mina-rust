@@ -2,8 +2,7 @@ use std::collections::{BTreeMap, VecDeque};
 
 use mina_p2p_messages::v2::StateHash;
 use redux::Timestamp;
-use serde::ser::SerializeMap;
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{ser::SerializeMap, Deserialize, Deserializer, Serialize, Serializer};
 
 use crate::ActionKind;
 

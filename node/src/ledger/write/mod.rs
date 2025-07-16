@@ -1,6 +1,5 @@
 mod ledger_write_actions;
-use ledger::scan_state::transaction_logic::valid;
-use ledger::{Account, AccountId, AccountIndex, TokenId};
+use ledger::{scan_state::transaction_logic::valid, Account, AccountId, AccountIndex, TokenId};
 pub use ledger_write_actions::*;
 
 mod ledger_write_state;
@@ -9,19 +8,26 @@ use openmina_core::block::AppliedBlock;
 
 mod ledger_write_reducer;
 
-use std::collections::{BTreeMap, BTreeSet};
-use std::sync::Arc;
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    sync::Arc,
+};
 
-use ledger::scan_state::scan_state::transaction_snark::OneOrTwo;
-use ledger::scan_state::scan_state::AvailableJobMessage;
+use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
 use mina_p2p_messages::v2::{self, StateBodyHash};
 use serde::{Deserialize, Serialize};
 
-use crate::block_producer_effectful::StagedLedgerDiffCreateOutput;
-use crate::core::block::ArcBlockWithHash;
-use crate::core::snark::{Snark, SnarkJobId};
-use crate::transition_frontier::sync::ledger::staged::StagedLedgerAuxAndPendingCoinbasesValid;
-use crate::transition_frontier::sync::TransitionFrontierRootSnarkedLedgerUpdates;
+use crate::{
+    block_producer_effectful::StagedLedgerDiffCreateOutput,
+    core::{
+        block::ArcBlockWithHash,
+        snark::{Snark, SnarkJobId},
+    },
+    transition_frontier::sync::{
+        ledger::staged::StagedLedgerAuxAndPendingCoinbasesValid,
+        TransitionFrontierRootSnarkedLedgerUpdates,
+    },
+};
 
 #[derive(Serialize, Deserialize, Debug, Eq, PartialEq, Clone, Copy)]
 pub enum LedgerWriteKind {

@@ -4,13 +4,16 @@ use firestore::FirestoreDb;
 use serde::Serialize;
 
 use sqlx::{Row, SqlitePool};
-use std::collections::{HashMap, HashSet};
-use std::fs;
+use std::{
+    collections::{HashMap, HashSet},
+    fs,
+};
 
-use crate::config::Config;
-use crate::remote_db::BlockInfo;
-use crate::remote_db::HeartbeatChunkState;
-use crate::time::*;
+use crate::{
+    config::Config,
+    remote_db::{BlockInfo, HeartbeatChunkState},
+    time::*,
+};
 use mina_tree::proofs::verification::verify_block;
 
 #[derive(Debug)]

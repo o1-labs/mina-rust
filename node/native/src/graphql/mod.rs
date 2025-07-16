@@ -7,7 +7,6 @@ use mina_p2p_messages::v2::{
     MinaBaseZkappCommandTStableV1WireStableV1, TokenIdKeyHash, TransactionHash,
 };
 use mina_signer::CompressedPubKey;
-use node::rpc::RpcSnarkerConfig;
 use node::{
     account::AccountPublicKey,
     ledger::read::LedgerStatus,
@@ -16,8 +15,9 @@ use node::{
         RpcGenesisBlockResponse, RpcGetBlockResponse, RpcLedgerAccountDelegatorsGetResponse,
         RpcLedgerStatusGetResponse, RpcNodeStatus, RpcPooledUserCommandsResponse,
         RpcPooledZkappCommandsResponse, RpcRequest, RpcSnarkPoolCompletedJobsResponse,
-        RpcSnarkPoolPendingJobsGetResponse, RpcStatusGetResponse, RpcSyncStatsGetResponse,
-        RpcTransactionInjectResponse, RpcTransactionStatusGetResponse, SyncStatsQuery,
+        RpcSnarkPoolPendingJobsGetResponse, RpcSnarkerConfig, RpcStatusGetResponse,
+        RpcSyncStatsGetResponse, RpcTransactionInjectResponse, RpcTransactionStatusGetResponse,
+        SyncStatsQuery,
     },
     stats::sync::SyncKind,
     BuildEnv,

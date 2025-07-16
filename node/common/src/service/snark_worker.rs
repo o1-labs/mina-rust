@@ -1,15 +1,21 @@
-use ledger::proofs::provers::{TransactionProver, ZkappProver};
-use ledger::proofs::zkapp::ZkappParams;
-use ledger::scan_state::scan_state::transaction_snark::SokMessage;
+use ledger::{
+    proofs::{
+        provers::{TransactionProver, ZkappProver},
+        zkapp::ZkappParams,
+    },
+    scan_state::scan_state::transaction_snark::SokMessage,
+};
 use mina_p2p_messages::v2;
 use mina_signer::CompressedPubKey;
-use node::core::channels::mpsc;
-use node::event_source::ExternalSnarkWorkerEvent;
-use node::external_snark_worker::{
-    ExternalSnarkWorkerError, ExternalSnarkWorkerWorkError, SnarkWorkResult, SnarkWorkSpec,
-    SnarkWorkSpecError,
+use node::{
+    core::channels::mpsc,
+    event_source::ExternalSnarkWorkerEvent,
+    external_snark_worker::{
+        ExternalSnarkWorkerError, ExternalSnarkWorkerWorkError, SnarkWorkResult, SnarkWorkSpec,
+        SnarkWorkSpecError,
+    },
+    snark::TransactionVerifier,
 };
-use node::snark::TransactionVerifier;
 
 use crate::NodeService;
 

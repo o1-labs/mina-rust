@@ -5,14 +5,14 @@ use binprot::{BinProtRead, BinProtWrite};
 use binprot_derive::{BinProtRead, BinProtWrite};
 use serde::{Deserialize, Serialize};
 
-use crate::common::*;
-use crate::core;
-use crate::list::List;
-use crate::rpc_kernel::*;
-use crate::v2;
 use crate::{
+    common::*,
+    core,
     core::InetAddrV1Versioned,
+    list::List,
+    rpc_kernel::*,
     string::CharString,
+    v2,
     v2::MinaBaseSparseLedgerBaseStableV2,
     versioned::{Ver, Versioned},
 };

@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
-use mina_p2p_messages::binprot::BinProtRead;
-use mina_p2p_messages::v2::PicklesProofProofsVerifiedMaxStableV2;
+use mina_p2p_messages::{binprot::BinProtRead, v2::PicklesProofProofsVerifiedMaxStableV2};
 
 pub use openmina_core::dummy::*;
 

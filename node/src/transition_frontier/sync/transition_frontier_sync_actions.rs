@@ -1,20 +1,21 @@
 use mina_p2p_messages::v2::{LedgerHash, StateHash};
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::consensus::consensus_take;
-use openmina_core::ActionEvent;
+use openmina_core::{block::ArcBlockWithHash, consensus::consensus_take, ActionEvent};
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use crate::ledger::write::{BlockApplyResult, CommitResult};
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::transition_frontier::sync::TransitionFrontierSyncLedgerPending;
-use crate::TransitionFrontierAction;
-
-use super::ledger::{
-    SyncLedgerTarget, TransitionFrontierSyncLedgerAction, TransitionFrontierSyncLedgerState,
+use crate::{
+    ledger::write::{BlockApplyResult, CommitResult},
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    transition_frontier::sync::TransitionFrontierSyncLedgerPending,
+    TransitionFrontierAction,
 };
-use super::{PeerBlockFetchError, TransitionFrontierSyncState};
+
+use super::{
+    ledger::{
+        SyncLedgerTarget, TransitionFrontierSyncLedgerAction, TransitionFrontierSyncLedgerState,
+    },
+    PeerBlockFetchError, TransitionFrontierSyncState,
+};
 
 pub type TransitionFrontierSyncActionWithMeta = redux::ActionWithMeta<TransitionFrontierSyncAction>;
 pub type TransitionFrontierSyncActionWithMetaRef<'a> =

@@ -2,10 +2,11 @@ use mina_p2p_messages::v2::{LedgerHash, MinaBaseAccountBinableArgStableV2};
 use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
-use crate::ledger::{LedgerAddress, LEDGER_DEPTH};
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::transition_frontier::sync::ledger::TransitionFrontierSyncLedgerState;
+use crate::{
+    ledger::{LedgerAddress, LEDGER_DEPTH},
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    transition_frontier::sync::ledger::TransitionFrontierSyncLedgerState,
+};
 
 use super::{
     PeerLedgerQueryError, PeerLedgerQueryResponse, PeerRpcState,

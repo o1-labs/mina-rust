@@ -642,8 +642,10 @@ impl AccountUpdateInterface for SnarkAccountUpdate {
         single_data: &Self::SingleData,
         w: &mut Self::W,
     ) -> CheckAuthorizationResult<Self::Bool> {
-        use crate::scan_state::transaction_logic::zkapp_statement::TransactionCommitment;
-        use crate::ControlTag::{NoneGiven, Proof, Signature};
+        use crate::{
+            scan_state::transaction_logic::zkapp_statement::TransactionCommitment,
+            ControlTag::{NoneGiven, Proof, Signature},
+        };
 
         let Self::CallForest {
             data: _,

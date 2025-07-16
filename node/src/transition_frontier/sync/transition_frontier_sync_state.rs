@@ -6,11 +6,12 @@ use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;
 
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
+use crate::p2p::{channels::rpc::P2pRpcId, PeerId};
 
-use super::ledger::{SyncLedgerTarget, SyncLedgerTargetKind, TransitionFrontierSyncLedgerState};
-use super::PeerBlockFetchError;
+use super::{
+    ledger::{SyncLedgerTarget, SyncLedgerTargetKind, TransitionFrontierSyncLedgerState},
+    PeerBlockFetchError,
+};
 
 #[derive(Serialize, Deserialize, Display, Debug, Clone)]
 pub enum TransitionFrontierSyncState {

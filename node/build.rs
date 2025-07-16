@@ -1,12 +1,13 @@
 // This build script will generate `node/src/action_kind.rs`.
 // See the top comment on that file for some context.
 
-use std::collections::btree_map::Entry as BTreeMapEntry;
-use std::collections::{BTreeMap, VecDeque};
-use std::error::Error;
-use std::fs::{self, DirEntry};
-use std::io::{self, BufRead, BufReader, Read};
-use std::path::{Path, PathBuf};
+use std::{
+    collections::{btree_map::Entry as BTreeMapEntry, BTreeMap, VecDeque},
+    error::Error,
+    fs::{self, DirEntry},
+    io::{self, BufRead, BufReader, Read},
+    path::{Path, PathBuf},
+};
 
 use regex::Regex;
 use rust_format::Formatter;

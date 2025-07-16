@@ -4,24 +4,25 @@ use serde::{Deserialize, Serialize};
 pub type ActionWithMeta = redux::ActionWithMeta<Action>;
 pub type ActionWithMetaRef<'a> = redux::ActionWithMeta<&'a Action>;
 
-pub use crate::block_producer::BlockProducerAction;
-pub use crate::block_producer_effectful::BlockProducerEffectfulAction;
-pub use crate::event_source::EventSourceAction;
-pub use crate::external_snark_worker::ExternalSnarkWorkerAction;
-use crate::external_snark_worker_effectful::ExternalSnarkWorkerEffectfulAction;
-pub use crate::ledger::LedgerAction;
-use crate::ledger_effectful::LedgerEffectfulAction;
-use crate::p2p::callbacks::P2pCallbacksAction;
-pub use crate::p2p::P2pAction;
-pub use crate::rpc::RpcAction;
-use crate::rpc_effectful::RpcEffectfulAction;
-pub use crate::snark::SnarkAction;
-pub use crate::snark_pool::SnarkPoolAction;
-pub use crate::snark_pool::SnarkPoolEffectfulAction;
-pub use crate::transaction_pool::TransactionPoolAction;
-use crate::transaction_pool::TransactionPoolEffectfulAction;
-pub use crate::transition_frontier::TransitionFrontierAction;
-pub use crate::watched_accounts::WatchedAccountsAction;
+pub use crate::{
+    block_producer::BlockProducerAction,
+    block_producer_effectful::BlockProducerEffectfulAction,
+    event_source::EventSourceAction,
+    external_snark_worker::ExternalSnarkWorkerAction,
+    ledger::LedgerAction,
+    p2p::P2pAction,
+    rpc::RpcAction,
+    snark::SnarkAction,
+    snark_pool::{SnarkPoolAction, SnarkPoolEffectfulAction},
+    transaction_pool::TransactionPoolAction,
+    transition_frontier::TransitionFrontierAction,
+    watched_accounts::WatchedAccountsAction,
+};
+use crate::{
+    external_snark_worker_effectful::ExternalSnarkWorkerEffectfulAction,
+    ledger_effectful::LedgerEffectfulAction, p2p::callbacks::P2pCallbacksAction,
+    rpc_effectful::RpcEffectfulAction, transaction_pool::TransactionPoolEffectfulAction,
+};
 
 pub trait ActionKindGet {
     fn kind(&self) -> crate::ActionKind;

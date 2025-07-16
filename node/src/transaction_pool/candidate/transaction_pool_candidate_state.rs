@@ -8,11 +8,10 @@ use p2p::P2pNetworkPubsubMessageCacheId;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use crate::core::transaction::{
-    Transaction, TransactionHash, TransactionInfo, TransactionWithHash,
+use crate::{
+    core::transaction::{Transaction, TransactionHash, TransactionInfo, TransactionWithHash},
+    p2p::{channels::rpc::P2pRpcId, PeerId},
 };
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
 
 static EMPTY_PEER_TX_CANDIDATES: BTreeMap<TransactionHash, TransactionPoolCandidateState> =
     BTreeMap::new();

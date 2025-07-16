@@ -47,8 +47,7 @@ macro_rules! cache_one {
         // See comments in `cache` above
         // Here we don't support generic
 
-        use std::cell::RefCell;
-        use std::mem::ManuallyDrop;
+        use std::{cell::RefCell, mem::ManuallyDrop};
 
         thread_local! {
             static CACHE: ManuallyDrop<RefCell<Option<Box<$F>>>> =
@@ -72,8 +71,7 @@ mod tests {
     use crate::proofs::field::FieldWitness;
     use ark_ec::short_weierstrass_jacobian::GroupAffine;
     use poly_commitment::srs::endos;
-    use std::sync::atomic::AtomicUsize;
-    use std::sync::atomic::Ordering::Relaxed;
+    use std::sync::atomic::{AtomicUsize, Ordering::Relaxed};
 
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;

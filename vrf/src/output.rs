@@ -1,7 +1,6 @@
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::{BigInteger, BigInteger256, PrimeField};
-use ledger::proofs::transaction::field_to_bits;
-use ledger::{AppendToInputs, ToInputs};
+use ledger::{proofs::transaction::field_to_bits, AppendToInputs, ToInputs};
 use mina_p2p_messages::v2::ConsensusVrfOutputTruncatedStableV1;
 use num::{BigInt, BigRational, One, ToPrimitive};
 use o1_utils::FieldHelpers;
@@ -13,8 +12,7 @@ use crate::{BaseField, BigInt2048, ScalarField};
 
 use super::serialize::{ark_deserialize, ark_serialize};
 
-use super::message::VrfMessage;
-use super::CurvePoint;
+use super::{message::VrfMessage, CurvePoint};
 
 #[derive(Clone, Debug)]
 pub struct VrfOutputHashInput {

@@ -28,10 +28,10 @@ use poly_commitment::srs::SRS;
 use crate::{proofs::BACKEND_TOCK_ROUNDS_N, VerificationKey};
 
 use super::{
-    transaction::endos,
+    transaction::{endos, InnerCurve},
     wrap::{Domain, Domains},
+    VerifierIndex,
 };
-use super::{transaction::InnerCurve, VerifierIndex};
 
 #[derive(Clone, Copy)]
 enum Kind {

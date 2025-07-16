@@ -1,11 +1,8 @@
-use tokio::time::Duration;
-use tokio::{sync::mpsc::UnboundedSender, task::JoinHandle};
+use tokio::{sync::mpsc::UnboundedSender, task::JoinHandle, time::Duration};
 
-use crate::evaluator::EpochInit;
-use crate::{storage::db_sled::Database, NodeStatus};
+use crate::{evaluator::EpochInit, storage::db_sled::Database, NodeStatus};
 
-use super::daemon_status::SyncStatus;
-use super::Node;
+use super::{daemon_status::SyncStatus, Node};
 
 // TODO(adonagy): move to struct
 pub fn spawn_watchdog(

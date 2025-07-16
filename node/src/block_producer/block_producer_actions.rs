@@ -2,14 +2,15 @@ use std::sync::Arc;
 
 use ledger::scan_state::transaction_logic::valid;
 use mina_p2p_messages::v2::MinaBaseProofStableV2;
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::ActionEvent;
+use openmina_core::{block::ArcBlockWithHash, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use crate::block_producer_effectful::StagedLedgerDiffCreateOutput;
 
-use super::vrf_evaluator::BlockProducerVrfEvaluatorAction;
-use super::{BlockProducerCurrentState, BlockProducerWonSlot, BlockProducerWonSlotDiscardReason};
+use super::{
+    vrf_evaluator::BlockProducerVrfEvaluatorAction, BlockProducerCurrentState,
+    BlockProducerWonSlot, BlockProducerWonSlotDiscardReason,
+};
 
 pub type BlockProducerActionWithMeta = redux::ActionWithMeta<BlockProducerAction>;
 pub type BlockProducerActionWithMetaRef<'a> = redux::ActionWithMeta<&'a BlockProducerAction>;

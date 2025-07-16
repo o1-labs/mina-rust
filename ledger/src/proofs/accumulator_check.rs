@@ -4,8 +4,7 @@ use mina_hasher::Fp;
 use mina_p2p_messages::{bigint::BigInt, v2::PicklesProofProofsVerified2ReprStableV2};
 use poly_commitment::{commitment::CommitmentCurve, srs::SRS};
 
-use super::public_input::scalar_challenge::ScalarChallenge;
-use super::urs_utils;
+use super::{public_input::scalar_challenge::ScalarChallenge, urs_utils};
 
 pub fn accumulator_check(
     urs: &SRS<Vesta>,

@@ -1,17 +1,24 @@
-pub use crate::block_producer_effectful::vrf_evaluator_effectful::BlockProducerVrfEvaluatorService;
-pub use crate::block_producer_effectful::BlockProducerService;
-pub use crate::event_source::EventSourceService;
-pub use crate::external_snark_worker_effectful::ExternalSnarkWorkerService;
-pub use crate::ledger::LedgerService;
-pub use crate::p2p::service::*;
-pub use crate::recorder::Recorder;
-pub use crate::rpc_effectful::RpcService;
-pub use crate::snark::block_verify_effectful::SnarkBlockVerifyService;
-pub use crate::snark::work_verify_effectful::SnarkWorkVerifyService;
-pub use crate::snark_pool::SnarkPoolService;
-pub use crate::transition_frontier::archive::archive_service::ArchiveService;
-pub use crate::transition_frontier::genesis_effectful::TransitionFrontierGenesisService;
-pub use crate::transition_frontier::sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedService;
+pub use crate::{
+    block_producer_effectful::{
+        vrf_evaluator_effectful::BlockProducerVrfEvaluatorService, BlockProducerService,
+    },
+    event_source::EventSourceService,
+    external_snark_worker_effectful::ExternalSnarkWorkerService,
+    ledger::LedgerService,
+    p2p::service::*,
+    recorder::Recorder,
+    rpc_effectful::RpcService,
+    snark::{
+        block_verify_effectful::SnarkBlockVerifyService,
+        work_verify_effectful::SnarkWorkVerifyService,
+    },
+    snark_pool::SnarkPoolService,
+    transition_frontier::{
+        archive::archive_service::ArchiveService,
+        genesis_effectful::TransitionFrontierGenesisService,
+        sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedService,
+    },
+};
 pub use redux::TimeService;
 pub use snark::user_command_verify_effectful::SnarkUserCommandVerifyService;
 

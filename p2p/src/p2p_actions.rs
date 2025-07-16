@@ -2,18 +2,16 @@ use openmina_macros::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 
-use crate::channels::P2pChannelsEffectfulAction;
-use crate::connection::P2pConnectionEffectfulAction;
-use crate::disconnection_effectful::P2pDisconnectionEffectfulAction;
-use crate::P2pNetworkEffectfulAction;
+use crate::{
+    channels::P2pChannelsEffectfulAction, connection::P2pConnectionEffectfulAction,
+    disconnection_effectful::P2pDisconnectionEffectfulAction, P2pNetworkEffectfulAction,
+};
 
-use super::channels::P2pChannelsAction;
-use super::connection::P2pConnectionAction;
-use super::disconnection::P2pDisconnectionAction;
-use super::identify::P2pIdentifyAction;
-use super::network::P2pNetworkAction;
-use super::peer::P2pPeerAction;
-use super::P2pState;
+use super::{
+    channels::P2pChannelsAction, connection::P2pConnectionAction,
+    disconnection::P2pDisconnectionAction, identify::P2pIdentifyAction, network::P2pNetworkAction,
+    peer::P2pPeerAction, P2pState,
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone, derive_more::From, ActionEvent)]
 pub enum P2pAction {

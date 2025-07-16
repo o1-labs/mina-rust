@@ -1,5 +1,4 @@
-use crate::Service;
-use crate::Store;
+use crate::{Service, Store};
 use redux::ActionMeta;
 
 use super::BlockProducerVrfEvaluatorEffectfulAction;

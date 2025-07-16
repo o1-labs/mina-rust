@@ -318,8 +318,7 @@ pub mod common {
                         tx_commitment
                     };
 
-                    use zkapp_command::AuthorizationKind as AK;
-                    use zkapp_command::Control as C;
+                    use zkapp_command::{AuthorizationKind as AK, Control as C};
                     match (&p.authorization, &p.body.authorization_kind) {
                         (C::Signature(s), AK::Signature) => {
                             let pk = decompress_pk(&p.body.public_key).unwrap();
@@ -380,8 +379,7 @@ pub mod common {
     ) -> bool {
         use ark_ec::{AffineCurve, ProjectiveCurve};
         use ark_ff::{BigInteger, PrimeField, Zero};
-        use mina_curves::pasta::Fq;
-        use mina_curves::pasta::Pallas;
+        use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
         use std::ops::Neg;
 
@@ -411,8 +409,7 @@ pub mod common {
         use ::poseidon::hash::legacy;
         use ark_ec::{AffineCurve, ProjectiveCurve};
         use ark_ff::{BigInteger, PrimeField, Zero};
-        use mina_curves::pasta::Fq;
-        use mina_curves::pasta::Pallas;
+        use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
         use std::ops::Neg;
 

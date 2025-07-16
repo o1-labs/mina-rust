@@ -15,81 +15,100 @@ use num_enum::TryFromPrimitive;
 use serde::{Deserialize, Serialize};
 use strum_macros::VariantArray;
 
-use crate::block_producer::vrf_evaluator::BlockProducerVrfEvaluatorAction;
-use crate::block_producer::BlockProducerAction;
-use crate::block_producer_effectful::vrf_evaluator_effectful::BlockProducerVrfEvaluatorEffectfulAction;
-use crate::block_producer_effectful::BlockProducerEffectfulAction;
-use crate::event_source::EventSourceAction;
-use crate::external_snark_worker::ExternalSnarkWorkerAction;
-use crate::external_snark_worker_effectful::ExternalSnarkWorkerEffectfulAction;
-use crate::ledger::read::LedgerReadAction;
-use crate::ledger::write::LedgerWriteAction;
-use crate::ledger::LedgerAction;
-use crate::ledger_effectful::LedgerEffectfulAction;
-use crate::p2p::callbacks::P2pCallbacksAction;
-use crate::p2p::channels::best_tip::P2pChannelsBestTipAction;
-use crate::p2p::channels::rpc::P2pChannelsRpcAction;
-use crate::p2p::channels::signaling::discovery::P2pChannelsSignalingDiscoveryAction;
-use crate::p2p::channels::signaling::exchange::P2pChannelsSignalingExchangeAction;
-use crate::p2p::channels::snark::P2pChannelsSnarkAction;
-use crate::p2p::channels::snark_job_commitment::P2pChannelsSnarkJobCommitmentAction;
-use crate::p2p::channels::streaming_rpc::P2pChannelsStreamingRpcAction;
-use crate::p2p::channels::transaction::P2pChannelsTransactionAction;
-use crate::p2p::channels::{
-    P2pChannelsAction, P2pChannelsEffectfulAction, P2pChannelsMessageReceivedAction,
+use crate::{
+    block_producer::{vrf_evaluator::BlockProducerVrfEvaluatorAction, BlockProducerAction},
+    block_producer_effectful::{
+        vrf_evaluator_effectful::BlockProducerVrfEvaluatorEffectfulAction,
+        BlockProducerEffectfulAction,
+    },
+    event_source::EventSourceAction,
+    external_snark_worker::ExternalSnarkWorkerAction,
+    external_snark_worker_effectful::ExternalSnarkWorkerEffectfulAction,
+    ledger::{read::LedgerReadAction, write::LedgerWriteAction, LedgerAction},
+    ledger_effectful::LedgerEffectfulAction,
+    p2p::{
+        callbacks::P2pCallbacksAction,
+        channels::{
+            best_tip::P2pChannelsBestTipAction,
+            rpc::P2pChannelsRpcAction,
+            signaling::{
+                discovery::P2pChannelsSignalingDiscoveryAction,
+                exchange::P2pChannelsSignalingExchangeAction,
+            },
+            snark::P2pChannelsSnarkAction,
+            snark_job_commitment::P2pChannelsSnarkJobCommitmentAction,
+            streaming_rpc::P2pChannelsStreamingRpcAction,
+            transaction::P2pChannelsTransactionAction,
+            P2pChannelsAction, P2pChannelsEffectfulAction, P2pChannelsMessageReceivedAction,
+        },
+        connection::{
+            incoming::P2pConnectionIncomingAction,
+            incoming_effectful::P2pConnectionIncomingEffectfulAction,
+            outgoing::P2pConnectionOutgoingAction,
+            outgoing_effectful::P2pConnectionOutgoingEffectfulAction, P2pConnectionAction,
+            P2pConnectionEffectfulAction,
+        },
+        disconnection::P2pDisconnectionAction,
+        disconnection_effectful::P2pDisconnectionEffectfulAction,
+        identify::P2pIdentifyAction,
+        network::{
+            identify::{
+                stream::P2pNetworkIdentifyStreamAction,
+                stream_effectful::P2pNetworkIdentifyStreamEffectfulAction,
+                P2pNetworkIdentifyAction, P2pNetworkIdentifyEffectfulAction,
+            },
+            kad::{
+                bootstrap::P2pNetworkKadBootstrapAction,
+                kad_effectful::P2pNetworkKadEffectfulAction, request::P2pNetworkKadRequestAction,
+                stream::P2pNetworkKademliaStreamAction, P2pNetworkKadAction,
+                P2pNetworkKademliaAction,
+            },
+            noise::P2pNetworkNoiseAction,
+            pnet::P2pNetworkPnetAction,
+            pnet_effectful::P2pNetworkPnetEffectfulAction,
+            pubsub::{pubsub_effectful::P2pNetworkPubsubEffectfulAction, P2pNetworkPubsubAction},
+            rpc::P2pNetworkRpcAction,
+            scheduler::P2pNetworkSchedulerAction,
+            scheduler_effectful::P2pNetworkSchedulerEffectfulAction,
+            select::P2pNetworkSelectAction,
+            yamux::P2pNetworkYamuxAction,
+            P2pNetworkAction, P2pNetworkEffectfulAction,
+        },
+        peer::P2pPeerAction,
+        P2pAction, P2pEffectfulAction, P2pInitializeAction,
+    },
+    rpc::RpcAction,
+    rpc_effectful::RpcEffectfulAction,
+    snark::{
+        block_verify::SnarkBlockVerifyAction,
+        block_verify_effectful::SnarkBlockVerifyEffectfulAction,
+        user_command_verify::SnarkUserCommandVerifyAction,
+        user_command_verify_effectful::SnarkUserCommandVerifyEffectfulAction,
+        work_verify::SnarkWorkVerifyAction, work_verify_effectful::SnarkWorkVerifyEffectfulAction,
+        SnarkAction,
+    },
+    snark_pool::{candidate::SnarkPoolCandidateAction, SnarkPoolAction, SnarkPoolEffectfulAction},
+    transaction_pool::{
+        candidate::TransactionPoolCandidateAction, TransactionPoolAction,
+        TransactionPoolEffectfulAction,
+    },
+    transition_frontier::{
+        candidate::TransitionFrontierCandidateAction,
+        genesis::TransitionFrontierGenesisAction,
+        genesis_effectful::TransitionFrontierGenesisEffectfulAction,
+        sync::{
+            ledger::{
+                snarked::TransitionFrontierSyncLedgerSnarkedAction,
+                staged::TransitionFrontierSyncLedgerStagedAction,
+                TransitionFrontierSyncLedgerAction,
+            },
+            TransitionFrontierSyncAction,
+        },
+        TransitionFrontierAction,
+    },
+    watched_accounts::WatchedAccountsAction,
+    Action, ActionKindGet, CheckTimeoutsAction,
 };
-use crate::p2p::connection::incoming::P2pConnectionIncomingAction;
-use crate::p2p::connection::incoming_effectful::P2pConnectionIncomingEffectfulAction;
-use crate::p2p::connection::outgoing::P2pConnectionOutgoingAction;
-use crate::p2p::connection::outgoing_effectful::P2pConnectionOutgoingEffectfulAction;
-use crate::p2p::connection::{P2pConnectionAction, P2pConnectionEffectfulAction};
-use crate::p2p::disconnection::P2pDisconnectionAction;
-use crate::p2p::disconnection_effectful::P2pDisconnectionEffectfulAction;
-use crate::p2p::identify::P2pIdentifyAction;
-use crate::p2p::network::identify::stream::P2pNetworkIdentifyStreamAction;
-use crate::p2p::network::identify::stream_effectful::P2pNetworkIdentifyStreamEffectfulAction;
-use crate::p2p::network::identify::{P2pNetworkIdentifyAction, P2pNetworkIdentifyEffectfulAction};
-use crate::p2p::network::kad::bootstrap::P2pNetworkKadBootstrapAction;
-use crate::p2p::network::kad::kad_effectful::P2pNetworkKadEffectfulAction;
-use crate::p2p::network::kad::request::P2pNetworkKadRequestAction;
-use crate::p2p::network::kad::stream::P2pNetworkKademliaStreamAction;
-use crate::p2p::network::kad::{P2pNetworkKadAction, P2pNetworkKademliaAction};
-use crate::p2p::network::noise::P2pNetworkNoiseAction;
-use crate::p2p::network::pnet::P2pNetworkPnetAction;
-use crate::p2p::network::pnet_effectful::P2pNetworkPnetEffectfulAction;
-use crate::p2p::network::pubsub::pubsub_effectful::P2pNetworkPubsubEffectfulAction;
-use crate::p2p::network::pubsub::P2pNetworkPubsubAction;
-use crate::p2p::network::rpc::P2pNetworkRpcAction;
-use crate::p2p::network::scheduler::P2pNetworkSchedulerAction;
-use crate::p2p::network::scheduler_effectful::P2pNetworkSchedulerEffectfulAction;
-use crate::p2p::network::select::P2pNetworkSelectAction;
-use crate::p2p::network::yamux::P2pNetworkYamuxAction;
-use crate::p2p::network::{P2pNetworkAction, P2pNetworkEffectfulAction};
-use crate::p2p::peer::P2pPeerAction;
-use crate::p2p::{P2pAction, P2pEffectfulAction, P2pInitializeAction};
-use crate::rpc::RpcAction;
-use crate::rpc_effectful::RpcEffectfulAction;
-use crate::snark::block_verify::SnarkBlockVerifyAction;
-use crate::snark::block_verify_effectful::SnarkBlockVerifyEffectfulAction;
-use crate::snark::user_command_verify::SnarkUserCommandVerifyAction;
-use crate::snark::user_command_verify_effectful::SnarkUserCommandVerifyEffectfulAction;
-use crate::snark::work_verify::SnarkWorkVerifyAction;
-use crate::snark::work_verify_effectful::SnarkWorkVerifyEffectfulAction;
-use crate::snark::SnarkAction;
-use crate::snark_pool::candidate::SnarkPoolCandidateAction;
-use crate::snark_pool::{SnarkPoolAction, SnarkPoolEffectfulAction};
-use crate::transaction_pool::candidate::TransactionPoolCandidateAction;
-use crate::transaction_pool::{TransactionPoolAction, TransactionPoolEffectfulAction};
-use crate::transition_frontier::candidate::TransitionFrontierCandidateAction;
-use crate::transition_frontier::genesis::TransitionFrontierGenesisAction;
-use crate::transition_frontier::genesis_effectful::TransitionFrontierGenesisEffectfulAction;
-use crate::transition_frontier::sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedAction;
-use crate::transition_frontier::sync::ledger::staged::TransitionFrontierSyncLedgerStagedAction;
-use crate::transition_frontier::sync::ledger::TransitionFrontierSyncLedgerAction;
-use crate::transition_frontier::sync::TransitionFrontierSyncAction;
-use crate::transition_frontier::TransitionFrontierAction;
-use crate::watched_accounts::WatchedAccountsAction;
-use crate::{Action, ActionKindGet, CheckTimeoutsAction};
 
 /// Unified kind enum for all action types
 #[derive(

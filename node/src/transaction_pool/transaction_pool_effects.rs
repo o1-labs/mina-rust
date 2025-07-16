@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::ledger::LedgerService;
-use crate::snark::SnarkStore;
+use crate::{ledger::LedgerService, snark::SnarkStore};
 
 use super::TransactionPoolEffectfulAction;
 

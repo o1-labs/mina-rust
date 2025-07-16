@@ -1,11 +1,12 @@
-use std::ffi::{OsStr, OsString};
-use std::fs;
-use std::path::PathBuf;
-use std::process::{Command, Stdio};
-use std::str::FromStr;
+use std::{
+    ffi::{OsStr, OsString},
+    fs,
+    path::PathBuf,
+    process::{Command, Stdio},
+    str::FromStr,
+};
 
-use node::account::AccountSecretKey;
-use node::p2p::connection::outgoing::P2pConnectionOutgoingInitOpts;
+use node::{account::AccountSecretKey, p2p::connection::outgoing::P2pConnectionOutgoingInitOpts};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

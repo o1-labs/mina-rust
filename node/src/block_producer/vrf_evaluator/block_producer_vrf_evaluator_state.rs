@@ -1,5 +1,4 @@
-use std::collections::BTreeMap;
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
 use mina_p2p_messages::v2;
 use openmina_core::block::ArcBlockWithHash;

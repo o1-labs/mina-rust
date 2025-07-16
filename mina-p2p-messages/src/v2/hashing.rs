@@ -275,8 +275,7 @@ impl generated::MinaBaseZkappCommandTStableV1WireStableV1 {
 
 #[cfg(test)]
 mod tests {
-    use super::super::manual;
-    use super::*;
+    use super::{super::manual, *};
     use manual::MinaBaseSignedCommandMemoStableV1;
 
     fn pub_key(address: &str) -> manual::NonZeroCurvePoint {
@@ -298,8 +297,7 @@ mod tests {
         nonce: u32,
         valid_until: u32,
     ) -> String {
-        use crate::number::Number;
-        use crate::string::CharString;
+        use crate::{number::Number, string::CharString};
 
         let from = pub_key(from);
         let to = pub_key(to);

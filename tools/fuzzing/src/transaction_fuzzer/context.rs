@@ -1,34 +1,34 @@
 use crate::transaction_fuzzer::{
+    deserialize,
     generator::{Generator, GeneratorRange32, GeneratorRange64},
     mutator::Mutator,
-    {deserialize, serialize},
+    serialize,
 };
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use ark_ff::Zero;
-use ledger::scan_state::transaction_logic::transaction_applied::{
-    signed_command_applied, CommandApplied, TransactionApplied, Varying,
-};
-use ledger::scan_state::transaction_logic::{
-    apply_transactions, Transaction, TransactionStatus, UserCommand,
-};
-use ledger::sparse_ledger::LedgerIntf;
-use ledger::staged_ledger::staged_ledger::StagedLedger;
-use ledger::{dummy, Account, AccountId, Database, Mask, Timing, TokenId};
+use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
 use ledger::{
-    scan_state::currency::{Amount, Fee, Length, Magnitude, Nonce, Signed, Slot},
-    transaction_pool::TransactionPool,
-};
-use ledger::{
-    scan_state::transaction_logic::protocol_state::{
-        protocol_state_view, EpochData, EpochLedger, ProtocolStateView,
+    dummy,
+    scan_state::{
+        currency::{Amount, Fee, Length, Magnitude, Nonce, Signed, Slot},
+        transaction_logic::{
+            apply_transactions,
+            protocol_state::{protocol_state_view, EpochData, EpochLedger, ProtocolStateView},
+            transaction_applied::{
+                signed_command_applied, CommandApplied, TransactionApplied, Varying,
+            },
+            Transaction, TransactionStatus, UserCommand,
+        },
     },
+    sparse_ledger::LedgerIntf,
+    staged_ledger::staged_ledger::StagedLedger,
     transaction_pool,
+    transaction_pool::TransactionPool,
+    Account, AccountId, Database, Mask, Timing, TokenId,
 };
 use mina_curves::pasta::Fq;
 use mina_hasher::Fp;
-use mina_p2p_messages::binprot::SmallString1k;
 use mina_p2p_messages::{
     bigint, binprot,
+    binprot::SmallString1k,
     v2::{
         MinaTransactionLogicTransactionAppliedStableV2,
         TransactionSnarkScanStateLedgerProofWithSokMessageStableV2,
@@ -39,9 +39,12 @@ use node::DEVNET_CONFIG;
 use openmina_core::{consensus::ConsensusConstants, constants::ConstraintConstants, NetworkConfig};
 use rand::{rngs::SmallRng, seq::SliceRandom, Rng, SeedableRng};
 use ring_buffer::RingBuffer;
-use std::collections::{BTreeMap, HashMap};
-use std::fmt::Debug;
-use std::{fs, str::FromStr};
+use std::{
+    collections::{BTreeMap, HashMap},
+    fmt::Debug,
+    fs,
+    str::FromStr,
+};
 
 // Taken from ocaml_tests
 /// Same values when we run `dune runtest src/lib/staged_ledger -f`

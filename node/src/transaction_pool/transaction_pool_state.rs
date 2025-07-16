@@ -133,8 +133,7 @@ impl TransactionPoolState {
 
 #[cfg(test)]
 mod tests {
-    use super::super::TransactionPoolActionWithMeta;
-    use super::*;
+    use super::{super::TransactionPoolActionWithMeta, *};
     use crate::State;
     use redux::Dispatcher;
 

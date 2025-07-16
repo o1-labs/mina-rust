@@ -2,8 +2,10 @@ use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 
-use openmina_core::snark::Snark;
-use openmina_core::{requests::PendingRequests, snark::SnarkJobId};
+use openmina_core::{
+    requests::PendingRequests,
+    snark::{Snark, SnarkJobId},
+};
 
 use crate::{TransactionVerifier, VerifierSRS};
 

@@ -47,17 +47,20 @@ pub type ProverProof<F> = kimchi::proof::ProverProof<
 pub fn generate_tx_proof(
     params: transaction::TransactionParams,
 ) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_hasher::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepTransactionProof>();
     transaction::generate_tx_proof(params, &mut w)
 }
 pub fn generate_merge_proof(params: merge::MergeParams) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_hasher::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepMergeProof>();
     merge::generate_merge_proof(params, &mut w)
 }
 pub fn generate_block_proof(params: block::BlockParams) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_hasher::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepBlockProof>();
     block::generate_block_proof(params, &mut w)
 }

@@ -1,5 +1,4 @@
-use node::core::channels::mpsc;
-use node::event_source::Event;
+use node::{core::channels::mpsc, event_source::Event};
 
 pub type EventSender = mpsc::UnboundedSender<Event>;
 

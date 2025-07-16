@@ -1,11 +1,14 @@
-use std::borrow::Cow;
-use std::fs;
-use std::io::{BufWriter, Write};
-use std::path::{Path, PathBuf};
-use std::sync::{Mutex, TryLockError};
+use std::{
+    borrow::Cow,
+    fs,
+    io::{BufWriter, Write},
+    path::{Path, PathBuf},
+    sync::{Mutex, TryLockError},
+};
 
-use crate::p2p::identity::SecretKey as P2pSecretKey;
-use crate::{Action, ActionWithMeta, EventSourceAction, State};
+use crate::{
+    p2p::identity::SecretKey as P2pSecretKey, Action, ActionWithMeta, EventSourceAction, State,
+};
 
 use super::{RecordedActionWithMeta, RecordedInitialState};
 

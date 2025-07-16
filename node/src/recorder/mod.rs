@@ -13,8 +13,7 @@ use std::{
 
 use serde::{Deserialize, Serialize};
 
-use crate::p2p::identity::SecretKey as P2pSecretKey;
-use crate::{Action, ActionKind, ActionWithMeta, State};
+use crate::{p2p::identity::SecretKey as P2pSecretKey, Action, ActionKind, ActionWithMeta, State};
 
 fn initial_state_path<P: AsRef<Path>>(path: P) -> PathBuf {
     path.as_ref().join("initial_state.postcard")

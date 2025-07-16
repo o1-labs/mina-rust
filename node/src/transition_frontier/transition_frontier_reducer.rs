@@ -1,5 +1,5 @@
-use super::sync::{SyncError, TransitionFrontierSyncState};
 use super::{
+    sync::{SyncError, TransitionFrontierSyncState},
     TransitionFrontierAction, TransitionFrontierActionWithMetaRef, TransitionFrontierState,
 };
 use openmina_core::block::AppliedBlock;

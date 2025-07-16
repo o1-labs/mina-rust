@@ -1,19 +1,17 @@
-use std::str::FromStr;
-use std::sync::Arc;
+use std::{str::FromStr, sync::Arc};
 
 use mina_p2p_messages::v2::CurrencyFeeStableV1;
 use openmina_core::consensus::ConsensusConstants;
 use serde::{Deserialize, Serialize};
 
-use crate::account::AccountPublicKey;
-pub use crate::block_producer::BlockProducerConfig;
-pub use crate::ledger::LedgerConfig;
-pub use crate::p2p::P2pConfig;
-pub use crate::snark::SnarkConfig;
-pub use crate::snark_pool::SnarkPoolConfig;
-use crate::transition_frontier::archive::archive_config::ArchiveConfig;
-use crate::transition_frontier::genesis::GenesisConfig;
-pub use crate::transition_frontier::TransitionFrontierConfig;
+use crate::{
+    account::AccountPublicKey,
+    transition_frontier::{archive::archive_config::ArchiveConfig, genesis::GenesisConfig},
+};
+pub use crate::{
+    block_producer::BlockProducerConfig, ledger::LedgerConfig, p2p::P2pConfig, snark::SnarkConfig,
+    snark_pool::SnarkPoolConfig, transition_frontier::TransitionFrontierConfig,
+};
 pub use mina_p2p_messages::v2::MinaBaseProtocolConstantsCheckedValueStableV1 as ProtocolConstants;
 
 // TODO(binier): maybe make sure config is immutable.

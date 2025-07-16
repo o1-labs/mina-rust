@@ -14,8 +14,7 @@ use mina_p2p_messages::{
     },
 };
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
-use openmina_core::snark::SnarkJobId;
+use openmina_core::{constants::ConstraintConstants, snark::SnarkJobId};
 use sha2::Sha256;
 
 use crate::{
@@ -57,9 +56,8 @@ use super::{
 };
 // use super::parallel_scan::AvailableJob;
 
-pub use super::parallel_scan::base::Job as JobValueBase;
-pub use super::parallel_scan::merge::Job as JobValueMerge;
 pub use super::parallel_scan::{
+    base::Job as JobValueBase, merge::Job as JobValueMerge,
     AvailableJob as ParallelScanAvailableJob, JobValue, JobValueWithIndex, SpacePartition,
 };
 
@@ -104,8 +102,10 @@ pub mod transaction_snark {
     use serde::{Deserialize, Serialize};
 
     use crate::{
-        proofs::field::{field, Boolean},
-        proofs::witness::Witness,
+        proofs::{
+            field::{field, Boolean},
+            witness::Witness,
+        },
         scan_state::{
             currency::{Amount, Signed, Slot},
             fee_excess::FeeExcess,

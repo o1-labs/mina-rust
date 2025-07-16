@@ -1,9 +1,9 @@
 use std::collections::{BTreeMap, VecDeque};
 
 use itertools::Itertools;
-use mina_p2p_messages::binprot::BinProtWrite;
-use mina_p2p_messages::v2::{
-    ConsensusBodyReferenceStableV1, MinaBlockBlockStableV2, StagedLedgerDiffDiffStableV2,
+use mina_p2p_messages::{
+    binprot::BinProtWrite,
+    v2::{ConsensusBodyReferenceStableV1, MinaBlockBlockStableV2, StagedLedgerDiffDiffStableV2},
 };
 
 const BODY_TAG: u8 = 0;
@@ -68,8 +68,10 @@ fn serialize_with_len_and_tag(block: &StagedLedgerDiffDiffStableV2) -> Vec<u8> {
 }
 
 fn blake2(data: &[u8]) -> Link {
-    use blake2::digest::{Update, VariableOutput};
-    use blake2::Blake2bVar;
+    use blake2::{
+        digest::{Update, VariableOutput},
+        Blake2bVar,
+    };
 
     let mut hasher = Blake2bVar::new(LINK_SIZE).unwrap();
     hasher.update(data);

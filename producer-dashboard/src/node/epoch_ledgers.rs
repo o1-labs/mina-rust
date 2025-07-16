@@ -4,8 +4,7 @@ use std::{
 };
 
 use num_bigint::BigInt;
-use num_traits::identities::Zero;
-use num_traits::FromPrimitive;
+use num_traits::{identities::Zero, FromPrimitive};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::str::FromStr;
 

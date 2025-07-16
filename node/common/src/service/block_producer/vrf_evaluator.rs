@@ -1,9 +1,8 @@
 use mina_signer::Keypair;
 use node::{
-    block_producer::BlockProducerVrfEvaluatorEvent,
     block_producer::{
         vrf_evaluator::{VrfEvaluationOutputWithHash, VrfEvaluatorInput},
-        BlockProducerEvent,
+        BlockProducerEvent, BlockProducerVrfEvaluatorEvent,
     },
     core::channels::mpsc::{TrackedUnboundedReceiver, UnboundedSender},
     event_source::Event,

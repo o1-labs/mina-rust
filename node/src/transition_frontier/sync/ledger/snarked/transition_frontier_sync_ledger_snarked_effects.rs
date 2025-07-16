@@ -1,7 +1,6 @@
 use redux::ActionMeta;
 
-use crate::ledger::hash_node_at_depth;
-use crate::Store;
+use crate::{ledger::hash_node_at_depth, Store};
 
 use super::{
     TransitionFrontierSyncLedgerSnarkedAction, TransitionFrontierSyncLedgerSnarkedService,

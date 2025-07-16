@@ -1961,9 +1961,9 @@ impl StagedLedger {
 
     /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L2024
     pub fn latest_block_accounts_created(&self, previous_block_state_hash: Fp) -> Vec<AccountId> {
-        use scan_state::transaction_logic::transaction_applied::signed_command_applied::Body;
-        use scan_state::transaction_logic::transaction_applied::CommandApplied;
-        use scan_state::transaction_logic::transaction_applied::Varying;
+        use scan_state::transaction_logic::transaction_applied::{
+            signed_command_applied::Body, CommandApplied, Varying,
+        };
 
         let block_transactions_applied = {
             let f = |t: Arc<TransactionWithWitness>| {
@@ -2013,8 +2013,7 @@ mod tests_ocaml {
     use ark_ec::{AffineCurve, ProjectiveCurve};
     use ark_ff::Zero;
     use mina_curves::pasta::Fq;
-    use mina_signer::Signer;
-    use mina_signer::{Keypair, Signature};
+    use mina_signer::{Keypair, Signature, Signer};
     use o1_utils::FieldHelpers;
     use once_cell::sync::Lazy;
     use rand::{seq::SliceRandom, CryptoRng, Rng};

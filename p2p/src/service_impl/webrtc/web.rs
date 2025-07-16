@@ -1,6 +1,8 @@
-use std::future::Future;
-use std::rc::{Rc, Weak};
-use std::sync::Once;
+use std::{
+    future::Future,
+    rc::{Rc, Weak},
+    sync::Once,
+};
 
 use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::{convert::FromWasmAbi, prelude::*};

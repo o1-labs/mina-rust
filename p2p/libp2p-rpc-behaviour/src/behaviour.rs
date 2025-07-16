@@ -14,12 +14,9 @@ use libp2p::{
     Multiaddr, PeerId,
 };
 
-use mina_p2p_messages::rpc_kernel::{
-    Error, Message, NeedsLength, Query, Response, RpcMethod, RpcResult,
-};
 use mina_p2p_messages::{
     binprot::{self, BinProtWrite},
-    rpc_kernel::RpcTag,
+    rpc_kernel::{Error, Message, NeedsLength, Query, Response, RpcMethod, RpcResult, RpcTag},
     versioned::Ver,
 };
 

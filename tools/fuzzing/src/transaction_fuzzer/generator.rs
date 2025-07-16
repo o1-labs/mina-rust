@@ -1,18 +1,16 @@
-use ark_ec::AffineCurve;
-use ark_ec::ProjectiveCurve;
-use ark_ff::SquareRootField;
-use ark_ff::{Field, UniformRand};
-use ledger::generators::zkapp_command_builder::get_transaction_commitments;
-use ledger::proofs::field::GroupAffine;
-use ledger::proofs::transaction::InnerCurve;
-use ledger::scan_state::currency::TxnVersion;
-use ledger::scan_state::currency::{Magnitude, SlotSpan};
-use ledger::MutableFp;
-use ledger::VerificationKeyWire;
+use ark_ec::{AffineCurve, ProjectiveCurve};
+use ark_ff::{Field, SquareRootField, UniformRand};
 use ledger::{
-    proofs::transaction::PlonkVerificationKeyEvals,
+    generators::zkapp_command_builder::get_transaction_commitments,
+    proofs::{
+        field::GroupAffine,
+        transaction::{InnerCurve, PlonkVerificationKeyEvals},
+    },
     scan_state::{
-        currency::{Amount, Balance, BlockTime, Fee, Length, MinMax, Nonce, Sgn, Signed, Slot},
+        currency::{
+            Amount, Balance, BlockTime, Fee, Length, Magnitude, MinMax, Nonce, Sgn, Signed, Slot,
+            SlotSpan, TxnVersion,
+        },
         transaction_logic::{
             signed_command::{
                 self, PaymentPayload, SignedCommand, SignedCommandPayload, StakeDelegationPayload,
@@ -26,20 +24,14 @@ use ledger::{
             Memo, Transaction, UserCommand,
         },
     },
-    Account, AuthRequired, Permissions, ProofVerified, TokenId, TokenSymbol, VerificationKey,
-    VotingFor, ZkAppUri,
+    Account, AuthRequired, MutableFp, Permissions, ProofVerified, SetVerificationKey, TokenId,
+    TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppUri, TXN_VERSION_CURRENT,
 };
-use ledger::{SetVerificationKey, TXN_VERSION_CURRENT};
 use mina_curves::pasta::Fq;
 use mina_hasher::Fp;
-use mina_p2p_messages::array::ArrayN;
-use mina_p2p_messages::list::List;
-use mina_p2p_messages::v2::{
-    PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonk,
-    PicklesWrapWireProofCommitmentsStableV1, PicklesWrapWireProofEvaluationsStableV1,
-    PicklesWrapWireProofStableV1, PicklesWrapWireProofStableV1Bulletproof,
-};
 use mina_p2p_messages::{
+    array::ArrayN,
+    list::List,
     number::Number,
     pseq::PaddedSeq,
     v2::{
@@ -62,20 +54,22 @@ use mina_p2p_messages::{
         PicklesProofProofsVerified2ReprStableV2StatementFp,
         PicklesProofProofsVerified2ReprStableV2StatementProofState,
         PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValues,
+        PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonk,
         PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonkFeatureFlags,
         PicklesProofProofsVerifiedMaxStableV2,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2A,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge,
-        SgnStableV1, SignedAmount, TokenFeeExcess, TokenIdKeyHash, UnsignedExtendedUInt32StableV1,
+        PicklesWrapWireProofCommitmentsStableV1, PicklesWrapWireProofEvaluationsStableV1,
+        PicklesWrapWireProofStableV1, PicklesWrapWireProofStableV1Bulletproof, SgnStableV1,
+        SignedAmount, TokenFeeExcess, TokenIdKeyHash, UnsignedExtendedUInt32StableV1,
         UnsignedExtendedUInt64Int64ForVersionTagsStableV1,
     },
 };
 use mina_signer::{
     CompressedPubKey, CurvePoint, Keypair, NetworkId, ScalarField, SecKey, Signature, Signer,
 };
-use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::{seq::SliceRandom, Rng};
 use std::{array, iter, ops::RangeInclusive, sync::Arc};
 use tuple_map::TupleMap2;
 

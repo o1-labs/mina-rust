@@ -1,12 +1,14 @@
 use std::str::FromStr;
 
-use crate::proofs::to_field_elements::ToFieldElements;
-use crate::proofs::transaction::{checked_hash2, InnerCurve, PlonkVerificationKeyEvals};
-use crate::proofs::witness::Witness;
-use crate::proofs::VerifierIndex;
+use crate::proofs::{
+    to_field_elements::ToFieldElements,
+    transaction::{checked_hash2, InnerCurve, PlonkVerificationKeyEvals},
+    witness::Witness,
+    VerifierIndex,
+};
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::{BigInteger256, PrimeField};
-use mina_curves::{pasta::Fq, pasta::Pallas};
+use mina_curves::pasta::{Fq, Pallas};
 use mina_hasher::Fp;
 use poly_commitment::PolyComm;
 

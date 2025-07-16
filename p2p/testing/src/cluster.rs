@@ -8,8 +8,7 @@ use std::{
 
 use futures::StreamExt;
 use libp2p::{multiaddr::multiaddr, swarm::DialError, Multiaddr};
-use openmina_core::channels::mpsc;
-use openmina_core::{ChainId, Substate, DEVNET_CHAIN_ID};
+use openmina_core::{channels::mpsc, ChainId, Substate, DEVNET_CHAIN_ID};
 use p2p::{
     connection::outgoing::{
         P2pConnectionOutgoingAction, P2pConnectionOutgoingInitLibp2pOpts,
@@ -23,8 +22,7 @@ use redux::SystemTime;
 use crate::{
     event::{event_mapper_effect, RustNodeEvent},
     libp2p_node::{create_swarm, Libp2pEvent, Libp2pNode, Libp2pNodeConfig, Libp2pNodeId},
-    redux::State,
-    redux::{log_action, Action},
+    redux::{log_action, Action, State},
     rust_node::{RustNode, RustNodeConfig, RustNodeId},
     service::ClusterService,
     stream::{ClusterStreamExt, MapErrors, TakeDuring},

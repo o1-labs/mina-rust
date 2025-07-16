@@ -1,11 +1,13 @@
 use serde::{Deserialize, Serialize};
 
-pub use crate::block_producer::BlockProducerEvent;
-pub use crate::external_snark_worker_effectful::ExternalSnarkWorkerEvent;
-pub use crate::ledger::LedgerEvent;
-pub use crate::p2p::{P2pConnectionEvent, P2pEvent};
-pub use crate::rpc::{RpcId, RpcRequest};
-pub use crate::snark::SnarkEvent;
+pub use crate::{
+    block_producer::BlockProducerEvent,
+    external_snark_worker_effectful::ExternalSnarkWorkerEvent,
+    ledger::LedgerEvent,
+    p2p::{P2pConnectionEvent, P2pEvent},
+    rpc::{RpcId, RpcRequest},
+    snark::SnarkEvent,
+};
 
 use crate::transition_frontier::genesis::GenesisConfigLoaded;
 

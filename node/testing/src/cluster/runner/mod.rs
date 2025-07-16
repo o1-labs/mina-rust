@@ -4,18 +4,21 @@ pub use run::*;
 use std::{path::PathBuf, time::Duration};
 
 use ledger::BaseLedger;
-use node::account::{AccountPublicKey, AccountSecretKey};
-use node::{event_source::Event, ledger::LedgerService, ActionKind, State};
+use node::{
+    account::{AccountPublicKey, AccountSecretKey},
+    event_source::Event,
+    ledger::LedgerService,
+    ActionKind, State,
+};
 use rand::{rngs::StdRng, SeedableRng};
 use time::OffsetDateTime;
 
-use crate::node::OcamlStep;
 use crate::{
     cluster::{Cluster, ClusterNodeId, ClusterOcamlNodeId},
     network_debugger::Debugger,
     node::{
         DaemonJson, DaemonJsonGenConfig, Node, NodeTestingConfig, NonDeterministicEvent, OcamlNode,
-        OcamlNodeTestingConfig, RustNodeTestingConfig,
+        OcamlNodeTestingConfig, OcamlStep, RustNodeTestingConfig,
     },
     scenario::ScenarioStep,
     service::{DynEffects, PendingEventId},

@@ -66,8 +66,7 @@ fn setup_var_from_single_and_only_thread() {
 /// We store (+ display) panics in non-main threads, and display them all when the main thread panics.
 #[cfg(not(target_family = "wasm"))]
 fn new_hook(info: &PanicHookInfo<'_>) {
-    use std::any::Any;
-    use std::io::Write;
+    use std::{any::Any, io::Write};
 
     fn payload_as_str(payload: &dyn Any) -> &str {
         if let Some(&s) = payload.downcast_ref::<&'static str>() {

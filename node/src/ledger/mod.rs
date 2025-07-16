@@ -21,8 +21,7 @@ pub use ledger_service::*;
 
 pub mod ledger_manager;
 
-pub use ledger::AccountIndex as LedgerAccountIndex;
-pub use ledger::Address as LedgerAddress;
+pub use ledger::{AccountIndex as LedgerAccountIndex, Address as LedgerAddress};
 pub use ledger_manager::LedgerManager;
 
 use ledger::TreeVersion;
