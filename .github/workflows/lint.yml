@@ -20,7 +20,7 @@ jobs:
           toolchain: 1.84
           components: rustfmt, clippy
       - name: rustfmt
-        run: cargo fmt --all -- --check
+        run: make check-format
       - name: check
         run: cargo check --all-targets
         env:
