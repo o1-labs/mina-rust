@@ -20,7 +20,7 @@ flate2 = "1.0.24"
 md5 = "0.7.0"
 btreemultimap = "0.1.1"
 bitvec = "1.0.1"
-object = "0.36.4"
+object = "0.37.1"
 rsprocmaps = "0.3.2"
 leb128 = "0.2.1"
 rand = { version = "0.8.5", features = ["small_rng"] }
