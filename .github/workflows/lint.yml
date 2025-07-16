@@ -1,4 +1,4 @@
-name: lint
+name: Lint
 
 on:
   push:
@@ -17,10 +17,8 @@ jobs:
           sudo apt install -y protobuf-compiler
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: nightly
-          components: rustfmt, clippy
-      - name: rustfmt
-        run: make check-format
+          toolchain: 1.84
+          components: clippy, rustfmt
       - name: check
         run: make check
       - name: clippy
