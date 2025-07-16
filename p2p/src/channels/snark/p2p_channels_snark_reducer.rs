@@ -1,15 +1,18 @@
 use openmina_core::{bug_condition, Substate};
 use redux::ActionWithMeta;
 
+#[cfg(feature = "p2p-libp2p")]
+use crate::P2pNetworkPubsubAction;
 use crate::{
     channels::{ChannelId, MsgId, P2pChannelsEffectfulAction},
-    P2pNetworkPubsubAction, P2pState,
+    P2pState,
 };
 
 use super::{
     P2pChannelsSnarkAction, P2pChannelsSnarkState, SnarkPropagationChannelMsg,
     SnarkPropagationState,
 };
+#[cfg(feature = "p2p-libp2p")]
 use mina_p2p_messages::{gossip::GossipNetMessageV2, v2};
 
 impl P2pChannelsSnarkState {

@@ -2,10 +2,13 @@ use super::{
     P2pChannelsTransactionAction, P2pChannelsTransactionState, TransactionPropagationChannelMsg,
     TransactionPropagationState,
 };
+#[cfg(feature = "p2p-libp2p")]
+use crate::P2pNetworkPubsubAction;
 use crate::{
     channels::{ChannelId, MsgId, P2pChannelsEffectfulAction},
-    P2pNetworkPubsubAction, P2pState,
+    P2pState,
 };
+#[cfg(feature = "p2p-libp2p")]
 use mina_p2p_messages::{gossip::GossipNetMessageV2, v2};
 use openmina_core::{bug_condition, transaction::TransactionWithHash, Substate};
 use redux::ActionWithMeta;

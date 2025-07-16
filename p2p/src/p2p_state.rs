@@ -65,11 +65,11 @@ impl P2pState {
             Vec::new()
         };
 
-        let my_id = config.identity_pub_key.peer_id();
+        let _my_id = config.identity_pub_key.peer_id();
 
         #[cfg(not(target_arch = "wasm32"))]
         {
-            let peer_id_str = my_id.to_libp2p_string();
+            let peer_id_str = _my_id.to_libp2p_string();
 
             openmina_core::log::info!(
                 openmina_core::log::system_time();

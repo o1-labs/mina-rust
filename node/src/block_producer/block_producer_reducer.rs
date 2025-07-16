@@ -9,6 +9,7 @@ use openmina_core::{
         global_sub_window, in_same_checkpoint_window, in_seed_update_range, relative_sub_window,
     },
 };
+#[cfg(feature = "p2p-libp2p")]
 use p2p::P2pNetworkPubsubAction;
 use redux::{callback, Dispatcher, Timestamp};
 
@@ -369,10 +370,10 @@ impl BlockProducerEnabled {
                     bug_condition!("Invalid state for `BlockProducerAction::BlockInjected` expected: `BlockProducerCurrentState::Produced`, found: {:?}", state.current);
                 }
 
-                let (dispatcher, global_state) = state_context.into_dispatcher_and_state();
+                let (dispatcher, _global_state) = state_context.into_dispatcher_and_state();
 
                 #[cfg(feature = "p2p-libp2p")]
-                broadcast_injected_block(global_state, dispatcher);
+                broadcast_injected_block(_global_state, dispatcher);
 
                 dispatcher.push(BlockProducerAction::WonSlotSearch);
             }
