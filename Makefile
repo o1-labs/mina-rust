@@ -8,17 +8,42 @@ help: ## Ask for help!
 build: ## Build the project in debug mode
 	cargo build
 
+.PHONY: build-ledger
+build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
+	@cd ledger && cargo +nightly build --release --tests
+
 .PHONY: build-release
 build-release: ## Build the project in release mode
 	cargo build --release --bin openmina
 
-.PHONY: build-tests
-build-tests: ## Build test binaries
-	cargo build --release --tests --package=openmina-node-testing --package=cli
+.PHONY: build-tests-webrtc
+build-tests-webrtc: ## Build tests for WebRTC
+	@mkdir -p target/release/tests
+	@cargo build --release --tests \
+		--package=openmina-node-testing \
+		--package=cli
+	@cargo build --release \
+		--features=scenario-generators,p2p-webrtc \
+		--package=openmina-node-testing \
+		--tests \
+		--message-format=json \
+		> cargo-build-test.json
+	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' cargo-build-test.json > tests.tsv
+	@while read NAME FILE; do \
+		cp -a $$FILE target/release/tests/webrtc_$$NAME; \
+	done < tests.tsv
+
+.PHONY: build-vrf
+build-vrf: ## Build the VRF package
+	@cd vrf && cargo +nightly build --release --tests
 
 .PHONY: build-wasm
 build-wasm: ## Build WebAssembly node
-	cd node/web && cargo +nightly build --release --target wasm32-unknown-unknown
+	@cd node/web && cargo +nightly build \
+		--release --target wasm32-unknown-unknown
+	@wasm-bindgen --keep-debug --web \
+		--out-dir pkg \
+		target/wasm32-unknown-unknown/release/openmina_node_web.wasm
 
 .PHONY: check
 check: ## Check code for compilation errors
@@ -42,6 +67,15 @@ check-md: ## Check if markdown files are properly formatted
 clean: ## Clean build artifacts
 	cargo clean
 
+.PHONY: download-circuits
+download-circuits: ## Download the circuits used by Mina from GitHub
+	@if [ ! -d "circuit-blobs" ]; then \
+	  git clone --depth 1 https://github.com/openmina/circuit-blobs.git; \
+	  ln -s -b "$$PWD"/circuit-blobs/* ledger/; \
+	else \
+	  echo "circuit-blobs already exists, skipping download."; \
+	fi
+
 .PHONY: format
 format: ## Format code using rustfmt
 	cargo +nightly fmt
@@ -61,8 +95,8 @@ test: ## Run tests
 	cargo test
 
 .PHONY: test-ledger
-test-ledger: ## Run ledger tests
-	cd ledger && cargo test --release
+test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly Rust
+	@cd ledger && cargo +nightly test --release -- -Z unstable-options --report-time
 
 .PHONY: test-p2p
 test-p2p: ## Run P2P tests
@@ -73,5 +107,5 @@ test-release: ## Run tests in release mode
 	cargo test --release
 
 .PHONY: test-vrf
-test-vrf: ## Run VRF tests
-	cd vrf && cargo test --release
+test-vrf: ## Run VRF tests, requires nightly Rust
+	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
