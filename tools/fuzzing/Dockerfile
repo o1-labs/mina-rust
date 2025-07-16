@@ -3,7 +3,7 @@ FROM debian:bullseye
 
 RUN apt -y update && \
   apt -y upgrade && \
-  apt -y install \
+  apt -y install --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     pkg-config \

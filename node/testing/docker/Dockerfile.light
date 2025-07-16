@@ -1,7 +1,7 @@
 FROM golang:1.18.10-buster AS builder
 
 RUN apt-get update && \
-  apt-get -y install \
+  apt-get -y install --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     pkg-config \

@@ -1,5 +1,5 @@
 FROM rust:bullseye AS build
-RUN apt-get update && apt-get install -y protobuf-compiler && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends protobuf-compiler && apt-get clean
 RUN rustup default 1.84 && rustup component add rustfmt
 WORKDIR /openmina
 COPY . .
@@ -19,7 +19,7 @@ RUN git clone --depth 1 https://github.com/openmina/circuit-blobs.git \
     && rm -rf circuit-blobs/berkeley_rc1 circuit-blobs/*/tests
 
 FROM debian:bullseye
-RUN apt-get update && apt-get install -y libjemalloc2 libssl1.1 libpq5 curl jq procps && apt-get clean
+RUN apt-get update && apt-get install -y --no-install-recommends libjemalloc2 libssl1.1 libpq5 curl jq procps && apt-get clean
 
 COPY --from=build /openmina/release-bin/openmina /usr/local/bin/
 COPY --from=build /openmina/testing-release-bin/openmina-node-testing /usr/local/bin/

@@ -13,7 +13,7 @@ RUN echo "---------- USING APACHE ----------"
 FROM httpd:2.4
 
 RUN apt-get update && \
-    apt-get install -y curl && \
+    apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=BUILD_IMAGE /app/dist/frontend/browser /usr/local/apache2/htdocs/

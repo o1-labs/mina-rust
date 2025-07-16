@@ -8,7 +8,7 @@ RUN cd producer-dashboard && SQLX_OFFLINE=true cargo install --path .
 
 FROM ubuntu:noble AS mina-builder
 
-RUN apt-get update && apt-get install -y openssl ca-certificates
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates
 
 # Build mina from source
 RUN apt-get update && \
@@ -78,7 +78,7 @@ RUN eval $(opam config env) && make build_all_sigs
 
 FROM ubuntu:noble
 
-RUN apt-get update && apt-get install -y libpq5 libjemalloc2
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 libjemalloc2
 
 COPY --from=app-builder /usr/local/cargo/bin/openmina-producer-dashboard /usr/local/bin/openmina-producer-dashboard
 COPY --from=mina-builder /go/mina/src/app/libp2p_helper/result/bin/libp2p_helper /usr/local/bin/coda-libp2p_helper
