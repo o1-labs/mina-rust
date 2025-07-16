@@ -4,7 +4,8 @@ WORKDIR /usr/src/openmina-producer-dashboard
 
 COPY ../ .
 
-RUN cd producer-dashboard && SQLX_OFFLINE=true cargo install --path .
+WORKDIR /usr/src/openmina-producer-dashboard/producer-dashboard
+RUN SQLX_OFFLINE=true cargo install --path .
 
 FROM ubuntu:noble AS mina-builder
 

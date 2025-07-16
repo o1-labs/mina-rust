@@ -50,13 +50,13 @@ RUN ARCH=$(uname -m) && \
     rm -rf /usr/local/go && \
     curl -sSL https://go.dev/dl/go1.19.5.linux-$ARCH.tar.gz | tar -C /usr/local -xzf -
 RUN export PATH=$PATH:/usr/local/go/bin
-RUN curl -sSL https://capnproto.org/capnproto-c++-0.10.2.tar.gz | tar -zxf - \
-  && cd capnproto-c++-0.10.2 \
-  && ./configure \
-  && make -j6 check \
-  && make install \
-  && cd .. \
-  && rm -rf capnproto-c++-0.10.2
+RUN curl -sSL https://capnproto.org/capnproto-c++-0.10.2.tar.gz | tar -zxf -
+WORKDIR /capnproto-c++-0.10.2
+RUN ./configure && \
+    make -j6 check && \
+    make install
+WORKDIR /
+RUN rm -rf capnproto-c++-0.10.2
 
 RUN git clone https://github.com/openmina/mina.git
 WORKDIR /mina
