@@ -86,7 +86,7 @@ datachannel = { git = "https://github.com/openmina/datachannel-rs.git", rev = "1
 ] }
 rcgen = { version = "0.13", features = ["pem", "x509-parser"], optional = true }
 reqwest = { version = "0.11", features = ["json"] }
-mio = { version = "0.8.11", features = ["os-poll", "net"] }
+mio = { version = "1.0.3", features = ["os-poll", "net"] }
 libc = { version = "0.2.151" }
 local-ip-address = "0.6.1"
 
