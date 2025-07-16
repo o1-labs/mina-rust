@@ -2,9 +2,11 @@ use super::{
     P2pChannelsRpcAction, P2pChannelsRpcState, P2pRpcLocalState, P2pRpcRemotePendingRequestState,
     P2pRpcRemoteState, P2pRpcResponse, RpcChannelMsg, MAX_P2P_RPC_REMOTE_CONCURRENT_REQUESTS,
 };
+#[cfg(feature = "p2p-libp2p")]
+use crate::P2pNetworkRpcAction;
 use crate::{
     channels::{ChannelId, ChannelMsg, MsgId, P2pChannelsEffectfulAction},
-    P2pNetworkRpcAction, P2pPeerAction, P2pState,
+    P2pPeerAction, P2pState,
 };
 use openmina_core::{block::BlockWithHash, bug_condition, error, Substate};
 use redux::ActionWithMeta;
@@ -23,7 +25,7 @@ impl P2pChannelsRpcState {
         let (action, meta) = action.split();
         let p2p_state = state_context.get_substate_mut()?;
         let peer_id = *action.peer_id();
-        let is_libp2p = p2p_state.is_libp2p_peer(&peer_id);
+        let _is_libp2p = p2p_state.is_libp2p_peer(&peer_id);
         let peer_state = &mut p2p_state
             .get_ready_peer_mut(&peer_id)
             .ok_or_else(|| format!("Peer state not found for: {action:?}"))?
@@ -96,7 +98,7 @@ impl P2pChannelsRpcState {
                 let dispatcher = state_context.into_dispatcher();
 
                 #[cfg(feature = "p2p-libp2p")]
-                if is_libp2p {
+                if _is_libp2p {
                     if let Some((query, data)) =
                         super::libp2p::internal_request_into_libp2p(*request.clone(), id)
                     {
@@ -231,7 +233,7 @@ impl P2pChannelsRpcState {
                 let dispatcher = state_context.into_dispatcher();
 
                 #[cfg(feature = "p2p-libp2p")]
-                if is_libp2p {
+                if _is_libp2p {
                     if let Some(response) = response {
                         if let Some((response, data)) =
                             super::libp2p::internal_response_into_libp2p(*response, id)

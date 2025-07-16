@@ -1,6 +1,9 @@
+#[cfg(feature = "p2p-libp2p")]
 use openmina_core::{bug_condition, Substate};
+#[cfg(feature = "p2p-libp2p")]
 use redux::ActionWithMeta;
 
+#[cfg(feature = "p2p-libp2p")]
 use crate::{
     connection::outgoing::P2pConnectionOutgoingInitOpts,
     disconnection::{P2pDisconnectionAction, P2pDisconnectionReason},
@@ -9,6 +12,10 @@ use crate::{
     P2pNetworkKademliaAction, P2pNetworkYamuxAction, P2pState, YamuxStreamKind,
 };
 
+#[cfg(not(feature = "p2p-libp2p"))]
+use crate::P2pState;
+
+#[cfg(feature = "p2p-libp2p")]
 use super::P2pIdentifyAction;
 
 impl P2pState {

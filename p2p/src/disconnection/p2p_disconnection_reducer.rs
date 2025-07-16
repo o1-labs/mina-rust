@@ -5,9 +5,12 @@ use rand::prelude::*;
 use redux::ActionWithMeta;
 
 use crate::{
-    disconnection_effectful::P2pDisconnectionEffectfulAction, P2pNetworkSchedulerAction,
-    P2pPeerAction, P2pPeerStatus, P2pState,
+    disconnection_effectful::P2pDisconnectionEffectfulAction, P2pPeerAction, P2pPeerStatus,
+    P2pState,
 };
+
+#[cfg(feature = "p2p-libp2p")]
+use crate::P2pNetworkSchedulerAction;
 
 use super::{P2pDisconnectedState, P2pDisconnectionAction, P2pDisconnectionReason};
 
@@ -51,7 +54,7 @@ impl P2pDisconnectedState {
                 }
                 Ok(())
             }
-            P2pDisconnectionAction::Init { peer_id, reason } => {
+            P2pDisconnectionAction::Init { peer_id, reason: _reason } => {
                 let Some(peer) = p2p_state.peers.get_mut(&peer_id) else {
                     bug_condition!("Invalid state for: `P2pDisconnectionAction::Init`");
                     return Ok(());
@@ -73,7 +76,7 @@ impl P2pDisconnectedState {
                     for addr in connections {
                         dispatcher.push(P2pNetworkSchedulerAction::Disconnect {
                             addr,
-                            reason: reason.clone(),
+                            reason: _reason.clone(),
                         });
                     }
 

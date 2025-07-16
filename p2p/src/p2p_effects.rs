@@ -18,7 +18,7 @@ impl P2pEffectfulAction {
             #[cfg(feature = "p2p-libp2p")]
             P2pEffectfulAction::Network(action) => action.effects(&meta, store),
             #[cfg(not(feature = "p2p-libp2p"))]
-            P2pEffectfulAction::Network(action) => {}
+            P2pEffectfulAction::Network(_action) => {}
         }
     }
 }

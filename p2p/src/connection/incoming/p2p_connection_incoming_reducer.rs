@@ -1,27 +1,47 @@
 #[cfg(feature = "p2p-libp2p")]
 use std::net::{IpAddr, SocketAddr};
 
-use openmina_core::{bug_condition, debug, warn, Substate};
-use redux::{ActionWithMeta, Dispatcher, Timestamp};
+use openmina_core::{bug_condition, Substate};
+#[cfg(feature = "p2p-libp2p")]
+use openmina_core::{debug, warn};
+use redux::ActionWithMeta;
+#[cfg(feature = "p2p-libp2p")]
+use redux::{Dispatcher, Timestamp};
 
 use crate::{
     channels::signaling::exchange::P2pChannelsSignalingExchangeAction,
     connection::{
         incoming::P2pConnectionIncomingError,
-        incoming_effectful::P2pConnectionIncomingEffectfulAction,
-        outgoing::{P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts},
-        P2pConnectionResponse, P2pConnectionState,
+        incoming_effectful::P2pConnectionIncomingEffectfulAction, P2pConnectionResponse,
+        P2pConnectionState,
     },
-    disconnection::{P2pDisconnectionAction, P2pDisconnectionReason},
-    webrtc::{Host, HttpSignalingInfo, SignalingMethod},
-    ConnectionAddr, P2pNetworkSchedulerAction, P2pPeerAction, P2pPeerState, P2pPeerStatus,
-    P2pState, PeerId,
+    disconnection::P2pDisconnectionAction,
+    P2pPeerAction, P2pPeerState, P2pPeerStatus, P2pState,
 };
 
-use super::{
-    super::{incoming::P2pConnectionIncomingState, RejectionReason},
-    IncomingSignalingMethod, P2pConnectionIncomingAction,
+#[cfg(feature = "p2p-libp2p")]
+use crate::{
+    connection::outgoing::{P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts},
+    disconnection::P2pDisconnectionReason,
+    ConnectionAddr, P2pNetworkSchedulerAction, PeerId,
 };
+
+#[cfg(not(feature = "p2p-libp2p"))]
+use crate::connection::outgoing::P2pConnectionOutgoingInitOpts;
+
+#[cfg(feature = "p2p-webrtc")]
+use crate::webrtc::{HttpSignalingInfo, SignalingMethod};
+
+#[cfg(feature = "p2p-libp2p")]
+use crate::p2p_network::Host;
+
+use super::{
+    super::incoming::P2pConnectionIncomingState, IncomingSignalingMethod,
+    P2pConnectionIncomingAction,
+};
+
+#[cfg(feature = "p2p-libp2p")]
+use super::super::RejectionReason;
 
 impl P2pConnectionIncomingState {
     /// Substate is accessed
@@ -34,10 +54,10 @@ impl P2pConnectionIncomingState {
         Action: crate::P2pActionTrait<State>,
     {
         let (action, meta) = action.split();
-        let time = meta.time();
+        let _time = meta.time();
         let peer_id = *action.peer_id();
         let p2p_state = state_context.get_substate_mut()?;
-        let my_id = p2p_state.my_id();
+        let _my_id = p2p_state.my_id();
 
         match action {
             P2pConnectionIncomingAction::Init { opts, rpc_id } => {
@@ -411,7 +431,7 @@ impl P2pConnectionIncomingState {
                 }
                 Ok(())
             }
-            P2pConnectionIncomingAction::FinalizePendingLibp2p { addr, .. } => {
+            P2pConnectionIncomingAction::FinalizePendingLibp2p { addr: _addr, .. } => {
                 #[cfg(feature = "p2p-libp2p")]
                 {
                     let state = p2p_state
@@ -430,12 +450,12 @@ impl P2pConnectionIncomingState {
                             identify: None,
                         });
 
-                    Self::reduce_finalize_libp2p_pending(state, addr, time, my_id, peer_id);
+                    Self::reduce_finalize_libp2p_pending(state, _addr, _time, _my_id, peer_id);
 
                     let (dispatcher, state) = state_context.into_dispatcher_and_state();
                     let p2p_state: &P2pState = state.substate()?;
                     Self::dispatch_finalize_libp2p_pending(
-                        dispatcher, p2p_state, my_id, peer_id, time, addr,
+                        dispatcher, p2p_state, _my_id, peer_id, _time, _addr,
                     );
                 }
 

@@ -8,12 +8,16 @@ use crate::{
         P2pConnectionState,
     },
     disconnection::{P2pDisconnectedState, P2pDisconnectionAction},
-    P2pAction, P2pNetworkKadKey, P2pNetworkKademliaAction, P2pNetworkPnetAction,
-    P2pNetworkPubsubAction, P2pNetworkRpcAction, P2pNetworkSelectAction, P2pNetworkState,
-    P2pPeerState, P2pState, PeerId,
+    P2pAction, P2pPeerState, P2pState,
 };
 use openmina_core::{bug_condition, Substate};
 use redux::{ActionMeta, ActionWithMeta, Dispatcher, Timestamp};
+
+#[cfg(feature = "p2p-libp2p")]
+use crate::{
+    P2pNetworkKadKey, P2pNetworkKademliaAction, P2pNetworkPnetAction, P2pNetworkPubsubAction,
+    P2pNetworkRpcAction, P2pNetworkSelectAction, P2pNetworkState, PeerId,
+};
 
 impl P2pState {
     pub fn reducer<State, Action>(
@@ -24,7 +28,7 @@ impl P2pState {
         State: crate::P2pStateTrait,
         Action: crate::P2pActionTrait<State>,
     {
-        let Ok(state) = state_context.get_substate_mut() else {
+        let Ok(_state) = state_context.get_substate_mut() else {
             bug_condition!("no P2pState");
             return Ok(());
         };
@@ -204,14 +208,14 @@ impl P2pState {
     fn p2p_discovery<State, Action>(
         &self,
         dispatcher: &mut Dispatcher<Action, State>,
-        time: Timestamp,
+        _time: Timestamp,
     ) -> Result<(), String>
     where
         State: crate::P2pStateTrait,
         Action: crate::P2pActionTrait<State>,
     {
         let config = &self.config;
-        let timeouts = &config.timeouts;
+        let _timeouts = &config.timeouts;
 
         if !config.peer_discovery {
             return Ok(());

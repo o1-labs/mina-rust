@@ -1,6 +1,9 @@
+#[cfg(feature = "p2p-libp2p")]
 use std::net::SocketAddr;
 
-use openmina_core::{bug_condition, warn, Substate};
+#[cfg(feature = "p2p-libp2p")]
+use openmina_core::warn;
+use openmina_core::{bug_condition, Substate};
 use redux::ActionWithMeta;
 
 use crate::{
@@ -11,15 +14,19 @@ use crate::{
     },
     disconnection::P2pDisconnectionAction,
     webrtc::Host,
-    P2pNetworkKadRequestAction, P2pNetworkSchedulerAction, P2pPeerAction, P2pPeerState,
-    P2pPeerStatus, P2pState,
+    P2pPeerAction, P2pPeerState, P2pPeerStatus, P2pState,
 };
 
 use super::{
-    libp2p_opts::P2pConnectionOutgoingInitLibp2pOptsTryToSocketAddrError,
     P2pConnectionOutgoingAction, P2pConnectionOutgoingError, P2pConnectionOutgoingInitOpts,
     P2pConnectionOutgoingState,
 };
+
+#[cfg(feature = "p2p-libp2p")]
+use super::libp2p_opts::P2pConnectionOutgoingInitLibp2pOptsTryToSocketAddrError;
+
+#[cfg(feature = "p2p-libp2p")]
+use crate::{P2pNetworkKadRequestAction, P2pNetworkSchedulerAction};
 
 impl P2pConnectionOutgoingState {
     /// Substate is accessed
