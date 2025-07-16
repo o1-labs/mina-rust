@@ -22,8 +22,6 @@ jobs:
       - name: rustfmt
         run: make check-format
       - name: check
-        run: cargo check --all-targets
-        env:
-          RUSTFLAGS: -D warnings
+        run: make check
       - name: clippy
         run: make lint
