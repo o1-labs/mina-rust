@@ -8,10 +8,11 @@ import { selectDashboardSplitsActivePeer, selectDashboardSplitsSort } from '@net
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-  selector: 'mina-dashboard-splits-side-panel-table',
-  templateUrl: './dashboard-splits-side-panel-table.component.html',
-  styleUrls: ['./dashboard-splits-side-panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-dashboard-splits-side-panel-table',
+    templateUrl: './dashboard-splits-side-panel-table.component.html',
+    styleUrls: ['./dashboard-splits-side-panel-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DashboardSplitsSidePanelTableComponent extends MinaTableRustWrapper<DashboardSplitsPeer> implements OnInit {
 

@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   padding-bottom: 80px;
@@ -8,7 +8,7 @@
   .steps {
     position: relative;
     padding-left: 40px;
-    color: $base-tertiary;
+    color: openmina.$base-tertiary;
 
     &::before {
       content: '';
@@ -17,12 +17,12 @@
       left: 10px;
       width: 1px;
       height: calc(100% - 13px);
-      background-color: $base-divider;
+      background-color: openmina.$base-divider;
     }
 
     .step {
       position: relative;
-      color: $base-tertiary;
+      color: openmina.$base-tertiary;
 
       &::before {
         content: '';
@@ -31,25 +31,25 @@
         left: -29px;
         width: 20px;
         height: 1px;
-        background-color: $base-divider;
+        background-color: openmina.$base-divider;
       }
     }
   }
 
   &.pending {
     .group-title {
-      color: $base-tertiary;
+      color: openmina.$base-tertiary;
     }
   }
 
   &.success {
     .group-title {
-      color: $success-primary;
+      color: openmina.$success-primary;
     }
 
     .steps::before,
     .steps .step::before {
-      background-color: $success-tertiary;
+      background-color: openmina.$success-tertiary;
     }
   }
 
@@ -58,7 +58,7 @@
     height: 20px;
 
     span {
-      background-color: $base-tertiary;
+      background-color: openmina.$base-tertiary;
       width: 10px;
       height: 10px;
       border-radius: 10px;

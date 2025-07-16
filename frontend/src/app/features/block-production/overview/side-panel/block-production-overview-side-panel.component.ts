@@ -20,10 +20,11 @@ import {
 } from '@block-production/overview/slots/block-production-overview-slots.component';
 
 @Component({
-  selector: 'mina-block-production-overview-side-panel',
-  templateUrl: './block-production-overview-side-panel.component.html',
-  styleUrls: ['./block-production-overview-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-block-production-overview-side-panel',
+    templateUrl: './block-production-overview-side-panel.component.html',
+    styleUrls: ['./block-production-overview-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class BlockProductionOverviewSidePanelComponent extends StoreDispatcher implements OnInit {
 

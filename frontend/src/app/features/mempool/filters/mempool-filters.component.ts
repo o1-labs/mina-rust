@@ -10,10 +10,11 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 
 @Component({
-  selector: 'mina-mempool-filters',
-  templateUrl: './mempool-filters.component.html',
-  styleUrls: ['./mempool-filters.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-mempool-filters',
+    templateUrl: './mempool-filters.component.html',
+    styleUrls: ['./mempool-filters.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MempoolFiltersComponent extends StoreDispatcher implements OnInit {
 

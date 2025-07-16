@@ -53,7 +53,7 @@ export class DashboardSplitsEffects extends MinaRustBaseEffect<DashboardSplitsAc
     this.splitNodes$ = createEffect(() => this.actions$.pipe(
       ofType(DASHBOARD_SPLITS_SPLIT_NODES),
       this.latestStateSlice<DashboardSplitsState, DashboardSplitsMergeNodes>('network.splits'),
-      tap(state => this.splitService.splitNodes(state.peers)),
+      tap(state => this.splitService.splitNodes(state.state.peers)),
       map(() => ({ type: DASHBOARD_SPLITS_SPLIT_NODES_SUCCESS })),
       catchErrorAndRepeat(MinaErrorType.RUST, DASHBOARD_SPLITS_SPLIT_NODES_SUCCESS),
     ));
@@ -61,7 +61,7 @@ export class DashboardSplitsEffects extends MinaRustBaseEffect<DashboardSplitsAc
     this.mergeNodes$ = createEffect(() => this.actions$.pipe(
       ofType(DASHBOARD_SPLITS_MERGE_NODES),
       this.latestStateSlice<DashboardSplitsState, DashboardSplitsMergeNodes>('network.splits'),
-      tap(state => this.splitService.mergeNodes(state.peers)),
+      tap(state => this.splitService.mergeNodes(state.state.peers)),
       map(() => ({ type: DASHBOARD_SPLITS_MERGE_NODES_SUCCESS })),
       catchErrorAndRepeat(MinaErrorType.RUST, DASHBOARD_SPLITS_MERGE_NODES_SUCCESS),
     ));

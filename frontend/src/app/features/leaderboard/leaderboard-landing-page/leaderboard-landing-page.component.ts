@@ -4,11 +4,12 @@ import { debounceTime, fromEvent } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'mina-leaderboard-landing-page',
-  templateUrl: './leaderboard-landing-page.component.html',
-  styleUrl: './leaderboard-landing-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 align-center' },
+    selector: 'mina-leaderboard-landing-page',
+    templateUrl: './leaderboard-landing-page.component.html',
+    styleUrl: './leaderboard-landing-page.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 align-center' },
+    standalone: false
 })
 export class LeaderboardLandingPageComponent extends ManualDetection implements AfterViewInit {
   showBanner: boolean = false;

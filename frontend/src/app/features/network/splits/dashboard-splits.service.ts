@@ -141,7 +141,7 @@ export class DashboardSplitsService {
                 // Add the connection
                 links.push({
                   source: sourceAddr,
-                  target: targetAddr
+                  target: targetAddr,
                 });
 
                 // Mark this connection as used
@@ -153,7 +153,7 @@ export class DashboardSplitsService {
 
           return {
             peers,
-            links
+            links,
           };
         }
 
@@ -164,7 +164,7 @@ export class DashboardSplitsService {
         this.currentData = generatePeerNetwork();
         return this.currentData;
       }),
-      tap((d) => console.log(d))
+      tap((d) => console.log(d)),
     );
   }
 
@@ -183,7 +183,7 @@ export class DashboardSplitsService {
       console.log('No groups large enough to split further.');
       this.currentData = {
         peers: [...this.currentData.peers],
-        links: [...this.currentData.links]
+        links: [...this.currentData.links],
       };
     }
 
@@ -222,13 +222,13 @@ export class DashboardSplitsService {
     // Ensure each subgroup is connected (has sufficient internal links)
     const additionalLinks = [
       ...this.ensureGroupIsConnected(subgroup1, this.currentData.peers),
-      ...this.ensureGroupIsConnected(subgroup2, this.currentData.peers)
+      ...this.ensureGroupIsConnected(subgroup2, this.currentData.peers),
     ];
 
     // Create a new object with the updated links
     this.currentData = {
       peers: [...this.currentData.peers],
-      links: [...newLinks, ...additionalLinks]
+      links: [...newLinks, ...additionalLinks],
     };
   }
 
@@ -299,7 +299,7 @@ export class DashboardSplitsService {
 
     // Find existing links within this group
     const groupLinks = this.currentData.links.filter(link =>
-      groupAddresses.has(link.source) && groupAddresses.has(link.target)
+      groupAddresses.has(link.source) && groupAddresses.has(link.target),
     );
 
     // If there are already links, we need to check if the group is connected
@@ -321,7 +321,7 @@ export class DashboardSplitsService {
 
         newLinks.push({
           source: sourceNode,
-          target: targetNode
+          target: targetNode,
         });
       }
 
@@ -334,7 +334,7 @@ export class DashboardSplitsService {
       for (let i = 0; i < group.length - 1; i++) {
         newLinks.push({
           source: group[i],
-          target: group[i + 1]
+          target: group[i + 1],
         });
       }
 
@@ -431,7 +431,7 @@ export class DashboardSplitsService {
       toArray(),
     );
 
-    return forkJoin([leftObs, rightObs]).pipe(map(() => void 0));
+    return forkJoin([leftObs, rightObs]).pipe(map((): any => void 0));
   }
 
   mergeNodes(_: any): void {
@@ -443,7 +443,7 @@ export class DashboardSplitsService {
       console.log('Network is already fully connected.');
       this.currentData = {
         peers: [...this.currentData.peers],
-        links: [...this.currentData.links]
+        links: [...this.currentData.links],
       };
     }
 
@@ -461,14 +461,14 @@ export class DashboardSplitsService {
       // Add a link between them
       newLinks.push({
         source: sourceNode,
-        target: targetNode
+        target: targetNode,
       });
     }
 
     // Create a new object with the updated links
     this.currentData = {
       peers: [...this.currentData.peers],
-      links: newLinks
+      links: newLinks,
     };
   }
 
@@ -484,7 +484,7 @@ export class DashboardSplitsService {
     ).pipe(
       concatAll(),
       toArray(),
-      map(() => void 0),
+      map((): any => void 0),
     );
   }
 

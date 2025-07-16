@@ -1,12 +1,12 @@
-@import 'openmina';
+@use 'openmina';
 
 ::ng-deep .mina-table {
-  @include flexColumn();
+  @include openmina.flexColumn();
 
   .row {
     height: 36px;
     display: grid;
-    color: $base-tertiary;
+    color: openmina.$base-tertiary;
 
     > span {
       height: 36px;
@@ -15,10 +15,10 @@
     }
 
     &.active {
-      background-color: $selected-container;
+      background-color: openmina.$selected-container;
 
       > span, a {
-        color: $selected-primary !important;
+        color: openmina.$selected-primary !important;
       }
     }
 
@@ -31,21 +31,21 @@
     }
 
     &:hover:not(.active):not(.head) {
-      background-color: $base-divider;
+      background-color: openmina.$base-divider;
 
       * {
-        color: $base-primary !important;
+        color: openmina.$base-primary !important;
       }
     }
 
     &.head {
       font-weight: 600;
-      color: $base-tertiary;
+      color: openmina.$base-tertiary;
       text-transform: capitalize;
 
       &.sorting {
         > span {
-          @include flexRowVertCenter();
+          @include openmina.flexRowVertCenter();
 
           .mina-icon.info {
             font-variation-settings: 'FILL' 0, 'wght' 300;
@@ -77,7 +77,7 @@
 
           &:hover,
           &.active {
-            color: $base-primary;
+            color: openmina.$base-primary;
             transition: 200ms;
 
             .mina-icon:not(.show):not(.info) {
@@ -134,7 +134,7 @@
       display: block;
       position: fixed;
       rotate: -90deg;
-      color: $base-secondary;
+      color: openmina.$base-secondary;
       left: -1000px;
 
       &.hide {

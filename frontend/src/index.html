@@ -22,7 +22,7 @@
   <title>Open Mina</title>
   <base href="/">
   <script type="module">
-    import env from './assets/environments/env.js';
+    import env from '../public/environments/env.js';
 
     if (typeof window !== 'undefined') {
       (function (window) {
@@ -49,13 +49,13 @@
 <body class="f-base">
 <script>
   const deployment = {
-    dateUTC: '2025-03-21T14:18:55.239Z',
+    dateUTC: '2025-03-28T10:27:50.006Z',
     deviceIp: '5.13.60.20',
     deviceOS: 'macOS',
     deviceOSVersion: '24.3.0',
-    version: '1.0.183',
-  };
-  window.deployment = deployment;
+    version: '1.0.184',
+};
+window.deployment = deployment;
 
   if (location.href.includes('webnode.minaprotocol')) {
     document.body.style.backgroundColor = '#fff';
@@ -65,7 +65,7 @@
 <script type="module" defer>
   if (typeof window !== 'undefined') {
     window.addEventListener('startWebNode', () => {
-      import('./assets/webnode/pkg/openmina_node_web.js')
+      import('../public/webnode/pkg/openmina_node_web.js')
         .then((v) => {
           window.webnode = v;
           window.dispatchEvent(new CustomEvent('webNodeLoaded'));

@@ -6,11 +6,12 @@ import { timer } from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
-  selector: 'mina-nodes-overview',
-  templateUrl: './nodes-overview.component.html',
-  styleUrls: ['./nodes-overview.component.scss'],
-  host: { class: 'flex-column h-100' },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-overview',
+    templateUrl: './nodes-overview.component.html',
+    styleUrls: ['./nodes-overview.component.scss'],
+    host: { class: 'flex-column h-100' },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesOverviewComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

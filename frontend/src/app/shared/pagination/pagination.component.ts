@@ -10,13 +10,12 @@ import {
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
-  selector: 'mina-pagination',
-  standalone: true,
-  imports: [SharedModule],
-  templateUrl: './pagination.component.html',
-  styleUrls: ['./pagination.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'fx-row-vert-cent' },
+    selector: 'mina-pagination',
+    imports: [SharedModule],
+    templateUrl: './pagination.component.html',
+    styleUrls: ['./pagination.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'fx-row-vert-cent' }
 })
 export class PaginationComponent implements OnChanges {
 

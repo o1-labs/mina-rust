@@ -10,11 +10,12 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { getWindow } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-snarks-work-pool-side-panel',
-  templateUrl: './snarks-work-pool-side-panel.component.html',
-  styleUrls: ['./snarks-work-pool-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-snarks-work-pool-side-panel',
+    templateUrl: './snarks-work-pool-side-panel.component.html',
+    styleUrls: ['./snarks-work-pool-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class SnarksWorkPoolSidePanelComponent extends StoreDispatcher implements OnInit {
 

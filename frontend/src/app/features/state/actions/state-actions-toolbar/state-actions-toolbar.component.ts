@@ -11,11 +11,12 @@ import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-  selector: 'mina-state-actions-toolbar',
-  templateUrl: './state-actions-toolbar.component.html',
-  styleUrls: ['./state-actions-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-row h-xl border-bottom' },
+    selector: 'mina-state-actions-toolbar',
+    templateUrl: './state-actions-toolbar.component.html',
+    styleUrls: ['./state-actions-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-row h-xl border-bottom' },
+    standalone: false
 })
 export class StateActionsToolbarComponent extends StoreDispatcher implements OnInit {
 

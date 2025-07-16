@@ -7,10 +7,11 @@ import { getMergedRoute, MergedRoute } from '@openmina/shared';
 import { take } from 'rxjs';
 
 @Component({
-  selector: 'mina-snarks-work-pool-details',
-  templateUrl: './snarks-work-pool-details.component.html',
-  styleUrls: ['./snarks-work-pool-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-snarks-work-pool-details',
+    templateUrl: './snarks-work-pool-details.component.html',
+    styleUrls: ['./snarks-work-pool-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SnarksWorkPoolDetailsComponent extends StoreDispatcher implements OnInit {
 

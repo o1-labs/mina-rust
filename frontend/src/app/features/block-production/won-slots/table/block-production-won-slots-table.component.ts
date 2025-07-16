@@ -14,11 +14,12 @@ import { SentryService } from '@core/services/sentry.service';
 import { WebNodeService } from '@core/services/web-node.service';
 
 @Component({
-  selector: 'mina-block-production-won-slots-table',
-  templateUrl: './block-production-won-slots-table.component.html',
-  styleUrls: ['./block-production-won-slots-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column' },
+    selector: 'mina-block-production-won-slots-table',
+    templateUrl: './block-production-won-slots-table.component.html',
+    styleUrls: ['./block-production-won-slots-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column' },
+    standalone: false
 })
 export class BlockProductionWonSlotsTableComponent extends MinaTableRustWrapper<BlockProductionWonSlotsSlot> implements OnInit {
 

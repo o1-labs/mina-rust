@@ -12,13 +12,12 @@ import { getMergedRoute, isMobile, MergedRoute, removeParamsFromURL } from '@ope
 import { BlockProductionWonSlotsActions } from '@block-production/won-slots/block-production-won-slots.actions';
 
 @Component({
-  selector: 'mina-block-production-pill',
-  standalone: true,
-  imports: [],
-  templateUrl: './block-production-pill.component.html',
-  styleUrl: './block-production-pill.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'border-rad-6' },
+    selector: 'mina-block-production-pill',
+    imports: [],
+    templateUrl: './block-production-pill.component.html',
+    styleUrl: './block-production-pill.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'border-rad-6' }
 })
 export class BlockProductionPillComponent extends StoreDispatcher implements OnInit, OnDestroy {
   text: string = null;

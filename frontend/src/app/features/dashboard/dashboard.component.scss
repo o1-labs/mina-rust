@@ -1,7 +1,7 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
-  background-color: $base-background;
+  background-color: openmina.$base-background;
 }
 
 .comps {
@@ -63,14 +63,14 @@ mina-dashboard-blocks-sync {
     top: 1px;
     left: -50px;
     width: 50px;
-    background: radial-gradient($success-primary, $success-primary, $success-primary, $success-primary, transparent, transparent);
+    background: radial-gradient(openmina.$success-primary, openmina.$success-primary, openmina.$success-primary, openmina.$success-primary, transparent, transparent);
     border-radius: 20px;
     animation: move 9s linear infinite;
   }
 
   .progress {
     height: 2px;
-    background-color: $success-primary;
+    background-color: openmina.$success-primary;
     top: 2px;
     left: 0;
   }

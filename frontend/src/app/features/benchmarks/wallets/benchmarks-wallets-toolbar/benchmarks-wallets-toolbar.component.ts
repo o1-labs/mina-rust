@@ -49,11 +49,12 @@ interface TransactionForm {
 
 @UntilDestroy()
 @Component({
-  selector: 'mina-benchmarks-wallets-toolbar',
-  templateUrl: './benchmarks-wallets-toolbar.component.html',
-  styleUrls: ['./benchmarks-wallets-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-xl border-bottom' },
+    selector: 'mina-benchmarks-wallets-toolbar',
+    templateUrl: './benchmarks-wallets-toolbar.component.html',
+    styleUrls: ['./benchmarks-wallets-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-xl border-bottom' },
+    standalone: false
 })
 export class BenchmarksWalletsToolbarComponent extends ManualDetection implements OnInit {
 

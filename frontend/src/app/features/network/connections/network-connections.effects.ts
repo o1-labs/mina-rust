@@ -47,7 +47,7 @@ export class NetworkConnectionsEffects extends MinaRustBaseEffect<NetworkConnect
     this.init$ = createEffect(() => this.actions$.pipe(
       ofType(NETWORK_CONNECTIONS_INIT),
       this.latestStateSlice<NetworkConnectionsState, NetworkConnectionsInit>('network.connections'),
-      tap(state => this.streamActive = state.stream),
+      tap(state => this.streamActive = state.state.stream),
       switchMap(() =>
         timer(0, 10000).pipe(
           takeUntil(this.networkDestroy$),

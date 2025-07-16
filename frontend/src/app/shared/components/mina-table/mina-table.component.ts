@@ -3,21 +3,19 @@ import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime } from 'rxjs';
 import { CommonModule, DOCUMENT } from '@angular/common';
-import { ActionCreator } from '@ngrx/store';
-import { TypedAction } from '@ngrx/store/src/models';
+import { ActionCreator, Action } from '@ngrx/store';
 import { SharedModule } from '@shared/shared.module';
 import { BaseStoreDispatcher, hasValue, isMobile, SortDirection, TableColumnList, TableSort } from '@openmina/shared';
 
 const DESKTOP_ROW_HEIGHT = 36;
 
 @Component({
-  standalone: true,
-  imports: [SharedModule, CommonModule],
-  selector: 'mina-table',
-  templateUrl: './mina-table.component.html',
-  styleUrls: ['./mina-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column' },
+    imports: [SharedModule, CommonModule],
+    selector: 'mina-table',
+    templateUrl: './mina-table.component.html',
+    styleUrls: ['./mina-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column' }
 })
 export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<any> implements AfterViewInit {
 
@@ -34,7 +32,7 @@ export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<an
   gridTemplateColumns: Array<number | 'auto' | '1fr'> = [];
   minWidth: number;
   sortClz: new (payload: TableSort<T>) => { type: string, payload: TableSort<T> };
-  sortAction: ActionCreator<string, (props: { sort: TableSort<T>; }) => { sort: TableSort<T>; } & TypedAction<string>>;
+  sortAction: ActionCreator<string, (props: { sort: TableSort<T>; }) => { sort: TableSort<T>; } & Action<string>>;
   sortSelector: (state: any) => TableSort<T>;
   rowClickCallback: (row: T, isRealClick: boolean) => void;
   trackByFn: (index: number, row: T) => any = (_: number, row: T) => row;

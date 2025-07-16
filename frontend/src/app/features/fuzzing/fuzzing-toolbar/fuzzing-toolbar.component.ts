@@ -8,11 +8,12 @@ import { FuzzingFilterFiles } from '@fuzzing/fuzzing.actions';
 import { debounceTime } from 'rxjs';
 
 @Component({
-  selector: 'mina-fuzzing-toolbar',
-  templateUrl: './fuzzing-toolbar.component.html',
-  styleUrls: ['./fuzzing-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-row align-center h-xl pl-12 border-bottom' },
+    selector: 'mina-fuzzing-toolbar',
+    templateUrl: './fuzzing-toolbar.component.html',
+    styleUrls: ['./fuzzing-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-row align-center h-xl pl-12 border-bottom' },
+    standalone: false
 })
 export class FuzzingToolbarComponent extends StoreDispatcher implements OnInit {
 

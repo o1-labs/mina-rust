@@ -4,10 +4,11 @@ import { getMergedRoute, MergedRoute, toggleItem } from '@openmina/shared';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'mina-snarks-work-pool-details-accounts',
-  templateUrl: './snarks-work-pool-details-accounts.component.html',
-  styleUrls: ['./snarks-work-pool-details-accounts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-snarks-work-pool-details-accounts',
+    templateUrl: './snarks-work-pool-details-accounts.component.html',
+    styleUrls: ['./snarks-work-pool-details-accounts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SnarksWorkPoolDetailsAccountsComponent extends StoreDispatcher implements OnInit {
 

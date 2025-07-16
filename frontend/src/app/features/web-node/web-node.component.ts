@@ -10,16 +10,15 @@ import { WebNodeNotSupportedComponent } from '@web-node/web-node-not-supported/w
 import { WebNodeFileUploadComponent } from '@web-node/web-node-file-upload/web-node-file-upload.component';
 
 @Component({
-  selector: 'mina-web-node',
-  standalone: true,
-  imports: [
-    WebNodeInitializationComponent,
-    WebNodeNotSupportedComponent,
-    WebNodeFileUploadComponent,
-  ],
-  templateUrl: './web-node.component.html',
-  styleUrl: './web-node.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-web-node',
+    imports: [
+        WebNodeInitializationComponent,
+        WebNodeNotSupportedComponent,
+        WebNodeFileUploadComponent,
+    ],
+    templateUrl: './web-node.component.html',
+    styleUrl: './web-node.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class WebNodeComponent extends StoreDispatcher implements OnInit {
 

@@ -1,16 +1,15 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, EMPTY, filter, from, fromEvent, map, merge, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
 import base from 'base-x';
-import { any, isBrowser, safelyExecuteInBrowser } from '@openmina/shared';
+import { any, isBrowser, safelyExecuteInBrowser, getLocalStorage } from '@openmina/shared';
 import { HttpClient } from '@angular/common/http';
 import { sendSentryEvent } from '@shared/helpers/webnode.helper';
 import { DashboardPeerStatus } from '@shared/types/dashboard/dashboard.peer';
 import { FileProgressHelper } from '@core/helpers/file-progress.helper';
 import { CONFIG } from '@shared/constants/config';
 import firebase from 'firebase/compat';
-import FirebaseStorageError = firebase.storage.FirebaseStorageError;
 import { FirestoreService } from '@core/services/firestore.service';
-import {SentryService} from "@core/services/sentry.service";
+import { SentryService } from '@core/services/sentry.service';
 
 export interface PrivateStake {
   publicKey: string;
@@ -70,7 +69,7 @@ export class WebNodeService {
 
     if (isBrowser()) {
       const args = (() => {
-        const raw = localStorage.getItem('webnodeArgs');
+        const raw = getLocalStorage()?.getItem('webnodeArgs');
         if (raw === null) {
           return null;
         }
@@ -99,7 +98,7 @@ export class WebNodeService {
           this.webNodeKeyPair = data.blockProducer;
           this.webNodeNetwork = data.network;
         }),
-        map(() => void 0),
+        map((): any => void 0),
       );
     }
     return EMPTY;
@@ -178,7 +177,7 @@ export class WebNodeService {
     return this.webnode$.asObservable().pipe(
       filter(Boolean),
       switchMap(webnode => from(any(webnode).state().peers())),
-      tap(peers => {
+      tap((peers: any) => {
         // if (!this.sentryEvents.sentNoPeersEvent && Date.now() - this.webNodeStartTime >= 5000 && peers.length === 0) {
         //   sendSentryEvent('WebNode has no peers after 5 seconds from startup.');
         //   this.sentryEvents.sentNoPeersEvent = true;

@@ -1,8 +1,8 @@
 import 'zone.js/node';
 
 import { APP_BASE_HREF } from '@angular/common';
-import { CommonEngine } from '@angular/ssr';
-import * as express from 'express';
+import { CommonEngine } from '@angular/ssr/node';
+import express from 'express';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import AppServerModule from './src/main.server';
@@ -24,7 +24,7 @@ export function app(): express.Express {
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
   server.get('*.*', express.static(distFolder, {
-    maxAge: '1y'
+    maxAge: '1y',
   }));
 
   // All regular routes use the Angular engine

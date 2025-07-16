@@ -1,11 +1,11 @@
-@import 'leaderboard-variables';
+@use 'leaderboard-variables';
 
 :host {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 16px;
   font-weight: 400;
   line-height: 24px;
-  color: $mina-base-primary;
+  color: leaderboard-variables.$mina-base-primary;
 
   > div {
     min-height: 40px;
@@ -24,12 +24,12 @@
   }
 
   a {
-    color: $mina-base-primary;
+    color: leaderboard-variables.$mina-base-primary;
     cursor: pointer;
     transition: .15s ease;
 
     &:hover {
-      color: $mina-access-primary;
+      color: leaderboard-variables.$mina-access-primary;
     }
   }
 }

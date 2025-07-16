@@ -13,10 +13,11 @@ import { StateActionsStats } from '@shared/types/state/actions/state-actions-sta
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-state-actions-side-panel',
-  templateUrl: './state-actions-side-panel.component.html',
-  styleUrls: ['./state-actions-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-state-actions-side-panel',
+    templateUrl: './state-actions-side-panel.component.html',
+    styleUrls: ['./state-actions-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class StateActionsSidePanelComponent extends MinaTableRustWrapper<StateActionGroup> implements OnInit {
 

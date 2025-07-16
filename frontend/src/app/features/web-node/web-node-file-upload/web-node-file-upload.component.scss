@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .header {
   height: 56px;
@@ -46,11 +46,11 @@
       }
 
       &.special-node-bg {
-        background-color: $success-container;
+        background-color: openmina.$success-container;
       }
 
       .close-file:hover {
-        background-color: $base-divider !important;
+        background-color: openmina.$base-divider !important;
       }
     }
 
@@ -71,8 +71,8 @@
 
 
 button.whitey {
-  background-color: $base-background;
-  color: $base-primary;
+  background-color: openmina.$base-background;
+  color: openmina.$base-primary;
   filter: invert(1);
 
   &.disabled {
@@ -81,6 +81,6 @@ button.whitey {
   }
 
   &:hover:not(.disabled) {
-    background-color: $base-surface;
+    background-color: openmina.$base-surface;
   }
 }

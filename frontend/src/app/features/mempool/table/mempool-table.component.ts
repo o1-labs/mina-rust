@@ -9,11 +9,12 @@ import { MempoolActions } from '@app/features/mempool/mempool.actions';
 import { MempoolSelectors } from '@app/features/mempool/mempool.state';
 
 @Component({
-  selector: 'mina-mempool-table',
-  templateUrl: './mempool-table.component.html',
-  styleUrls: ['./mempool-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column w-100 h-100' },
+    selector: 'mina-mempool-table',
+    templateUrl: './mempool-table.component.html',
+    styleUrls: ['./mempool-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column w-100 h-100' },
+    standalone: false
 })
 export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransaction> implements OnInit {
 

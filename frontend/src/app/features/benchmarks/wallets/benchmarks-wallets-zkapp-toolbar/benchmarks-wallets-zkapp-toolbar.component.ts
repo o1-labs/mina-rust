@@ -50,6 +50,7 @@ interface TransactionForm {
   styleUrls: ['./benchmarks-wallets-zkapp-toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex-column h-xl border-bottom' },
+  standalone: false,
 })
 export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection implements OnInit {
 

@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .menu {
   .menu-toggle {
@@ -10,7 +10,7 @@
 
     .mina-icon {
       font-size: 20px;
-      color: $base-tertiary;
+      color: openmina.$base-tertiary;
       font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
       transition: transform 200ms ease-out, color 80ms;
 
@@ -34,16 +34,16 @@
     }
 
     &:hover {
-      background-color: $base-container;
+      background-color: openmina.$base-container;
 
       .mina-icon {
-        color: $base-primary;
+        color: openmina.$base-primary;
       }
     }
   }
 
   .item {
-    color: $base-secondary;
+    color: openmina.$base-secondary;
     cursor: pointer;
     padding-left: 4px;
     display: flex;
@@ -61,7 +61,7 @@
       .mina-icon {
         font-size: 20px;
         padding-right: 7px;
-        color: $base-tertiary;
+        color: openmina.$base-tertiary;
         font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
       }
 
@@ -72,15 +72,15 @@
     }
 
     &:hover:not(.active) {
-      background-color: $base-container;
-      color: $base-secondary;
+      background-color: openmina.$base-container;
+      color: openmina.$base-secondary;
     }
 
     &.active {
-      color: $selected-primary;
+      color: openmina.$selected-primary;
 
       .item-content .mina-icon {
-        color: $selected-primary;
+        color: openmina.$selected-primary;
         font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20;
       }
     }
@@ -127,15 +127,15 @@
   background-color: transparent;
 
   .mina-icon {
-    color: $base-secondary;
+    color: openmina.$base-secondary;
     font-variation-settings: 'FILL' 1, 'wght' 200;
   }
 
   &:hover {
-    background-color: $base-surface-top;
+    background-color: openmina.$base-surface-top;
 
     .mina-icon {
-      color: $base-primary;
+      color: openmina.$base-primary;
     }
   }
 }
@@ -161,7 +161,7 @@
   animation: rotWithOpc 0.3s linear;
 
   &:hover {
-    background: $base-surface-top;
+    background: openmina.$base-surface-top;
   }
 
   .network,

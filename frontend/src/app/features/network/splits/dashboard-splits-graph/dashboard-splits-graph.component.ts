@@ -26,11 +26,12 @@ type DashboardSplitsLinkSimulation = {
 }
 
 @Component({
-  selector: 'mina-dashboard-splits-graph',
-  templateUrl: './dashboard-splits-graph.component.html',
-  styleUrls: ['./dashboard-splits-graph.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-minus-xl w-100' },
+    selector: 'mina-dashboard-splits-graph',
+    templateUrl: './dashboard-splits-graph.component.html',
+    styleUrls: ['./dashboard-splits-graph.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-minus-xl w-100' },
+    standalone: false
 })
 export class DashboardSplitsGraphComponent extends StoreDispatcher implements OnInit {
 

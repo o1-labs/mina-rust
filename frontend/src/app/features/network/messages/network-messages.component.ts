@@ -10,11 +10,12 @@ import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-network-messages',
-  templateUrl: './network-messages.component.html',
-  styleUrls: ['./network-messages.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100' },
+    selector: 'mina-network-messages',
+    templateUrl: './network-messages.component.html',
+    styleUrls: ['./network-messages.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100' },
+    standalone: false
 })
 export class NetworkMessagesComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

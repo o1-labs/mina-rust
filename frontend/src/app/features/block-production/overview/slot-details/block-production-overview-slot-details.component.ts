@@ -9,11 +9,12 @@ import { filter } from 'rxjs';
 import { safelyExecuteInBrowser } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-block-production-overview-slot-details',
-  templateUrl: './block-production-overview-slot-details.component.html',
-  styleUrls: ['./block-production-overview-slot-details.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-minus-xl flex-column' },
+    selector: 'mina-block-production-overview-slot-details',
+    templateUrl: './block-production-overview-slot-details.component.html',
+    styleUrls: ['./block-production-overview-slot-details.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-minus-xl flex-column' },
+    standalone: false
 })
 export class BlockProductionOverviewSlotDetailsComponent extends StoreDispatcher {
   @Input({ required: true }) activeSlot: BlockProductionOverviewSlot;

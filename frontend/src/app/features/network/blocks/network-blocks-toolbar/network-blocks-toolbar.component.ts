@@ -16,11 +16,12 @@ import { Router } from '@angular/router';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-  selector: 'mina-network-blocks-toolbar',
-  templateUrl: './network-blocks-toolbar.component.html',
-  styleUrls: ['./network-blocks-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'border-bottom flex-column' },
+    selector: 'mina-network-blocks-toolbar',
+    templateUrl: './network-blocks-toolbar.component.html',
+    styleUrls: ['./network-blocks-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'border-bottom flex-column' },
+    standalone: false
 })
 export class NetworkBlocksToolbarComponent extends StoreDispatcher implements OnInit {
 

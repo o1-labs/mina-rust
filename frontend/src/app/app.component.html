@@ -16,6 +16,7 @@
                          *ngIf="menu$ | async as menu">
     @if (isDesktop) {
       <mat-sidenav mode="side"
+                   [opened]="menu.open"
                    [class.opened]="menu.open"
                    [class.collapsed]="menu.collapsed"
                    [class.mobile]="menu.isMobile">

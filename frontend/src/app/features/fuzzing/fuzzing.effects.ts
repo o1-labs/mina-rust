@@ -45,7 +45,7 @@ export class FuzzingEffects extends BaseEffect {
       map((payload: FuzzingDirectory[]) => ({ type: FUZZING_GET_DIRECTORIES_SUCCESS, payload })),
       catchError((error: Error) => [
         addError(error, MinaErrorType.GENERIC),
-        { type: FUZZING_GET_DIRECTORIES_SUCCESS, payload: [] },
+        { type: FUZZING_GET_DIRECTORIES_SUCCESS, payload: [] as FuzzingDirectory[] },
       ]),
       repeat(),
     ));
@@ -57,7 +57,7 @@ export class FuzzingEffects extends BaseEffect {
       map((payload: FuzzingFile[]) => ({ type: FUZZING_GET_FILES_SUCCESS, payload })),
       catchError((error: Error) => [
         addError(error, MinaErrorType.GENERIC),
-        { type: FUZZING_GET_FILES_SUCCESS, payload: [] },
+        { type: FUZZING_GET_FILES_SUCCESS, payload: [] as FuzzingFile[] },
       ]),
       repeat(),
     ));

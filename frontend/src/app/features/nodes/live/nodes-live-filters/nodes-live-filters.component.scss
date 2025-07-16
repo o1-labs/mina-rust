@@ -1,14 +1,14 @@
-@import 'openmina';
+@use 'openmina';
 
 .filter {
 
-	&:hover:not(.active) {
-		background-color: $base-divider;
-		color: $base-secondary !important;
-	}
+  &:hover:not(.active) {
+    background-color: openmina.$base-divider;
+    color: openmina.$base-secondary !important;
+  }
 
-	&.active {
-		background-color: $selected-container;
-		color: $selected-primary !important;
-	}
+  &.active {
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary !important;
+  }
 }

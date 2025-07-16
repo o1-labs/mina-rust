@@ -3,10 +3,9 @@ import { ADD_ERROR, ErrorAdd } from '@error-preview/error-preview.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { any, FeatureAction, toReadableDate } from '@openmina/shared';
 import { MinaErrorType } from '@shared/types/error-preview/mina-error-type.enum';
-import { Selector, Store } from '@ngrx/store';
+import { Selector, Store, Action } from '@ngrx/store';
 import { MinaState } from '@app/app.setup';
-import { concatLatestFrom } from '@ngrx/effects';
-import { TypedAction } from '@ngrx/store/src/models';
+import { concatLatestFrom } from '@ngrx/operators';
 import * as Sentry from '@sentry/angular';
 
 export const catchErrorAndRepeat = <T>(errType: MinaErrorType, type: string, payload?: any): OperatorFunction<T, ErrorAdd | T | FeatureAction<any>> => {
@@ -68,7 +67,7 @@ export const selectLatestStateSlice = <R extends object, A>(
 export const catchErrorAndRepeat2 = <T>(errType: MinaErrorType, action?: {
   type: string;
   payload?: any
-}): OperatorFunction<T, T | TypedAction<any>> => (source: Observable<T>) =>
+}): OperatorFunction<T, T | Action<any>> => (source: Observable<T>) =>
   source.pipe(
     catchError((error: Error) => [
       addError(error, errType),

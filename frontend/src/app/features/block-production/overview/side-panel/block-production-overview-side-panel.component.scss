@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .side-panel-stepper {
   .step {
@@ -24,7 +24,7 @@
 }
 
 .tab-group {
-  @include flexRowVertCenter();
+  @include openmina.flexRowVertCenter();
 
   .tab {
     min-width: 90px;
@@ -32,17 +32,17 @@
     width: 50%;
     text-align: center;
     border-radius: 6px;
-    color: $base-secondary;
+    color: openmina.$base-secondary;
     transition: 0.2s;
     background-color: transparent;
 
     &.selected {
-      background-color: $selected-container;
-      color: $selected-primary;
+      background-color: openmina.$selected-container;
+      color: openmina.$selected-primary;
     }
 
     &:hover:not(.selected) {
-      background-color: $base-container;
+      background-color: openmina.$base-container;
     }
   }
 }
@@ -53,19 +53,19 @@
   }
 
   div:nth-child(1) {
-    background-color: $success-primary;
+    background-color: openmina.$success-primary;
   }
 
   div:nth-child(2) {
-    background-color: $special-selected-alt-1-primary;
+    background-color: openmina.$special-selected-alt-1-primary;
   }
 
   div:nth-child(3) {
-    background-color: $warn-primary;
+    background-color: openmina.$warn-primary;
   }
 
   div:nth-child(4) {
-    background-color: $base-tertiary;
+    background-color: openmina.$base-tertiary;
   }
 }
 

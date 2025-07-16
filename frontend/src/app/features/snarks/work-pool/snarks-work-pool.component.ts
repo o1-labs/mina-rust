@@ -9,11 +9,12 @@ import { selectSnarksWorkPoolOpenSidePanel } from '@snarks/work-pool/snarks-work
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-snarks-work-pool',
-  templateUrl: './snarks-work-pool.component.html',
-  styleUrls: ['./snarks-work-pool.component.scss'],
-  host: { class: 'flex-column h-100' },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-snarks-work-pool',
+    templateUrl: './snarks-work-pool.component.html',
+    styleUrls: ['./snarks-work-pool.component.scss'],
+    host: { class: 'flex-column h-100' },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class SnarksWorkPoolComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

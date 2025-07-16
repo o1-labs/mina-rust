@@ -6,6 +6,8 @@ import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppActions } from '@app/app.actions';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { CONFIG } from '@shared/constants/config';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
+import { OpenminaEagerSharedModule } from '@openmina/shared';
 
 @Component({
   selector: 'mina-node-picker',
@@ -26,6 +28,13 @@ import { CONFIG } from '@shared/constants/config';
         })),
       ]),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    NgClass,
+    OpenminaEagerSharedModule,
+    NgIf,
+    NgForOf,
   ],
 })
 export class NodePickerComponent extends StoreDispatcher implements AfterViewInit {

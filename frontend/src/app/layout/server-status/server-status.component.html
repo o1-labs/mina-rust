@@ -119,7 +119,9 @@
     </div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>Last updated</div>
-      <div [class.success-primary]="details.blockHeight !== null" class="f-600">{{ blockTimeAgo ? blockTimeAgo + ' ago' : '' }}</div>
+      <div [class.success-primary]="details.blockHeight !== null"
+           class="f-600">{{ blockTimeAgo ? blockTimeAgo + ' ago' : '' }}
+      </div>
     </div>
   </div>
 </ng-template>

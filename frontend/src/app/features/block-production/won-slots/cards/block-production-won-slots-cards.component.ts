@@ -11,11 +11,12 @@ import { AppSelectors } from '@app/app.state';
 import { AppNodeDetails } from '@shared/types/app/app-node-details.type';
 
 @Component({
-  selector: 'mina-block-production-won-slots-cards',
-  templateUrl: './block-production-won-slots-cards.component.html',
-  styleUrls: ['./block-production-won-slots-cards.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column' },
+    selector: 'mina-block-production-won-slots-cards',
+    templateUrl: './block-production-won-slots-cards.component.html',
+    styleUrls: ['./block-production-won-slots-cards.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column' },
+    standalone: false
 })
 export class BlockProductionWonSlotsCardsComponent extends StoreDispatcher implements OnInit {
 

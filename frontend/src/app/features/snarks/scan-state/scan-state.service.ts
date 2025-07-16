@@ -42,7 +42,7 @@ export class ScanStateService {
                     url: node.url,
                     local: node.url === this.rust.URL,
                     leafs: [],
-                  };
+                  } as ScanStateWorkingSnarker;
                 }),
                 catchError(err => {
                   let message = err.message;
@@ -91,7 +91,7 @@ export class ScanStateService {
     });
     const workingLeafs = trees.flatMap(tree => tree.leafs.filter(l => l.commitment && !l.snark));
 
-    this.snarkers = this.snarkers.map(s => ({ ...s, local: s.url === this.rust.URL, leafs: [] }));
+    this.snarkers = this.snarkers.map(s => ({ ...s, local: s.url === this.rust.URL, leafs: [] } as ScanStateWorkingSnarker));
 
     workingLeafs.forEach((leaf: ScanStateLeaf) => {
       const snarker = this.snarkers.find(s => s.hash === leaf.commitment.commitment.snarker);

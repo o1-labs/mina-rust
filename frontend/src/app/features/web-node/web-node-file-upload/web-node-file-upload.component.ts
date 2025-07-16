@@ -6,23 +6,22 @@ import { animate, style, transition, trigger } from '@angular/animations';
 import { CONFIG } from '@shared/constants/config';
 
 @Component({
-  selector: 'mina-web-node-file-upload',
-  standalone: true,
-  imports: [
-    OpenminaSharedModule,
-  ],
-  templateUrl: './web-node-file-upload.component.html',
-  styleUrl: './web-node-file-upload.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 w-100 flex-column align-center' },
-  animations: [
-    trigger('messageChange', [
-      transition(':enter', [
-        style({ opacity: 0, transform: 'translateY(-10px)' }),
-        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-    ]),
-  ],
+    selector: 'mina-web-node-file-upload',
+    imports: [
+        OpenminaSharedModule,
+    ],
+    templateUrl: './web-node-file-upload.component.html',
+    styleUrl: './web-node-file-upload.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 w-100 flex-column align-center' },
+    animations: [
+        trigger('messageChange', [
+            transition(':enter', [
+                style({ opacity: 0, transform: 'translateY(-10px)' }),
+                animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+            ]),
+        ]),
+    ]
 })
 export class WebNodeFileUploadComponent extends ManualDetection {
 

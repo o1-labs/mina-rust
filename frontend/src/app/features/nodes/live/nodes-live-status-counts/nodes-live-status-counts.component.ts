@@ -4,11 +4,12 @@ import { selectNodesLiveActiveNode } from '@nodes/live/nodes-live.state';
 import { NodesLiveNode } from '@shared/types/nodes/live/nodes-live-node.type';
 
 @Component({
-  selector: 'mina-nodes-live-status-counts',
-  templateUrl: './nodes-live-status-counts.component.html',
-  styleUrls: ['./nodes-live-status-counts.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-lg fx-row-vert-cent ml-10 mr-10' },
+    selector: 'mina-nodes-live-status-counts',
+    templateUrl: './nodes-live-status-counts.component.html',
+    styleUrls: ['./nodes-live-status-counts.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-lg fx-row-vert-cent ml-10 mr-10' },
+    standalone: false
 })
 export class NodesLiveStatusCountsComponent extends StoreDispatcher implements OnInit {
 

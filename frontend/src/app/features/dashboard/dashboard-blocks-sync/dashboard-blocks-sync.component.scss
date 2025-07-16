@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   .mina-icon {
@@ -6,7 +6,7 @@
   }
 
   .background-gradient {
-    background: linear-gradient(145deg, $base-background 0%, $base-background 50%, $success-container 60%, $base-surface 85%, $base-surface 100%);
+    background: linear-gradient(145deg, openmina.$base-background 0%, openmina.$base-background 50%, openmina.$success-container 60%, openmina.$base-surface 85%, openmina.$base-surface 100%);
     background-size: 500%;
     background-position: 0 50%;
     transition: background-position 0.7s ease;

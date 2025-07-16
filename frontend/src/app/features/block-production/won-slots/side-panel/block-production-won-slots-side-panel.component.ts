@@ -16,11 +16,12 @@ import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-  selector: 'mina-block-production-won-slots-side-panel',
-  templateUrl: './block-production-won-slots-side-panel.component.html',
-  styleUrls: ['./block-production-won-slots-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-block-production-won-slots-side-panel',
+    templateUrl: './block-production-won-slots-side-panel.component.html',
+    styleUrls: ['./block-production-won-slots-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

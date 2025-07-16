@@ -7,11 +7,12 @@ import { filter } from 'rxjs';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-  selector: 'mina-network-connections',
-  templateUrl: './network-connections.component.html',
-  styleUrls: ['./network-connections.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100' },
+    selector: 'mina-network-connections',
+    templateUrl: './network-connections.component.html',
+    styleUrls: ['./network-connections.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100' },
+    standalone: false
 })
 export class NetworkConnectionsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

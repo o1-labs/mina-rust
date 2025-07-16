@@ -13,11 +13,12 @@ import { selectMemoryResourcesState } from '@resources/resources.state';
 import { HorizontalMenuComponent } from '@openmina/shared';
 
 @Component({
-  selector: 'app-memory-resources',
-  templateUrl: './memory-resources.component.html',
-  styleUrls: ['./memory-resources.component.scss'],
-  host: { class: 'flex-column h-100 pb-10' },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-memory-resources',
+    templateUrl: './memory-resources.component.html',
+    styleUrls: ['./memory-resources.component.scss'],
+    host: { class: 'flex-column h-100 pb-10' },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MemoryResourcesComponent extends StoreDispatcher implements OnInit, OnDestroy {
 
