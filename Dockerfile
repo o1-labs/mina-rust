@@ -15,17 +15,18 @@ RUN RUST_VERSION=$(grep 'channel = ' rust-toolchain.toml | \
     rustup component add rustfmt
 
 COPY . .
+
 # Build with cache mount
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/openmina/target,id=rust-target \
-    cargo build --release --package=cli --bin=openmina && \
-    cp -r /openmina/target/release /openmina/release-bin/
+    make build-release && \
+    cp /openmina/target/release/openmina /openmina/release-bin/openmina
 
 RUN --mount=type=cache,target=/usr/local/cargo/registry \
     --mount=type=cache,target=/openmina/target,id=rust-target \
-    cargo build --release --features scenario-generators \
-        --bin openmina-node-testing && \
-    cp -r /openmina/target/release /openmina/testing-release-bin/
+    make build-testing && \
+    cp /openmina/target/release/openmina-node-testing \
+    /openmina/testing-release-bin/
 
 # necessary for proof generation when running a block producer.
 RUN git clone --depth 1 \
