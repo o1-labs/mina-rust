@@ -1,4 +1,4 @@
-name: Openmina Docker Build
+name: OpenMina Docker Build
 on:
   workflow_dispatch: {}
   push:
