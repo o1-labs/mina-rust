@@ -1,5 +1,6 @@
 /target
 /node/testing/res/
+circuit-blobs
 .DS_Store
 *.profraw
 node_modules
