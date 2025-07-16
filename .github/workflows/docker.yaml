@@ -37,6 +37,7 @@ jobs:
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
+        if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -44,7 +45,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push by digest
+      - name: Build Docker image
         id: build
         uses: docker/build-push-action@v6
         with:
@@ -52,12 +53,16 @@ jobs:
           platforms: ${{ matrix.arch.platform }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # :warning:
-          # Push only if:
-          # - main
-          # - develop
-          # - a tag
-          outputs: type=image,name=${{ env.REGISTRY_NODE_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/') }}
+          outputs: type=image,name=${{ env.REGISTRY_NODE_IMAGE }},push-by-digest=true,name-canonical=true,push=false
+
+      - name: Push Docker image by digest
+        if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: ${{ matrix.arch.platform }}
+          cache-from: type=gha
+          outputs: type=image,name=${{ env.REGISTRY_NODE_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -75,12 +80,7 @@ jobs:
 
   merge-openmina-node-image:
     runs-on: ubuntu-latest
-    # :warning:
-    # Only if:
-    # - main
-    # - develop
-    # - a tag
-    if: github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/')
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
     needs:
       - build-openmina-node-image
     steps:
@@ -147,6 +147,7 @@ jobs:
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
+        if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -154,7 +155,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push by digest
+      - name: Build Docker image
         id: build
         uses: docker/build-push-action@v6
         with:
@@ -164,11 +165,18 @@ jobs:
             BUILD_CONFIGURATION=${{ matrix.configuration.build_configuration }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          # Only if:
-          # - main
-          # - develop
-          # - a tag
-          outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=${{ github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/') }}
+          outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=false
+
+      - name: Push Docker image by digest
+        if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          platforms: ${{ matrix.arch.platform }}
+          build-args: |
+            BUILD_CONFIGURATION=${{ matrix.configuration.build_configuration }}
+          cache-from: type=gha
+          outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=true
 
       - name: Export digest
         run: |
@@ -190,7 +198,7 @@ jobs:
         configuration:
           - build_configuration: production
     runs-on: ubuntu-latest
-    if: github.ref_name == 'main' || github.ref_name == 'develop' || startsWith(github.ref, 'refs/tags/')
+    if: ${{ (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')) && github.event_name == 'push' }}
     needs:
       - build-openmina-frontend-image
     steps:
