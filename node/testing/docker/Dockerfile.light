@@ -53,7 +53,7 @@ RUN curl -s -L https://github.com/ocaml/opam/releases/download/2.1.2/opam-2.1.2-
 
 RUN opam init --disable-sandboxing \
   && opam switch create . \
-  && eval $(opam config env) \
+  && eval "$(opam config env)" \
   && opam switch import -y opam.export \
   && ./scripts/pin-external-packages.sh
 
@@ -63,7 +63,7 @@ RUN git apply patch
 
 RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 
-RUN source ~/.cargo/env && eval $(opam config env) && make build_all_sigs
+RUN source ~/.cargo/env && eval "$(opam config env)" && make build_all_sigs
 
 FROM minaprotocol/mina-daemon:2.0.0rampup4-14047c5-buster-berkeley
 

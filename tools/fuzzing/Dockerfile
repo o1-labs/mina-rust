@@ -65,11 +65,11 @@ RUN git submodule update --init --recursive && \
     git checkout openmina/fuzzer
 RUN opam init --disable-sandboxing && \
     opam switch create .&& \
-    eval $(opam config env) && \
+    eval "$(opam config env)" && \
     opam switch import -y opam.export && \
     ./scripts/pin-external-packages.sh
 RUN source ~/.cargo/env && \
-    eval $(opam config env) && \
+    eval "$(opam config env)" && \
     export PATH=$PATH:/usr/local/go/bin && \
     export DUNE_PROFILE=devnet && \
     make libp2p_helper && \

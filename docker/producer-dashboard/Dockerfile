@@ -61,7 +61,7 @@ RUN apt-get -y --no-install-recommends install m4 pkg-config
 
 RUN opam init --disable-sandboxing
 RUN opam switch create .
-RUN eval $(opam config env)
+RUN eval "$(opam config env)"
 RUN opam switch import -y opam.export
 RUN ./scripts/pin-external-packages.sh
 
@@ -73,7 +73,7 @@ RUN make libp2p_helper
 
 ENV PATH="/root/.cargo/bin:${PATH}"
 RUN apt-get -y --no-install-recommends install zlib1g-dev
-RUN eval $(opam config env) && make build_all_sigs
+RUN eval "$(opam config env)" && make build_all_sigs
 # RUN /bin/bash -c "source ~/.cargo/env && eval $(opam config env) && make build_all_sigs"
 
 FROM ubuntu:noble
