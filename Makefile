@@ -28,8 +28,8 @@ check: ## Check code for compilation errors
 clean: ## Clean build artifacts
 	cargo clean
 
-.PHONY: fmt
-fmt: ## Format code using rustfmt
+.PHONY: format
+format: ## Format code using rustfmt
 	cargo fmt --all
 
 .PHONY: lint
