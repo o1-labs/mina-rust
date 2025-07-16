@@ -2,9 +2,9 @@
 FROM debian:bullseye
 
 # hadolint ignore=DL3008
-RUN apt -y update && \
-  apt -y upgrade && \
-  apt -y install --no-install-recommends \
+RUN apt-get -y update && \
+  apt-get -y upgrade && \
+  apt-get -y install --no-install-recommends \
     apt-transport-https \
     ca-certificates \
     pkg-config \
@@ -34,7 +34,8 @@ RUN apt -y update && \
     python3 \
     tzdata \
     liblmdb-dev \
-    rsync
+    rsync && \
+  rm -rf /var/lib/apt/lists/*
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
@@ -49,7 +50,7 @@ RUN ARCH=$(uname -m) && \
         echo "Unsupported architecture: $ARCH" && exit 1; \
     fi && \
     rm -rf /usr/local/go && \
-    curl -sSL https://go.dev/dl/go1.19.5.linux-$ARCH.tar.gz | tar -C /usr/local -xzf -
+    curl -sSL https://go.dev/dl/go1.19.5.linux-"$ARCH".tar.gz | tar -C /usr/local -xzf -
 RUN export PATH=$PATH:/usr/local/go/bin
 RUN curl -sSL https://capnproto.org/capnproto-c++-0.10.2.tar.gz | tar -zxf -
 WORKDIR /capnproto-c++-0.10.2
@@ -57,9 +58,8 @@ RUN ./configure && \
     make -j6 check && \
     make install
 WORKDIR /
-RUN rm -rf capnproto-c++-0.10.2
-
-RUN git clone https://github.com/openmina/mina.git
+RUN rm -rf capnproto-c++-0.10.2 && \
+    git clone https://github.com/openmina/mina.git
 WORKDIR /mina
 RUN git submodule update --init --recursive && \
     git config --local --add submodule.recurse true && \

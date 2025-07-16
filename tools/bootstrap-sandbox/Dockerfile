@@ -1,6 +1,6 @@
 FROM rust:1.84.0-bullseye AS builder
 
-RUN mkdir -p -m 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
+RUN mkdir -p ~/.ssh && chmod 0700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
 
 ENV CARGO_NET_GIT_FETCH_WITH_CLI=true
 
