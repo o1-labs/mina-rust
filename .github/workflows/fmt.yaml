@@ -1,0 +1,19 @@
+name: Format
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+
+jobs:
+  format:
+    name: Format using nightly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
+          components: rustfmt
+      - name: rustfmt
+        run: make check-format
