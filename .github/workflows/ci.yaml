@@ -320,35 +320,8 @@ jobs:
           path: /tmp/db
         if: ${{ always() }}
 
-  k8s-peers:
-    runs-on: ubuntu-22.04
-    # TODO: query cluster for actual addresses, or specify then on deployment
-    env:
-      PEERS: |
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40101/p2p/12D3KooWNGY3guz8pYHrVEqs8se4MSnnmpgguyQYDazMbVCyrMnS
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40102/p2p/12D3KooWSqZ4qtysb8Du4yVpcc5SYc3gsRuNqgMomggw6hekATWg
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40103/p2p/12D3KooWSHiGavQpamDPEc6rPaqT4PoS1Lr9aDfrfg5dKM2V6x3H
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40104/p2p/12D3KooWA3yPrTaLXsggVSCG4mr7c33YNdz5DSs87LszRUVt9vLT
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40105/p2p/12D3KooWCLcUWCdU4VstETztxE3feQyS57dVDdzBhmkj5tiCaha8
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40106/p2p/12D3KooWNZWqEoCuhMrc9tTMxtEsfxmeFhjh2agUcmzJFNKxQnNA
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40107/p2p/12D3KooWAMSP94SM3icSeAXeBmPUuZ5JvwrZ5w87fpRHVeJkdboe
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40108/p2p/12D3KooWL5gPf5CrARVPhBi6KsDHmB1gsJKZ4vWrcLweWyMjpB5e
-        /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40109/p2p/12D3KooWT1nNJLGE8jWcshPSq3FmSXmmNn2MzfmvJcWYZ1HrtHnZ
-    outputs:
-      peers: ${{ steps.peers.outputs.peers }}
-    steps:
-      - id: peers
-        name: Fetch k8s OCaml peers
-        run: |
-          {
-            echo 'peers<<EOF'
-            echo $PEERS
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
-
   scenario-tests:
     needs:
-      - k8s-peers
       - build-tests
       - build-tests-webrtc
     runs-on: ubuntu-22.04
@@ -361,8 +334,6 @@ jobs:
       # to allow connection with replayer
       # TODO: remove when replayer supports identify
       KEEP_CONNECTION_WITH_UNKNOWN_STREAM: true
-      OPENMINA_SCENARIO_SEEDS: ${{ needs.k8s-peers.outputs.peers }}
-      REPLAYER_MULTIADDR: "/dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40110/p2p/12D3KooWPayQEdprqY2m3biReUUybA5LoULpJE7YWu6wetEKKELv"
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
     strategy:
       matrix:
@@ -436,7 +407,6 @@ jobs:
 
   record-replay-tests:
     needs:
-      - k8s-peers
       - build-tests
       - build-tests-webrtc
     runs-on: ubuntu-22.04
@@ -445,7 +415,6 @@ jobs:
     env:
       # to allow local addrs discovery
       OPENMINA_DISCOVERY_FILTER_ADDR: false
-      OPENMINA_SCENARIO_SEEDS: ${{ needs.k8s-peers.outputs.peers }}
     strategy:
       matrix:
         test: [record_replay, webrtc_record_replay]
@@ -476,11 +445,9 @@ jobs:
 
 
   bootstrap-test:
-    needs: [ k8s-peers, build, build-tests ]
+    needs: [ build, build-tests ]
     runs-on: ubuntu-22.04
     env:
-      PEERS_LIST: ${{ needs.k8s-peers.outputs.peers }}
-      PEER_LIST_FILE: peer-list.txt
       OPENMINA_HOME: data
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
 
@@ -516,11 +483,6 @@ jobs:
       - name: Wait for the debugger
         run: |
           sleep 5
-
-      - name: Peer List File
-        run: |
-          for PEER in $PEERS_LIST; do echo $PEER; done > $PEER_LIST_FILE
-          cat $PEER_LIST_FILE
 
       - name: Bootstrap node
         env:
