@@ -47,3 +47,19 @@ jobs:
           components: clippy, rustfmt
       - name: Run transaction Fuzzing check
         run: make check-tx-fuzzing
+
+  hadolint:
+    name: Hadolint - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install hadolint
+        run: |
+          wget -O /tmp/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
+          chmod +x /tmp/hadolint
+          sudo mv /tmp/hadolint /usr/local/bin/hadolint
+      - name: Run hadolint
+        run: make lint-dockerfiles

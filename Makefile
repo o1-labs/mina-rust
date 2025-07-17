@@ -95,6 +95,22 @@ format-md: ## Format all markdown files to wrap at 80 characters
 lint: ## Run linter (clippy)
 	cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
 
+.PHONY: lint-dockerfiles
+lint-dockerfiles: ## Check all Dockerfiles using hadolint
+	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		if [ -n "$$OUTPUT" ]; then \
+			echo "$$OUTPUT"; \
+			exit 1; \
+		fi; \
+	else \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		if [ -n "$$OUTPUT" ]; then \
+			echo "$$OUTPUT"; \
+			exit 1; \
+		fi; \
+	fi
+
 .PHONY: setup-wasm-toolchain
 setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
 		@ARCH=$$(uname -m); \
@@ -133,3 +149,66 @@ test-release: ## Run tests in release mode
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
+
+# Docker build targets
+DOCKER_ORG ?= openmina
+GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
+
+.PHONY: docker-build-all
+docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
+	docker-build-frontend docker-build-fuzzing docker-build-heartbeats-processor \
+	docker-build-light docker-build-light-focal docker-build-openmina \
+	docker-build-openmina-testing docker-build-producer-dashboard \
+	docker-build-test ## Build all Docker images
+
+.PHONY: docker-build-bootstrap-sandbox
+docker-build-bootstrap-sandbox: ## Build bootstrap sandbox Docker image
+	docker build -t $(DOCKER_ORG)/openmina-bootstrap-sandbox:$(GIT_COMMIT) \
+		tools/bootstrap-sandbox/
+
+.PHONY: docker-build-debugger
+docker-build-debugger: ## Build debugger Docker image
+	docker build -t $(DOCKER_ORG)/openmina-debugger:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.debugger node/testing/docker/
+
+.PHONY: docker-build-frontend
+docker-build-frontend: ## Build frontend Docker image
+	docker build -t $(DOCKER_ORG)/openmina-frontend:$(GIT_COMMIT) frontend/
+
+.PHONY: docker-build-fuzzing
+docker-build-fuzzing: ## Build fuzzing Docker image
+	docker build -t $(DOCKER_ORG)/openmina-fuzzing:$(GIT_COMMIT) tools/fuzzing/
+
+.PHONY: docker-build-heartbeats-processor
+docker-build-heartbeats-processor: ## Build heartbeats processor Docker image
+	docker build -t $(DOCKER_ORG)/openmina-heartbeats-processor:$(GIT_COMMIT) \
+		tools/heartbeats-processor/
+
+.PHONY: docker-build-light
+docker-build-light: ## Build light Docker image
+	docker build -t $(DOCKER_ORG)/openmina-light:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.light node/testing/docker/
+
+.PHONY: docker-build-light-focal
+docker-build-light-focal: ## Build light focal Docker image
+	docker build -t $(DOCKER_ORG)/openmina-light-focal:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.light.focal node/testing/docker/
+
+.PHONY: docker-build-openmina
+docker-build-openmina: ## Build main OpenMina Docker image
+	docker build -t $(DOCKER_ORG)/openmina:$(GIT_COMMIT) .
+
+.PHONY: docker-build-openmina-testing
+docker-build-openmina-testing: ## Build OpenMina testing Docker image
+	docker build -t $(DOCKER_ORG)/openmina-testing:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.openmina node/testing/docker/
+
+.PHONY: docker-build-producer-dashboard
+docker-build-producer-dashboard: ## Build producer dashboard Docker image
+	docker build -t $(DOCKER_ORG)/openmina-producer-dashboard:$(GIT_COMMIT) \
+		-f docker/producer-dashboard/Dockerfile .
+
+.PHONY: docker-build-test
+docker-build-test: ## Build test Docker image
+	docker build -t $(DOCKER_ORG)/openmina-test:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.test node/testing/docker/
