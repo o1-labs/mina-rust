@@ -15,6 +15,8 @@ This document consolidates all identified areas where OCaml improvements would b
 
 ## Maintenance Burden Coordination
 
+OpenMina maintains custom branches in the https://github.com/openmina/mina repository for features not yet integrated into mainline Mina:
+
 ### Circuit Generation Branch
 
 OpenMina's circuit generation process requires launching a custom build of the OCaml node from the `utils/dump-extra-circuit-data-devnet301` branch, which produces circuit cache data in `/tmp/coda_cache_dir` and dumps both usual circuit data plus extra data specifically required by OpenMina.
