@@ -29,7 +29,7 @@ tower-http = { version = "0.6", features = ["cors", "fs"] }
 strum = "0.26"
 strum_macros = "0.26"
 tracing-log = "0.2.0"
-documented = { version = "0.1", optional = true }
+documented = { version = "0.6", optional = true }
 redux = { workspace = true }
 ledger = { workspace = true }
 mina-p2p-messages = { workspace = true }
