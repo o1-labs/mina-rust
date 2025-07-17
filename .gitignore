@@ -1,5 +1,13 @@
 /target
 /node/testing/res/
+circuit-blobs
 .DS_Store
 *.profraw
 node_modules
+
+# Output of build-wasm
+pkg/
+
+# Outputs of build-tests-webrtc
+cargo-build-test.json
+tests.tsv

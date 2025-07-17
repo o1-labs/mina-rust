@@ -26,22 +26,18 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Download circuits files
         run: |
-          git clone --depth 1 https://github.com/openmina/circuit-blobs.git
-          ln -s -b $PWD/circuit-blobs/* ledger/
+          make download-circuits
       - name: Build ledger tests
         run: |
-          cd ledger
-          cargo build --release --tests
+          make build-ledger
       - name: Run ledger tests
         run: |
-          cd ledger
-          cargo test --release -- -Z unstable-options --report-time
+          make test-ledger
 
   ledger-32x9-tests:
     runs-on: ubuntu-22.04
@@ -53,14 +49,12 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Download circuits files
         run: |
-          git clone --depth 1 https://github.com/openmina/circuit-blobs.git
-          ln -s -b $PWD/circuit-blobs/* ledger/
+          make download-circuits
       - name: Enable 32x9 fields implementation
         run: |
           cargo install sd
@@ -70,12 +64,10 @@ jobs:
           cat ./Cargo.toml
       - name: Build ledger tests
         run: |
-          cd ledger
-          cargo build --release --tests
+          make build-ledger
       - name: Run ledger tests
         run: |
-          cd ledger
-          cargo test --release -- -Z unstable-options --report-time
+          make test-ledger
 
   vrf-tests:
     runs-on: ubuntu-22.04
@@ -87,18 +79,15 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
       - name: Setup Rust
-        run: |
-          # Nightly to be able to use `--report-time` below
-          rustup install nightly
-          rustup override set nightly
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: nightly
       - name: Build vrf tests
         run: |
-          cd vrf
-          cargo build --release --tests
+          make build-vrf
       - name: Run vrf tests
         run: |
-          cd vrf
-          cargo test --release -- -Z unstable-options --report-time
+          make test-vrf
 
   p2p-tests:
     runs-on: ubuntu-22.04
@@ -112,9 +101,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -123,8 +113,7 @@ jobs:
 
       - name: Test p2p crate
         run: |
-          cargo test -p p2p --tests
-
+          make test-p2p
 
   build:
     runs-on: ubuntu-22.04
@@ -138,9 +127,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -149,7 +139,7 @@ jobs:
 
       - name: Release build
         run: |
-          cargo build --release --bin openmina
+          make build-release
 
       - name: Upload binaries
         uses: actions/upload-artifact@v4
@@ -169,9 +159,13 @@ jobs:
          sudo apt install -y protobuf-compiler
 
      - name: Setup Rust
+       uses: dtolnay/rust-toolchain@stable
+       with:
+         components: rustfmt, rust-src
+         toolchain: nightly
+
+     - name: Install wasm32 and wasm-bindgen-cli
        run: |
-         rustup default nightly
-         rustup component add rustfmt rust-src
          rustup target add wasm32-unknown-unknown
          cargo install -f wasm-bindgen-cli --version 0.2.99
 
@@ -182,10 +176,7 @@ jobs:
 
      - name: Release build
        run: |
-         cd node/web
-         rustup component add rust-src rustfmt --toolchain nightly-x86_64-unknown-linux-gnu
-         cargo +nightly build --release --target wasm32-unknown-unknown
-         wasm-bindgen --keep-debug --web --out-dir pkg ../../target/wasm32-unknown-unknown/release/openmina_node_web.wasm
+         make build-wasm
 
   build-tests:
     runs-on: ubuntu-22.04
@@ -199,9 +190,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -235,9 +227,10 @@ jobs:
           sudo apt install -y protobuf-compiler
 
       - name: Setup Rust
-        run: |
-          rustup default 1.84
-          rustup component add rustfmt
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
 
       - name: Setup Rust Cache
         uses: Swatinem/rust-cache@v2
@@ -246,12 +239,7 @@ jobs:
 
       - name: Build tests
         run: |
-          mkdir -p target/release/tests
-
-          cargo build --release --features=scenario-generators,p2p-webrtc --package=openmina-node-testing --tests
-          cargo build --release --features=scenario-generators,p2p-webrtc --package=openmina-node-testing --tests --message-format=json > cargo-build-test.json
-          jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' cargo-build-test.json > tests.tsv
-          while read NAME FILE; do cp -a $FILE target/release/tests/webrtc_$NAME; done < tests.tsv
+          make build-tests-webrtc
 
       - name: Upload tests
         uses: actions/upload-artifact@v4
