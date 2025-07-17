@@ -65,6 +65,7 @@ check-tx-fuzzing: ## Check the transaction fuzzing tools, requires nightly Rust
 .PHONY: check-format
 check-format: ## Check code formatting
 	cargo +nightly fmt -- --check
+	taplo format --check
 
 .PHONY: check-md
 check-md: ## Check if markdown files are properly formatted
@@ -86,8 +87,9 @@ download-circuits: ## Download the circuits used by Mina from GitHub
 	fi
 
 .PHONY: format
-format: ## Format code using rustfmt
+format: ## Format code using rustfmt and taplo
 	cargo +nightly fmt
+	taplo format
 
 .PHONY: format-md
 format-md: ## Format all markdown files to wrap at 80 characters
