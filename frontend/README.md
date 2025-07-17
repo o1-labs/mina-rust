@@ -27,10 +27,10 @@ nvm install 23.1.0
 Download [Node.js v23.1.0](https://nodejs.org/) from the official website, open
 the installer and follow the prompts to complete the installation.
 
-### 2. Angular CLI v17.3.0
+### 2. Angular CLI v19.2.14
 
 ```bash
-npm install -g @angular/cli@17.3.0
+npm install -g @angular/cli@19.2.14
 ```
 
 ### 3. Installation

@@ -1,6 +1,30 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <script type="module" defer>
+    async function loadEnvironment() {
+      const possiblePaths = [
+        '/environments/env.js',           // Production/CI path
+        '../public/environments/env.js'   // Development path
+      ];
+
+      for (const path of possiblePaths) {
+        try {
+          const env = await import(/* @vite-ignore */ path);
+          if (typeof window !== 'undefined') {
+            window['env'] = window.env || env.default || env;
+          }
+          return;
+        } catch (error) {
+          continue;
+        }
+      }
+
+      console.error('Failed to load environment configuration');
+    }
+
+    loadEnvironment();
+  </script>
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-FY2FWHFD8F"></script>
   <script defer>
     if (typeof window !== 'undefined') {
@@ -21,15 +45,6 @@
   <meta charset="utf-8">
   <title>Open Mina</title>
   <base href="/">
-  <script type="module">
-    import env from '../public/environments/env.js';
-
-    if (typeof window !== 'undefined') {
-      (function (window) {
-        window['env'] = window.env || env;
-      })(window);
-    }
-  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="assets/images/logo/Logo-fav.png">
   <link href="https://fonts.gstatic.com" rel="preconnect">
@@ -54,8 +69,8 @@
     deviceOS: 'macOS',
     deviceOSVersion: '24.3.0',
     version: '1.0.184',
-};
-window.deployment = deployment;
+  };
+  window.deployment = deployment;
 
   if (location.href.includes('webnode.minaprotocol')) {
     document.body.style.backgroundColor = '#fff';
@@ -64,17 +79,31 @@ window.deployment = deployment;
 </script>
 <script type="module" defer>
   if (typeof window !== 'undefined') {
-    window.addEventListener('startWebNode', () => {
-      import('../public/webnode/pkg/openmina_node_web.js')
-        .then((v) => {
-          window.webnode = v;
-          window.dispatchEvent(new CustomEvent('webNodeLoaded'));
-        })
-        .catch((error) => {
-          if (window.env?.configs.some(c => c.isWebNode)) {
-            console.error('Failed to load Web Node:', error);
+    window.addEventListener('startWebNode', async () => {
+      const possiblePaths = [
+        '/webnode/pkg/openmina_node_web.js',      // Production/CI path
+        '../public/webnode/pkg/openmina_node_web.js' // Development path
+      ];
+
+      for (const path of possiblePaths) {
+        try {
+          // Check if file exists by attempting to fetch it
+          const response = await fetch(path, { method: 'HEAD' });
+          if (response.ok) {
+            /* @vite-ignore */
+            window.webnode = await import(/* @vite-ignore */ path);
+            window.dispatchEvent(new CustomEvent('webNodeLoaded'));
+            return;
           }
-        });
+        } catch (error) {
+          continue;
+        }
+      }
+
+      // If we get here, none of the paths worked
+      if (window.env?.configs.some(c => c.isWebNode)) {
+        console.error('Failed to load Web Node: No valid path found');
+      }
     });
   }
 </script>

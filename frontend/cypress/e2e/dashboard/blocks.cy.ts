@@ -13,7 +13,6 @@ describe('DASHBOARD BLOCKS', () => {
   beforeEach(() => {
     cy.visit(Cypress.config().baseUrl + '/dashboard');
   });
-
   it('should show fetched blocks', () => {
     cy.window()
       .its('store')
@@ -32,13 +31,10 @@ describe('DASHBOARD BLOCKS', () => {
 
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(1) > div:nth-child(2)')
             .should('have.attr', 'style', expectedStyle)
-            .then((span: any) => {
-              expect(span.text()).equals(fetchedPercentage);
-            });
+            .should('contain.text', fetchedPercentage);
+
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(1) > div:nth-child(3)')
-            .then((span: any) => {
-              expect(span.text()).equals(fetched + '/290 blocks');
-            });
+            .should('contain.text', fetched + '/290 blocks');
         }
       });
   });
@@ -58,13 +54,10 @@ describe('DASHBOARD BLOCKS', () => {
           const appliedPercentage = Math.round(applied * 100 / 291);
 
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(2) > div:nth-child(2)')
-            .then((span: any) => {
-              expect(span.text()).equals(appliedPercentage !== undefined ? appliedPercentage + '%' : '-');
-            });
+            .should('contain.text', appliedPercentage !== undefined ? appliedPercentage + '%' : '-');
+
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(2) > div:nth-child(3)')
-            .then((span: any) => {
-              expect(span.text()).equals(applied + '/290 blocks');
-            });
+            .should('contain.text', applied + '/290 blocks');
         }
       });
   });
@@ -88,13 +81,10 @@ describe('DASHBOARD BLOCKS', () => {
           }
 
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(3) > div:nth-child(2)')
-            .then((span: any) => {
-              expect(span.text()).equals(root.toString());
-            });
+            .should('contain.text', root.toString());
+
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(3) > div:nth-child(3)')
-            .then((span: any) => {
-              expect(span.text()).equals(rootText);
-            });
+            .should('contain.text', rootText);
         }
       });
   });
@@ -121,17 +111,13 @@ describe('DASHBOARD BLOCKS', () => {
           }
 
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(4) > div:nth-child(2)')
-            .then((span: any) => {
-              expect(span.text()).equals(bestTipBlock.toString());
-            });
+            .should('contain.text', bestTipBlock.toString());
+
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(4) > div:nth-child(3)')
-            .then((span: any) => {
-              expect(span.text()).equals(bestTipBlockSyncedText);
-            });
+            .should('contain.text', bestTipBlockSyncedText);
         }
       });
   });
-
 
   it('should show max observed', () => {
     cy.window()
@@ -147,17 +133,13 @@ describe('DASHBOARD BLOCKS', () => {
           const targetBlock = highestHeightPeer.height;
 
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(5) > div:nth-child(2)')
-            .then((span: any) => {
-              expect(span.text()).equals(targetBlock.toString() || '');
-            });
+            .should('contain.text', targetBlock.toString() || '');
+
           cy.get('mina-dashboard-blocks-sync div > mina-card:nth-child(5) > div:nth-child(3)')
-            .then((span: any) => {
-              expect(span.text()).equals(targetBlock ? 'Now' : 'Waiting peers');
-            });
+            .should('contain.text', targetBlock ? 'Now' : 'Waiting peers');
         }
       });
   });
-
 });
 
 enum NodesOverviewNodeBlockStatus {

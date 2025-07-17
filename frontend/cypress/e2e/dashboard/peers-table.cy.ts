@@ -18,8 +18,8 @@ describe('DASHBOARD PEERS TABLE', () => {
       .then(getDashboard)
       .then((state: DashboardState) => {
         if (condition(state)) {
-          cy.get('mina-toolbar span')
-            .then((span: any) => expect(span).contain('Dashboard'));
+          cy.get('mina-toolbar span.title')
+            .then((span: any) => expect(span.text()).contain('dashboard'));
         }
       });
   });

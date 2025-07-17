@@ -1,4 +1,5 @@
 const { defineConfig } = require('cypress')
+import { resolve } from 'path';
 
 module.exports = defineConfig({
   chromeWebSecurity: false,
@@ -7,9 +8,35 @@ module.exports = defineConfig({
   component: {
     devServer: {
       framework: 'angular',
-      bundler: 'webpack',
+      bundler: 'vite',
+      viteConfig: {
+        resolve: {
+          alias: {
+            '../public': resolve(__dirname, './public'),
+          }
+        }
+      }
     },
     specPattern: '**/*.cy.ts',
+  },
+  resolve: {
+    alias: {
+      // Map ../public to the actual public folder
+      '../public': resolve(__dirname, './public'),
+    },
+  },
+  server: {
+    fs: {
+      // Allow serving files from the public directory
+      allow: ['.'],
+    },
+  },
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+      },
+    },
   },
   numTestsKeptInMemory: 20,
   experimentalMemoryManagement: true,
@@ -19,7 +46,6 @@ module.exports = defineConfig({
     baseUrl: 'http://localhost:4200',
     setupNodeEvents(on, config) {
       return require('./cypress/plugins/index.js')(on, config);
-      // return require('cypress-real-events/support')(on, config);
     }
   },
   include: [
