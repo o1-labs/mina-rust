@@ -5,8 +5,16 @@ edition = "2021"
 
 [dependencies]
 blake2 = { version = "0.10.6" }
-log = { version = "0.4.17" }
 hex = { version = "0.4.3" }
+log = { version = "0.4.17" }
 pin-project-lite = { version = "0.2.10" }
 
-libp2p = { workspace = true, features = ["tokio", "noise", "pnet", "tcp", "yamux", "dns", "gossipsub"] }
+libp2p = { workspace = true, features = [
+  "tokio",
+  "noise",
+  "pnet",
+  "tcp",
+  "yamux",
+  "dns",
+  "gossipsub",
+] }

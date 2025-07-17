@@ -1,41 +1,41 @@
 [workspace]
 members = [
-    "core",
-    "macros",
-    "ledger",
-    "snark",
-    "p2p",
-    "p2p/testing",
-    "p2p/libp2p-rpc-behaviour",
-    "node",
-    "node/account",
-    "node/common",
-    "node/native",
-    "node/web",
-    "node/invariants",
-    "node/testing",
-    "cli",
-    "cli/replay_dynamic_effects",
-    "vrf",
+  "core",
+  "macros",
+  "ledger",
+  "snark",
+  "p2p",
+  "p2p/testing",
+  "p2p/libp2p-rpc-behaviour",
+  "node",
+  "node/account",
+  "node/common",
+  "node/native",
+  "node/web",
+  "node/invariants",
+  "node/testing",
+  "cli",
+  "cli/replay_dynamic_effects",
+  "vrf",
 
-    "mina-p2p-messages",
-    "ledger",
-    "poseidon",
+  "mina-p2p-messages",
+  "ledger",
+  "poseidon",
 
-    "tools/transport",
-    "tools/bootstrap-sandbox",
-    "tools/gossipsub-sandbox",
-    "tools/hash-tool",
-    "tools/ledger-tool",
-    "tools/salsa-simple",
-    "tools/fuzzing",
-    "tools/archive-breadcrumb-compare",
-    "tools/heartbeats-processor",
-    "tools/webrtc-sniffer",
+  "tools/transport",
+  "tools/bootstrap-sandbox",
+  "tools/gossipsub-sandbox",
+  "tools/hash-tool",
+  "tools/ledger-tool",
+  "tools/salsa-simple",
+  "tools/fuzzing",
+  "tools/archive-breadcrumb-compare",
+  "tools/heartbeats-processor",
+  "tools/webrtc-sniffer",
 
-    "producer-dashboard",
+  "producer-dashboard",
 
-    "fuzzer",
+  "fuzzer",
 ]
 
 resolver = "2"
@@ -46,31 +46,31 @@ arithmetic_side_effects = "warn"
 indexing_slicing = "warn"
 
 [workspace.dependencies]
+ledger = { path = "ledger", package = "mina-tree" }
 mina-p2p-messages = { path = "mina-p2p-messages" }
 poseidon = { path = "poseidon" }
-ledger = { path = "ledger", package = "mina-tree" }
 
+mina-curves = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 mina-hasher = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 mina-signer = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
-mina-curves = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 # UNCOMMENTED_IN_CI mina-curves = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b", features = [ "32x9" ] }
-o1-utils = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 kimchi = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 mina-poseidon = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
+o1-utils = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 poly-commitment = { git = "https://github.com/openmina/proof-systems", rev = "f461b4b" }
 
+juniper = { version = "0.16" }
 libp2p = { git = "https://github.com/openmina/rust-libp2p", rev = "5c44c7d9", default-features = false }
-vrf = { path = "vrf" }
+linkme = "0.3.22"
 openmina-node-account = { path = "node/account" }
 redux = { git = "https://github.com/openmina/redux-rs.git", rev = "ab14890c", features = [
-    "serde",
+  "serde",
 ] }
 serde = "1.0.190"
 serde_json = "1.0.107"
 serde_with = { version = "3.7.0", features = ["hex"] }
-linkme = "0.3.22"
 static_assertions = "1.1.0"
-juniper = { version = "0.16" }
+vrf = { path = "vrf" }
 
 ark-ff = { version = "0.3.0", features = ["parallel", "asm", "std"] }
 # UNCOMMENTED_IN_CI ark-ff = { version = "0.3.0", features = [ "parallel", "asm", "std", "32x9" ] }

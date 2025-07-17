@@ -5,26 +5,29 @@ edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = ["unbounded_depth", "arbitrary_precision"] }
-thiserror = "1.0.37"
 anyhow = "1.0.70"
+ark-ec = { version = "0.3.0", features = ["std"] }
+ark-ff = { workspace = true }
+ark-serialize = { version = "0.3.0", features = ["std"] }
 hex = "0.4.3"
-redux = { workspace = true }
-mina-hasher = { workspace = true }
-mina-signer = { workspace = true }
-mina-p2p-messages = { workspace = true }
-mina-curves = { workspace = true }
-o1-utils = { workspace = true }
 ledger = { workspace = true }
+mina-curves = { workspace = true }
+mina-hasher = { workspace = true }
+mina-p2p-messages = { workspace = true }
+mina-signer = { workspace = true }
+num = { version = "0.4", features = ["std"] }
+o1-utils = { workspace = true }
 openmina-node-account = { workspace = true }
 poseidon = { workspace = true }
-ark-ff = { workspace = true }
-ark-ec = { version = "0.3.0", features = [ "std" ] }
-ark-serialize = { version = "0.3.0", features = [ "std" ] }
-num = {version = "0.4", features = [ "std" ] }
+redux = { workspace = true }
+serde = "1.0.147"
+serde_json = { version = "1.0.82", features = [
+  "unbounded_depth",
+  "arbitrary_precision",
+] }
+thiserror = "1.0.37"
 # num = "0.4"
-itertools = "0.12"
-sha2 = "0.10"
 bs58 = "0.4.0"
+itertools = "0.12"
 rand = "0.8"
+sha2 = "0.10"
