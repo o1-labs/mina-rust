@@ -21,6 +21,8 @@ OpenMina's circuit generation process requires launching a custom build of the O
 
 Without mainline integration, the OpenMina team must manually maintain this branch, making this a high priority coordination need. The branch requires significant cleanup before integration into mainline Mina. When integrated, the circuit generation functionality could be added as a node subcommand that exports the required circuit data without starting the full node.
 
+For detailed information about the circuit generation process, see [Circuit Generation Process](circuits.md#circuit-generation-process).
+
 ### Fuzzer Branch
 
 The `openmina/fuzzer` branch contains the OCaml transaction fuzzer implementation used for differential testing between OCaml and Rust implementations. Like the circuit generation branch, this requires manual maintenance by the OpenMina team when not integrated into mainline Mina. While lower priority than circuit generation, integration would reduce maintenance overhead and streamline the fuzzing setup process.
