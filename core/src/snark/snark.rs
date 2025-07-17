@@ -112,6 +112,7 @@ impl From<&Snark> for NetworkPoolSnarkPoolDiffVersionedStableV2AddSolvedWork1 {
 }
 
 impl MallocSizeOf for Snark {
+    #[allow(clippy::arithmetic_side_effects)]
     fn size_of(&self, ops: &mut malloc_size_of::MallocSizeOfOps) -> usize {
         usize::from(!ops.have_seen_ptr(Arc::as_ptr(&self.proofs)))
             * (size_of::<TransactionSnarkWorkTStableV2Proofs>() + self.proofs.size_of(ops))

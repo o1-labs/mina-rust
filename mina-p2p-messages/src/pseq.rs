@@ -41,7 +41,9 @@ impl<T: OfSexp, const N: usize> OfSexp for PaddedSeq<T, N> {
         let mut converted: [Option<T>; N] = [(); N].map(|_| None);
 
         for (i, item) in elts.iter().enumerate() {
-            converted[i] = Some(T::of_sexp(item)?);
+            *converted.get_mut(i).ok_or_else(|| rsexp::IntoSexpError::StringConversionError {
+                err: "Index out of bounds".to_string(),
+            })? = Some(T::of_sexp(item)?);
         }
 
         // Unwrap cannot fail, otherwise we wouldn't have rechead this point
@@ -92,7 +94,7 @@ where
     where
         S: serde::Serializer,
     {
-        let mut serializer = serializer.serialize_tuple(N + 1)?;
+        let mut serializer = serializer.serialize_tuple(N.saturating_add(1))?;
         for elt in &self.0 {
             serializer.serialize_element(elt)?;
         }

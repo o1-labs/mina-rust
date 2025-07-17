@@ -308,9 +308,9 @@ fn maybe_read_in_chunks<R: std::io::Read + ?Sized>(
         let mut remaining = len;
         while remaining > 0 {
             let read_size = std::cmp::min(CHUNK_SIZE, remaining);
-            r.read_exact(&mut temp_buf[..read_size])?;
-            buf.extend_from_slice(&temp_buf[..read_size]);
-            remaining -= read_size;
+            r.read_exact(temp_buf.get_mut(..read_size).ok_or_else(|| std::io::Error::new(std::io::ErrorKind::InvalidInput, "Buffer slice out of bounds"))?)?;
+            buf.extend_from_slice(temp_buf.get(..read_size).ok_or_else(|| std::io::Error::new(std::io::ErrorKind::InvalidInput, "Buffer slice out of bounds"))?);
+            remaining = remaining.saturating_sub(read_size);
         }
         Ok(buf)
     }

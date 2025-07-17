@@ -102,7 +102,7 @@ mod tests {
                 )*
                 let fields = inputs.to_fields();
                 assert_eq!(fields.len(), 1);
-                let hex = fields[0].to_hex();
+                let hex = fields.get(0).expect("Expected at least one field").to_hex();
                 assert_eq!(&hex, $hex);
             }
         };

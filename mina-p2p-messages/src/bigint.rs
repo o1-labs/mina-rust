@@ -157,7 +157,7 @@ impl OfSexp for BigInt {
 
         let byte_vec: Vec<u8> = (0..padded_hex.len())
             .step_by(2)
-            .map(|i| u8::from_str_radix(&padded_hex[i..i + 2], 16))
+            .map(|i| u8::from_str_radix(&padded_hex[i..i.saturating_add(2)], 16))
             .rev()
             .collect::<Result<Vec<u8>, _>>()
             .map_err(|_| rsexp::IntoSexpError::StringConversionError {

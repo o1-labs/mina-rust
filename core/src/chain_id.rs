@@ -30,7 +30,7 @@ fn hash_genesis_constants(
 ) -> [u8; 32] {
     let mut hasher = Blake2b256::default();
     let genesis_timestamp = OffsetDateTime::from_unix_timestamp_nanos(
-        (constants.genesis_state_timestamp.as_u64() * 1000000) as i128,
+        (constants.genesis_state_timestamp.as_u64().saturating_mul(1000000)) as i128,
     )
     .unwrap();
     let time_format =
@@ -57,7 +57,7 @@ impl ChainId {
         let constraint_system_hash = constraint_system_digests
             .iter()
             .map(hex::encode)
-            .reduce(|acc, el| acc + &el)
+            .reduce(|mut acc, el| { acc.push_str(&el); acc })
             .unwrap_or_default();
         let genesis_constants_hash = hash_genesis_constants(genesis_constants, tx_max_pool_size);
         hasher.update(genesis_state_hash.to_string().as_bytes());
@@ -85,7 +85,7 @@ impl ChainId {
 
     pub fn from_hex(s: &str) -> Result<ChainId, hex::FromHexError> {
         let h = hex::decode(s)?;
-        let bs = h[..32]
+        let bs = h.get(..32).ok_or(hex::FromHexError::InvalidStringLength)?
             .try_into()
             .or(Err(hex::FromHexError::InvalidStringLength))?;
         Ok(ChainId(bs))
@@ -93,7 +93,7 @@ impl ChainId {
 
     pub fn from_bytes(bytes: &[u8]) -> ChainId {
         let mut arr = [0u8; 32];
-        arr.copy_from_slice(&bytes[..32]);
+        arr.copy_from_slice(bytes.get(..32).unwrap_or(&[0u8; 32][..]));
         ChainId(arr)
     }
 }

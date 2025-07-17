@@ -190,7 +190,7 @@ fn consensus_state(
     {
         None => (is_genesis, 0),
         Some(fork) => (
-            fork.blockchain_length + is_genesis,
+            fork.blockchain_length.saturating_add(is_genesis),
             fork.global_slot_since_genesis,
         ),
     };

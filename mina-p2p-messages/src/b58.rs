@@ -185,7 +185,7 @@ where
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let binprot = decode(s, V)?;
-        let binable = U::binprot_read(&mut &binprot[1..])?;
+        let binable = U::binprot_read(&mut binprot.get(1..).ok_or_else(|| binprot::Error::CustomError("Buffer slice out of bounds".to_string().into()))?)?;
         Ok(T::from(binable).into())
     }
 }
@@ -274,7 +274,7 @@ where
             let bytes = decode(&b58, V).map_err(|e| {
                 serde::de::Error::custom(format!("Failed to construct from base58check: {e}"))
             })?;
-            Ok(T::from(&bytes[1..]))
+            Ok(T::from(bytes.get(1..).ok_or_else(|| serde::de::Error::custom("Buffer slice out of bounds"))?))
         } else {
             T::deserialize(deserializer)
         }
@@ -332,8 +332,8 @@ mod tests {
                     assert_eq!(&encoded, $b58);
 
                     let decoded = super::decode($b58, $version).unwrap();
-                    assert_eq!(decoded[0], $version);
-                    assert_eq!(&decoded[1..], &bytes);
+                    assert_eq!(*decoded.get(0).expect("Expected at least one byte"), $version);
+                    assert_eq!(decoded.get(1..).expect("Expected bytes after version"), &bytes);
                 }
             )*
         };

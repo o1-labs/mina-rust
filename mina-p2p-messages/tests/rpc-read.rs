@@ -159,13 +159,13 @@ fn debugger_to_wire() {
         "v1/rpc/get-ancestry",
     ] {
         for_all_with_path(PathBuf::from(d).join("response"), |encoded, path| {
-            let mut p = &encoded[1..];
+            let mut p = encoded.get(1..).expect("Expected bytes after first byte");
             let tag = BinprotTag::binprot_read(&mut p).unwrap().to_string_lossy();
             let ver = Ver::binprot_read(&mut p).unwrap();
             println!("{tag}:{ver}");
             File::create(path)
                 .and_then(|mut f| {
-                    f.write_all(&encoded[..1])?;
+                    f.write_all(encoded.get(..1).expect("Expected first byte"))?;
                     f.write_all(p)?;
                     Ok(f)
                 })

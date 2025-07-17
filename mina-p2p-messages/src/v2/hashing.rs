@@ -76,7 +76,7 @@ impl std::str::FromStr for TransactionHash {
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = bs58::decode(s).with_check(Some(0x1D)).into_vec()?;
         dbg!(bytes.len());
-        let bytes = (&bytes[2..])
+        let bytes = bytes.get(2..).ok_or(bs58::decode::Error::BufferTooSmall)?
             .try_into()
             .map_err(|_| bs58::decode::Error::BufferTooSmall)?;
         Ok(Self(Arc::new(bytes)))
@@ -313,7 +313,9 @@ mod tests {
         let memo = bs58::decode("E4Yks7aARFemZJqucP5eaARRYRthGdzaFjGfXqQRS3UeidsECRBvR")
             .with_check(Some(0x14))
             .into_vec()
-            .unwrap()[1..]
+            .unwrap()
+            .get(1..)
+            .expect("Expected bytes after version")
             .to_vec();
         let v = CharString::from(&memo[..]);
         let memo = MinaBaseSignedCommandMemoStableV1(v);
@@ -619,9 +621,9 @@ impl FailableToInputs for ConsensusBodyReferenceStableV1 {
 impl FailableToInputs for ConsensusVrfOutputTruncatedStableV1 {
     fn to_input(&self, inputs: &mut Inputs) -> Result<(), InvalidBigInt> {
         let vrf: &[u8] = self.as_ref();
-        inputs.append_bytes(&vrf[..31]);
+        inputs.append_bytes(vrf.get(..31).ok_or(InvalidBigInt)?);
         // Ignore the last 3 bits
-        let last_byte = vrf[31];
+        let last_byte = *vrf.get(31).ok_or(InvalidBigInt)?;
         for bit in [1, 2, 4, 8, 16] {
             inputs.append_bool(last_byte & bit != 0);
         }

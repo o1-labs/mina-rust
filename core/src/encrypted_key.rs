@@ -18,7 +18,7 @@ impl Base58String {
 
     pub fn try_decode(&self, version: u8) -> Result<Vec<u8>, EncryptionError> {
         let decoded = bs58::decode(&self.0).with_check(Some(version)).into_vec()?;
-        Ok(decoded[1..].to_vec())
+        Ok(decoded.get(1..).unwrap_or(&[]).to_vec())
     }
 }
 
@@ -148,7 +148,7 @@ pub trait EncryptedSecretKey {
             pw_primitive: Self::PW_PRIMITIVE.to_string(),
             nonce: Base58String::new(&nonce, Self::ENCRYPTION_DATA_VERSION_BYTE),
             pwsalt: Base58String::new(salt_portion, Self::ENCRYPTION_DATA_VERSION_BYTE),
-            pwdiff: (argon2.params().m_cost() * 1024, argon2.params().t_cost()),
+            pwdiff: (argon2.params().m_cost().saturating_mul(1024), argon2.params().t_cost()),
             ciphertext: Base58String::new(&ciphertext, Self::ENCRYPTION_DATA_VERSION_BYTE),
         })
     }

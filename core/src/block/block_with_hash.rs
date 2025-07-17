@@ -122,7 +122,7 @@ impl<T: AsRef<Block>> BlockWithHash<T> {
             || constraint_constants()
                 .fork
                 .as_ref()
-                .is_some_and(|fork| fork.blockchain_length + 1 == self.height())
+                .is_some_and(|fork| fork.blockchain_length.saturating_add(1) == self.height())
     }
 
     pub fn root_block_height(&self) -> u32 {
@@ -290,12 +290,12 @@ fn timestamp(header: &BlockHeader) -> Timestamp {
         .blockchain_state
         .timestamp
         .as_u64();
-    Timestamp::new(ms * 1_000_000)
+    Timestamp::new(ms.saturating_mul(1_000_000))
 }
 
 fn genesis_timestamp(header: &BlockHeader) -> Timestamp {
     let genesis_timestamp = constants(header).genesis_state_timestamp.0.as_u64();
-    Timestamp::new(genesis_timestamp * 1_000_000)
+    Timestamp::new(genesis_timestamp.saturating_mul(1_000_000))
 }
 
 fn constants(header: &BlockHeader) -> &v2::MinaBaseProtocolConstantsCheckedValueStableV1 {

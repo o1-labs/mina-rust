@@ -53,7 +53,7 @@ impl MinaBaseSignedCommandMemoStableV1 {
 
     pub fn from_base58check(s: &str) -> Self {
         let decoded = b58::decode(s, USER_COMMAND_MEMO).unwrap();
-        MinaBaseSignedCommandMemoStableV1(decoded[1..].into())
+        MinaBaseSignedCommandMemoStableV1(decoded.get(1..).expect("Expected bytes after version").into())
     }
 }
 
@@ -80,7 +80,7 @@ impl<'de> Deserialize<'de> for MinaBaseSignedCommandMemoStableV1 {
             let base58check = String::deserialize(deserializer)?;
             let decoded = b58::decode(&base58check, USER_COMMAND_MEMO)
                 .map_err(|err| serde::de::Error::custom(format!("Base58 decode error: {}", err)))?;
-            Ok(MinaBaseSignedCommandMemoStableV1(decoded[1..].into()))
+            Ok(MinaBaseSignedCommandMemoStableV1(decoded.get(1..).ok_or_else(|| serde::de::Error::custom("Buffer slice out of bounds"))?.into()))
         } else {
             let char_string = crate::string::CharString::deserialize(deserializer)?;
             Ok(MinaBaseSignedCommandMemoStableV1(char_string))
@@ -127,7 +127,7 @@ impl BinProtRead for TransactionSnarkScanStateStableV2ScanStateTreesA {
                     }
                     let mut tree = Self::Leaf(data);
                     while let Some(value) = values.pop() {
-                        depth = depth - 1;
+                        depth = depth.saturating_sub(1);
                         tree = Self::Node {
                             depth: depth.into(),
                             value,
@@ -152,7 +152,7 @@ impl BinProtRead for TransactionSnarkScanStateStableV2ScanStateTreesA {
                         )?)
                     }
                     values.push(value);
-                    depth += 1;
+                    depth = depth.saturating_add(1);
                 }
             }
         }
@@ -208,7 +208,7 @@ impl BinProtWrite for TransactionSnarkScanStateStableV2ScanStateTreesA {
                     depth.binprot_write(w)?;
                     value.iter().try_for_each(|b| b.binprot_write(w))?;
                     curr = sub_tree;
-                    curr_depth += 1;
+                    curr_depth = curr_depth.saturating_add(1);
                 }
             }
         }
@@ -1152,7 +1152,7 @@ impl MinaBaseSignedCommandStableV2 {
     pub fn from_base64(base64_data: &str) -> Result<Self, conv::Error> {
         use base64::{engine::general_purpose::STANDARD, Engine as _};
         let decoded_data = STANDARD.decode(&base64_data)?;
-        let res = MinaBaseSignedCommandStableV2::binprot_read(&mut decoded_data[1..].as_ref())?;
+        let res = MinaBaseSignedCommandStableV2::binprot_read(&mut decoded_data.get(1..).ok_or_else(|| binprot::Error::CustomError("Buffer slice out of bounds".to_string().into()))?.as_ref())?;
         Ok(res)
     }
 }
@@ -1175,7 +1175,7 @@ impl MinaBaseZkappCommandTStableV1WireStableV1 {
         use base64::{engine::general_purpose::STANDARD, Engine as _};
         let decoded_data = STANDARD.decode(&base64_data)?;
         let res = MinaBaseZkappCommandTStableV1WireStableV1::binprot_read(
-            &mut decoded_data[1..].as_ref(),
+            &mut decoded_data.get(1..).ok_or_else(|| binprot::Error::CustomError("Buffer slice out of bounds".to_string().into()))?.as_ref(),
         )?;
         Ok(res)
     }
@@ -1382,7 +1382,7 @@ impl<'de> Deserialize<'de> for CurrencyFeeStableV1 {
                         "{}{}{}",
                         whole,
                         decimal,
-                        "0".repeat(PRECISION - decimal_length)
+                        "0".repeat(PRECISION.saturating_sub(decimal_length))
                     )
                 }
             }
@@ -1681,7 +1681,7 @@ pub const PROTOCOL_CONSTANTS: MinaBaseProtocolConstantsCheckedValueStableV1 =
 impl From<OffsetDateTime> for BlockTimeTimeStableV1 {
     fn from(value: OffsetDateTime) -> Self {
         debug_assert!(value.unix_timestamp() >= 0);
-        BlockTimeTimeStableV1((value.unix_timestamp() as u64 * 1000).into())
+        BlockTimeTimeStableV1(((value.unix_timestamp() as u64).saturating_mul(1000)).into())
     }
 }
 
@@ -1774,11 +1774,11 @@ impl StagedLedgerDiffBodyStableV1 {
 
     pub fn completed_works_count(&self) -> usize {
         self.diff().0.completed_works.len()
-            + self
+            .saturating_add(self
                 .diff()
                 .1
                 .as_ref()
-                .map_or(0, |d| d.completed_works.len())
+                .map_or(0, |d| d.completed_works.len()))
     }
 
     pub fn has_coinbase(&self) -> bool {

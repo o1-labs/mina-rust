@@ -302,7 +302,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         queue.push_back("Action".to_owned());
 
         while let Some(action_name) = queue.pop_front() {
-            let fn_body = match actions.get(dbg!(&action_name)).unwrap() {
+            let fn_body = match actions.get(&action_name).unwrap() {
                 ActionMeta::Struct => {
                     let action_kind = &action_name[..(action_name.len().saturating_sub(6))];
                     format!("ActionKind::{action_kind}")

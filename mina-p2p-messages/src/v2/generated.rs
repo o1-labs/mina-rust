@@ -3546,9 +3546,9 @@ pub struct MinaBlockHeaderStableV2 {
 impl MallocSizeOf for MinaBlockHeaderStableV2 {
     fn size_of(&self, ops: &mut malloc_size_of::MallocSizeOfOps) -> usize {
         let factor = usize::from(!ops.have_seen_ptr(Arc::as_ptr(&self.protocol_state_proof)));
-        self.protocol_state_proof.size_of(ops) * factor
-            + self.protocol_state.size_of(ops)
-            + self.delta_block_chain_proof.1.size_of(ops)
+        self.protocol_state_proof.size_of(ops).saturating_mul(factor)
+            .saturating_add(self.protocol_state.size_of(ops))
+            .saturating_add(self.delta_block_chain_proof.1.size_of(ops))
     }
 }
 

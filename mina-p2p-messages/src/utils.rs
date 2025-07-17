@@ -31,14 +31,14 @@ where
     T: BinProtRead,
 {
     let mut ptr = slice;
-    Ok((decode_int(&mut ptr)?, slice.len() - ptr.len()))
+    Ok((decode_int(&mut ptr)?, slice.len().saturating_sub(ptr.len())))
 }
 
 /// Decodes a [String] from the slice containing `bin_prot` encoded bytes.
 /// Returns the resulting value and the number of bytes read from the reader.
 pub fn decode_string_from_slice(slice: &[u8]) -> Result<(String, usize), binprot::Error> {
     let mut ptr = slice;
-    Ok((decode_string(&mut ptr)?, slice.len() - ptr.len()))
+    Ok((decode_string(&mut ptr)?, slice.len().saturating_sub(ptr.len())))
 }
 
 /// Returns an OCaml-like string view from the slice containing `bin_prot`
@@ -46,7 +46,7 @@ pub fn decode_string_from_slice(slice: &[u8]) -> Result<(String, usize), binprot
 pub fn decode_bstr_from_slice(slice: &[u8]) -> Result<&[u8], binprot::Error> {
     let mut ptr = slice;
     let len = binprot::Nat0::binprot_read(&mut ptr)?.0 as usize;
-    Ok(&ptr[..len])
+    ptr.get(..len).ok_or_else(|| binprot::Error::CustomError("Buffer slice out of bounds".to_string().into()))
 }
 
 /// Reads size of the next stream frame, specified by an 8-byte integer encoded
@@ -64,7 +64,7 @@ where
 /// endian.
 pub fn get_sized_slice(mut slice: &[u8]) -> Result<&[u8], binprot::Error> {
     let len = (&mut slice).read_u64::<LittleEndian>()? as usize;
-    Ok(&slice[..len])
+    slice.get(..len).ok_or_else(|| binprot::Error::CustomError("Buffer slice out of bounds".to_string().into()))
 }
 
 pub trait FromBinProtStream: BinProtRead + Sized {

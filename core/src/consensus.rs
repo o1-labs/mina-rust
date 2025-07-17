@@ -42,12 +42,13 @@ pub struct ConsensusTime {
 
 // TODO(binier): do we need to verify constants? Probably they are verified
 // using block proof verification, but check just to be sure.
+#[allow(clippy::arithmetic_side_effects)]
 pub fn is_short_range_fork(a: &MinaConsensusState, b: &MinaConsensusState) -> bool {
     let check = |s1: &MinaConsensusState, s2: &MinaConsensusState| {
         let slots_per_epoch = s2.curr_global_slot_since_hard_fork.slots_per_epoch.as_u32();
         let s2_epoch_slot = s2.global_slot() % slots_per_epoch;
-        if s1.epoch_count.as_u32() == s2.epoch_count.as_u32() + 1
-            && s2_epoch_slot >= slots_per_epoch * 2 / 3
+        if s1.epoch_count.as_u32() == s2.epoch_count.as_u32().saturating_add(1)
+            && s2_epoch_slot >= slots_per_epoch.saturating_mul(2).saturating_div(3)
         {
             crate::log::trace!(crate::log::system_time(); kind = "is_short_range_fork", msg = format!("s2 is 1 epoch behind and not in seed update range: {} vs {}", s1.staking_epoch_data.lock_checkpoint, s2.next_epoch_data.lock_checkpoint));
             // S1 is one epoch ahead of S2 and S2 is not in the seed update range
@@ -74,6 +75,7 @@ pub fn is_short_range_fork(a: &MinaConsensusState, b: &MinaConsensusState) -> bo
 /// Relative minimum window density.
 ///
 /// See [specification](https://github.com/MinaProtocol/mina/tree/develop/docs/specs/consensus#5412-relative-minimum-window-density)
+#[allow(clippy::arithmetic_side_effects)]
 pub fn relative_min_window_density(b1: &MinaConsensusState, b2: &MinaConsensusState) -> u32 {
     use std::cmp::{max, min};
 
@@ -86,7 +88,7 @@ pub fn relative_min_window_density(b1: &MinaConsensusState, b2: &MinaConsensusSt
     let projected_window = {
         // Compute shift count
         let shift_count = max_slot
-            .saturating_sub(global_slot(b1) + 1)
+            .saturating_sub(global_slot(b1).saturating_add(1))
             .min(SUB_WINDOWS_PER_WINDOW);
 
         // Initialize projected window
@@ -99,8 +101,10 @@ pub fn relative_min_window_density(b1: &MinaConsensusState, b2: &MinaConsensusSt
         // Ring-shift
         let mut i = relative_sub_window_from_global_slot(global_slot(b1));
         for _ in 0..=shift_count {
-            i = (i + 1) % SUB_WINDOWS_PER_WINDOW;
-            projected_window[i as usize] = 0;
+            i = (i.saturating_add(1)) % SUB_WINDOWS_PER_WINDOW;
+            if let Some(val) = projected_window.get_mut(i as usize) {
+                *val = 0;
+            }
         }
 
         projected_window
@@ -200,13 +204,14 @@ pub fn consensus_take(
     }
 }
 
+#[allow(clippy::arithmetic_side_effects)]
 pub fn in_seed_update_range(
     slot: u32,
     constants: &v2::MinaBaseProtocolConstantsCheckedValueStableV1,
 ) -> bool {
-    let third_epoch = constants.slots_per_epoch.as_u32() / 3;
-    assert_eq!(constants.slots_per_epoch.as_u32(), third_epoch * 3);
-    slot < third_epoch * 2
+    let third_epoch = constants.slots_per_epoch.as_u32().saturating_div(3);
+    assert_eq!(constants.slots_per_epoch.as_u32(), third_epoch.saturating_mul(3));
+    slot < third_epoch.saturating_mul(2)
 }
 
 pub fn in_same_checkpoint_window(
@@ -216,19 +221,22 @@ pub fn in_same_checkpoint_window(
     checkpoint_window(slot1) == checkpoint_window(slot2)
 }
 
+#[allow(clippy::arithmetic_side_effects)]
 pub fn checkpoint_window(slot: &v2::ConsensusGlobalSlotStableV1) -> u32 {
-    slot.slot_number.as_u32() / checkpoint_window_size_in_slots()
+    slot.slot_number.as_u32().saturating_div(checkpoint_window_size_in_slots())
 }
 
+#[allow(clippy::arithmetic_side_effects)]
 pub fn global_sub_window(
     slot: &v2::ConsensusGlobalSlotStableV1,
     constants: &v2::MinaBaseProtocolConstantsCheckedValueStableV1,
 ) -> u32 {
-    slot.slot_number.as_u32() / constants.slots_per_sub_window.as_u32()
+    slot.slot_number.as_u32().saturating_div(constants.slots_per_sub_window.as_u32())
 }
 
+#[allow(clippy::arithmetic_side_effects)]
 pub fn relative_sub_window(global_sub_window: u32) -> u32 {
-    global_sub_window % constraint_constants().sub_windows_per_window as u32
+    global_sub_window % (constraint_constants().sub_windows_per_window as u32)
 }
 
 // TODO: Move ledger/src/scan_state/currency.rs types to core and replace
@@ -262,11 +270,11 @@ impl ConsensusConstants {
         let delta = protocol_constants.delta.as_u32();
         let slots_per_epoch = protocol_constants.slots_per_epoch.as_u32();
         let slots_per_window = protocol_constants.slots_per_sub_window.as_u32()
-            * constraint_constants.sub_windows_per_window as u32;
-        let grace_period_end = protocol_constants.grace_period_slots.as_u32() + slots_per_window;
+            .saturating_mul(constraint_constants.sub_windows_per_window as u32);
+        let grace_period_end = protocol_constants.grace_period_slots.as_u32().saturating_add(slots_per_window);
         let epoch_duration =
-            (slots_per_epoch as u64) * constraint_constants.block_window_duration_ms;
-        let delta_duration = constraint_constants.block_window_duration_ms * (delta + 1) as u64;
+            (slots_per_epoch as u64).saturating_mul(constraint_constants.block_window_duration_ms);
+        let delta_duration = constraint_constants.block_window_duration_ms.saturating_mul(delta.saturating_add(1) as u64);
         Self {
             k: protocol_constants.k.as_u32(),
             delta,
@@ -287,7 +295,7 @@ impl ConsensusConstants {
     }
 
     pub fn assert_invariants(&self) {
-        let grace_period_effective_end = self.grace_period_end - self.slots_per_window;
+        let grace_period_effective_end = self.grace_period_end.saturating_sub(self.slots_per_window);
         assert!(grace_period_effective_end < (self.slots_per_epoch / 3));
         // Because of how these values are computed (see below), this
         // fails if and only if block_window_duration is a multiple of
@@ -298,19 +306,20 @@ impl ConsensusConstants {
         // divisible by 12 (2^2 * 3) anymore.
         assert_eq!(
             self.checkpoint_window_slots_per_year as u64,
-            self.checkpoint_window_size_in_slots as u64 * CHECKPOINTS_PER_YEAR
+            (self.checkpoint_window_size_in_slots as u64).saturating_mul(CHECKPOINTS_PER_YEAR)
         )
     }
 
+    #[allow(clippy::arithmetic_side_effects)]
     pub fn create(
         constraint_constants: &crate::constants::ConstraintConstants,
         protocol_constants: &v2::MinaBaseProtocolConstantsCheckedValueStableV1,
     ) -> Self {
         let mut constants = Self::create_primed(constraint_constants, protocol_constants);
         const MILLISECS_PER_YEAR: u64 = 365 * 24 * 60 * 60 * 1000;
-        let slots_per_year = MILLISECS_PER_YEAR / constants.block_window_duration_ms;
+        let slots_per_year = MILLISECS_PER_YEAR.saturating_div(constants.block_window_duration_ms);
         constants.checkpoint_window_slots_per_year = slots_per_year as u32;
-        constants.checkpoint_window_size_in_slots = (slots_per_year / CHECKPOINTS_PER_YEAR) as u32;
+        constants.checkpoint_window_size_in_slots = (slots_per_year.saturating_div(CHECKPOINTS_PER_YEAR)) as u32;
         constants.assert_invariants();
         constants
     }
