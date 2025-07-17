@@ -1,11 +1,15 @@
 # Transaction Pool Refactoring Notes
 
-This document outlines architectural improvements needed to align the transaction pool component with the standard state machine patterns used throughout the OpenMina codebase.
+This document outlines architectural improvements needed to align the
+transaction pool component with the standard state machine patterns used
+throughout the OpenMina codebase.
 
 ## Current Implementation Issues
 
 ### 1. Pending Actions Pattern
-The component uses an unconventional pattern where actions are stored in `pending_actions` and retrieved later:
+
+The component uses an unconventional pattern where actions are stored in
+`pending_actions` and retrieved later:
 
 ```rust
 // Current pattern
@@ -15,14 +19,17 @@ let action = substate.pending_actions.remove(pending_id).unwrap()
 ```
 
 This pattern appears in:
+
 - `StartVerify` → `StartVerifyWithAccounts`
 - `ApplyVerifiedDiff` → `ApplyVerifiedDiffWithAccounts`
 - `ApplyTransitionFrontierDiff` → `ApplyTransitionFrontierDiffWithAccounts`
 - `BestTipChanged` → `BestTipChangedWithAccounts`
 
-**Issue**: This breaks the standard Redux pattern where state should represent the current state, not store actions.
+**Issue**: This breaks the standard Redux pattern where state should represent
+the current state, not store actions.
 
 ### 2. Blocking Service Call
+
 The ledger service call in `transaction_pool_effects.rs` is synchronous:
 
 ```rust
@@ -32,19 +39,24 @@ let accounts = match store
     .get_accounts(&ledger_hash, account_ids.iter().cloned().collect())
 ```
 
-**Issue**: This blocks the state machine thread, violating the principle of async service interactions.
+**Issue**: This blocks the state machine thread, violating the principle of
+async service interactions.
 
 ### 3. Direct Global State Access
+
 Uses `unsafe_get_state()` to access global state:
 
 ```rust
 Self::global_slots(state.unsafe_get_state())
 ```
 
-**Issue**: Components should receive necessary data through actions or maintain it in their local state.
+**Issue**: Components should receive necessary data through actions or maintain
+it in their local state.
 
 ### 4. Complex Multi-Step Flows
-The current implementation has implicit multi-step flows that are hard to follow and test.
+
+The current implementation has implicit multi-step flows that are hard to follow
+and test.
 
 ## Proposed Solution
 
@@ -90,10 +102,10 @@ Convert to event-based pattern:
 
 ```rust
 // In effects:
-TransactionPoolEffectfulAction::FetchAccounts { 
-    request_id, 
-    account_ids, 
-    ledger_hash 
+TransactionPoolEffectfulAction::FetchAccounts {
+    request_id,
+    account_ids,
+    ledger_hash
 } => {
     store.service().ledger_fetch_accounts(
         request_id,
@@ -104,9 +116,9 @@ TransactionPoolEffectfulAction::FetchAccounts {
 
 // In event source (or future distributed event handling):
 Event::Ledger(LedgerEvent::AccountsFetched { request_id, accounts }) => {
-    store.dispatch(TransactionPoolAction::AccountsFetched { 
-        request_id, 
-        accounts 
+    store.dispatch(TransactionPoolAction::AccountsFetched {
+        request_id,
+        accounts
     });
 }
 ```
@@ -118,14 +130,14 @@ Example for verification flow:
 ```rust
 TransactionPoolAction::StartVerify { commands, from_source } => {
     let request_id = LedgerRequestId::new();
-    
+
     // Set state
     substate.verification_state = VerificationState::FetchingAccounts {
         commands: commands.clone(),
         from_source: *from_source,
         request_id,
     };
-    
+
     // Dispatch async request
     let account_ids = /* extract account ids */;
     dispatcher.push(TransactionPoolEffectfulAction::FetchAccounts {
@@ -137,10 +149,10 @@ TransactionPoolAction::StartVerify { commands, from_source } => {
 
 TransactionPoolAction::AccountsFetched { request_id, accounts } => {
     match &substate.verification_state {
-        VerificationState::FetchingAccounts { 
-            commands, 
-            from_source, 
-            request_id: expected_id 
+        VerificationState::FetchingAccounts {
+            commands,
+            from_source,
+            request_id: expected_id
         } if request_id == expected_id => {
             // Transition to verifying state
             // Dispatch SNARK verification

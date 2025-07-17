@@ -1,10 +1,12 @@
 # OpenMina Release Process
 
-This document outlines the release process for OpenMina, including version management, tagging, and automated Docker image builds.
+This document outlines the release process for OpenMina, including version
+management, tagging, and automated Docker image builds.
 
 ## Overview
 
 The OpenMina release process involves:
+
 1. Creating a release preparation branch from `develop`
 2. Updating version numbers across all Cargo.toml files
 3. Updating the changelog with release notes and comparison links
@@ -19,12 +21,16 @@ The OpenMina release process involves:
 - **develop**: All changes between releases go to the `develop` branch
 - **main**: Stable release branch, updated only during releases
 - **prepare-release/vX.X.X**: Temporary branch for preparing release changes
-- Public releases are always tagged from the `main` branch after merging from `develop`
+- Public releases are always tagged from the `main` branch after merging from
+  `develop`
 - Internal/non-public patch releases can be tagged directly from `develop`
 
 ## Release Cadence
 
-During active development, OpenMina follows a monthly release schedule. At the end of each month, all changes that have been merged to `develop` are packaged into a new release. This regular cadence ensures:
+During active development, OpenMina follows a monthly release schedule. At the
+end of each month, all changes that have been merged to `develop` are packaged
+into a new release. This regular cadence ensures:
+
 - Predictable release cycles for users
 - Regular integration of new features and fixes
 - Manageable changelog sizes
@@ -51,20 +57,24 @@ git checkout -b prepare-release/vX.Y.Z
 
 ### 2. Update Version Numbers
 
-Use the `versions.sh` script to update all Cargo.toml files with the new version:
+Use the `versions.sh` script to update all Cargo.toml files with the new
+version:
 
 ```bash
 ./versions.sh X.Y.Z
 ```
 
 This script will:
+
 - Find all Cargo.toml files in the project
-- Update the version field in each file (except `mina-p2p-messages/Cargo.toml` which is handled manually)
+- Update the version field in each file (except `mina-p2p-messages/Cargo.toml`
+  which is handled manually)
 - Display the version changes for each file
 
 ### 3. Update Changelog
 
-Update the CHANGELOG.md file following the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format:
+Update the CHANGELOG.md file following the
+[Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format:
 
 1. **Move unreleased changes to new version section**:
    - Change `## [Unreleased]` to `## [X.Y.Z] - YYYY-MM-DD` (use current date)
@@ -87,12 +97,13 @@ Update the CHANGELOG.md file following the [Keep a Changelog](https://keepachang
      ```markdown
      [Unreleased]: https://github.com/openmina/openmina/compare/vX.Y.Z...develop
      ```
-   
+
    The release link compares the previous version tag with the new version tag.
 
 ### 4. Update Docker Compose Files
 
-Update the image versions in all docker-compose files. For example, in `docker-compose.local.producers.yml`:
+Update the image versions in all docker-compose files. For example, in
+`docker-compose.local.producers.yml`:
 
 ```yaml
 image: openmina/openmina:X.Y.Z
@@ -110,7 +121,8 @@ git add docker-compose*.yml
 git commit -m "chore: Prepare release vX.Y.Z"
 ```
 
-**Note**: Avoid using `git add .` to prevent accidentally committing unrelated files.
+**Note**: Avoid using `git add .` to prevent accidentally committing unrelated
+files.
 
 ### 6. Create PR to Develop
 
@@ -120,11 +132,13 @@ Push the release preparation branch and create a PR to merge it into `develop`:
 git push origin prepare-release/vX.Y.Z
 ```
 
-Then create a PR from `prepare-release/vX.Y.Z` to `develop` on GitHub. Once approved and merged, continue with the next steps.
+Then create a PR from `prepare-release/vX.Y.Z` to `develop` on GitHub. Once
+approved and merged, continue with the next steps.
 
 ### 7. Create PR to Main
 
-After the release preparation has been merged to `develop`, create a PR to merge `develop` into `main`:
+After the release preparation has been merged to `develop`, create a PR to merge
+`develop` into `main`:
 
 1. Create the PR from `develop` to `main` on GitHub
 2. Title it something like "Release vX.Y.Z"
@@ -140,7 +154,8 @@ git pull origin main
 env GIT_COMMITTER_DATE=$(git log -n1 --pretty=%aD) git tag -a -f -m "Release X.Y.Z" vX.Y.Z
 ```
 
-**Important**: The tag must follow the format `v[0-9]+.[0-9]+.[0-9]+` to trigger the CI workflows.
+**Important**: The tag must follow the format `v[0-9]+.[0-9]+.[0-9]+` to trigger
+the CI workflows.
 
 ### 9. Push Tag
 
@@ -150,7 +165,6 @@ Push the tag to trigger the release workflows:
 git push origin vX.Y.Z
 ```
 
-
 ## Automated Release Process
 
 Once the tag is pushed, the following automated processes occur:
@@ -158,17 +172,20 @@ Once the tag is pushed, the following automated processes occur:
 ### GitHub Release Creation (.github/workflows/release.yaml)
 
 This workflow:
+
 1. Triggers on version tags matching `v[0-9]+.[0-9]+.[0-9]+`
 2. Creates a versioned directory with Docker Compose files
 3. Packages the files into both .zip and .tar.gz archives
 4. Creates a **draft** GitHub release
 5. Uploads the archives as release assets
 
-**Note**: The release is created as a draft and must be manually published through GitHub's UI.
+**Note**: The release is created as a draft and must be manually published
+through GitHub's UI.
 
 ### Docker Image Building (.github/workflows/docker.yaml)
 
 This workflow:
+
 1. Builds multi-architecture Docker images (linux/amd64 and linux/arm64)
 2. Creates images for:
    - OpenMina node (`openmina/openmina`)
@@ -211,7 +228,6 @@ Check that both `amd64` and `arm64` architectures are available:
 docker manifest inspect openmina/openmina:vX.Y.Z
 ```
 
-
 ## Version Tagging Best Practices
 
 - Always use semantic versioning: `vMAJOR.MINOR.PATCH`
@@ -224,6 +240,7 @@ docker manifest inspect openmina/openmina:vX.Y.Z
 ### CI Workflow Not Triggered
 
 Ensure:
+
 - The tag format matches exactly: `v[0-9]+.[0-9]+.[0-9]+`
 - The tag was pushed to the remote repository
 - Check GitHub Actions for any workflow errors
@@ -237,16 +254,21 @@ Ensure:
 ## Example Release Commit Structure
 
 A typical release PR (like #1134) includes these commits:
-1. **chore: Update CHANGELOG** - Updates the changelog with release notes and comparison link
+
+1. **chore: Update CHANGELOG** - Updates the changelog with release notes and
+   comparison link
 2. **chore: Bump version to X.X.X** - Result of running `versions.sh`
 3. **chore: Update Cargo.lock** - Updated dependencies lock file
-4. **chore: Update version in docker compose files** - Docker image version updates
+4. **chore: Update version in docker compose files** - Docker image version
+   updates
 
 ## Internal/Patch Releases
 
-For internal or non-public patch releases (e.g., vX.Y.Z+1), you can tag directly from `develop`:
+For internal or non-public patch releases (e.g., vX.Y.Z+1), you can tag directly
+from `develop`:
 
-1. Follow steps 1-5 above (create release branch, update versions, commit changes, PR to develop)
+1. Follow steps 1-5 above (create release branch, update versions, commit
+   changes, PR to develop)
 2. After merging to `develop`, tag directly from `develop`:
    ```bash
    git checkout develop
@@ -257,6 +279,7 @@ For internal or non-public patch releases (e.g., vX.Y.Z+1), you can tag directly
 3. The same CI/CD workflows will trigger and create draft releases
 
 This approach is useful for:
+
 - Quick fixes that need immediate deployment
 - Internal testing releases
 - Patch releases that don't warrant a full main branch update
@@ -264,6 +287,7 @@ This approach is useful for:
 ## Reference
 
 For examples of previous releases, see:
+
 - PR #1134 (Release v0.16.0) and similar release PRs
 - The git tag history: `git tag -l`
 - The CHANGELOG.md file for release note formats

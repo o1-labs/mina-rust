@@ -1,6 +1,7 @@
 # Instructions on using the failed block proof dumps for debugging block proofs
 
 1. First save our private rsa key:
+
 ```
 $ cp private_key $HOME/.openmina/debug/rsa.priv
 ```
@@ -15,7 +16,8 @@ $ cargo test --release add_private_key_to_block_proof_input -- --nocapture
 ```
 
 3. Run proof generation in Rust:  
-Apply those changes to the test `test_block_proof`:
+   Apply those changes to the test `test_block_proof`:
+
 ```diff
 modified   ledger/src/proofs/transaction.rs
 @@ -4679,10 +4679,11 @@ pub(super) mod tests {
@@ -32,23 +34,25 @@ modified   ledger/src/proofs/transaction.rs
              panic_in_ci();
 @@ -4690,7 +4691,8 @@ pub(super) mod tests {
          };
- 
+
          let blockchain_input: v2::ProverExtendBlockchainInputStableV2 =
 -            read_binprot(&mut data.as_slice());
 +            v2::ProverExtendBlockchainInputStableV2::binprot_read(&mut data.as_slice()).unwrap();
 +            // read_binprot(&mut data.as_slice());
- 
+
          let BlockProver {
              block_step_prover,
 ```
+
 Then you can run:
+
 ```
 $ cd openmina/ledger
 $ cargo test --release test_block_proof -- --nocapture
 ```
 
 4. Run proof generation in OCaml:  
-Use this branch: https://github.com/openmina/mina/tree/proof-devnet
+   Use this branch: https://github.com/openmina/mina/tree/proof-devnet
 
 ```
 $ cd mina

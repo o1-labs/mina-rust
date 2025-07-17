@@ -1,6 +1,7 @@
 # P2P Network PubSub Refactoring Notes
 
-This document outlines significant complexity and maintainability issues in the PubSub (gossip protocol) component that require systematic refactoring.
+This document outlines significant complexity and maintainability issues in the
+PubSub (gossip protocol) component that require systematic refactoring.
 
 ## Current Implementation Issues
 
@@ -22,6 +23,7 @@ pub fn reducer(mut state_context: crate::Substate<Self>, action: P2pNetworkPubsu
 ```
 
 **Issues**:
+
 - Each action handler is doing multiple unrelated things
 - Message validation, peer management, and routing all mixed together
 - Hard to test individual components
@@ -43,6 +45,7 @@ enum P2pNetworkPubsubMessageCacheMessage {
 ```
 
 **Issues**:
+
 - Complex state transitions between validation stages
 - Unclear when messages transition between states
 - Mixed concerns between message content and validation status
@@ -60,6 +63,7 @@ bug_condition!("Cannot find peer for graft: {peer_id}");
 ```
 
 **Issues**:
+
 - `bug_condition!` should be used for truly impossible conditions
 - Many of these are recoverable errors that should be handled gracefully
 - Makes debugging difficult when errors are buried in logs
@@ -68,6 +72,7 @@ bug_condition!("Cannot find peer for graft: {peer_id}");
 ### 4. Performance and Scalability Issues
 
 **Linear Search Problems**:
+
 ```rust
 // O(n) search through all cached messages
 pub fn get_message_from_raw_message_id(&self, raw_message_id: &RawMessageId) -> Option<&PubsubMessage> {
@@ -78,6 +83,7 @@ pub fn get_message_from_raw_message_id(&self, raw_message_id: &RawMessageId) -> 
 ```
 
 **Memory Growth**:
+
 ```rust
 // Growing collections without proper bounds
 pub struct P2pNetworkPubsubState {
@@ -106,20 +112,21 @@ if self.buffers.len() < 50 {
 ### 6. Mixed Responsibilities
 
 **State Struct Doing Too Much**:
+
 ```rust
 pub struct P2pNetworkPubsubState {
     // Message caching
     pub mcache: BTreeMap<MessageId, P2pNetworkPubsubMessageCacheMessage>,
     pub seen: BTreeMap<MessageId, Instant>,
-    
+
     // Peer management
     pub peers: BTreeMap<PeerId, P2pNetworkPubsubPeerState>,
     pub mesh: BTreeMap<TopicHash, BTreeSet<PeerId>>,
-    
+
     // Protocol state
     pub subscriptions: BTreeSet<TopicHash>,
     pub iwant: BTreeMap<MessageId, (Instant, BTreeSet<PeerId>)>,
-    
+
     // Buffer management
     pub buffers: VecDeque<Vec<u8>>,
     // ... more fields
@@ -167,10 +174,10 @@ struct SubscriptionManager {
 pub enum PubsubError {
     #[error("Invalid peer {peer_id} for operation")]
     InvalidPeer { peer_id: PeerId },
-    
+
     #[error("Message deserialization failed: {reason}")]
     DeserializationError { reason: String },
-    
+
     #[error("Rate limit exceeded for peer {peer_id}")]
     RateLimitExceeded { peer_id: PeerId },
 }
@@ -228,41 +235,49 @@ struct MessagePipeline {
 ## Refactoring Strategy
 
 ### Phase 1: Extract Message Handling
+
 1. Move message validation logic to separate module
 2. Create proper error types
 3. Replace `bug_condition!` calls with proper error handling
 
 ### Phase 2: Split the Reducer
+
 1. Extract peer management logic
 2. Separate subscription handling
 3. Create focused action handlers
 
 ### Phase 3: Performance Improvements
+
 1. Add indexing for message lookups
 2. Implement proper rate limiting
 3. Add bounded collections with cleanup
 
 ### Phase 4: Configuration
+
 1. Make constants configurable
 2. Add runtime configuration support
 3. Create sensible defaults
 
 ### Phase 5: Testing and Validation
+
 1. Add unit tests for each extracted component
 2. Create integration tests for message pipeline
 3. Performance testing for scalability
 
 ## Benefits
 
-1. **Maintainability**: Smaller, focused modules are easier to understand and modify
+1. **Maintainability**: Smaller, focused modules are easier to understand and
+   modify
 2. **Performance**: Proper indexing and rate limiting prevent scalability issues
-3. **Reliability**: Proper error handling instead of panic-prone defensive programming
+3. **Reliability**: Proper error handling instead of panic-prone defensive
+   programming
 4. **Testability**: Individual components can be tested in isolation
 5. **Configurability**: Runtime configuration for different deployment scenarios
 
 ## TODO Comments to Address
 
 Current TODO comments indicate known issues:
+
 - Message cache organization needs improvement
 - Unresolved bugs need investigation
 - Missing source tracking for transaction proofs
@@ -270,4 +285,7 @@ Current TODO comments indicate known issues:
 
 ## Conclusion
 
-The PubSub component is a critical part of the P2P network but has accumulated technical debt. The 963-line reducer and complex state management make it difficult to maintain and extend. Refactoring will improve performance, reliability, and maintainability while preserving the existing functionality.
+The PubSub component is a critical part of the P2P network but has accumulated
+technical debt. The 963-line reducer and complex state management make it
+difficult to maintain and extend. Refactoring will improve performance,
+reliability, and maintainability while preserving the existing functionality.

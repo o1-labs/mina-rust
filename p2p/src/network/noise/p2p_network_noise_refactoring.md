@@ -1,12 +1,15 @@
 # P2P Network Noise Refactoring Notes
 
-This document outlines security and maintainability issues in the Noise cryptographic handshake component that require careful attention due to their security-critical nature.
+This document outlines security and maintainability issues in the Noise
+cryptographic handshake component that require careful attention due to their
+security-critical nature.
 
 ## Current Implementation Issues
 
 ### 1. Complex Security-Critical State Machine
 
-The Noise handshake state machine has concerning complexity for a security component:
+The Noise handshake state machine has concerning complexity for a security
+component:
 
 ```rust
 // Complex nested state structure
@@ -24,6 +27,7 @@ pub enum P2pNetworkNoiseStateInner {
 ```
 
 **Security Concerns**:
+
 - Complex state transitions increase attack surface
 - Hard-to-audit handshake logic (494-line reducer)
 - Potential for invalid state transitions
@@ -44,7 +48,9 @@ return Err(NoiseError::ParseError("failed to parse noise message".to_owned()));
 ```
 
 **Issues**:
-- "Obscure arithmetics" in cryptographic parsing suggests unclear/potentially unsafe code
+
+- "Obscure arithmetics" in cryptographic parsing suggests unclear/potentially
+  unsafe code
 - Missing error reporting could hide security issues
 - Incomplete implementation in production security code
 
@@ -69,6 +75,7 @@ let state = noise_state.clone();
 ```
 
 **Security Risks**:
+
 - Keys in `DataSized<32>` not securely erased from memory
 - `clone()` operations create temporary copies of sensitive data
 - Serializable keys could accidentally persist
@@ -83,6 +90,7 @@ let scalar = Scalar::from_bits(*static_key.as_bytes());
 ```
 
 **Risks**:
+
 - Deprecated functions may have known security vulnerabilities
 - Future removal could break compilation
 - Security patches may not be applied to deprecated APIs
@@ -100,6 +108,7 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
 ```
 
 **Problems**:
+
 - Debug output could leak sensitive information to logs
 - Generic error messages make security debugging difficult
 - Inconsistent error reporting across the component
@@ -109,6 +118,7 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
 ### Phase 1: Critical Security Fixes
 
 1. **Complete TODO Items**:
+
    ```rust
    // Replace "obscure arithmetics" with clear, auditable parsing
    fn parse_noise_message_length(buf: &[u8]) -> Result<usize, NoiseError> {
@@ -124,16 +134,17 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
    ```
 
 2. **Fix Memory Safety for Keys**:
+
    ```rust
    #[derive(Clone)]
    pub struct SecureDataSized<const N: usize>([u8; N]);
-   
+
    impl<const N: usize> Zeroize for SecureDataSized<N> {
        fn zeroize(&mut self) {
            self.0.zeroize();
        }
    }
-   
+
    impl<const N: usize> Drop for SecureDataSized<N> {
        fn drop(&mut self) {
            self.zeroize();
@@ -150,12 +161,13 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
 ### Phase 2: State Machine Simplification
 
 1. **Extract Handshake Logic**:
+
    ```rust
    struct NoiseHandshake {
        state: HandshakeState,
        role: HandshakeRole,
    }
-   
+
    impl NoiseHandshake {
        fn process_message(&mut self, message: &[u8]) -> Result<HandshakeResult, NoiseError> {
            // Clear, auditable handshake logic
@@ -175,6 +187,7 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
 ### Phase 3: Secure Error Handling
 
 1. **Create Security-Aware Logging**:
+
    ```rust
    fn log_security_error(error: &NoiseError) {
        // Log error without leaking sensitive information
@@ -201,6 +214,7 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
 ### Phase 4: Memory Management Improvements
 
 1. **Reduce Clone Operations**:
+
    ```rust
    // Use references instead of cloning sensitive state
    fn process_handshake_message(&mut self, message: &[u8]) -> Result<Vec<u8>, NoiseError> {
@@ -209,12 +223,13 @@ Err(NoiseError::ParseError("failed to parse noise message".to_owned()))
    ```
 
 2. **Explicit Key Lifecycle Management**:
+
    ```rust
    struct KeyManager {
        static_key: Option<StaticKey>,
        ephemeral_key: Option<EphemeralKey>,
    }
-   
+
    impl KeyManager {
        fn clear_ephemeral_key(&mut self) {
            if let Some(mut key) = self.ephemeral_key.take() {
@@ -247,7 +262,8 @@ Security is the primary concern, but the refactoring should also address:
 
 1. **Reduce Allocations**: Minimize temporary allocations for sensitive data
 2. **Buffer Reuse**: Implement secure buffer reuse patterns
-3. **Constant-Time Operations**: Ensure cryptographic comparisons are constant-time
+3. **Constant-Time Operations**: Ensure cryptographic comparisons are
+   constant-time
 
 ## Migration Strategy
 
@@ -258,4 +274,7 @@ Security is the primary concern, but the refactoring should also address:
 
 ## Conclusion
 
-The Noise component implements security-critical functionality. While the current implementation uses good cryptographic libraries, the complex state machine and incomplete features create security risks. The refactoring should prioritize security and auditability over performance or complexity.
+The Noise component implements security-critical functionality. While the
+current implementation uses good cryptographic libraries, the complex state
+machine and incomplete features create security risks. The refactoring should
+prioritize security and auditability over performance or complexity.

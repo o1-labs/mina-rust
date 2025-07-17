@@ -1,6 +1,8 @@
 # Component Summaries
 
-This document provides a tree view of all component summary documentation throughout the OpenMina codebase. Each component's `summary.md` file contains technical debt analysis and implementation notes.
+This document provides a tree view of all component summary documentation
+throughout the OpenMina codebase. Each component's `summary.md` file contains
+technical debt analysis and implementation notes.
 
 ## Component Tree
 
@@ -123,7 +125,8 @@ This document provides a tree view of all component summary documentation throug
 
 ## Navigation Tips
 
-- Each `summary.md` file contains technical debt analysis and implementation notes for that component
+- Each `summary.md` file contains technical debt analysis and implementation
+  notes for that component
 - Files ending with `_refactoring.md` contain detailed refactoring plans
 - The tree structure reflects the actual code organization in the repository
 - Components are organized into three main areas: `node`, `p2p`, and `snark`
