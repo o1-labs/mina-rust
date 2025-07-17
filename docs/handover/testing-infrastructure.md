@@ -423,23 +423,25 @@ cargo run --release --bin openmina-node-testing -- scenarios-run --name "Scenari
 
 ### 1. Non-Deterministic Failures
 
-**Issue**: Test passes sometimes but fails others **Solution**: Ensure all
-randomness uses fixed seeds, check for timing dependencies
+- **Issue**: Test passes sometimes but fails others
+- **Solution**: Ensure all randomness uses fixed seeds, check for timing
+  dependencies
 
 ### 2. Port Conflicts
 
-**Issue**: "Address already in use" errors **Solution**: Use unique port ranges
-per test, ensure proper cleanup
+- **Issue**: "Address already in use" errors
+- **Solution**: Use unique port ranges per test, ensure proper cleanup
 
 ### 3. Slow Test Execution
 
-**Issue**: Tests take too long **Solution**: Use dummy proofs, reduce node
-count, optimize wait conditions
+- **Issue**: Tests take too long
+- **Solution**: Use dummy proofs, reduce node count, optimize wait conditions
 
 ### 4. Invariant Violations
 
-**Issue**: Invariant check fails during test **Solution**: Check logs for
-violation details, add debugging, fix state inconsistency
+- **Issue**: Invariant check fails during test
+- **Solution**: Check logs for violation details, add debugging, fix state
+  inconsistency
 
 ## Advanced Features
 
@@ -491,3 +493,34 @@ For additional examples and patterns, refer to:
 - Testing documentation: [`docs/testing/`](../../testing/) - Contains detailed
   test descriptions, troubleshooting guides, and testing methodology
   documentation
+
+## Appendix: Block Replayer Tool
+
+**Current Status**: An unfinished prototype exists in the
+`tools/block-replayer/` directory on the `feat/basic-block-replayer` branch but
+was never integrated into the testing workflow.
+
+**Purpose**: Sequential block replay from genesis to validate that the node's
+transaction logic, ledger operations, and block processing are correct against
+real blockchain data. Could also be used to test proof verification (blocks,
+completed works) and on devnet, for blocks produced by accounts of which the
+private key is available, to reproduce the proof and ensure the prover works
+correctly by ensuring it should have been able to produce all those proofs by
+itself.
+
+**Value Proposition**:
+
+- **Transaction Logic Validation**: Ensures transaction processing matches
+  expected behavior from historical blocks
+- **Ledger Operation Testing**: Validates ledger state transitions and account
+  updates
+- **Block Processing Verification**: Tests the complete block application
+  pipeline
+- **Real-World Coverage**: Uses actual blockchain data rather than synthetic
+  test scenarios
+- **Regression Testing**: Catches regressions in core blockchain logic
+
+**Recommendation**: The new team should complete or rewrite this tool as a
+standalone testing utility. This would provide validation of core blockchain
+logic that is complementary to but separate from the scenario-based testing
+framework.
