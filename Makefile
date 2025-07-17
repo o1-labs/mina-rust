@@ -1,6 +1,10 @@
 # OpenMina Makefile
 
+# Rust
 NIGHTLY_RUST_VERSION = "nightly"
+
+# Docker
+DOCKER_ORG ?= openmina
 
 # PostgreSQL configuration for archive node
 OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
@@ -12,6 +16,7 @@ PG_PORT	?= 5432
 
 # Utilities
 NETWORK ?= devnet
+GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
 .PHONY: help
 help: ## Ask for help!
@@ -168,8 +173,6 @@ test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
 
 # Docker build targets
-DOCKER_ORG ?= openmina
-GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
