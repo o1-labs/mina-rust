@@ -29,22 +29,33 @@ overview and design details, see
 
 - `src/account/` - Account structures, balances, permissions
 
-## Critical Issues
+## Status
+
+The ledger components have proven reliable on devnet despite technical debt
+patterns. The implementation maintains the same battle-tested logic that runs
+the Mina network.
+
+## Issues for Improvement
 
 **Error Handling**
 
-- Too many `.unwrap()` and `.expect()` calls in production code paths (excluding
-  tests)
-- Critical transaction processing paths could panic the node
-- Inconsistent error handling across modules
+- Extensive use of `.unwrap()` and `.expect()` calls in code paths, particularly
+  in `scan_state/transaction_logic.rs`, `staged_ledger/staged_ledger.rs`, and
+  `transaction_pool.rs`
+- These calls are generally in code paths with well-understood preconditions but
+  could benefit from explicit error propagation
+- Inconsistent error handling patterns across modules
 - Verification key lookup bug fix from upstream Mina Protocol needs to be ported
   (https://github.com/MinaProtocol/mina/pull/16699)
 
 **Monolithic Structure**
 
-- Single massive crate with files exceeding 6,000+ lines
-- Deep coupling between components that should be independent
-- Hard to maintain, test, and develop in parallel
+- Large files like `scan_state/transaction_logic.rs` and
+  `staged_ledger/staged_ledger.rs` mirror OCaml's structure and are difficult to
+  navigate
+- Files contain embedded tests that are hard to discover
+- When modifying these files, prefer small targeted changes over major
+  restructuring
 
 **Performance**
 
@@ -53,6 +64,7 @@ overview and design details, see
     unnecessary deep clones for sparse ledger construction
   - Transaction pool operations clone transaction objects with acknowledged TODO
     comments about performance
+- Performance monitoring infrastructure exists but is disabled
 - No memory pooling or reuse strategies (could help with memory fragmentation in
   WASM)
 
@@ -62,6 +74,12 @@ overview and design details, see
 - There's an unused `ondisk` implementation but we were planning a more
   comprehensive global solution (see persistence.md)
 - Thread-local caching holds memory indefinitely
+
+**Code Organization**
+
+- Multiple TODO/FIXME items throughout the codebase requiring attention
+- Incomplete implementations in `sparse_ledger/mod.rs` with unimplemented trait
+  methods
 
 ## Refactoring Plan
 
