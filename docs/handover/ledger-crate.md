@@ -8,6 +8,8 @@ zkApp functionality, providing a direct port of the OCaml implementation. For
 developers familiar with the OCaml codebase, this maintains the same
 architecture and business logic while adapting to Rust idioms.
 
+For technical debt and critical issues, see [`ledger/summary.md`](../../ledger/summary.md).
+
 ## Architecture
 
 ### Core Components
@@ -23,6 +25,7 @@ architecture and business logic while adapting to Rust idioms.
 
 - Port of OCaml's `Ledger.Mask` with identical copy-on-write semantics
 - Provides layered ledger views for efficient state management
+- Uses `Arc<Mutex<MaskImpl>>` for cheap reference counting; `Mask::clone()` is fast
 - Used extensively in transaction processing to create temporary ledger states
 
 **Database** (`src/database/`)
