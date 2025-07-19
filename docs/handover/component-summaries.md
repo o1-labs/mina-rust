@@ -7,6 +7,10 @@ technical debt analysis and implementation notes.
 ## Component Tree
 
 - **openmina/**
+  - **core/**
+    - [summary.md](../../core/summary.md)
+  - **ledger/**
+    - [summary.md](../../ledger/summary.md)
   - **node/**
     - **src/**
       - [summary.md](../../node/src/summary.md)
