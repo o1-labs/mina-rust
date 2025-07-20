@@ -96,6 +96,13 @@ storage needs, nothing terribly advanced is required.
   - Simple database lookup replaces expensive re-verification
 - **Expected Impact**: Would significantly reduce redundant verification work,
   especially during high network activity
+- **Reference Implementation**: We implemented this optimization in the OCaml
+  node ([PR #12522](https://github.com/MinaProtocol/mina/pull/12522)) and
+  demonstrated dramatic performance improvements: block application time for
+  blocks with many completed works was reduced from ~8-14 seconds to ~0.015
+  seconds by avoiding re-verification of SNARKs already present in the SNARK
+  pool. This was not implemented in OpenMina yet as it was planned to be done as
+  part of the persistence implementation.
 
 ### 5. Reduced Network Traffic and Improved Pool Consistency
 

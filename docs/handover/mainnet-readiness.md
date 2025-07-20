@@ -17,12 +17,19 @@ mainnet's scale. Persistence is required for:
 - Reducing memory usage to handle mainnet-sized ledgers and amount of snarks.
 - Enabling fast node restarts without full resync
 - Supporting webnodes with browser storage constraints
+- Providing a clean foundation for implementing SNARK verification deduplication
 
 **Note**: There is a very old implementation for on-disk storage in
 `ledger/src/ondisk` that was never used - a lightweight key-value store
 implemented to avoid the RocksDB dependency. This is unrelated to the new
 persistence design which intends to solve persistence for everything, not just
 the ledger. But the old implementation may be worth revisiting anyway.
+
+**Performance Impact**: The importance of SNARK verification deduplication for
+mainnet performance has been demonstrated in the OCaml node, where we achieved
+dramatic improvements (8-14 seconds → 0.015 seconds for block application). See
+the "SNARK Verification Deduplication" section in
+[persistence.md](persistence.md) for details.
 
 ### 2. Wide Merkle Queries
 
