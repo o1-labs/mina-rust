@@ -11,6 +11,9 @@ technical debt analysis and implementation notes.
     - [summary.md](../../core/summary.md)
   - **ledger/**
     - [summary.md](../../ledger/summary.md)
+    - **src/**
+      - **proofs/**
+        - [summary.md](../../ledger/src/proofs/summary.md)
   - **node/**
     - **src/**
       - [summary.md](../../node/src/summary.md)

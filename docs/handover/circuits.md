@@ -8,28 +8,53 @@ production, not constraint generation. This means that while OpenMina can
 produce proofs using existing circuits, it cannot generate the circuit
 definitions themselves.
 
+For an overview of the proof system implementation in `ledger/src/proofs/`, see
+[`ledger/src/proofs/summary.md`](../../ledger/src/proofs/summary.md).
+
 ## Architecture
 
-### Witness-Only Implementation
+### Proof Generation Implementation and Limitations
 
-The OpenMina codebase includes:
+The OpenMina codebase includes complete proof generation capabilities with one
+key limitation:
+
+**What OpenMina Can Do:**
 
 - **Witness generation**: Full implementation for producing witnesses needed for
   proof generation
-- **Proof production**: Capability to create proofs using pre-existing circuit
-  definitions
-- **Constraint generation**: NOT implemented - circuits must be generated
-  externally
+- **Proof production**: Complete capability to create proofs using pre-existing
+  circuit definitions
+- **Circuit logic**: Equivalent to the OCaml implementation for all proof types
+- **Proof verification**: Can verify proofs using precomputed verification
+  indices
 
-Due to time constraints during development, constraint generation was not ported
-to OpenMina. As a result, circuits must be generated using the original OCaml
-implementation.
+**What OpenMina Cannot Do:**
+
+- **Circuit constraints**: Missing the constraint declarations from the OCaml
+  code that define circuit structure
+- **Constraint compilation/evaluation**: Missing the functionality to
+  compile/evaluate constraint declarations into circuit constraints
+- **Verification key generation**: Cannot generate verification keys for new
+  circuits
+
+**Practical Implications:**
+
+- Can generate proofs and witnesses for existing circuits
+- Cannot create new circuits or modify existing circuit definitions
+- Relies on OCaml implementation for all circuit creation and constraint
+  processing
+- Uses precomputed verification indices from the OCaml implementation
+
+The circuit logic is equivalent to the OCaml implementation except both the
+constraint declarations and the constraint compilation/evaluation functionality
+are missing - these were not ported due to time constraints during development,
+not technical limitations, and could be added for full independence.
 
 ### Circuit Generation Process
 
-Since OpenMina cannot generate circuits, the raw circuit data must be produced
-using the OCaml implementation from the original Mina codebase. This process
-involves:
+Since these constraint capabilities are missing, OpenMina requires externally
+generated circuit data. The following process describes how circuits are created
+and distributed using the original Mina codebase:
 
 1. Using a custom branch in the OpenMina fork of Mina:
    https://github.com/openmina/mina

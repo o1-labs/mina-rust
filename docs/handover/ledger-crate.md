@@ -77,6 +77,9 @@ Note: The crate implements witness generation for circuits but not the
 constraint generation, so circuits cannot be fully generated from this crate
 alone.
 
+For detailed technical information about the proof system implementation, see
+[`ledger/src/proofs/summary.md`](../../ledger/src/proofs/summary.md).
+
 **zkApp Support** (`src/zkapps/`)
 
 - Full zkApp transaction processing
