@@ -10306,9 +10306,9 @@ dependencies = [
 
 [[package]]
 name = "wasm_thread"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22bc95de7e96023c115820c1b87504cdd316ed958d2dfb97dca502cc6e5772a1"
+checksum = "52c4b28d4dd9c0736a6d8ab300a6ea7a643dcb95f43ec08ad7c45d3bbee476f7"
 dependencies = [
  "futures",
  "js-sys",
