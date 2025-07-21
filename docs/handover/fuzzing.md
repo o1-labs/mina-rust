@@ -16,23 +16,8 @@ state management.
 
 ### Components
 
-The fuzzer is located in `tools/fuzzing/` with the following structure:
-
-```
-tools/fuzzing/
-├── src/
-│   ├── main.rs                    # Entry point and OCaml communication
-│   ├── coverage/                  # Coverage analysis tools
-│   └── transaction_fuzzer/
-│       ├── context.rs             # Fuzzer state and ledger management
-│       ├── generator.rs           # Transaction generation logic
-│       ├── mutator.rs             # Mutation strategies
-│       ├── invariants.rs          # Permission invariant checking
-│       └── coverage/              # Transaction-specific coverage tools
-├── Cargo.toml                     # Dependencies and configuration
-├── rust-toolchain.toml            # Nightly toolchain specification
-└── Dockerfile                     # Containerized fuzzing environment
-```
+The fuzzer is located in `tools/fuzzing/` and implements differential fuzzing
+between the OCaml and Rust implementations of some components.
 
 ## What Gets Fuzzed
 
