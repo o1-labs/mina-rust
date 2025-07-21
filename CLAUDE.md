@@ -133,33 +133,43 @@ Each component directory contains a `summary.md` file documenting:
 
 ## Claude Development Guidelines
 
-This section contains specific instructions for Claude when working on this project.
+This section contains specific instructions for Claude when working on this
+project.
 
 ### Formatting Commands
 
 After making any code modifications, run the appropriate formatting commands:
 
 #### Markdown Files
+
 - **Format**: Run `make format-md` after modifying any markdown files
-- **Check**: Run `make check-md` to verify markdown files are formatted correctly
+- **Check**: Run `make check-md` to verify markdown files are formatted
+  correctly
 
 #### Rust and TOML Files
-- **Format**: Run `make format` after modifying any Rust (.rs) or TOML (.toml) files
-- **Check**: Run `make check-format` to verify Rust and TOML files are formatted correctly
+
+- **Format**: Run `make format` after modifying any Rust (.rs) or TOML (.toml)
+  files
+- **Check**: Run `make check-format` to verify Rust and TOML files are formatted
+  correctly
 
 ### Commit Guidelines
 
 **NEVER** add Claude as a co-author in commit messages. Do not include:
+
 - `Co-Authored-By: Claude <noreply@anthropic.com>`
 - Any other co-author attribution for Claude
 
 **NEVER** use emojis in commit messages.
 
-**Always** wrap commit message titles at 80 characters and body text at 80 characters.
+**Always** wrap commit message titles at 80 characters and body text at 80
+characters.
 
-Always verify commit messages before committing and remove any co-author lines referencing Claude.
+Always verify commit messages before committing and remove any co-author lines
+referencing Claude.
 
 ### Development Workflow
+
 1. Make your code changes
 2. Run the appropriate formatting command based on file types modified
 3. Verify formatting with check commands if needed
