@@ -14,6 +14,12 @@ PG_DB	?= openmina_archive
 PG_HOST	?= localhost
 PG_PORT	?= 5432
 
+# Block producer configuration
+PRODUCER_KEY ?= ./openmina-workdir/producer-key
+COINBASE_RECEIVER ?=
+OPENMINA_LIBP2P_EXTERNAL_IP ?=
+OPENMINA_LIBP2P_PORT ?= 8302
+
 # Utilities
 NETWORK ?= devnet
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
@@ -296,8 +302,49 @@ run-archive: build-release ## Run an archive node with local storage
 		--release -- \
 		node \
 		--archive-archiver-process \
-		--archive-local-storage
+		--archive-local-storage \
 		--network $(NETWORK)
+
+.PHONY: run-block-producer
+run-block-producer: build-release ## Run a block producer node on $(NETWORK) network
+	@if [ ! -f "$(PRODUCER_KEY)" ]; then \
+		echo "Error: Producer key not found at $(PRODUCER_KEY)"; \
+		echo "Please place your producer private key at $(PRODUCER_KEY)"; \
+		exit 1; \
+	fi
+	MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)" \
+		cargo run --bin openmina \
+		--release -- \
+		node \
+		--producer-key $(PRODUCER_KEY) \
+		$(if $(COINBASE_RECEIVER),--coinbase-receiver $(COINBASE_RECEIVER)) \
+		$(if $(OPENMINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(OPENMINA_LIBP2P_EXTERNAL_IP)) \
+		$(if $(OPENMINA_LIBP2P_PORT),--libp2p-port $(OPENMINA_LIBP2P_PORT)) \
+		--network $(NETWORK)
+
+.PHONY: run-block-producer-devnet
+run-block-producer-devnet: ## Run a block producer node on devnet
+	$(MAKE) run-block-producer NETWORK=devnet
+
+.PHONY: run-block-producer-mainnet
+run-block-producer-mainnet: ## Run a block producer node on mainnet
+	$(MAKE) run-block-producer NETWORK=mainnet
+
+.PHONY: generate-block-producer-key
+generate-block-producer-key: build-release ## Generate a new block producer key pair
+	@mkdir -p openmina-workdir
+	@echo "Generating new block producer key pair..."
+	@OUTPUT=$$(cargo run --release --package=cli --bin openmina -- misc mina-key-pair); \
+	SECRET_KEY=$$(echo "$$OUTPUT" | grep "secret key:" | cut -d' ' -f3); \
+	PUBLIC_KEY=$$(echo "$$OUTPUT" | grep "public key:" | cut -d' ' -f3); \
+	echo "$$SECRET_KEY" > $(PRODUCER_KEY); \
+	chmod 600 $(PRODUCER_KEY); \
+	echo ""; \
+	echo "✓ Generated new producer key pair:"; \
+	echo "  Secret key saved to: $(PRODUCER_KEY)"; \
+	echo "  Public key: $$PUBLIC_KEY"; \
+	echo ""; \
+	echo "⚠️  IMPORTANT: Keep your secret key secure and backed up!"
 
 .PHONY: postgres-clean
 postgres-clean:
