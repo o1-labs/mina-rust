@@ -47,7 +47,7 @@ libp2p-identity = { version = "=0.2.7", features = [
   "serde",
 ] }
 multiaddr = { version = "0.18.1" }
-zeroize = { version = "1.7" }
+zeroize = { version = "1.8" }
 
 mina-p2p-messages = { workspace = true }
 redux = { workspace = true }
