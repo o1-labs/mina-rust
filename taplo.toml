@@ -1,0 +1,9 @@
+include = ["**/*.toml"]
+
+[formatting]
+reorder_keys = false
+
+[[rule]]
+include = ["**/Cargo.toml"]
+keys = ["dependencies", "workspace.dependencies"]
+formatting = { reorder_keys = true }

@@ -8,54 +8,54 @@ license = "Apache-2.0"
 workspace = true
 
 [dependencies]
+anyhow = "1.0.70"
+ark-ff = { workspace = true }
 base64 = "0.22"
 blake2 = "0.10"
+derive_more = "0.99.17"
 hex = "0.4"
+lazy_static = "1.4.0"
+ledger = { workspace = true }
+mina-hasher = { workspace = true }
+mina-p2p-messages = { workspace = true }
+mina-signer = { workspace = true }
+multihash = { version = "0.18.1", features = ["blake2b"] }
+num_enum = "0.5.7"
+poseidon = { workspace = true }
 rand = "0.8.0"
+redux = { workspace = true }
 serde = "1.0.147"
 serde_json = { version = "1.0.82", features = [
-    "unbounded_depth",
-    "arbitrary_precision",
+  "unbounded_depth",
+  "arbitrary_precision",
 ] }
 serde_with = { version = "3.6.1", features = ["time_0_3"] }
 strum = "0.26.2"
 strum_macros = "0.26.4"
-derive_more = "0.99.17"
-lazy_static = "1.4.0"
 thiserror = "1.0.37"
 time = { version = "0.3.36", features = ["parsing"] }
-anyhow = "1.0.70"
-num_enum = "0.5.7"
-redux = { workspace = true }
-multihash = { version = "0.18.1", features = ["blake2b"] }
-mina-hasher = { workspace = true }
-mina-signer = { workspace = true }
-poseidon = { workspace = true }
-ledger = { workspace = true }
-mina-p2p-messages = { workspace = true }
 vrf = { workspace = true }
-ark-ff = { workspace = true }
 
 graphannis-malloc_size_of = { workspace = true }
 graphannis-malloc_size_of_derive = { workspace = true }
 
 openmina-core = { path = "../core" }
-snark = { path = "../snark" }
-p2p = { path = "../p2p" }
 openmina-node-account = { workspace = true }
-tokio = { version = "1.26.0" }
+p2p = { path = "../p2p" }
 postcard = { version = "1.0.9", features = ["use-std"] }
+snark = { path = "../snark" }
 static_assertions.workspace = true
+tokio = { version = "1.26.0" }
 
 [build-dependencies]
 regex = "1"
 rust-format = "0.3"
 vergen = { version = "8.2.4", features = [
-    "build",
-    "cargo",
-    "git",
-    "gitcl",
-    "rustc",
+  "build",
+  "cargo",
+  "git",
+  "gitcl",
+  "rustc",
 ] }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]

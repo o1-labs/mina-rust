@@ -3,7 +3,7 @@ name = "openmina-macros"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
-authors = [ "Alexander Koptelov <alexandre.koptelov@gmail.com>" ]
+authors = ["Alexander Koptelov <alexandre.koptelov@gmail.com>"]
 
 [lib]
 proc-macro = true

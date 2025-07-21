@@ -15,5 +15,8 @@ jobs:
         with:
           toolchain: nightly
           components: rustfmt
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: taplo
       - name: rustfmt
         run: make check-format
