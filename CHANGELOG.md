@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Dependencies
 
-- bump proc-macro2 from 1.0.93 to 1.0.95 ([#1230](https://github.com/o1-labs/openmina/pull/1230))
+- bump proc-macro2 from 1.0.93 to 1.0.95
+  ([#1230](https://github.com/o1-labs/openmina/pull/1230))
 
 ## [0.16.0] - 2025-04-04
 
