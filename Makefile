@@ -1,6 +1,22 @@
 # OpenMina Makefile
 
+# Rust
 NIGHTLY_RUST_VERSION = "nightly"
+
+# Docker
+DOCKER_ORG ?= openmina
+
+# PostgreSQL configuration for archive node
+OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
+PG_USER ?= openmina
+PG_PW 	?= openminaopenmina
+PG_DB 	?= openmina_archive
+PG_HOST	?= localhost
+PG_PORT	?= 5432
+
+# Utilities
+NETWORK ?= devnet
+GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
 .PHONY: help
 help: ## Ask for help!
@@ -157,8 +173,6 @@ test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
 
 # Docker build targets
-DOCKER_ORG ?= openmina
-GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
@@ -218,3 +232,30 @@ docker-build-producer-dashboard: ## Build producer dashboard Docker image
 docker-build-test: ## Build test Docker image
 	docker build -t $(DOCKER_ORG)/openmina-test:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.test node/testing/docker/
+
+# Postgres related targets + archive node
+.PHONY: run-archive
+run-archive: build-release ## Run an archive node with local storage
+	OPENMINA_ARCHIVE_ADDRESS=$(OPENMINA_ARCHIVE_ADDRESS) \
+		cargo run --bin openmina \
+		--release -- \
+		node \
+		--archive-archiver-process \
+		--archive-local-storage
+		--network $(NETWORK)
+
+.PHONY: postgres-clean
+postgres-clean:
+	@echo "Dropping DB: ${PG_DB} and user: ${PG_USER}"
+	@sudo -u postgres psql -c "DROP DATABASE IF EXISTS ${PG_DB}"
+	@sudo -u postgres psql -c "DROP DATABASE IF EXISTS ${PG_USER}"
+	@sudo -u postgres psql -c "DROP ROLE IF EXISTS ${PG_USER}"
+	@echo "Cleanup complete."
+
+.PHONY: postgres-setup
+postgres-setup: ## Set up PostgreSQL database for archive node
+	@echo "Setting up PostgreSQL database: ${PG_DB} with user: ${PG_USER}"
+	@sudo -u postgres createuser -d -r -s $(PG_USER) 2>/dev/null || true
+	@sudo -u postgres psql -c "ALTER USER $(PG_USER) PASSWORD '$(PG_PW)'" 2>/dev/null || true
+	@sudo -u postgres createdb -O $(PG_USER) $(PG_DB) 2>/dev/null || true
+	@sudo -u postgres createdb -O $(PG_USER) $(PG_USER) 2>/dev/null || true
