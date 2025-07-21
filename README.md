@@ -79,7 +79,6 @@ to help test future releases._
 ### Core components
 
 - [P2P communication](https://github.com/openmina/openmina/blob/documentation/docs/p2p_service.md)
-  - [GossipSub](https://github.com/openmina/mina-wiki/blob/3ea9041e52fb2e606918f6c60bd3a32b8652f016/p2p/mina-gossip.md)
 - [Scan state](docs/scan-state.md)
 - [SNARKs](docs/snark-work.md)
 
