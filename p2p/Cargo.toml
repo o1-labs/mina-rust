@@ -67,7 +67,7 @@ prost = { version = "0.12.4" }
 openmina-fuzzer = { path = "../fuzzer", optional = true }
 
 [build-dependencies]
-prost-build = { version = "0.12.4" }
+prost-build = { version = "0.14.1" }
 
 [dev-dependencies]
 crypto-bigint = { version = "0.5.5", features = ["rand_core"] }
