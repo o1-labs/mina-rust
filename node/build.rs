@@ -106,6 +106,11 @@ fn main() -> Result<(), Box<dyn Error>> {
         .all_rustc()
         .emit_and_set()?;
 
+    // Tell cargo when to rerun this build script
+    println!("cargo:rerun-if-changed=build.rs");
+    // Rerun if any action files change (they end with *_actions.rs or action.rs)
+    println!("cargo:rerun-if-changed=src");
+
     let crate_dir_name = std::env::var("CARGO_MANIFEST_DIR")?;
     let crate_dir = PathBuf::from(crate_dir_name);
     let node_dir = {

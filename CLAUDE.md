@@ -130,3 +130,12 @@ Each component directory contains a `summary.md` file documenting:
 - `docs/handover/` - Comprehensive architecture documentation
 - `ARCHITECTURE.md` - Migration guide for old vs new style
 - Component-specific `summary.md` files throughout the codebase
+
+## Commit Guidelines
+
+**IMPORTANT**: When creating commits, NEVER include AI tool generation messages such as:
+- "Generated with [Claude Code]"
+- "Co-Authored-By: Claude"
+- Any other AI tool attribution
+
+Always review commit messages before pushing to ensure they contain only project-relevant information.
