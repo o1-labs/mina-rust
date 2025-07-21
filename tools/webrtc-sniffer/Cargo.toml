@@ -11,7 +11,7 @@ etherparse = { version = "0.17.0" }
 hex = { version = "0.4.3" }
 log = { version = "0.4.25" }
 nom = { version = "8.0.0" }
-pcap = { version = "2.2" }
+pcap = { version = "2.3" }
 sudo = { version = "0.6.0" }
 thiserror = { version = "2.0" }
 
