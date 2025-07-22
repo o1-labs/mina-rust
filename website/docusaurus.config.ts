@@ -65,6 +65,23 @@ const config: Config = {
   themeConfig: {
     // Replace with your project's social card
     image: 'img/docusaurus-social-card.jpg',
+
+    // SEO improvements and metadata
+    metadata: [
+      {name: 'keywords', content: 'OpenMina, Mina Protocol, Rust, blockchain, zero-knowledge proofs, zkProofs, cryptocurrency, decentralized'},
+      {name: 'description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs. Learn how to run nodes, develop applications, and understand the protocol.'},
+      {name: 'author', content: 'o1Labs'},
+      {name: 'robots', content: 'index,follow'},
+      {name: 'googlebot', content: 'index,follow'},
+      {property: 'og:type', content: 'website'},
+      {property: 'og:title', content: 'OpenMina Documentation'},
+      {property: 'og:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
+      {property: 'og:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
+      {property: 'twitter:card', content: 'summary_large_image'},
+      {property: 'twitter:title', content: 'OpenMina Documentation'},
+      {property: 'twitter:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
+      {property: 'twitter:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
+    ],
     navbar: {
       title: 'OpenMina',
       logo: {
@@ -146,6 +163,18 @@ const config: Config = {
               label: 'Discussions',
               href: 'https://github.com/o1-labs/openmina/discussions',
             },
+            {
+              label: 'Twitter',
+              href: 'https://x.com/o1_labs',
+            },
+            {
+              label: 'Discord',
+              href: 'https://discord.gg/minaprotocol',
+            },
+            {
+              label: 'LinkedIn',
+              href: 'https://www.linkedin.com/company/o1labs/',
+            },
           ],
         },
         {
@@ -156,8 +185,16 @@ const config: Config = {
               href: 'https://minaprotocol.com/',
             },
             {
+              label: 'Mina Protocol Docs',
+              href: 'https://docs.minaprotocol.com/',
+            },
+            {
               label: 'o1Labs',
-              href: 'https://o1labs.org/',
+              href: 'https://www.o1labs.org/',
+            },
+            {
+              label: 'o1Labs GitHub',
+              href: 'https://github.com/o1-labs',
             },
           ],
         },
