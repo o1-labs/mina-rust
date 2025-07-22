@@ -40,8 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1247](https://github.com/o1-labs/openmina/pull/1234)).
 - **Development tools**: Add shellcheck to the CI
   ([#1255](https://github.com/o1-labs/openmina/pull/1255))
-
-
+- **Makefile**: Add `run-block-producer` target with devnet/mainnet support and
+  `generate-block-producer-key` target for key generation
+  ([#1221](https://github.com/o1-labs/openmina/pull/1221)).
 
 ### Changed
 
