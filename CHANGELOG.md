@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### OCaml node
+
+- Update the CI and code to compare with the latest release 3.2.0-alpha1-7f94ae0
+  ([#1236](https://github.com/o1-labs/openmina/pull/1236), fix
+  [#1158](https://github.com/o1-labs/openmina/issues/1158))
+
 ### Dependencies
 
 - bump proc-macro2 from 1.0.93 to 1.0.95
