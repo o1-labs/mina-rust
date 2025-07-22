@@ -210,7 +210,8 @@ referencing Claude.
 
 1. Make your code changes
 2. Run the appropriate formatting command based on file types modified
-3. **ALWAYS run `make fix-trailing-whitespace` before committing or ending any task**
+3. **ALWAYS run `make fix-trailing-whitespace` before committing or ending any
+   task**
 4. Verify formatting with check commands if needed
 5. **Verify commit message does not include Claude as co-author**
 6. **Verify commit message contains no emojis and follows 80-character wrap**
