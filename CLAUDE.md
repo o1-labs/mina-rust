@@ -125,11 +125,42 @@ Each component directory contains a `summary.md` file documenting:
 - Implementation notes
 - Refactoring plans
 
+## Documentation Website
+
+OpenMina includes a comprehensive documentation website built with Docusaurus:
+
+### Quick Access
+```bash
+# Start local documentation server
+make docs-serve
+
+# Build documentation
+make docs-build
+
+# Other documentation commands
+make help | grep docs
+```
+
+The website is available at http://localhost:3000 when running locally.
+
+### Structure
+- **Node Runners** (`website/docs/node-runners/`) - Installation and operation guides
+- **Developers** (`website/docs/developers/`) - Architecture and contribution guides
+- **Researchers** (`website/docs/researchers/`) - Protocol and cryptography documentation
+
+### Adding Documentation
+1. Create markdown files in the appropriate `website/docs/` subdirectory
+2. Add frontmatter with title, description, and sidebar position
+3. Update `website/sidebars.ts` if needed for navigation
+
+The website supports versioning and will be automatically deployed when commits are made to `develop` or when tags are created.
+
 ## Additional Resources
 
 - `docs/handover/` - Comprehensive architecture documentation
 - `ARCHITECTURE.md` - Migration guide for old vs new style
 - Component-specific `summary.md` files throughout the codebase
+- `website/` - Docusaurus documentation website
 
 ## Claude Development Guidelines
 
