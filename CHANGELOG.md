@@ -13,6 +13,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1236](https://github.com/o1-labs/openmina/pull/1236), fix
   [#1158](https://github.com/o1-labs/openmina/issues/1158))
 
+### Added
+
+- **Documentation**: Complete Docusaurus-based documentation website with
+  comprehensive guides for node runners, developers, and researchers
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234)). It migrates all the
+  documentation from `docs` to `website/docs`. It includes SEO metadata and
+  social media integration.
+- **Documentation**: Developer getting-started guide with automated setup
+  scripts for system dependencies, Rust toolchain, Node.js, Docker, and WASM
+  tools. This is run nightly and on-demand via PR labels to avoid blocking
+  development workflow. ([#1234](https://github.com/o1-labs/openmina/pull/1234)).
+- **Development Tools**: Enhanced formatting infrastructure with MDX file
+  support and trailing whitespace management
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+
+### Changed
+
+- **Build System**: Enhanced Makefile with documentation-related targets and comprehensive formatting commands ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+
+### Fixed
+
+- **Documentation**: Resolved broken links and bare URL warnings in Rust
+  documentation ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Build System**: Fixed SQLx compilation errors in lint workflow
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Formatting**: Standardized markdown and MDX files to 80-character line
+  wrapping ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+
 ### Dependencies
 
 - bump proc-macro2 from 1.0.93 to 1.0.95
