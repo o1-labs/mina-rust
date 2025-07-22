@@ -25,8 +25,12 @@ const config: Config = {
   organizationName: 'o1-labs', // Usually your GitHub org/user name.
   projectName: 'openmina', // Usually your repo name.
 
-  onBrokenLinks: 'warn', // Temporarily set to warn while we fix broken links
-  onBrokenMarkdownLinks: 'warn',
+  onBrokenLinks: 'throw', // Throw error on broken links to enforce link integrity
+  onBrokenMarkdownLinks: 'throw',
+  onBrokenAnchors: 'warn',
+
+  // Static directories for assets
+  staticDirectories: ['static'],
 
   // Even if you don't use internationalization, you can use this field to set
   // useful metadata like html lang. For example, if your site is Chinese, you
@@ -108,7 +112,7 @@ const config: Config = {
           label: 'Researchers',
         },
         {
-          href: '/api-docs/',
+          href: 'https://o1-labs.github.io/openmina/api-docs/',
           label: 'API Docs',
           position: 'left',
         },
@@ -144,7 +148,7 @@ const config: Config = {
             },
             {
               label: 'API Documentation',
-              to: '/api-docs/',
+              href: 'https://o1-labs.github.io/openmina/api-docs/',
             },
           ],
         },
