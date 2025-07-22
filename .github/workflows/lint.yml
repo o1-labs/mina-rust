@@ -18,15 +18,22 @@ jobs:
       - name: Setup build dependencies
         run: |
           sudo apt update || true
-          sudo apt install -y protobuf-compiler || true
+          sudo apt install -y protobuf-compiler sqlite3 || true
+      - name: Setup SQLite database for SQLx
+        run: |
+          sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: ${{ matrix.toolchain }}
           components: clippy, rustfmt
       - name: Run make check
         run: make check
+        env:
+          DATABASE_URL: "sqlite:///tmp/heartbeats.db"
       - name: Run make lint
         run: make lint
+        env:
+          DATABASE_URL: "sqlite:///tmp/heartbeats.db"
 
   lint-tx-fuzzing:
     name: Lint transaction Fuzzing - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
