@@ -11,7 +11,7 @@
 [![Changelog][changelog-badge]][changelog] [![Apache licensed]][Apache link]
 
 _The **Open Mina Node** is a fast and secure implementation of the Mina protocol
-in **Rust**._  
+in **Rust**._
 _Currently in **public beta**, join our
 [Discord community](https://discord.com/channels/484437221055922177/1290662938734231552)
 to help test future releases._

@@ -1,46 +1,57 @@
 ---
 sidebar_position: 1
 title: Protocol Overview
-description: Understanding the Mina Protocol and OpenMina's implementation approach
+description:
+  Understanding the Mina Protocol and OpenMina's implementation approach
 slug: /researchers/protocol
 ---
 
 # Mina Protocol Overview
 
-OpenMina implements the Mina Protocol, a lightweight blockchain that uses zero-knowledge proofs to maintain a constant-sized blockchain regardless of transaction history.
+OpenMina implements the Mina Protocol, a lightweight blockchain that uses
+zero-knowledge proofs to maintain a constant-sized blockchain regardless of
+transaction history.
 
 ## Key Innovation: Succinct Blockchain
 
-Mina is unique in that the entire blockchain can be verified using a single, constant-sized cryptographic proof. This enables:
+Mina is unique in that the entire blockchain can be verified using a single,
+constant-sized cryptographic proof. This enables:
 
-- **Constant Size**: The blockchain is always ~22KB, regardless of transaction history
-- **Full Verification**: Anyone can verify the entire chain without downloading historical data
+- **Constant Size**: The blockchain is always ~22KB, regardless of transaction
+  history
+- **Full Verification**: Anyone can verify the entire chain without downloading
+  historical data
 - **Decentralization**: Lower resource requirements enable broader participation
 
 ## Core Components
 
 ### Consensus Algorithm
 
-Mina uses **Ouroboros Samasika**, a variant of Ouroboros Praos adapted for succinct blockchains:
+Mina uses **Ouroboros Samasika**, a variant of Ouroboros Praos adapted for
+succinct blockchains:
 
 - **Proof-of-Stake**: Validators are chosen based on their stake
-- **VRF-based Selection**: Verifiable Random Functions ensure fair validator selection
+- **VRF-based Selection**: Verifiable Random Functions ensure fair validator
+  selection
 - **Finality**: Probabilistic finality with high confidence after several blocks
 
 ### Zero-Knowledge Proofs
 
-The protocol relies heavily on **zk-SNARKs** (Zero-Knowledge Succinct Non-interactive Arguments of Knowledge):
+The protocol relies heavily on **zk-SNARKs** (Zero-Knowledge Succinct
+Non-interactive Arguments of Knowledge):
 
 - **Transaction Validity**: Proofs that transactions are properly formed
 - **State Transitions**: Proofs that state changes follow protocol rules
-- **Blockchain Compression**: Recursive proofs that compress the entire chain history
+- **Blockchain Compression**: Recursive proofs that compress the entire chain
+  history
 
 ### Account Model
 
 Mina uses an account-based model rather than UTXO:
 
 - **Account State**: Each account has a balance, nonce, and other metadata
-- **Merkle Trees**: Account state is organized in Merkle trees for efficient proofs
+- **Merkle Trees**: Account state is organized in Merkle trees for efficient
+  proofs
 - **State Transitions**: Updates to account state require valid proofs
 
 ## OpenMina's Implementation
@@ -82,4 +93,5 @@ Active areas of protocol research and development:
 - [Scan State](scan-state) - Understanding Mina's parallel scan state
 - [SNARK Work](snark-work) - How proof generation is distributed
 
-For the latest protocol specifications and research papers, visit the official Mina Protocol documentation.
+For the latest protocol specifications and research papers, visit the official
+Mina Protocol documentation.

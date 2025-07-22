@@ -6,12 +6,14 @@ your operating system, follow these steps:
 ## Setup Option 1: Download Docker Compose Files from the Release
 
 1. **Download the Docker Compose files:**
+
    - Go to the [Releases page](https://github.com/openmina/openmina/releases) of
      this repository.
    - Download the latest `openmina-vX.Y.Z-docker-compose.zip` (or `.tar.gz`)
      file corresponding to the release version (available since v0.8.0).
 
 2. **Extract the files:**
+
    - Unzip or untar the downloaded file:
      ```bash
      unzip openmina-vX.Y.Z-docker-compose.zip

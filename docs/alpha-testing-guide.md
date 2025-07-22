@@ -13,6 +13,7 @@ Ensure you have **Docker** installed:
 ## 2. Download & Start the Node
 
 1. **Download the Latest Release**:
+
    - Visit the
      [Open Mina Releases](https://github.com/openmina/openmina/releases).
    - Download the latest `openmina-vX.Y.Z-docker-compose.zip`.

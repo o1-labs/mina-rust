@@ -1,7 +1,9 @@
 ---
 sidebar_position: 2
 title: SNARK Work
-description: Understanding how SNARK proofs are generated, committed, and distributed in the OpenMina network
+description:
+  Understanding how SNARK proofs are generated, committed, and distributed in
+  the OpenMina network
 ---
 
 # SNARK Work

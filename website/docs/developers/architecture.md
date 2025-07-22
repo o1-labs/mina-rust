@@ -1,13 +1,17 @@
 ---
 sidebar_position: 1
 title: Architecture Overview
-description: Understand OpenMina's Redux-style state machine architecture and design principles
+description:
+  Understand OpenMina's Redux-style state machine architecture and design
+  principles
 slug: /developers/architecture
 ---
 
 # OpenMina Architecture
 
-OpenMina follows a Redux-style state machine architecture for predictable, debuggable behavior. This design ensures that all state changes are traceable and the system behavior is deterministic.
+OpenMina follows a Redux-style state machine architecture for predictable,
+debuggable behavior. This design ensures that all state changes are traceable
+and the system behavior is deterministic.
 
 ## Core Principles
 
@@ -15,7 +19,8 @@ OpenMina follows a Redux-style state machine architecture for predictable, debug
 
 OpenMina implements Redux principles adapted for a blockchain node:
 
-- **State** - Centralized, immutable data structure representing the entire node state
+- **State** - Centralized, immutable data structure representing the entire node
+  state
 - **Actions** - Events that trigger state changes throughout the system
 - **Enabling Conditions** - Guards that prevent invalid state transitions
 - **Reducers** - Pure functions that update state and dispatch new actions
@@ -34,7 +39,7 @@ dispatch(SomeAction { data });
 if enabling_condition_met(&state, &action) {
     // 3. Reducer processes the action
     let new_state = reducer(state, action);
-    
+
     // 4. Effects may be triggered
     trigger_effects(&new_state, &action);
 }
@@ -45,11 +50,13 @@ if enabling_condition_met(&state, &action) {
 The codebase contains two architectural styles:
 
 ### New Style (Recommended)
+
 - **Unified reducers** that handle both state updates and action dispatch
 - Single file per component containing all logic
 - Cleaner separation of concerns
 
 ### Old Style (Being Migrated)
+
 - Separate reducer and effects files
 - Split between `*_reducer.rs` and `*_effects.rs`
 - Gradually being converted to new style
@@ -59,22 +66,26 @@ The codebase contains two architectural styles:
 ### Core Components
 
 **Node** - Main node logic
+
 - Block production and validation
 - Transaction pool management
 - Consensus and blockchain state
 - RPC interface
 
 **P2P** - Networking layer
+
 - Dual transport: libp2p and WebRTC
 - Peer discovery and connection management
 - Message routing and validation
 
 **Ledger** - Blockchain state
+
 - Account state and transactions
 - Proof verification
 - Scan state management
 
 **Core** - Shared utilities
+
 - Common types and data structures
 - Cryptographic primitives
 - Configuration management
@@ -96,13 +107,14 @@ Each component follows consistent patterns:
 2. **Actions** flow through the dispatch system
 3. **Enabling Conditions** validate whether actions can be processed
 4. **Reducers** compute new state based on current state and action
-5. **Effects** trigger service calls when state changes require external interaction
+5. **Effects** trigger service calls when state changes require external
+   interaction
 6. **Services** handle async operations and generate new events
 
 ## Key Benefits
 
 - **Debuggability** - Complete state history and action replay
-- **Testability** - Pure functions and predictable state changes  
+- **Testability** - Pure functions and predictable state changes
 - **Maintainability** - Clear separation of concerns and data flow
 - **Performance** - Efficient state updates and selective processing
 
@@ -113,4 +125,5 @@ Each component follows consistent patterns:
 - Prefer enabling conditions over error handling in reducers
 - Document component responsibilities in `summary.md` files
 
-For detailed implementation examples, see the component-specific documentation in the codebase.
+For detailed implementation examples, see the component-specific documentation
+in the codebase.

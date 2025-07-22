@@ -91,6 +91,11 @@ const config: Config = {
           label: 'Researchers',
         },
         {
+          href: '/api-docs/',
+          label: 'API Docs',
+          position: 'left',
+        },
+        {
           type: 'docsVersionDropdown',
           position: 'right',
           dropdownActiveClassDisabled: true,
@@ -119,6 +124,10 @@ const config: Config = {
             {
               label: 'Researchers',
               to: '/docs/researchers/protocol',
+            },
+            {
+              label: 'API Documentation',
+              to: '/api-docs/',
             },
           ],
         },
