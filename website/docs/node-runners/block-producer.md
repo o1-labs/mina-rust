@@ -27,7 +27,7 @@ Ensure Docker and Docker Compose are installed on your system -
 
 2. **Prepare Your Keys**
 
-   [Docker Compose](../docker-compose.block-producer.yml) references
+   [Docker Compose](../../docker-compose.block-producer.yml) references
    `openmina-workdir`. It stores a private key and logs for block production.
    Place your block producer's private key into the `openmina-workdir` directory
    and name it `producer-key`:

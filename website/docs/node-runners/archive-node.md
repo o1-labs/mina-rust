@@ -66,7 +66,7 @@ The compose file sets up a PG database, the archiver process and the openmina
 node. The archiver process is responsible for storing the blocks in the database
 by receiving the blocks from the openmina node.
 
-See [docker-compose.archive.devnet.yml](../docker-compose.archive.devnet.yml)
+See [docker-compose.archive.devnet.yml](../../docker-compose.archive.devnet.yml)
 for more details.
 
 ### Starting the setup
