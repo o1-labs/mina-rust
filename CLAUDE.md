@@ -130,6 +130,7 @@ Each component directory contains a `summary.md` file documenting:
 OpenMina includes a comprehensive documentation website built with Docusaurus:
 
 ### Quick Access
+
 ```bash
 # Start local documentation server
 make docs-serve
@@ -144,16 +145,22 @@ make help | grep docs
 The website is available at http://localhost:3000 when running locally.
 
 ### Structure
-- **Node Runners** (`website/docs/node-runners/`) - Installation and operation guides
-- **Developers** (`website/docs/developers/`) - Architecture and contribution guides
-- **Researchers** (`website/docs/researchers/`) - Protocol and cryptography documentation
+
+- **Node Runners** (`website/docs/node-runners/`) - Installation and operation
+  guides
+- **Developers** (`website/docs/developers/`) - Architecture and contribution
+  guides
+- **Researchers** (`website/docs/researchers/`) - Protocol and cryptography
+  documentation
 
 ### Adding Documentation
+
 1. Create markdown files in the appropriate `website/docs/` subdirectory
 2. Add frontmatter with title, description, and sidebar position
 3. Update `website/sidebars.ts` if needed for navigation
 
-The website supports versioning and will be automatically deployed when commits are made to `develop` or when tags are created.
+The website supports versioning and will be automatically deployed when commits
+are made to `develop` or when tags are created.
 
 ## Additional Resources
 
@@ -203,7 +210,16 @@ referencing Claude.
 
 1. Make your code changes
 2. Run the appropriate formatting command based on file types modified
-3. Verify formatting with check commands if needed
-4. **Verify commit message does not include Claude as co-author**
-5. **Verify commit message contains no emojis and follows 80-character wrap**
-6. Proceed with testing or committing changes
+3. **ALWAYS run `make fix-trailing-whitespace` before committing or ending any task**
+4. Verify formatting with check commands if needed
+5. **Verify commit message does not include Claude as co-author**
+6. **Verify commit message contains no emojis and follows 80-character wrap**
+7. Proceed with testing or committing changes
+
+### Critical Pre-Commit Requirements
+
+- **MANDATORY**: Run `make fix-trailing-whitespace` before every commit
+- **MANDATORY**: Run `make check-trailing-whitespace` to verify no trailing
+  whitespaces remain
+- This applies to ALL file modifications, regardless of file type
+- Trailing whitespaces are strictly prohibited in the codebase

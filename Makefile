@@ -89,6 +89,48 @@ check-md: ## Check if markdown files are properly formatted
 	npx prettier --check "**/*.md"
 	@echo "Markdown format check completed."
 
+.PHONY: fix-trailing-whitespace
+fix-trailing-whitespace: ## Remove trailing whitespaces from all files
+	@echo "Removing trailing whitespaces from all files..."
+	@find . -type f \( \
+		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
+		-not -path "./target/*" \
+		-not -path "./node_modules/*" \
+		-not -path "./website/node_modules/*" \
+		-not -path "./website/build/*" \
+		-not -path "./website/static/api-docs/*" \
+		-not -path "./website/.docusaurus/*" \
+		-not -path "./.git/*" \
+		-exec sed -i 's/[[:space:]]*$$//' {} + && \
+		echo "Trailing whitespaces removed."
+
+.PHONY: check-trailing-whitespace
+check-trailing-whitespace: ## Check for trailing whitespaces in source files
+	@echo "Checking for trailing whitespaces..."
+	@files_with_trailing_ws=$$(find . -type f \( \
+		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
+		-not -path "./target/*" \
+		-not -path "./node_modules/*" \
+		-not -path "./website/node_modules/*" \
+		-not -path "./website/build/*" \
+		-not -path "./website/static/api-docs/*" \
+		-not -path "./website/.docusaurus/*" \
+		-not -path "./.git/*" \
+		-exec grep -l '[[:space:]]$$' {} + 2>/dev/null || true); \
+	if [ -n "$$files_with_trailing_ws" ]; then \
+		echo "❌ Files with trailing whitespaces found:"; \
+		echo "$$files_with_trailing_ws" | sed 's/^/  /'; \
+		echo ""; \
+		echo "Run 'make fix-trailing-whitespace' to fix automatically."; \
+		exit 1; \
+	else \
+		echo "✅ No trailing whitespaces found."; \
+	fi
+
 .PHONY: clean
 clean: ## Clean build artifacts
 	cargo clean
