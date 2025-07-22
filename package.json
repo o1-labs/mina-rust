@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Prettier configuration for markdown formatting",
   "scripts": {
-    "format:md": "prettier --write \"**/*.md\"",
-    "check:md": "prettier --check \"**/*.md\""
+    "format:md": "prettier --write \"**/*.md\" \"**/*.mdx\"",
+    "check:md": "prettier --check \"**/*.md\" \"**/*.mdx\""
   },
   "devDependencies": {
     "prettier": "^3.0.0"

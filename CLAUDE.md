@@ -178,10 +178,11 @@ project.
 
 After making any code modifications, run the appropriate formatting commands:
 
-#### Markdown Files
+#### Markdown and MDX Files
 
-- **Format**: Run `make format-md` after modifying any markdown files
-- **Check**: Run `make check-md` to verify markdown files are formatted
+- **Format**: Run `make format-md` after modifying any markdown (.md) or MDX
+  (.mdx) files
+- **Check**: Run `make check-md` to verify markdown and MDX files are formatted
   correctly
 
 #### Rust and TOML Files

@@ -84,10 +84,10 @@ check-format: ## Check code formatting
 	taplo format --check
 
 .PHONY: check-md
-check-md: ## Check if markdown files are properly formatted
-	@echo "Checking markdown formatting..."
-	npx prettier --check "**/*.md"
-	@echo "Markdown format check completed."
+check-md: ## Check if markdown and MDX files are properly formatted
+	@echo "Checking markdown and MDX formatting..."
+	npx prettier --check "**/*.md" "**/*.mdx"
+	@echo "Markdown and MDX format check completed."
 
 .PHONY: fix-trailing-whitespace
 fix-trailing-whitespace: ## Remove trailing whitespaces from all files
@@ -150,10 +150,10 @@ format: ## Format code using rustfmt and taplo
 	taplo format
 
 .PHONY: format-md
-format-md: ## Format all markdown files to wrap at 80 characters
-	@echo "Formatting markdown files..."
-	npx prettier --write "**/*.md"
-	@echo "Markdown files have been formatted to 80 characters."
+format-md: ## Format all markdown and MDX files to wrap at 80 characters
+	@echo "Formatting markdown and MDX files..."
+	npx prettier --write "**/*.md" "**/*.mdx"
+	@echo "Markdown and MDX files have been formatted to 80 characters."
 
 .PHONY: lint
 lint: ## Run linter (clippy)
