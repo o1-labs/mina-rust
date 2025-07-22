@@ -259,3 +259,33 @@ postgres-setup: ## Set up PostgreSQL database for archive node
 	@sudo -u postgres psql -c "ALTER USER $(PG_USER) PASSWORD '$(PG_PW)'" 2>/dev/null || true
 	@sudo -u postgres createdb -O $(PG_USER) $(PG_DB) 2>/dev/null || true
 	@sudo -u postgres createdb -O $(PG_USER) $(PG_USER) 2>/dev/null || true
+
+# Documentation targets
+.PHONY: docs-install
+docs-install: ## Install documentation dependencies
+	@echo "Installing documentation dependencies..."
+	@cd website && npm install
+
+.PHONY: docs-build
+docs-build: docs-install ## Build the documentation website
+	@echo "Building documentation website..."
+	@cd website && npm run build
+	@echo "Documentation built successfully!"
+	@echo "Built files are in website/build/"
+
+.PHONY: docs-serve
+docs-serve: docs-install ## Serve the documentation website locally
+	@echo "Starting documentation server..."
+	@echo "Documentation will be available at: http://localhost:3000"
+	@cd website && npm start
+
+.PHONY: docs-build-serve
+docs-build-serve: docs-build ## Build and serve the documentation website locally
+	@echo "Serving built documentation at: http://localhost:3000"
+	@cd website && npm run serve
+
+.PHONY: docs-clean
+docs-clean: ## Clean documentation build artifacts
+	@echo "Cleaning documentation build artifacts..."
+	@rm -rf website/build website/.docusaurus
+	@echo "Documentation artifacts cleaned!"

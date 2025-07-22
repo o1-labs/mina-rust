@@ -11,3 +11,6 @@ pkg/
 # Outputs of build-tests-webrtc
 cargo-build-test.json
 tests.tsv
+
+# Generated API docs should not be committed
+website/static/api-docs/
