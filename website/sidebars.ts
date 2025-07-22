@@ -62,6 +62,13 @@ const sidebars: SidebarsConfig = {
   developersSidebar: [
     {
       type: 'category',
+      label: 'Getting Started',
+      items: [
+        'developers/getting-started',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Architecture',
       items: [
         'developers/architecture',

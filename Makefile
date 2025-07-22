@@ -303,6 +303,7 @@ postgres-setup: ## Set up PostgreSQL database for archive node
 	@sudo -u postgres createdb -O $(PG_USER) $(PG_USER) 2>/dev/null || true
 
 # Documentation targets
+
 .PHONY: docs-install
 docs-install: ## Install documentation dependencies
 	@echo "Installing documentation dependencies..."

@@ -1,0 +1,100 @@
+name: Test Documentation Scripts
+
+# This workflow tests the documentation setup scripts to ensure they work correctly.
+# It runs nightly and on-demand to avoid slowing down regular development workflow,
+# since documentation builds can take a long time to complete.
+on:
+  pull_request:
+    types: [labeled]
+    # Only runs when 'test-doc-scripts' label is added to a PR
+  schedule:
+    # Run nightly to catch environment drift and ensure scripts stay functional
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+
+jobs:
+  test-system-setup:
+    name: Test System Setup Scripts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test system dependencies installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-system-deps.sh
+
+      - name: Test Node.js installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-nodejs.sh
+
+      - name: Test Rust installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-rust.sh
+
+      - name: Test WASM tools installation
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/install-wasm-tools.sh
+
+      - name: Test specialised builds
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/build-specialized.sh
+
+      - name: Test format and lint
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/format-and-lint.sh
+
+      - name: Test run tests
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/run-tests.sh
+
+      - name: Verify installations
+        run: |
+          echo "Verifying installed tools..."
+          source ~/.cargo/env
+          rustc --version
+          cargo --version
+          node --version
+          npm --version
+          protoc --version
+          sqlite3 --version
+          wasm-pack --version
+
+  test-docker-setup:
+    name: Test Docker Setup Script (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Test Docker installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-docker.sh
+
+      - name: Verify Docker installation
+        run: |
+          sudo docker --version
+          sudo docker run hello-world
