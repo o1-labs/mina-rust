@@ -748,7 +748,7 @@ impl LedgerCtx {
 
             let coinbase_receiver_id = AccountId::new(coinbase_receiver, TokenId::default());
 
-            // https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L78
+            // <https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L78>
             let (accessed, not_accessed): (BTreeSet<_>, BTreeSet<_>) = block
                 .body()
                 .tranasctions_with_status()
@@ -771,7 +771,7 @@ impl LedgerCtx {
             // Note: If for whatever reason the network has set the coinbase amount to zero,
             // to mimic the behavior of the ocaml node, we still include the coinbase receiver
             // in the accessed accounts as a coinbase transaction is created regardless of the coinbase amount.
-            // https://github.com/MinaProtocol/mina/blob/b595a2bf00ae138d745737da628bd94bb2bd91e2/src/lib/staged_ledger/pre_diff_info.ml#L139
+            // <https://github.com/MinaProtocol/mina/blob/b595a2bf00ae138d745737da628bd94bb2bd91e2/src/lib/staged_ledger/pre_diff_info.ml#L139>
             let has_coinbase = block.body().has_coinbase();
 
             if has_coinbase {
@@ -815,7 +815,7 @@ impl LedgerCtx {
                 .collect();
 
             // A token is used regardless of txn status
-            // https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L114
+            // <https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L114>
             let all_account_ids: BTreeSet<_> = account_ids_accessed
                 .union(&account_ids_not_accessed)
                 .collect();
@@ -1188,7 +1188,7 @@ impl LedgerCtx {
             .map_err(|err| format!("{err:?}"))?;
 
         // TODO(binier): maybe here, check if block reward is above threshold.
-        // https://github.com/minaprotocol/mina/blob/b3d418a8c0ae4370738886c2b26f0ec7bdb49303/src/lib/block_producer/block_producer.ml#L222
+        // <https://github.com/minaprotocol/mina/blob/b3d418a8c0ae4370738886c2b26f0ec7bdb49303/src/lib/block_producer/block_producer.ml#L222>
 
         let pred_body_hash = pred_block
             .header()
@@ -1573,7 +1573,7 @@ fn dump_reconstruct_to_file(
 
 /// Save staged ledger and block to file, when the application fail.
 /// So we can easily reproduce the application both in Rust and OCaml, to compare them.
-/// - https://github.com/openmina/openmina/blob/8e68037aafddd43842a54c8439baeafee4c6e1eb/ledger/src/staged_ledger/staged_ledger.rs#L5959
+/// - <https://github.com/openmina/openmina/blob/8e68037aafddd43842a54c8439baeafee4c6e1eb/ledger/src/staged_ledger/staged_ledger.rs#L5959>
 /// - TODO: Find OCaml link, I remember having the same test in OCaml but I can't find where
 fn dump_application_to_file(
     staged_ledger: &StagedLedger,

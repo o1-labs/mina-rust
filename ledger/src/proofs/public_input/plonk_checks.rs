@@ -158,7 +158,7 @@ impl<F> Shift<F>
 where
     F: Field + From<i32>,
 {
-    /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L121
+    /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L121>
     pub fn create() -> Self {
         let c = (0..255).fold(F::one(), |accum, _| accum + accum) + F::one();
 
@@ -204,26 +204,26 @@ where
         Self { shifted: field }
     }
 
-    // /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L127
+    // /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L127>
     // pub fn of_field(field: F, shift: &Shift<F>) -> Self {
     //     Self {
     //         shifted: (field - shift.c) * shift.scale,
     //     }
     // }
 
-    // /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L131
+    // /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L131>
     // #[allow(unused)]
     // pub fn to_field(&self, shift: &Shift<F>) -> F {
     //     self.shifted + self.shifted + shift.c
     // }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L218
+/// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L218>
 pub const PERM_ALPHA0: usize = 21;
 
 pub const NPOWERS_OF_ALPHA: usize = PERM_ALPHA0 + 3;
 
-/// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L141
+/// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L141>
 pub fn powers_of_alpha<F: FieldWitness>(alpha: F) -> Box<[F; NPOWERS_OF_ALPHA]> {
     // The OCaml code computes until alpha^71, but we don't need that much here
     let mut alphas = Box::new([F::one(); NPOWERS_OF_ALPHA]);
@@ -258,7 +258,7 @@ pub fn derive_plonk<F: FieldWitness, const NLIMB: usize>(
     let beta = *beta;
     let gamma = *gamma;
 
-    // https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L397
+    // <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L397>
     let perm = evals.s.iter().enumerate().fold(
         evals.z.zeta_omega * beta * alpha_pow(PERM_ALPHA0) * zkp,
         |accum, (index, elem)| accum * (gamma + (beta * elem.zeta) + w0[index]),
@@ -318,7 +318,7 @@ pub fn derive_plonk_checked<F: FieldWitness>(
     let perm = -perm;
 
     let zeta_to_domain_size = env.zeta_to_n_minus_1 + F::one();
-    // https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L46
+    // <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L46>
 
     // let minimal_for_scalar = MinimalForScalar {
     //     alpha: minimal.alpha,
@@ -783,7 +783,7 @@ mod scalars {
             cache! {
                 Terms::<F>, {
                     // No features for `Fp`:
-                    // https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs
+                    // <https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs>
                     let is_fp = std::any::TypeId::of::<F>() == std::any::TypeId::of::<Fp>();
 
                     let features = if is_fp {

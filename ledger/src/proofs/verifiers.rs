@@ -336,18 +336,18 @@ fn make_verifier_index(index: VerifierIndex<Fq>) -> VerifierIndex<Fq> {
         },
     };
 
-    // https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L310-L314
+    // <https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L310-L314>
     let srs = {
         let mut srs = SRS::create(max_poly_size);
         srs.add_lagrange_basis(domain);
         Arc::new(srs)
     };
 
-    // https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L319
+    // <https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L319>
     let permutation_vanishing_polynomial_m =
         permutation_vanishing_polynomial(domain, index.zk_rows);
 
-    // https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L324
+    // <https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L324>
     let w = zk_w(domain, index.zk_rows);
 
     VerifierIndex::<Fq> {
@@ -361,8 +361,8 @@ fn make_verifier_index(index: VerifierIndex<Fq>) -> VerifierIndex<Fq> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_verifier_index.rs#L213
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/common.ml#L16C1-L25C58
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_verifier_index.rs#L213>
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/common.ml#L16C1-L25C58>
 pub fn make_shifts(
     domain: &Radix2EvaluationDomain<Fq>,
 ) -> kimchi::circuits::polynomials::permutation::Shifts<Fq> {
@@ -371,7 +371,7 @@ pub fn make_shifts(
     kimchi::circuits::polynomials::permutation::Shifts::new(domain)
 }
 
-// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/common.ml#L27
+// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/common.ml#L27>
 pub fn wrap_domains(proofs_verified: usize) -> Domains {
     let h = match proofs_verified {
         0 => 13,
@@ -385,7 +385,7 @@ pub fn wrap_domains(proofs_verified: usize) -> Domains {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/side_loaded_verification_key.ml#L206
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/side_loaded_verification_key.ml#L206>
 pub fn make_zkapp_verifier_index(vk: &VerificationKey) -> VerifierIndex<Fq> {
     let d = wrap_domains(vk.actual_wrap_domain_size.to_int());
     let log2_size = d.h.log2_size();
@@ -430,11 +430,11 @@ pub fn make_zkapp_verifier_index(vk: &VerificationKey) -> VerifierIndex<Fq> {
 
     let shift = make_shifts(&domain);
 
-    // https://github.com/MinaProtocol/mina/blob/047375688f93546d4bdd58c75674394e3faae1f4/src/lib/pickles/side_loaded_verification_key.ml#L232
+    // <https://github.com/MinaProtocol/mina/blob/047375688f93546d4bdd58c75674394e3faae1f4/src/lib/pickles/side_loaded_verification_key.ml#L232>
     let zk_rows = 3;
 
     // Note: Verifier index is converted from OCaml here:
-    // https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_verifier_index.rs#L58
+    // <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_verifier_index.rs#L58>
 
     VerifierIndex::<Fq> {
         domain,

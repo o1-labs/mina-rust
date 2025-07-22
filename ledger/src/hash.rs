@@ -65,7 +65,7 @@ where
     T: currency::Magnitude,
     T: ToInputs,
 {
-    /// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/currency/currency.ml#L453
+    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/currency/currency.ml#L453>
     fn to_inputs(&self, inputs: &mut Inputs) {
         self.magnitude.to_inputs(inputs);
         let sgn = matches!(self.sgn, currency::Sgn::Pos);

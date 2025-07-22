@@ -72,7 +72,7 @@ impl Ledger {
     /// cached without reconstructing it (which is expensive).
     /// Note that the name contains some constants - the purpose of this
     /// is to invalidate all caches when these constants change.
-    /// See: https://github.com/MinaProtocol/mina/blob/develop/src/lib/genesis_ledger_helper/genesis_ledger_helper.ml#L105
+    /// See: <https://github.com/MinaProtocol/mina/blob/develop/src/lib/genesis_ledger_helper/genesis_ledger_helper.ml#L105>
     pub fn ledger_name(&self) -> String {
         self.hash.clone().unwrap_or_else(|| {
             build_ledger_name(

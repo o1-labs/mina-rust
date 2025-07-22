@@ -128,7 +128,7 @@ impl ToFieldElements<Fp> for SnarkTransition {
         blockchain_state.to_field_elements(fields);
         fields.push(Fp::from(consensus_transition.as_u32()));
 
-        // https://github.com/MinaProtocol/mina/blob/f6fb903bef974b191776f393a2f9a1e6360750fe/src/lib/mina_base/pending_coinbase.ml#L420
+        // <https://github.com/MinaProtocol/mina/blob/f6fb903bef974b191776f393a2f9a1e6360750fe/src/lib/mina_base/pending_coinbase.ml#L420>
         use crate::scan_state::pending_coinbase::update::Action::*;
         let bits = match action {
             None => [Boolean::False, Boolean::False],
@@ -1569,7 +1569,7 @@ impl ProtocolStateBody {
         let ned = &cs.next_epoch_data;
 
         ProtocolStateView {
-            // https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/blockchain_state.ml#L58
+            // <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/blockchain_state.ml#L58>
             //
             snarked_ledger_hash: blockchain_state
                 .ledger_proof_statement

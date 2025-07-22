@@ -218,7 +218,7 @@ pub mod group {
             }
 
             // I don't take responsibility for this code, see OCaml comments
-            // https://github.com/MinaProtocol/mina/blob/78535ae3a73e0e90c5f66155365a934a15535779/src/lib/mina_base/zkapp_command.ml#L1590
+            // <https://github.com/MinaProtocol/mina/blob/78535ae3a73e0e90c5f66155365a934a15535779/src/lib/mina_base/zkapp_command.ml#L1590>
             match (zkapp_commands, stmtss) {
                 ([] | [[]], [ _ ]) => {
                     // eprintln!("GROUP 1");
@@ -1491,7 +1491,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                                     zeta: v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge {
                                         inner: to_padded(plonk.zeta),
                                     },
-                                    // https://github.com/MinaProtocol/mina/blob/dc6bf78b8ddbbca3a1a248971b76af1514bf05aa/src/lib/pickles/composition_types/composition_types.ml#L200-L202
+                                    // <https://github.com/MinaProtocol/mina/blob/dc6bf78b8ddbbca3a1a248971b76af1514bf05aa/src/lib/pickles/composition_types/composition_types.ml#L200-L202>
                                     joint_combiner: plonk.lookup.map(|joint_combiner| {
                                         v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge {
                                             inner: to_padded(joint_combiner),

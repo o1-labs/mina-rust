@@ -113,7 +113,7 @@ where
         matches!(self.sgn, Sgn::Pos)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/42d2005d04b59d14aacf4eef5ccee353e9a531b7/src/lib/transaction_logic/mina_transaction_logic.ml#L1615
+    /// <https://github.com/MinaProtocol/mina/blob/42d2005d04b59d14aacf4eef5ccee353e9a531b7/src/lib/transaction_logic/mina_transaction_logic.ml#L1615>
     pub fn is_non_neg(&self) -> bool {
         matches!(self.sgn, Sgn::Pos)
     }
@@ -122,7 +122,7 @@ where
         matches!(self.sgn, Sgn::Neg)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/currency/currency.ml#L441
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/currency/currency.ml#L441>
     pub fn zero() -> Self {
         Self {
             magnitude: T::zero(),
@@ -134,7 +134,7 @@ where
         self.magnitude.is_zero() //&& matches!(self.sgn, Sgn::Pos)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/currency/currency.ml#L460
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/currency/currency.ml#L460>
     pub fn add(&self, rhs: &Self) -> Option<Self> {
         let (magnitude, sgn) = if self.sgn == rhs.sgn {
             let magnitude = self.magnitude.checked_add(&rhs.magnitude)?;
@@ -469,7 +469,7 @@ macro_rules! impl_number {
                 Self(value)
             }
 
-            /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/currency/currency.ml#L379
+            /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/currency/currency.ml#L379>
             pub const fn scale(&self, n: $inner) -> Option<Self> {
                 match self.0.checked_mul(n) {
                     Some(n) => Some(Self(n)),
@@ -485,7 +485,7 @@ macro_rules! impl_number {
                 <Self as MinMax>::max()
             }
 
-            /// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/currency/currency.ml#L124
+            /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/currency/currency.ml#L124>
             pub fn of_mina_string_exn(input: &str) -> Self {
                 const PRECISION: usize = 9;
 

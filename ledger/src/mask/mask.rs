@@ -58,7 +58,7 @@ impl Drop for Mask {
         // There is a case where the parent does not have any pointer of us:
         // During transaction application, we don't call `register_mask`
         // In that case, the `remove_child_uuid` below has no effect
-        // https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L204
+        // <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L204>
 
         parent.remove_child_uuid(inner.get_uuid());
     }

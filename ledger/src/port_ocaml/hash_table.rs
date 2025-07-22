@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use super::hash::OCamlHash;
 
-/// https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml
+/// <https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml>
 pub struct HashTable<K, V> {
     /// Note: OCaml uses AVL trees, but we just need an ordered map
     table: Vec<BTreeMap<K, V>>,
@@ -79,7 +79,7 @@ impl<K: Ord + OCamlHash + Clone, V: Clone> HashTable<K, V> {
         }
     }
 
-    /// https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml#L450
+    /// <https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml#L450>
     pub fn update<F>(&mut self, key: K, fun: F)
     where
         F: FnOnce(Option<&V>) -> V,
@@ -90,7 +90,7 @@ impl<K: Ord + OCamlHash + Clone, V: Clone> HashTable<K, V> {
 }
 
 impl<K: Clone, V: Clone> HashTable<K, V> {
-    /// https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml#L259-L281
+    /// <https://github.com/janestreet/base/blob/v0.14/src/hashtbl.ml#L259-L281>
     pub fn to_alist(&self) -> Vec<(K, V)> {
         self.table
             .iter()

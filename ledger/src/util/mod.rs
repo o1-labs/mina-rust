@@ -54,7 +54,7 @@ pub fn gen_compressed() -> CompressedPubKey {
 
 /// Not sure if it's correct
 /// I used the same code as there:
-/// https://github.com/o1-labs/proof-systems/blob/226de4aeb11b8814327ab832e4fccdce5585f473/signer/src/pubkey.rs#L95-L106
+/// <https://github.com/o1-labs/proof-systems/blob/226de4aeb11b8814327ab832e4fccdce5585f473/signer/src/pubkey.rs#L95-L106>
 pub fn decompress_pk(pk: &CompressedPubKey) -> Option<PubKey> {
     let y_parity = pk.is_odd;
     let x = pk.x;

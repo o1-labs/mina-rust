@@ -1139,7 +1139,7 @@ impl From<&zkapp_command::Preconditions> for MinaBaseAccountUpdatePreconditionsS
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/verification_key_wire.ml#L37
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/verification_key_wire.ml#L37>
 fn of_vk(data: VerificationKey) -> VerificationKeyWire {
     VerificationKeyWire::new(data)
 }
@@ -1296,11 +1296,11 @@ impl TryFrom<&List<MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA>>
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        // https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_command.ml#L1113-L1115
+        // <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_command.ml#L1113-L1115>
 
         let call_forest = CallForest(values);
         // OCaml hashes the zkapp on deserialization:
-        // https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/mina_base/zkapp_command.ml#L805
+        // <https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/mina_base/zkapp_command.ml#L805>
         // But we delay hashing until we need the hashes
         // call_forest.of_wire(&[]);
         // call_forest.of_wire(value);

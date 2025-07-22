@@ -236,22 +236,22 @@ impl SparseLedger {
 impl LedgerIntf for SparseLedger {
     type Location = Address;
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L58
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L58>
     fn get(&self, addr: &Self::Location) -> Option<Box<Account>> {
         self.with(|this| this.get(addr))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L66
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L66>
     fn location_of_account(&self, account_id: &AccountId) -> Option<Self::Location> {
         self.with(|this| this.location_of_account(account_id))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L75
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L75>
     fn set(&mut self, addr: &Self::Location, account: Box<Account>) {
         self.with(|this| this.set(addr, account))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L96
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L96>
     fn get_or_create(
         &mut self,
         account_id: &AccountId,
@@ -259,22 +259,22 @@ impl LedgerIntf for SparseLedger {
         self.with(|this| this.get_or_create(account_id))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L109
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L109>
     fn create_new_account(&mut self, account_id: AccountId, to_set: Account) -> Result<(), ()> {
         self.with(|this| this.create_new_account(account_id, to_set))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L112
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L112>
     fn remove_accounts_exn(&mut self, _account_ids: &[AccountId]) {
         unimplemented!("remove_accounts_exn: not implemented")
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L115
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L115>
     fn merkle_root(&mut self) -> Fp {
         self.merkle_root()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L142
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L142>
     fn empty(depth: usize) -> Self {
         Self::create(depth, Fp::zero())
     }

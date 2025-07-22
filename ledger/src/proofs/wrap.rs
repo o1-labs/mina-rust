@@ -78,7 +78,7 @@ pub struct CombinedInnerProductParams<
     pub zetaw: F,
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap.ml#L37
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap.ml#L37>
 pub fn combined_inner_product<F: FieldWitness, const NROUNDS: usize, const NLIMB: usize>(
     params: CombinedInnerProductParams<F, NROUNDS, NLIMB>,
 ) -> F {
@@ -873,7 +873,7 @@ impl Check<Fp> for ShiftedValue<Fq> {
         }
         // `Fq` is larger than `Fp` so we have to split the field (low & high bits)
         // See:
-        // https://github.com/MinaProtocol/mina/blob/e85cf6969e42060f69d305fb63df9b8d7215d3d7/src/lib/pickles/impls.ml#L94C1-L105C45
+        // <https://github.com/MinaProtocol/mina/blob/e85cf6969e42060f69d305fb63df9b8d7215d3d7/src/lib/pickles/impls.ml#L94C1-L105C45>
 
         let to_high_low = |fq: Fq| {
             let [low, high @ ..] = crate::proofs::transaction::field_to_bits::<Fq, 255>(fq);

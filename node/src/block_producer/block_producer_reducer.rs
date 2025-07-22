@@ -513,7 +513,7 @@ impl BlockProducerEnabled {
 
         let (min_window_density, sub_window_densities) = {
             // TODO(binier): when should this be false?
-            // https://github.com/MinaProtocol/mina/blob/4aac38814556b9641ffbdfaef19b38ab7980011b/src/lib/consensus/proof_of_stake.ml#L2864
+            // <https://github.com/MinaProtocol/mina/blob/4aac38814556b9641ffbdfaef19b38ab7980011b/src/lib/consensus/proof_of_stake.ml#L2864>
             let incr_window = true;
             let pred_sub_window_densities = &pred_consensus_state.sub_window_densities;
 
