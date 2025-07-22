@@ -22,6 +22,8 @@ structured onboarding experience for developers new to the project.
   routing and service patterns
 - **Testing framework**: [Testing Infrastructure](testing-infrastructure.md) -
   scenario-based testing with extensive examples
+- **Browser deployment**: [Webnode Implementation](webnode.md) - WebAssembly
+  build target for running OpenMina in browsers
 - **Ledger implementation overview**: [Ledger Crate](ledger-crate.md) - OCaml
   port with Rust adaptations
 - **Service integration**: [Services](services.md) - complete service inventory
@@ -55,6 +57,7 @@ structured onboarding experience for developers new to the project.
 - [Fuzzing Infrastructure](#fuzzing-infrastructure)
 - [Services Technical Debt](#services-technical-debt)
 - [State Machine Technical Debt](#state-machine-technical-debt)
+- [Webnode Implementation](#webnode-implementation)
 - [Circuits](#circuits)
 - [Debug Block Proof Generation](#debug-block-proof-generation)
 - [Persistence](#persistence)
@@ -192,6 +195,16 @@ Systemic architectural issues in state machine implementations:
 - Enabling conditions and service integration issues
 - Safety and linting improvements (including clippy lints)
 - Prioritized refactoring roadmap
+
+### [Webnode Implementation](webnode.md)
+
+WebAssembly build target for browser deployment:
+
+- WASM compilation with browser-specific threading adaptations
+- WebRTC-based P2P networking with pull-based protocol
+- JavaScript API for web application integration
+- Block production capabilities with browser-based SNARK proving
+- Technical constraints and workarounds for browser environment
 
 ### [Circuits](circuits.md)
 
