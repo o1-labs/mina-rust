@@ -342,7 +342,9 @@ docs-serve-only: docs-install ## Serve the documentation website locally without
 .PHONY: docs-rust
 docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
-	@DATABASE_URL="sqlite::memory:" cargo doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	# Using nightly with --enable-index-page to generate workspace index
+	# See: https://github.com/rust-lang/cargo/issues/8229
+	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options" cargo +nightly doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 
