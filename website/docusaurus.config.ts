@@ -51,7 +51,7 @@ const config: Config = {
             },
           },
           // Enable edit links to GitHub
-          editUrl: 'https://github.com/o1-labs/openmina/tree/develop/docs/',
+          editUrl: 'https://github.com/o1-labs/openmina/tree/develop/website/docs/',
         },
         blog: false, // Disable blog for technical documentation
         theme: {

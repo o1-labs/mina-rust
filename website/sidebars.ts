@@ -37,6 +37,14 @@ const sidebars: SidebarsConfig = {
       label: 'Operations',
       items: [
         'node-runners/local-demo',
+        'node-runners/alpha-testing',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Web Node',
+      items: [
+        'node-runners/webnode/local-webnode',
       ],
     },
     {
