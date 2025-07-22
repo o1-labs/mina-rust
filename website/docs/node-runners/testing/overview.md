@@ -20,7 +20,7 @@
 
 ## P2p tests
 
-### [RPC](../../p2p/tests/rpc.rs)
+### [RPC](https://github.com/o1-labs/openmina/blob/develop/p2p/tests/rpc.rs)
 
 - `rust_to_rust`: test that rust node can receive and send response to and from
   another rust node
@@ -34,7 +34,7 @@
   `attempt to subtract with overflow` in yamux
 - `block`: fails with `attempt to subtract with overflow` in yamux
 
-### [Kademlia](../../p2p/tests/kademlia.rs)
+### [Kademlia](https://github.com/o1-labs/openmina/blob/develop/p2p/tests/kademlia.rs)
 
 - `kademlia_routing_table`: tests that node receives peers using kademlia
 - `kademlia_incoming_routing_table`: test that kademlia is updated with incoming
@@ -45,11 +45,11 @@
 - `discovery_seed_multiple_peers`: test node discovery and identify integration
 - `test_bad_node`: test that if node gives us invalid peers we handle it
 
-### [Identify](../../p2p/tests/identify.rs)
+### [Identify](https://github.com/o1-labs/openmina/blob/develop/p2p/tests/identify.rs)
 
 - `rust_node_to_rust_node`: test if rust node can identify another rust node
 
-### [Connection](../../p2p/tests/connection.rs)
+### [Connection](https://github.com/o1-labs/openmina/blob/develop/p2p/tests/connection.rs)
 
 - `rust_to_rust`: test if rust node can connect to rust node
 - `rust_to_libp2p`: test if out node can connect to rust libp2p
@@ -66,7 +66,7 @@
 
 ## Scenarios
 
-### [Connection Discovery](../../node/testing/src/scenarios/multi_node/connection_discovery.rs)
+### [Connection Discovery](https://github.com/o1-labs/openmina/blob/develop/node/testing/src/scenarios/multi_node/connection_discovery.rs)
 
 We want to test whether the Rust node can connect and discover peers from Ocaml
 node, and vice versa
@@ -104,7 +104,7 @@ node, and vice versa
   these nodes connect to the Rust node, the test makes sure that they also have
   each other’s addresses as their peers.
 
-### [P2P Connections](../../node/testing/tests/p2p_basic_connections.rs)
+### [P2P Connections](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/p2p_basic_connections.rs)
 
 - `SimultaneousConnections`: Tests if two nodes are connecting to each other at
   the same time, they should be connected, so each one has exactly one
@@ -123,20 +123,20 @@ node, and vice versa
 
 - `MaxNumberOfPeersIs1` Two nodes with max peers = 1 can connect to each other.
 
-### [P2P Kademlia](../../node/testing/tests/p2p_kad.rs)
+### [P2P Kademlia](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/p2p_kad.rs)
 
 Test related to kademlia layer.
 
 - `KademliaBootstrap`: Test that node discovers peers another rust node and is
   able to bootstrap
 
-### [P2P Pubsub](../../node/testing/tests/p2p_pubsub.rs)
+### [P2P Pubsub](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/p2p_pubsub.rs)
 
 Tests related to pubsub layer.
 
 - `P2pReceiveMessage` Test that node receives message over meshsub from node
 
-### [P2P Incoming](../../node/testing/tests/p2p_basic_incoming.rs)
+### [P2P Incoming](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/p2p_basic_incoming.rs)
 
 Tests related to handling incoming connections.
 
@@ -144,7 +144,7 @@ Tests related to handling incoming connections.
 - `AcceptMultipleIncomingConnections`: Node should accept multiple incoming
   connections.
 
-### [P2P Outgoing](../../node/testing/tests/p2p_basic_outgoing.rs)
+### [P2P Outgoing](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/p2p_basic_outgoing.rs)
 
 Tests related to outgoing connections
 
@@ -171,7 +171,7 @@ Tests related to outgoing connections
 - `ConnectToInitialPeersBecomeReady`: Node should be able to connect to all
   initial peers after they become ready.
 
-### [Single Node](../../node/testing/tests/single_node.rs):
+### [Single Node](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/single_node.rs):
 
 We want to test whether the Rust node is compatible with the OCaml node. We
 achieve this by attempting to connect the Openmina node to the existing OCaml
@@ -194,7 +194,7 @@ cluster.
 - `SoloNodeBootstrap`: Set up single Rust node and bootstrap snarked ledger,
   bootstrap ledger and blocks.
 
-### [Multi Node](../../node/testing/tests/multi_node.rs):
+### [Multi Node](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/multi_node.rs):
 
 We also want to test a scenario in which the network consists only of Openmina
 nodes. If the Openmina node is using a functionality that is implemented only in
@@ -209,7 +209,7 @@ testing is completely local and under our control.
 - `MultiNodeBasicConnectivityInitialJoining`: Tests that node maintains number
   of peers between minimum and maximum allowed peers.
 
-### [Record/Replay](../../node/testing/tests/record_replay.rs)
+### [Record/Replay](https://github.com/o1-labs/openmina/blob/develop/node/testing/tests/record_replay.rs)
 
 - `RecordReplayBootstrap`: Bootstrap a rust node while recorder of state and
   input actions is enabled and make sure we can successfully replay it.
