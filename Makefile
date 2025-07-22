@@ -309,25 +309,54 @@ docs-install: ## Install documentation dependencies
 	@cd website && npm install
 
 .PHONY: docs-build
-docs-build: docs-install ## Build the documentation website
-	@echo "Building documentation website..."
+docs-build: docs-integrate-rust docs-install ## Build the documentation website with Rust API docs
+	@echo "Building documentation website with Rust API documentation..."
 	@cd website && npm run build
 	@echo "Documentation built successfully!"
 	@echo "Built files are in website/build/"
 
 .PHONY: docs-serve
-docs-serve: docs-install ## Serve the documentation website locally
-	@echo "Starting documentation server..."
+docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
+	@echo "Starting documentation server with Rust API documentation..."
 	@echo "Documentation will be available at: http://localhost:3000"
 	@cd website && npm start
 
 .PHONY: docs-build-serve
-docs-build-serve: docs-build ## Build and serve the documentation website locally
-	@echo "Serving built documentation at: http://localhost:3000"
+docs-build-serve: docs-build ## Build and serve the documentation website locally with Rust API docs
+	@echo "Serving built documentation with Rust API documentation at: http://localhost:3000"
 	@cd website && npm run serve
+
+.PHONY: docs-build-only
+docs-build-only: docs-install ## Build the documentation website without Rust API docs
+	@echo "Building documentation website (without Rust API docs)..."
+	@cd website && npm run build
+	@echo "Documentation built successfully!"
+	@echo "Built files are in website/build/"
+
+.PHONY: docs-serve-only
+docs-serve-only: docs-install ## Serve the documentation website locally without Rust API docs
+	@echo "Starting documentation server (without Rust API docs)..."
+	@echo "Documentation will be available at: http://localhost:3000"
+	@cd website && npm start
+
+.PHONY: docs-rust
+docs-rust: ## Generate Rust API documentation
+	@echo "Generating Rust API documentation..."
+	@DATABASE_URL="sqlite::memory:" cargo doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@echo "Rust documentation generated in target/doc/"
+	@echo "Entry point: target/doc/index.html"
+
+.PHONY: docs-integrate-rust
+docs-integrate-rust: docs-rust ## Integrate Rust API documentation into website
+	@echo "Integrating Rust API documentation..."
+	@mkdir -p website/static/api-docs
+	@rm -rf website/static/api-docs/*
+	@cp -r target/doc/* website/static/api-docs/
+	@echo "Rust API documentation integrated into website/static/api-docs/"
+
 
 .PHONY: docs-clean
 docs-clean: ## Clean documentation build artifacts
 	@echo "Cleaning documentation build artifacts..."
-	@rm -rf website/build website/.docusaurus
+	@rm -rf website/build website/.docusaurus website/static/api-docs target/doc
 	@echo "Documentation artifacts cleaned!"
