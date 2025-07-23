@@ -176,6 +176,10 @@ const config: Config = {
               href: 'https://discord.gg/minaprotocol',
             },
             {
+              label: 'Forums',
+              href: 'https://forums.minaprotocol.com/',
+            },
+            {
               label: 'LinkedIn',
               href: 'https://www.linkedin.com/company/o1labs/',
             },

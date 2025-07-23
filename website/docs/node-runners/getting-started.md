@@ -63,6 +63,9 @@ OpenMina supports different node configurations:
 
 - Check our troubleshooting guides
 - Visit our [GitHub repository](https://github.com/o1-labs/openmina)
-- Join the community discussions
+- Join the community discussions on
+  [Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
+- Participate in discussions on the
+  [Mina Protocol Forums](https://forums.minaprotocol.com/)
 
 Let's get your OpenMina node up and running!
