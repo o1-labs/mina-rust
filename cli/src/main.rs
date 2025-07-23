@@ -60,7 +60,7 @@ fn setup_var_from_single_and_only_thread() {
 }
 
 /// Mimic default hook:
-/// https://github.com/rust-lang/rust/blob/5986ff05d8480da038dd161b3a6aa79ff364a851/library/std/src/panicking.rs#L246
+/// <https://github.com/rust-lang/rust/blob/5986ff05d8480da038dd161b3a6aa79ff364a851/library/std/src/panicking.rs#L246>
 ///
 /// Unlike the default hook, this one allocates.
 /// We store (+ display) panics in non-main threads, and display them all when the main thread panics.

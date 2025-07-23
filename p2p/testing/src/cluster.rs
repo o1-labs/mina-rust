@@ -76,8 +76,8 @@ impl PortsConfig {
     async fn ports(self) -> Result<Range<u16>> {
         match self {
             PortsConfig::Range(range) => Ok(range),
-            PortsConfig::Len(len) => PORTS.take(len).await,
-            PortsConfig::ExactLen(len) => PORTS.take_exact(len).await,
+            PortsConfig::Len(len) => GLOBAL_PORTS.take(len).await,
+            PortsConfig::ExactLen(len) => GLOBAL_PORTS.take_exact(len).await,
         }
     }
 }
@@ -231,12 +231,12 @@ impl Default for Ports {
 /// Declares a shared storage for ports.
 ///
 /// ```
-/// ports_store!(PORTS);
+/// ports_store!(GLOBAL_PORTS);
 ///
 /// #[tokio::test]
 /// fn test1() {
 ///     let cluster = ClusterBuilder::default()
-///         .ports(PORTS.take(20).await.expect("enough ports"))
+///         .ports(GLOBAL_PORTS.take(20).await.expect("enough ports"))
 ///         .start()
 ///         .await;
 /// }
@@ -246,17 +246,17 @@ impl Default for Ports {
 macro_rules! ports_store {
     ($name:ident, $range:expr) => {
         $crate::lazy_static::lazy_static! {
-            static ref PORTS: $crate::cluster::Ports = $crate::cluster::Ports::new($range);
+            static ref $name: $crate::cluster::Ports = $crate::cluster::Ports::new($range);
         }
     };
     ($name:ident) => {
         $crate::lazy_static::lazy_static! {
-            static ref PORTS: $crate::cluster::Ports = $crate::cluster::Ports::default();
+            static ref $name: $crate::cluster::Ports = $crate::cluster::Ports::default();
         }
     };
 }
 
-ports_store!(PORTS);
+ports_store!(GLOBAL_PORTS);
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {

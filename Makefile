@@ -84,10 +84,52 @@ check-format: ## Check code formatting
 	taplo format --check
 
 .PHONY: check-md
-check-md: ## Check if markdown files are properly formatted
-	@echo "Checking markdown formatting..."
-	npx prettier --check "**/*.md"
-	@echo "Markdown format check completed."
+check-md: ## Check if markdown and MDX files are properly formatted
+	@echo "Checking markdown and MDX formatting..."
+	npx prettier --check "**/*.md" "**/*.mdx"
+	@echo "Markdown and MDX format check completed."
+
+.PHONY: fix-trailing-whitespace
+fix-trailing-whitespace: ## Remove trailing whitespaces from all files
+	@echo "Removing trailing whitespaces from all files..."
+	@find . -type f \( \
+		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
+		-not -path "./target/*" \
+		-not -path "./node_modules/*" \
+		-not -path "./website/node_modules/*" \
+		-not -path "./website/build/*" \
+		-not -path "./website/static/api-docs/*" \
+		-not -path "./website/.docusaurus/*" \
+		-not -path "./.git/*" \
+		-exec sed -i 's/[[:space:]]*$$//' {} + && \
+		echo "Trailing whitespaces removed."
+
+.PHONY: check-trailing-whitespace
+check-trailing-whitespace: ## Check for trailing whitespaces in source files
+	@echo "Checking for trailing whitespaces..."
+	@files_with_trailing_ws=$$(find . -type f \( \
+		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
+		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
+		-not -path "./target/*" \
+		-not -path "./node_modules/*" \
+		-not -path "./website/node_modules/*" \
+		-not -path "./website/build/*" \
+		-not -path "./website/static/api-docs/*" \
+		-not -path "./website/.docusaurus/*" \
+		-not -path "./.git/*" \
+		-exec grep -l '[[:space:]]$$' {} + 2>/dev/null || true); \
+	if [ -n "$$files_with_trailing_ws" ]; then \
+		echo "❌ Files with trailing whitespaces found:"; \
+		echo "$$files_with_trailing_ws" | sed 's/^/  /'; \
+		echo ""; \
+		echo "Run 'make fix-trailing-whitespace' to fix automatically."; \
+		exit 1; \
+	else \
+		echo "✅ No trailing whitespaces found."; \
+	fi
 
 .PHONY: clean
 clean: ## Clean build artifacts
@@ -108,10 +150,10 @@ format: ## Format code using rustfmt and taplo
 	taplo format
 
 .PHONY: format-md
-format-md: ## Format all markdown files to wrap at 80 characters
-	@echo "Formatting markdown files..."
-	npx prettier --write "**/*.md"
-	@echo "Markdown files have been formatted to 80 characters."
+format-md: ## Format all markdown and MDX files to wrap at 80 characters
+	@echo "Formatting markdown and MDX files..."
+	npx prettier --write "**/*.md" "**/*.mdx"
+	@echo "Markdown and MDX files have been formatted to 80 characters."
 
 .PHONY: lint
 lint: ## Run linter (clippy)
@@ -259,3 +301,65 @@ postgres-setup: ## Set up PostgreSQL database for archive node
 	@sudo -u postgres psql -c "ALTER USER $(PG_USER) PASSWORD '$(PG_PW)'" 2>/dev/null || true
 	@sudo -u postgres createdb -O $(PG_USER) $(PG_DB) 2>/dev/null || true
 	@sudo -u postgres createdb -O $(PG_USER) $(PG_USER) 2>/dev/null || true
+
+# Documentation targets
+
+.PHONY: docs-install
+docs-install: ## Install documentation dependencies
+	@echo "Installing documentation dependencies..."
+	@cd website && npm install
+
+.PHONY: docs-build
+docs-build: docs-integrate-rust docs-install ## Build the documentation website with Rust API docs
+	@echo "Building documentation website with Rust API documentation..."
+	@cd website && npm run build
+	@echo "Documentation built successfully!"
+	@echo "Built files are in website/build/"
+
+.PHONY: docs-serve
+docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
+	@echo "Starting documentation server with Rust API documentation..."
+	@echo "Documentation will be available at: http://localhost:3000"
+	@cd website && npm start
+
+.PHONY: docs-build-serve
+docs-build-serve: docs-build ## Build and serve the documentation website locally with Rust API docs
+	@echo "Serving built documentation with Rust API documentation at: http://localhost:3000"
+	@cd website && npm run serve
+
+.PHONY: docs-build-only
+docs-build-only: docs-install ## Build the documentation website without Rust API docs
+	@echo "Building documentation website (without Rust API docs)..."
+	@cd website && npm run build
+	@echo "Documentation built successfully!"
+	@echo "Built files are in website/build/"
+
+.PHONY: docs-serve-only
+docs-serve-only: docs-install ## Serve the documentation website locally without Rust API docs
+	@echo "Starting documentation server (without Rust API docs)..."
+	@echo "Documentation will be available at: http://localhost:3000"
+	@cd website && npm start
+
+.PHONY: docs-rust
+docs-rust: ## Generate Rust API documentation
+	@echo "Generating Rust API documentation..."
+	# Using nightly with --enable-index-page to generate workspace index
+	# See: https://github.com/rust-lang/cargo/issues/8229
+	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options" cargo +nightly doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@echo "Rust documentation generated in target/doc/"
+	@echo "Entry point: target/doc/index.html"
+
+.PHONY: docs-integrate-rust
+docs-integrate-rust: docs-rust ## Integrate Rust API documentation into website
+	@echo "Integrating Rust API documentation..."
+	@mkdir -p website/static/api-docs
+	@rm -rf website/static/api-docs/*
+	@cp -r target/doc/* website/static/api-docs/
+	@echo "Rust API documentation integrated into website/static/api-docs/"
+
+
+.PHONY: docs-clean
+docs-clean: ## Clean documentation build artifacts
+	@echo "Cleaning documentation build artifacts..."
+	@rm -rf website/build website/.docusaurus website/static/api-docs target/doc
+	@echo "Documentation artifacts cleaned!"

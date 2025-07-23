@@ -57,7 +57,7 @@ fn field<F: FieldWitness>(s: &str) -> F {
     field_from_hex(s)
 }
 
-/// https://github.com/MinaProtocol/mina/blob/aebd4e552b8b4bcd78d1e24523169e8778794857/src/lib/pickles/plonk_checks/plonk_checks.ml#L97-L130
+/// <https://github.com/MinaProtocol/mina/blob/aebd4e552b8b4bcd78d1e24523169e8778794857/src/lib/pickles/plonk_checks/plonk_checks.ml#L97-L130>
 fn get_var<F>(evals: &ProofEvaluations<[F; 2]>) -> impl Fn(Column, CurrOrNext) -> F + '_
 where
     F: Field,
@@ -697,7 +697,7 @@ mod tests {
     /// Code originally used to generate OCaml code
     /// We use the same method to generate our Rust code
     ///
-    /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs#L11
+    /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs#L11>
     // #[test]
     fn generate_plonk() {
         let lookup_configuration = None;

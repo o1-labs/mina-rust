@@ -11,7 +11,7 @@ use crate::VerificationKey;
 pub mod for_tests;
 
 /// Value of `vk` when we run `dune runtest src/lib/staged_ledger -f`
-/// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2083
+/// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2083>
 ///
 /// The file was generated this way:
 ///
@@ -35,7 +35,7 @@ pub fn trivial_verification_key() -> VerificationKey {
 }
 
 /// Value of a dummy proof when we run `dune runtest src/lib/staged_ledger -f`
-/// https://github.com/MinaProtocol/mina/blob/d7dad23d8ea2052f515f5d55d187788fe0701c7f/src/lib/mina_base/control.ml#L94
+/// <https://github.com/MinaProtocol/mina/blob/d7dad23d8ea2052f515f5d55d187788fe0701c7f/src/lib/mina_base/control.ml#L94>
 ///
 /// The file was generated this way:
 ///

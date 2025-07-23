@@ -68,7 +68,7 @@ impl ScalarChallenge {
     }
 
     /// Implemention of `to_field_constant`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139>
     pub fn to_field<F>(&self, endo: &F) -> F
     where
         F: Field + From<i32>,

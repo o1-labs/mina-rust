@@ -20,5 +20,6 @@ Then it deploys the new instance of Openmina and waits until it is bootstrapped
 - The node's best tip is the same as in berkeleynet
 - There were no restarts for the openmina container
 
-See the [Openmina Daily](../../.github/workflows/daily.yaml) workflow file for
-further details.
+See the
+[Openmina Daily](https://github.com/o1-labs/openmina/blob/develop/.github/workflows/daily.yaml)
+workflow file for further details.

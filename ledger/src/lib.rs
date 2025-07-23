@@ -25,7 +25,7 @@ macro_rules! elog {
 }
 
 // We need a feature to tests both nodejs and browser
-// https://github.com/rustwasm/wasm-bindgen/issues/2571
+// <https://github.com/rustwasm/wasm-bindgen/issues/2571>
 #[cfg(not(feature = "in_nodejs"))]
 #[cfg(target_family = "wasm")]
 #[cfg(test)]

@@ -1,3 +1,9 @@
+---
+sidebar_position: 5
+title: Alpha Testing Guide
+description: Guide to running the Alpha Rust Node on Devnet
+---
+
 # Run Non-Block Producing Node on Devnet
 
 This guide will walk you through running the **Alpha Rust Node** on Devnet using
@@ -41,7 +47,7 @@ Ensure you have **Docker** installed:
 4. **Access the Dashboard**: Open `http://localhost:8070` in your browser.
 
    The dashboard will show the syncing process in real time.
-   <img width="1417" alt="image" src="https://github.com/user-attachments/assets/d9a5f5b3-522f-479b-9829-37402c63bb98">
+   <img width="1417" alt="image" src="https://github.com/user-attachments/assets/d9a5f5b3-522f-479b-9829-37402c63bb98" />
 
    > **1. Connecting to Peers:** The node connects to peers. You’ll see the
    > number of connected, connecting, and disconnected peers grow.

@@ -81,7 +81,7 @@ impl FieldWitness for Fp {
     type OtherCurve = GroupAffine<Fq>;
     type FqSponge = DefaultFqSponge<VestaParameters, PlonkSpongeConstantsKimchi>;
 
-    /// https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L107
+    /// <https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L107>
     const PARAMS: Params<Self> = Params::<Self> {
         a: ark_ff::field_new!(Fp, "0"),
         b: ark_ff::field_new!(Fp, "5"),
@@ -100,7 +100,7 @@ impl FieldWitness for Fq {
     type OtherCurve = GroupAffine<Fp>;
     type FqSponge = DefaultFqSponge<PallasParameters, PlonkSpongeConstantsKimchi>;
 
-    /// https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L95
+    /// <https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L95>
     const PARAMS: Params<Self> = Params::<Self> {
         a: ark_ff::field_new!(Fq, "0"),
         b: ark_ff::field_new!(Fq, "5"),
@@ -162,7 +162,7 @@ pub mod field {
 
     use super::*;
 
-    // https://github.com/o1-labs/snarky/blob/7edf13628872081fd7cad154de257dad8b9ba621/src/base/utils.ml#L99
+    // <https://github.com/o1-labs/snarky/blob/7edf13628872081fd7cad154de257dad8b9ba621/src/base/utils.ml#L99>
     pub fn square<F>(field: F, w: &mut Witness<F>) -> F
     where
         F: FieldWitness,

@@ -1,8 +1,7 @@
 # Run Block Producing Node on Devnet
 
 This guide is intended for setting up block producer nodes on **Mina Devnet**
-only.  
-Do not use this guide for Mina Mainnet until necessary security audits are
+only. Do not use this guide for Mina Mainnet until necessary security audits are
 complete.
 
 ---
@@ -28,10 +27,10 @@ Ensure Docker and Docker Compose are installed on your system -
 
 2. **Prepare Your Keys**
 
-   [Docker Compose](../docker-compose.block-producer.yml) references
-   `openmina-workdir`. It stores a private key and logs for block production.
-   Place your block producer's private key into the `openmina-workdir` directory
-   and name it `producer-key`:
+   [Docker Compose](https://github.com/o1-labs/openmina/blob/develop/docker-compose.block-producer.yml)
+   references `openmina-workdir`. It stores a private key and logs for block
+   production. Place your block producer's private key into the
+   `openmina-workdir` directory and name it `producer-key`:
 
    ```bash
    cp /path/to/your/private_key openmina-workdir/producer-key

@@ -1,0 +1,217 @@
+---
+sidebar_position: 1
+---
+
+# Getting Started for Developers
+
+import CodeBlock from "@theme/CodeBlock";
+import InstallRustSh from "!!raw-loader!./scripts/setup/install-rust.sh";
+import InstallSystemDepsSh from "!!raw-loader!./scripts/setup/install-system-deps.sh";
+import InstallNodejsSh from "!!raw-loader!./scripts/setup/install-nodejs.sh";
+import InstallDockerSh from "!!raw-loader!./scripts/setup/install-docker.sh";
+import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.sh";
+import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
+import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
+import RunTestsSh from "!!raw-loader!./scripts/setup/run-tests.sh";
+import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
+
+Welcome to OpenMina development! This guide will help you set up your
+development environment and build OpenMina from source.
+
+## Prerequisites
+
+### System Requirements
+
+- **Operating System**: Ubuntu 20.04+ or Debian 11+ (other Linux distributions
+  may work but are not officially supported)
+- **Memory**: At least 8GB RAM (16GB recommended)
+- **Storage**: At least 20GB free space
+- **Network**: Stable internet connection for downloading dependencies
+
+### Required Tools
+
+#### 1. Rust Toolchain
+
+OpenMina requires both stable and nightly Rust toolchains:
+
+<CodeBlock language="bash">{InstallRustSh}</CodeBlock>
+
+#### 2. System Dependencies
+
+<CodeBlock language="bash">{InstallSystemDepsSh}</CodeBlock>
+
+#### 3. Additional Development Tools
+
+**Node.js (for documentation and frontend):**
+
+<CodeBlock language="bash">{InstallNodejsSh}</CodeBlock>
+
+**Docker (optional, for containerized builds):**
+
+<CodeBlock language="bash">{InstallDockerSh}</CodeBlock>
+
+#### 4. WASM Tools (for web node development)
+
+<CodeBlock language="bash">{InstallWasmToolsSh}</CodeBlock>
+
+## Clone and Build OpenMina
+
+### 1. Clone the Repository and Build
+
+<CodeBlock language="bash">{CloneAndBuildSh}</CodeBlock>
+
+### 2. Specialized Builds
+
+For more advanced builds including release mode, WebAssembly, and specialized
+components:
+
+<CodeBlock language="bash">{BuildSpecializedSh}</CodeBlock>
+
+### 3. Run Tests
+
+<CodeBlock language="bash">{RunTestsSh}</CodeBlock>
+
+## Development Workflow
+
+### Code Quality and Formatting
+
+OpenMina maintains strict code quality standards:
+
+<CodeBlock language="bash">{FormatAndLintSh}</CodeBlock>
+
+### Working with Makefiles
+
+The project's Makefile provides many helpful commands. View all available
+targets:
+
+```bash
+make help
+```
+
+Common development targets include:
+
+```bash
+# Basic builds
+make build          # Debug build for development
+make build-release  # Optimized build for production
+make check          # Check code without building
+
+# Testing
+make test           # Run test suite
+make test-release   # Run tests in release mode
+
+# Code quality
+make format         # Format all code
+make lint           # Run static analysis
+make clean          # Clean build artifacts
+```
+
+### Environment Configuration
+
+Some components require environment variables:
+
+```bash
+# For SQLx database operations (heartbeats processor)
+export DATABASE_URL="sqlite:///tmp/heartbeats.db"
+
+# For archive node development
+export OPENMINA_ARCHIVE_ADDRESS="http://localhost:3007"
+export PG_USER="openmina"
+export PG_PW="openminaopenmina"
+export PG_DB="openmina_archive"
+```
+
+## Architecture Overview
+
+For detailed information about OpenMina's architecture, Redux-style state
+machine pattern, and component organization, please see the
+[Architecture Documentation](./architecture.md).
+
+## Running OpenMina
+
+### Basic Node
+
+```bash
+# Run a basic node (after building)
+./target/release/openmina node --network devnet
+```
+
+### Archive Node
+
+```bash
+# Set up PostgreSQL database
+make postgres-setup
+
+# Run archive node
+make run-archive
+```
+
+### Development Server
+
+For web development with the frontend:
+
+```bash
+# Build and serve documentation
+make docs-serve
+
+# The documentation will be available at http://localhost:3000
+```
+
+## Debugging and Development Tools
+
+### Logging
+
+OpenMina uses structured logging with different levels:
+
+```bash
+# Set log level
+export RUST_LOG=debug
+
+# Run with verbose logging
+RUST_LOG=trace ./target/release/openmina node --network devnet
+```
+
+### Frontend Development
+
+The project includes a web-based dashboard:
+
+```bash
+# Build and run frontend (see frontend/README.md for details)
+cd frontend
+npm install
+npm start
+```
+
+### Testing Framework
+
+OpenMina includes a comprehensive testing framework:
+
+```bash
+# Build testing binary
+make build-testing
+
+# Run specific test scenarios
+./target/release/openmina-node-testing --help
+```
+
+## Next Steps
+
+1. **Explore the Codebase**: Start with
+   [Architecture Documentation](./architecture.md)
+2. **Run Tests**: Ensure your setup works by running `make test`
+3. **Join the Community**: Connect with other developers on
+   [Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
+4. **Read CLAUDE.md**: Check the project-specific development guide in the root
+   directory
+
+## Getting Help
+
+- **Documentation**:
+  [https://o1-labs.github.io/openmina/](https://o1-labs.github.io/openmina/)
+- **Discord**:
+  [OpenMina Community](https://discord.com/channels/484437221055922177/1290662938734231552)
+- **Issues**: [GitHub Issues](https://github.com/o1-labs/openmina/issues)
+- **API Docs**:
+  [Rust Documentation](https://o1-labs.github.io/openmina/api-docs/)
+
+Welcome to the OpenMina development community! 🎉

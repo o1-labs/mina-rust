@@ -681,8 +681,8 @@ pub async fn get_max_scores(pool: &SqlitePool) -> Result<MaxScores> {
 
     let current = sqlx::query_as::<_, (i64,)>(
         r#"
-        SELECT COUNT(*) as count 
-        FROM time_windows 
+        SELECT COUNT(*) as count
+        FROM time_windows
         WHERE end_time <= strftime('%s', 'now')
         AND disabled = FALSE
         "#,
@@ -824,9 +824,9 @@ pub async fn ensure_initial_windows(pool: &SqlitePool, config: &Config) -> Resul
 
     let affected = sqlx::query!(
         r#"
-        UPDATE time_windows 
-        SET disabled = TRUE 
-        WHERE (start_time < ?1 OR end_time > ?2) 
+        UPDATE time_windows
+        SET disabled = TRUE
+        WHERE (start_time < ?1 OR end_time > ?2)
         AND disabled = FALSE
         "#,
         start_ts,

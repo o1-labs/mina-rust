@@ -713,7 +713,7 @@ fn compute_deferred_values(
     })
 }
 
-/// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/verification_key.mli#L30
+/// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/verification_key.mli#L30>
 pub struct VK<'a> {
     pub commitments: PlonkVerificationKeyEvals<Fp>,
     pub index: &'a VerifierIndex<Fq>,
@@ -800,7 +800,7 @@ pub fn verify_transaction<'a>(
     ok
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_proof.rs#L116
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_proof.rs#L116>
 pub fn verify_zkapp(
     verification_key: &VerificationKey,
     zkapp_statement: &ZkappStatement,
@@ -808,7 +808,7 @@ pub fn verify_zkapp(
     srs: &SRS<Vesta>,
 ) -> bool {
     let verifier_index = make_zkapp_verifier_index(verification_key);
-    // https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/pickles.ml#LL260C1-L274C18
+    // <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/pickles.ml#LL260C1-L274C18>
     let vk = VK {
         commitments: *verification_key.wrap_index.clone(),
         index: &verifier_index,

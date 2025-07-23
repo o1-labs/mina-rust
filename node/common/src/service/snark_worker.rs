@@ -95,7 +95,7 @@ impl node::service::ExternalSnarkWorkerService for NodeService {
         }
 
         // TODO(binier): for wasm threads, call terminate:
-        // https://developer.mozilla.org/en-US/docs/Web/API/Worker/terminate
+        // <https://developer.mozilla.org/en-US/docs/Web/API/Worker/terminate>
         if self
             .snark_worker
             .as_ref()

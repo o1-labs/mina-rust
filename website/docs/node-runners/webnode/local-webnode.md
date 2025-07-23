@@ -1,3 +1,9 @@
+---
+sidebar_position: 1
+title: Local WebNode
+description: How to build and launch webnode from source
+---
+
 # How to build and launch webnode from source
 
 ## Steps

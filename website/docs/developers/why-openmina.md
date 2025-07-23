@@ -1,3 +1,11 @@
+---
+sidebar_position: 2
+title: Why OpenMina?
+description:
+  Learn about the motivation and benefits of developing OpenMina as an
+  alternative Mina Protocol implementation
+---
+
 # Why are we developing the Open Mina node and the Mina Web node?
 
 ## Diversifying the Mina ecosystem

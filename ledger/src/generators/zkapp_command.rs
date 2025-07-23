@@ -50,7 +50,7 @@ use super::{Failure, NotPermitedOf, Role};
 // /// Value when we run `dune runtest src/lib/staged_ledger -f`
 // const ACCOUNT_CREATION_FEE: Fee = Fee::from_u64(1000000000);
 
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L443
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L443>
 fn gen_invalid_protocol_state_precondition(psv: &ProtocolStateView) -> ZkAppPreconditions {
     enum Tamperable {
         BlockchainLength,
@@ -179,7 +179,7 @@ fn closed_interval_exact<T: Copy>(value: T) -> ClosedInterval<T> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L319
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L319>
 fn gen_epoch_data_predicate(
     epoch_data: &protocol_state::EpochData<Fp>,
 ) -> zkapp_command::EpochData {
@@ -222,7 +222,7 @@ fn gen_epoch_data_predicate(
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L367
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L367>
 fn gen_protocol_state_precondition(psv: &ProtocolStateView) -> ZkAppPreconditions {
     let mut rng = rand::thread_rng();
 
@@ -519,7 +519,7 @@ struct AccountUpdateBodyComponents<A, B, C, D> {
 }
 
 impl<B, C> AccountUpdateBodyComponents<Fee, B, C, Nonce> {
-    /// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L576
+    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L576>
     fn to_fee_payer(&self) -> FeePayerBody {
         FeePayerBody {
             public_key: self.public_key.clone(),
@@ -534,7 +534,7 @@ impl<B, C> AccountUpdateBodyComponents<Fee, B, C, Nonce> {
 }
 
 impl AccountUpdateBodyComponents<Signed<Amount>, bool, TokenId, AccountPreconditions> {
-    /// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L592
+    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L592>
     #[allow(clippy::wrong_self_convention)]
     fn to_typical_account_update(self) -> zkapp_command::BodySimple {
         zkapp_command::BodySimple {
@@ -1226,7 +1226,7 @@ fn fee_to_amt(fee: &Fee) -> Signed<Amount> {
 
 /// takes an account id, if we want to sign this data
 ///
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L1020
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L1020>
 fn gen_account_update_body_fee_payer(
     global_slot: Option<Slot>,
     failure: Option<&Failure>,
@@ -1283,7 +1283,7 @@ fn gen_account_update_body_fee_payer(
     body_components.to_fee_payer()
 }
 
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L1046
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L1046>
 fn gen_fee_payer(
     global_slot: Option<Slot>,
     failure: Option<&Failure>,

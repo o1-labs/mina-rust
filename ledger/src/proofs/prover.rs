@@ -142,7 +142,7 @@ pub fn make_padded_proof_from_p2p(
     );
 
     // Prepend padding:
-    // https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/verify.ml#L361C1-L364C51
+    // <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/verify.ml#L361C1-L364C51>
     while challenge_polynomial_commitments.len() < 2 {
         let padding = get_challenge_polynomial_commitments_padding();
         challenge_polynomial_commitments

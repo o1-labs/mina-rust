@@ -148,7 +148,7 @@ where
 }
 
 /// Note: Refactor when `core::array::try_map` is stable
-/// https://github.com/rust-lang/rust/issues/79711
+/// <https://github.com/rust-lang/rust/issues/79711>
 pub fn try_array_into_with<'a, T, E, U, F, const N: usize>(
     value: &'a [T; N],
     fun: F,

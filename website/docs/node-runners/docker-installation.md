@@ -1,3 +1,9 @@
+---
+sidebar_position: 2
+title: Docker Installation
+description: Install OpenMina using Docker for easy deployment and management
+---
+
 # Docker Installation Guide
 
 ## Installation for

@@ -246,7 +246,7 @@ impl LedgerIntf for Mask {
         BaseLedger::set(self, addr.clone(), account)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L311
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L311>
     fn get_or_create(
         &mut self,
         account_id: &AccountId,
@@ -271,7 +271,7 @@ impl LedgerIntf for Mask {
         Ok((action, account, addr))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L304
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L304>
     fn create_new_account(&mut self, account_id: AccountId, account: Account) -> Result<(), ()> {
         match BaseLedger::get_or_create_account(self, account_id, account).unwrap() {
             GetOrCreated::Added(_) => {}
@@ -315,7 +315,7 @@ impl LedgerIntf for Mask {
 
     fn apply_mask(&mut self, mask: Self) {
         // ignore `self` here:
-        // https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L236-L246
+        // <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L236-L246>
         mask.commit()
     }
 

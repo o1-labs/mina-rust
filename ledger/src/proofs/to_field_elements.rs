@@ -93,7 +93,7 @@ impl ToFieldElements<Fp> for SokDigest {
 ///
 /// This implementation relies only on the output I observed here, using
 /// reproducible input test data:
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/composition_types/composition_types.ml#L714C11-L714C48
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/composition_types/composition_types.ml#L714C11-L714C48>
 ///
 /// TODO: Fuzz this method, compare with OCaml
 impl<T: ToFieldElements<Fp>> ToFieldElements<Fp> for Statement<T> {
@@ -222,7 +222,7 @@ impl<F: FieldWitness> ToFieldElements<F> for Fq {
         } else {
             // `Fq` is larger than `Fp` so we have to split the field (low & high bits)
             // See:
-            // https://github.com/MinaProtocol/mina/blob/e85cf6969e42060f69d305fb63df9b8d7215d3d7/src/lib/pickles/impls.ml#L94C1-L105C45
+            // <https://github.com/MinaProtocol/mina/blob/e85cf6969e42060f69d305fb63df9b8d7215d3d7/src/lib/pickles/impls.ml#L94C1-L105C45>
 
             let to_high_low = |fq: Fq| {
                 let [low, high @ ..] = field_to_bits::<Fq, 255>(fq);
@@ -668,7 +668,7 @@ impl<F: FieldWitness> ToFieldElements<F> for crate::AuthRequired {
     fn to_field_elements(&self, fields: &mut Vec<F>) {
         // In OCaml `Controller.if_`
         // push values in reverse order (because of OCaml evaluation order)
-        // https://github.com/MinaProtocol/mina/blob/4283d70c8c5c1bd9eebb0d3e449c36fb0bf0c9af/src/lib/mina_base/permissions.ml#L174
+        // <https://github.com/MinaProtocol/mina/blob/4283d70c8c5c1bd9eebb0d3e449c36fb0bf0c9af/src/lib/mina_base/permissions.ml#L174>
         let crate::AuthRequiredEncoded {
             constant,
             signature_necessary,
@@ -949,10 +949,10 @@ impl ToFieldElements<Fp> for PerProofWitness {
         match hack_feature_flags {
             OptFlag::Maybe => {
                 // This block is used only when proving zkapps using proof authorization.
-                // https://github.com/MinaProtocol/mina/blob/126d4d2e3495d03adc8f9597113d58a7e8fbcfd0/src/lib/pickles/composition_types/composition_types.ml#L150-L155
-                // https://github.com/MinaProtocol/mina/blob/126d4d2e3495d03adc8f9597113d58a7e8fbcfd0/src/lib/pickles/per_proof_witness.ml#L149
-                // https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L104-L119
-                // https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L253-L303
+                // <https://github.com/MinaProtocol/mina/blob/126d4d2e3495d03adc8f9597113d58a7e8fbcfd0/src/lib/pickles/composition_types/composition_types.ml#L150-L155>
+                // <https://github.com/MinaProtocol/mina/blob/126d4d2e3495d03adc8f9597113d58a7e8fbcfd0/src/lib/pickles/per_proof_witness.ml#L149>
+                // <https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L104-L119>
+                // <https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L253-L303>
 
                 // the first 8 elements are the `Plonk_types.Features.typ`
                 // The last 2 elements are the `Plonk_types.Opt.typ`
@@ -976,7 +976,7 @@ impl ToFieldElements<Fp> for PerProofWitness {
                 proofs_verified,
                 domain_log2,
             } = branch_data;
-            // https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58
+            // <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58>
             let proofs_verified = match proofs_verified {
                 v2::PicklesBaseProofsVerifiedStableV1::N0 => [Fp::zero(), Fp::zero()],
                 v2::PicklesBaseProofsVerifiedStableV1::N1 => [Fp::zero(), Fp::one()],
@@ -1006,7 +1006,7 @@ impl ToFieldElements<Fp> for PerProofWitness {
         match hack_feature_flags {
             OptFlag::Maybe => {
                 // See above.
-                // https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L1028-L1046
+                // <https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles_types/plonk_types.ml#L1028-L1046>
                 let zeros: [u64; 57] = [0; 57];
                 zeros.to_field_elements(fields);
             }

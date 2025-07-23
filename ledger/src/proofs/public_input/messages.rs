@@ -54,7 +54,7 @@ pub struct MessagesForNextWrapProof {
 
 impl MessagesForNextWrapProof {
     /// Implementation of `hash_messages_for_next_wrap_proof`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L50
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L50>
     pub fn hash(&self) -> [u64; 4] {
         let fields: Vec<Fq> = self.to_fields();
         let field: Fq = hash_fields(&fields);
@@ -81,7 +81,7 @@ impl MessagesForNextWrapProof {
     }
 
     /// Implementation of `to_field_elements`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L356
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L356>
     fn to_fields(&self) -> Vec<Fq> {
         const NFIELDS: usize = 32;
 
@@ -108,7 +108,7 @@ impl MessagesForNextWrapProof {
     }
 
     /// Value of `Dummy.Ipa.Wrap.challenges_computed` here:
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L37
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L37>
     ///
     /// Those are constants but they are computed once at runtime in Mina.
     /// TODO: Compute them instead of hardcoded values
@@ -148,7 +148,7 @@ where
     AppState: ToFieldElements<Fp>,
 {
     /// Implementation of `hash_messages_for_next_step_proof`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33>
     pub fn hash(&self) -> [u64; 4] {
         let fields: Vec<Fp> = self.to_fields();
         let field: Fp = hash_fields(&fields);
@@ -158,7 +158,7 @@ where
     }
 
     /// Implementation of `to_field_elements`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493>
     fn to_fields(&self) -> Vec<Fp> {
         const NFIELDS: usize = 93; // TODO: This is bigger with transactions
 

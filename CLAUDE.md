@@ -125,11 +125,49 @@ Each component directory contains a `summary.md` file documenting:
 - Implementation notes
 - Refactoring plans
 
+## Documentation Website
+
+OpenMina includes a comprehensive documentation website built with Docusaurus:
+
+### Quick Access
+
+```bash
+# Start local documentation server
+make docs-serve
+
+# Build documentation
+make docs-build
+
+# Other documentation commands
+make help | grep docs
+```
+
+The website is available at http://localhost:3000 when running locally.
+
+### Structure
+
+- **Node Runners** (`website/docs/node-runners/`) - Installation and operation
+  guides
+- **Developers** (`website/docs/developers/`) - Architecture and contribution
+  guides
+- **Researchers** (`website/docs/researchers/`) - Protocol and cryptography
+  documentation
+
+### Adding Documentation
+
+1. Create markdown files in the appropriate `website/docs/` subdirectory
+2. Add frontmatter with title, description, and sidebar position
+3. Update `website/sidebars.ts` if needed for navigation
+
+The website supports versioning and will be automatically deployed when commits
+are made to `develop` or when tags are created.
+
 ## Additional Resources
 
 - `docs/handover/` - Comprehensive architecture documentation
 - `ARCHITECTURE.md` - Migration guide for old vs new style
 - Component-specific `summary.md` files throughout the codebase
+- `website/` - Docusaurus documentation website
 
 ## Claude Development Guidelines
 
@@ -140,10 +178,11 @@ project.
 
 After making any code modifications, run the appropriate formatting commands:
 
-#### Markdown Files
+#### Markdown and MDX Files
 
-- **Format**: Run `make format-md` after modifying any markdown files
-- **Check**: Run `make check-md` to verify markdown files are formatted
+- **Format**: Run `make format-md` after modifying any markdown (.md) or MDX
+  (.mdx) files
+- **Check**: Run `make check-md` to verify markdown and MDX files are formatted
   correctly
 
 #### Rust and TOML Files
@@ -172,7 +211,17 @@ referencing Claude.
 
 1. Make your code changes
 2. Run the appropriate formatting command based on file types modified
-3. Verify formatting with check commands if needed
-4. **Verify commit message does not include Claude as co-author**
-5. **Verify commit message contains no emojis and follows 80-character wrap**
-6. Proceed with testing or committing changes
+3. **ALWAYS run `make fix-trailing-whitespace` before committing or ending any
+   task**
+4. Verify formatting with check commands if needed
+5. **Verify commit message does not include Claude as co-author**
+6. **Verify commit message contains no emojis and follows 80-character wrap**
+7. Proceed with testing or committing changes
+
+### Critical Pre-Commit Requirements
+
+- **MANDATORY**: Run `make fix-trailing-whitespace` before every commit
+- **MANDATORY**: Run `make check-trailing-whitespace` to verify no trailing
+  whitespaces remain
+- This applies to ALL file modifications, regardless of file type
+- Trailing whitespaces are strictly prohibited in the codebase
