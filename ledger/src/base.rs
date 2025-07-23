@@ -69,7 +69,7 @@ pub trait BaseLedger {
     where
         F: FnMut(B, &Account) -> B;
 
-    /// the set of [account_id]s are ledger elements to skip during the fold,
+    /// the set of `account_id`s are ledger elements to skip during the fold,
     /// because they're in a mask
     fn fold_with_ignored_accounts<B, F>(&self, ignoreds: HashSet<AccountId>, init: B, fun: F) -> B
     where
@@ -103,7 +103,7 @@ pub trait BaseLedger {
         account: Account,
     ) -> Result<GetOrCreated, DatabaseError>;
 
-    /// the ledger should not be used after calling [close]
+    /// the ledger should not be used after calling `close`
     fn close(&self);
 
     /// for account locations in the ledger, the last (rightmost) filled location
@@ -111,7 +111,7 @@ pub trait BaseLedger {
 
     fn get_uuid(&self) -> Uuid;
 
-    /// return Some [directory] for ledgers that use a file system, else None
+    /// return Some `directory` for ledgers that use a file system, else None
     fn get_directory(&self) -> Option<PathBuf>;
 
     fn get(&self, addr: Address) -> Option<Box<Account>>;

@@ -515,64 +515,64 @@ type OptionalCallback<T> = Option<Callback<T>>;
 
 #[derive(Serialize, Deserialize, Debug, Clone, Default)]
 pub struct P2pCallbacks {
-    /// Callback for [`P2pChannelsTransactionAction::Received`]
+    /// Callback for [`crate::channels::transaction::P2pChannelsTransactionAction::Received`]
     pub on_p2p_channels_transaction_received: OptionalCallback<(PeerId, Box<TransactionInfo>)>,
-    /// Callback for [`P2pChannelsTransactionAction::Libp2pReceived`]
+    /// Callback for [`crate::channels::transaction::P2pChannelsTransactionAction::Libp2pReceived`]
     pub on_p2p_channels_transactions_libp2p_received: OptionalCallback<(
         PeerId,
         Vec<TransactionWithHash>,
         P2pNetworkPubsubMessageCacheId,
     )>,
-    /// Callback for [`P2pChannelsSnarkJobCommitmentAction::Received`]
+    /// Callback for [`crate::channels::snark_job_commitment::P2pChannelsSnarkJobCommitmentAction::Received`]
     pub on_p2p_channels_snark_job_commitment_received:
         OptionalCallback<(PeerId, Box<SnarkJobCommitment>)>,
 
-    /// Callback for [`P2pChannelsSnarkAction::Received`]
+    /// Callback for [`crate::channels::snark::P2pChannelsSnarkAction::Received`]
     pub on_p2p_channels_snark_received: OptionalCallback<(PeerId, Box<SnarkInfo>)>,
-    /// Callback for [`P2pChannelsSnarkAction::Libp2pReceived`]
+    /// Callback for [`crate::channels::snark::P2pChannelsSnarkAction::Libp2pReceived`]
     pub on_p2p_channels_snark_libp2p_received: OptionalCallback<(PeerId, Box<Snark>)>,
 
-    /// Callback for [`P2pChannelsBestTipAction::RequestReceived`]
+    /// Callback for [`crate::channels::best_tip::P2pChannelsBestTipAction::RequestReceived`]
     pub on_p2p_channels_best_tip_request_received: OptionalCallback<PeerId>,
 
-    /// Callback for [`P2pDisconnectionAction::Finish`]
+    /// Callback for [`crate::disconnection::P2pDisconnectionAction::Finish`]
     pub on_p2p_disconnection_finish: OptionalCallback<PeerId>,
 
     /// TODO: these 2 should be set by `P2pConnectionOutgoingAction::Init`
-    /// Callback for [`P2pConnectionOutgoingAction::Error`]
+    /// Callback for [`crate::connection::outgoing::P2pConnectionOutgoingAction::Error`]
     pub on_p2p_connection_outgoing_error: OptionalCallback<(RpcId, P2pConnectionOutgoingError)>,
-    /// Callback for [`P2pConnectionOutgoingAction::Success`]
+    /// Callback for [`crate::connection::outgoing::P2pConnectionOutgoingAction::Success`]
     pub on_p2p_connection_outgoing_success: OptionalCallback<RpcId>,
 
     /// TODO: these 3 should be set by `P2pConnectionIncomingAction::Init`
-    /// Callback for [`P2pConnectionIncomingAction::Error`]
+    /// Callback for [`crate::connection::incoming::P2pConnectionIncomingAction::Error`]
     pub on_p2p_connection_incoming_error: OptionalCallback<(RpcId, String)>,
-    /// Callback for [`P2pConnectionIncomingAction::Success`]
+    /// Callback for [`crate::connection::incoming::P2pConnectionIncomingAction::Success`]
     pub on_p2p_connection_incoming_success: OptionalCallback<RpcId>,
-    /// Callback for [`P2pConnectionIncomingAction::AnswerReady`]
+    /// Callback for [`crate::connection::incoming::P2pConnectionIncomingAction::AnswerReady`]
     pub on_p2p_connection_incoming_answer_ready:
         OptionalCallback<(RpcId, PeerId, P2pConnectionResponse)>,
 
-    /// Callback for [`P2pPeerAction::BestTipUpdate`]
+    /// Callback for [`crate::peer::P2pPeerAction::BestTipUpdate`]
     pub on_p2p_peer_best_tip_update:
         OptionalCallback<BlockWithHash<Arc<v2::MinaBlockBlockStableV2>>>,
 
-    /// Callback for [`P2pChannelsRpcAction::Ready`]
+    /// Callback for [`crate::channels::rpc::P2pChannelsRpcAction::Ready`]
     pub on_p2p_channels_rpc_ready: OptionalCallback<PeerId>,
-    /// Callback for [`P2pChannelsRpcAction::Timeout`]
+    /// Callback for [`crate::channels::rpc::P2pChannelsRpcAction::Timeout`]
     pub on_p2p_channels_rpc_timeout: OptionalCallback<(PeerId, P2pRpcId)>,
-    /// Callback for [`P2pChannelsRpcAction::ResponseReceived`]
+    /// Callback for [`crate::channels::rpc::P2pChannelsRpcAction::ResponseReceived`]
     pub on_p2p_channels_rpc_response_received:
         OptionalCallback<(PeerId, P2pRpcId, Option<Box<P2pRpcResponse>>)>,
-    /// Callback for [`P2pChannelsRpcAction::RequestReceived`]
+    /// Callback for [`crate::channels::rpc::P2pChannelsRpcAction::RequestReceived`]
     pub on_p2p_channels_rpc_request_received:
         OptionalCallback<(PeerId, P2pRpcId, Box<P2pRpcRequest>)>,
 
-    /// Callback for [`P2pChannelsStreamingRpcAction::Ready`]
+    /// Callback for [`crate::channels::streaming_rpc::P2pChannelsStreamingRpcAction::Ready`]
     pub on_p2p_channels_streaming_rpc_ready: OptionalCallback<()>,
-    /// Callback for [`P2pChannelsStreamingRpcAction::Timeout`]
+    /// Callback for [`crate::channels::streaming_rpc::P2pChannelsStreamingRpcAction::Timeout`]
     pub on_p2p_channels_streaming_rpc_timeout: OptionalCallback<(PeerId, P2pRpcId)>,
-    /// Callback for [`P2pChannelsStreamingRpcAction::ResponseReceived`]
+    /// Callback for [`crate::channels::streaming_rpc::P2pChannelsStreamingRpcAction::ResponseReceived`]
     pub on_p2p_channels_streaming_rpc_response_received:
         OptionalCallback<(PeerId, P2pRpcId, Option<P2pStreamingRpcResponseFull>)>,
 
