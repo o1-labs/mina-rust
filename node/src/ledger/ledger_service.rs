@@ -1411,7 +1411,7 @@ impl LedgerSyncState {
             .ok_or_else(|| format!("Missing sync snarked ledger {}", hash))
     }
 
-    /// Returns a [Mask] instance for the snarked ledger with [hash]. If it doesn't
+    /// Returns a [Mask] instance for the snarked ledger with `hash`. If it doesn't
     /// exist a new instance is created.
     fn snarked_ledger_mut(&mut self, hash: LedgerHash) -> Result<&mut Mask, InvalidBigInt> {
         let hash_fp = hash.to_field()?;

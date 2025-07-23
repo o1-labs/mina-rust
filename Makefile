@@ -9,8 +9,8 @@ DOCKER_ORG ?= openmina
 # PostgreSQL configuration for archive node
 OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
 PG_USER ?= openmina
-PG_PW 	?= openminaopenmina
-PG_DB 	?= openmina_archive
+PG_PW	?= openminaopenmina
+PG_DB	?= openmina_archive
 PG_HOST	?= localhost
 PG_PORT	?= 5432
 
@@ -345,7 +345,7 @@ docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options" cargo +nightly doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +nightly doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 

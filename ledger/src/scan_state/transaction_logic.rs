@@ -626,7 +626,7 @@ impl Memo {
     }
 
     pub fn hash(&self) -> Fp {
-        use ::poseidon::hash::{hash_with_kimchi, legacy};
+        use poseidon::hash::{hash_with_kimchi, legacy};
 
         // For some reason we are mixing legacy inputs and "new" hashing
         let mut inputs = legacy::Inputs::new();
@@ -5683,7 +5683,7 @@ where
 
 /// apply zkapp command fee payer's while stubbing out the second pass ledger
 /// CAUTION: If you use the intermediate local states, you MUST update the
-///   [will_succeed] field to [false] if the [status] is [Failed].*)
+/// [`LocalStateEnv::will_succeed`] field to `false` if the `status` is [`TransactionStatus::Failed`].*)
 pub fn apply_zkapp_command_first_pass_aux<A, F, L>(
     constraint_constants: &ConstraintConstants,
     global_slot: Slot,
@@ -6313,14 +6313,14 @@ impl FailureCollection {
 }
 
 /// Structure of the failure status:
-///  I. No fee transfer and coinbase transfer fails: [[failure]]
+///  I. No fee transfer and coinbase transfer fails: `[[failure]]`
 ///  II. With fee transfer-
 ///   Both fee transfer and coinbase fails:
-///     [[failure-of-fee-transfer]; [failure-of-coinbase]]
+///     `[[failure-of-fee-transfer]; [failure-of-coinbase]]`
 ///   Fee transfer succeeds and coinbase fails:
-///     [[];[failure-of-coinbase]]
+///     `[[];[failure-of-coinbase]]`
 ///   Fee transfer fails and coinbase succeeds:
-///     [[failure-of-fee-transfer];[]]
+///     `[[failure-of-fee-transfer];[]]`
 ///
 /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L2022>
 fn apply_coinbase<L>(
@@ -7548,7 +7548,7 @@ pub fn cons_signed_command_payload(
 ) -> ReceiptChainHash {
     // Note: Not sure why they use the legacy way of hashing here
 
-    use ::poseidon::hash::legacy;
+    use poseidon::hash::legacy;
 
     let ReceiptChainHash(last_receipt_chain_hash) = last_receipt_chain_hash;
     let union = TransactionUnionPayload::of_user_command_payload(command_payload);
@@ -7569,7 +7569,7 @@ pub fn checked_cons_signed_command_payload(
     use crate::proofs::transaction::{
         legacy_input::CheckedLegacyInput, transaction_snark::checked_legacy_hash,
     };
-    use ::poseidon::hash::legacy;
+    use poseidon::hash::legacy;
 
     let mut inputs = payload.to_checked_legacy_input_owned(w);
     inputs.append_field(last_receipt_chain_hash.0);

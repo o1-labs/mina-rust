@@ -16,16 +16,16 @@
 //! excesses can be represented by excesses in (at most) 2 tokens.
 //! Consider, for example, any consecutive subsequence of the transactions
 //!
-//! ..[txn@2][ft@2][txn@3][txn@3][ft@3][txn@4][ft@4][txn@5][txn@5][ft@5][txn@6][ft@6]..
+//! `..[txn@2][ft@2][txn@3][txn@3][ft@3][txn@4][ft@4][txn@5][txn@5][ft@5][txn@6][ft@6]..`
 //!
-//! where [txn@i] and [ft@i] are transactions and fee transfers respectively
+//! where `[txn@i]` and `[ft@i]` are transactions and fee transfers respectively
 //! paid in token i.
 //! The only groups which may have non-zero fee excesses are those which
 //! contain the start and end of the subsequence.
 //!
-//! The code below also defines a canonical representation where fewer than 2
-//! tokens have non-zero excesses. See [rebalance] below for details and the
-//! implementation.
+//! The code below also defines a canonical representation where fewer
+//! than 2 tokens have non-zero excesses. See the internal function
+//! `FeeExcess::rebalance` below for details and the implementation.
 //!
 //!
 //! Port of the implementation from:
