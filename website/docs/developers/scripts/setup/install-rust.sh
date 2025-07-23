@@ -1,6 +1,3 @@
-# Install rustup (Rust toolchain installer)
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-
 # Source cargo environment
 source ~/.cargo/env
 
@@ -12,7 +9,7 @@ rustup default 1.84
 rustup install nightly
 
 # Add required components for Rust 1.84
-rustup component add rustfmt clippy --toolchain 1.84
+rustup component add rustfmt clippy rust-src --toolchain 1.84
 
 # Add required components for nightly
 rustup component add rustfmt clippy rust-src --toolchain nightly

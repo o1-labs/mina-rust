@@ -41,6 +41,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Development tools**: Add shellcheck to the CI
   ([#1255](https://github.com/o1-labs/openmina/pull/1255))
 
+
+
 ### Changed
 
 - **CI**: Generalized build jobs to support multiple platforms (Ubuntu 22.04,
@@ -70,6 +72,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1230](https://github.com/o1-labs/openmina/pull/1230))
 - bump itertools from 0.10.5 to 0.12.0 #1228
   ([#1228](https://github.com/o1-labs/openmina/pull/1228))
+
+### Other
+
+- Added a `flake.nix` for building the project on nixos/using nix ([#1241](https://github.com/o1-labs/openmina/pull/1241)),
+  together with **documentation**: instructions for developers,
+  and test the installation commands in CI.
+
 
 ## [0.16.0] - 2025-04-04
 

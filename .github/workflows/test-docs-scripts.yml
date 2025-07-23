@@ -128,6 +128,52 @@ jobs:
           wasm-pack --version
           shellcheck --version
 
+  test-nix-setup:
+    name: Test Nix Setup (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v4
+
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v2
+
+      - name: Test nix develop succeeds
+        run: |
+          nix develop
+
+      - name: Test Rust installation
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/install-rust.sh
+
+      - name: Test WASM tools installation
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          nix develop --command ./website/docs/developers/scripts/setup/install-wasm-tools.sh
+
+      - name: Test specialised builds
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/build-specialized.sh
+
+      - name: Test format and lint
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/format-and-lint.sh
+
+      - name: Verify installations
+        run: |
+          echo "Verifying installed tools..."
+          nix develop --command bash -c "rustc --version && cargo --version && node --version && npm --version && protoc --version && sqlite3 --version && wasm-pack --version"
+
+
   docker-ubuntu:
     name: Test Docker Setup Script (${{ matrix.os }})
     runs-on: ${{ matrix.os }}

@@ -18,6 +18,7 @@ import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.
 import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
 import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
 import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
+import NixDevelop from "!!raw-loader!./scripts/setup/nix-develop.sh";
 
 Welcome to OpenMina development! This guide will help you set up your
 development environment and build OpenMina from source.
@@ -39,20 +40,7 @@ development environment and build OpenMina from source.
 
 ### Required Tools
 
-#### 1. Rust Toolchain
-
-OpenMina requires both stable and nightly Rust toolchains, plus additional tools
-for development:
-
-<CodeBlock language="bash">{InstallRustSh}</CodeBlock>
-
-This installs:
-
-- Rust 1.84 (stable) and nightly toolchains
-- Required components: `rustfmt`, `clippy`, `rust-src`
-- `taplo-cli`: TOML formatter required for `make format`
-
-#### 2. System Dependencies
+#### 1. System Dependencies
 
 <Tabs groupId="operating-systems">
 <TabItem value="linux" label="Linux (Ubuntu/Debian)">
@@ -66,6 +54,19 @@ This installs:
 
 </TabItem>
 </Tabs>
+
+#### 2. Rust Toolchain
+
+OpenMina requires both stable and nightly Rust toolchains, plus additional tools
+for development:
+
+<CodeBlock language="bash">{InstallRustSh}</CodeBlock>
+
+This installs:
+
+- Rust 1.84 (stable) and nightly toolchains
+- Required components: `rustfmt`, `clippy`, `rust-src`
+- `taplo-cli`: TOML formatter required for `make format`
 
 #### 3. Additional Development Tools
 
@@ -102,6 +103,13 @@ This installs:
 #### 4. WASM Tools (for web node development)
 
 <CodeBlock language="bash">{InstallWasmToolsSh}</CodeBlock>
+
+#### 5. Using Nix to install dependencies automatically (alternative)
+
+If you're on NixOS or using nix, you can use the nix-flake provided in the repo
+to install the dependencies automatically and enter the shell:
+
+<CodeBlock language="bash">{NixDevelop}</CodeBlock>
 
 ## Clone and Build OpenMina
 
