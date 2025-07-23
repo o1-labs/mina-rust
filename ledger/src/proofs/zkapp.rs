@@ -455,7 +455,7 @@ pub struct ZkappCommandWitnessesParams<'a> {
 }
 
 pub fn zkapp_command_witnesses_exn(
-    params: ZkappCommandWitnessesParams,
+    params: ZkappCommandWitnessesParams<'_>,
 ) -> Result<
     Vec<(
         ZkappCommandSegmentWitness<'_>,

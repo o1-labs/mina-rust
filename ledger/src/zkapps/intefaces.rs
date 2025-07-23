@@ -459,7 +459,7 @@ where
     fn get(&self) -> &crate::Account;
     fn get_mut(&mut self) -> &mut crate::Account;
     fn set_delegate(&mut self, new: CompressedPubKey);
-    fn zkapp(&self) -> MyCow<ZkAppAccount>;
+    fn zkapp(&self) -> MyCow<'_, ZkAppAccount>;
     fn zkapp_mut(&mut self) -> &mut ZkAppAccount;
     fn verification_key_hash(&self) -> Self::VerificationKeyHash;
     fn set_token_id(&mut self, token_id: TokenId);

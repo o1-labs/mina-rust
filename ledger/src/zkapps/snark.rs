@@ -902,7 +902,7 @@ impl AccountInterface for SnarkAccount {
             Some(new)
         };
     }
-    fn zkapp(&self) -> MyCow<ZkAppAccount> {
+    fn zkapp(&self) -> MyCow<'_, ZkAppAccount> {
         match &self.zkapp {
             Some(zkapp) => MyCow::Borrow(zkapp),
             None => MyCow::Own(ZkAppAccount::default()),

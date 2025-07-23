@@ -664,7 +664,7 @@ impl AccountInterface for Account {
         };
     }
 
-    fn zkapp(&self) -> MyCow<ZkAppAccount> {
+    fn zkapp(&self) -> MyCow<'_, ZkAppAccount> {
         match self.zkapp.as_ref() {
             Some(zkapp) => MyCow::Borrow(zkapp),
             None => MyCow::Own(ZkAppAccount::default()),

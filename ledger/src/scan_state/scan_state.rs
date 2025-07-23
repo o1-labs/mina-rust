@@ -709,7 +709,7 @@ pub mod transaction_snark {
             }
         }
 
-        pub fn iter(&self) -> OneOrTwoIter<T> {
+        pub fn iter(&self) -> OneOrTwoIter<'_, T> {
             let array = match self {
                 OneOrTwo::One(a) => [Some(a), None],
                 OneOrTwo::Two((a, b)) => [Some(a), Some(b)],
