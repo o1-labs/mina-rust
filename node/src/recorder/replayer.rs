@@ -22,7 +22,7 @@ impl StateWithInputActionsReader {
         super::initial_state_path(&self.dir)
     }
 
-    pub fn read_initial_state(&self) -> Result<RecordedInitialState, Box<dyn Error>> {
+    pub fn read_initial_state(&self) -> Result<RecordedInitialState<'_>, Box<dyn Error>> {
         let path = self.initial_state_path();
         let encoded = fs::read(path)?;
         Ok(RecordedInitialState::decode(&encoded)?)

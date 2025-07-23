@@ -2294,7 +2294,7 @@ pub mod zkapp_command {
         }
 
         /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/account_update.ml#L635>
-        pub fn to_full(&self) -> MyCow<Account> {
+        pub fn to_full(&self) -> MyCow<'_, Account> {
             MyCow::Borrow(&self.0)
         }
 

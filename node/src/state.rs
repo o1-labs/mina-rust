@@ -678,7 +678,7 @@ impl P2p {
             .collect()
     }
 
-    pub fn ready_peers_iter(&self) -> ReadyPeersIter {
+    pub fn ready_peers_iter(&self) -> ReadyPeersIter<'_> {
         ReadyPeersIter::new(self)
     }
 }

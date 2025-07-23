@@ -1331,11 +1331,11 @@ impl Account {
         }
     }
 
-    pub fn delegate_or_empty(&self) -> MyCow<CompressedPubKey> {
+    pub fn delegate_or_empty(&self) -> MyCow<'_, CompressedPubKey> {
         MyCow::borrow_or_else(&self.delegate, CompressedPubKey::empty)
     }
 
-    pub fn zkapp_or_empty(&self) -> MyCow<Box<ZkAppAccount>> {
+    pub fn zkapp_or_empty(&self) -> MyCow<'_, Box<ZkAppAccount>> {
         MyCow::borrow_or_else(&self.zkapp, Box::<ZkAppAccount>::default)
     }
 
