@@ -65,6 +65,7 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       items: [
         'developers/getting-started',
+        'developers/updating-ocaml-node',
       ],
     },
     {

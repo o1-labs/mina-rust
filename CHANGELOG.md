@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Documentation**: Add instructions to update the OCaml node dependencies.
+  ([#1237](https://github.com/o1-labs/openmina/pull/1237))
 - **Documentation**: Complete Docusaurus-based documentation website with
   comprehensive guides for node runners, developers, and researchers
   ([#1234](https://github.com/o1-labs/openmina/pull/1234)). It migrates all the
