@@ -21,40 +21,43 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
+
       - name: Setup build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+        uses: ./.github/actions/setup-build-deps
+
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
           toolchain: nightly
+          cache-prefix: ledger-v0
+
       - name: Download circuits files
-        run: |
-          make download-circuits
+        uses: ./.github/actions/setup-circuits
+
       - name: Build ledger tests
-        run: |
-          make build-ledger
+        run: make build-ledger
+
       - name: Run ledger tests
-        run: |
-          make test-ledger
+        run: make test-ledger
 
   ledger-32x9-tests:
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
+
       - name: Setup build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+        uses: ./.github/actions/setup-build-deps
+
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
           toolchain: nightly
+          cache-prefix: ledger-32x9-v0
+
       - name: Download circuits files
-        run: |
-          make download-circuits
+        uses: ./.github/actions/setup-circuits
+
       - name: Enable 32x9 fields implementation
         run: |
           cargo install sd
@@ -62,32 +65,33 @@ jobs:
           sd '^ark-ff = \{ version .*$' '' ./Cargo.toml
           sd -F '# UNCOMMENTED_IN_CI ' '' ./Cargo.toml
           cat ./Cargo.toml
+
       - name: Build ledger tests
-        run: |
-          make build-ledger
+        run: make build-ledger
+
       - name: Run ledger tests
-        run: |
-          make test-ledger
+        run: make test-ledger
 
   vrf-tests:
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
+
       - name: Setup build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+        uses: ./.github/actions/setup-build-deps
+
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
           toolchain: nightly
+          cache-prefix: vrf-v0
+
       - name: Build vrf tests
-        run: |
-          make build-vrf
+        run: make build-vrf
+
       - name: Run vrf tests
-        run: |
-          make test-vrf
+        run: make test-vrf
 
   p2p-tests:
     runs-on: ubuntu-24.04
@@ -96,24 +100,16 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup build dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+        uses: ./.github/actions/setup-build-deps
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
-          components: rustfmt
           toolchain: 1.84
-
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "v0"
+          cache-prefix: p2p-v0
 
       - name: Test p2p crate
-        run: |
-          make test-p2p
+        run: make test-p2p
 
   build:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
@@ -126,38 +122,25 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
-
-      - name: Setup build dependencies (macOS)
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install protobuf
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
-          components: rustfmt
           toolchain: 1.84
-
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "v0"
+          cache-prefix: build-${{ matrix.os }}-v0
 
       - name: Release build
-        run: |
-          make build-release
+        run: make build-release
 
       - name: Upload binaries
         if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
-          name: bin
+          name: bin-${{ github.sha }}
           path: target/release/openmina
+          retention-days: 7
 
   build-wasm:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
@@ -170,36 +153,16 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
 
-      - name: Setup build dependencies (macOS)
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install protobuf
-
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+      - name: Setup WebAssembly environment
+        uses: ./.github/actions/setup-wasm
         with:
-          components: rustfmt, rust-src
-          toolchain: nightly
-
-      - name: Install wasm32 and wasm-bindgen-cli
-        run: |
-          rustup target add wasm32-unknown-unknown
-          cargo install -f wasm-bindgen-cli --version 0.2.99
-
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "v0"
+          cache-prefix: wasm-${{ matrix.os }}-v0
 
       - name: Release build
-        run: |
-          make build-wasm
+        run: make build-wasm
 
   build-tests:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
@@ -212,27 +175,14 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
-
-      - name: Setup build dependencies (macOS)
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install protobuf
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
-          components: rustfmt
           toolchain: 1.84
-
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "v0"
+          cache-prefix: build-tests-${{ matrix.os }}-v0
 
       - name: Build tests
         run: |
@@ -247,8 +197,9 @@ jobs:
         if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
-          name: tests
+          name: tests-${{ github.sha }}
           path: target/release/tests
+          retention-days: 7
 
   build-tests-webrtc:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
@@ -261,38 +212,25 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies (Ubuntu)
-        if: startsWith(matrix.os, 'ubuntu')
-        run: |
-          sudo apt update
-          sudo apt install -y protobuf-compiler
-
-      - name: Setup build dependencies (macOS)
-        if: startsWith(matrix.os, 'macos')
-        run: |
-          brew install protobuf
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
 
       - name: Setup Rust
-        uses: dtolnay/rust-toolchain@stable
+        uses: ./.github/actions/setup-rust
         with:
-          components: rustfmt
           toolchain: 1.84
-
-      - name: Setup Rust Cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          prefix-key: "v0"
+          cache-prefix: build-tests-webrtc-${{ matrix.os }}-v0
 
       - name: Build tests
-        run: |
-          make build-tests-webrtc
+        run: make build-tests-webrtc
 
       - name: Upload tests
         if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
-          name: tests-webrtc
+          name: tests-webrtc-${{ github.sha }}
           path: target/release/tests
+          retention-days: 7
 
   p2p-scenario-tests:
     needs: [ build-tests, build-tests-webrtc ]
@@ -332,7 +270,7 @@ jobs:
       - name: Download tests
         uses: actions/download-artifact@v4
         with:
-          pattern: tests*
+          pattern: tests*-${{ github.sha }}
           merge-multiple: true
 
       - name: Setup permissions
@@ -351,8 +289,9 @@ jobs:
       - name: Archive network debugger database
         uses: actions/upload-artifact@v4
         with:
-          name: network-debugger-${{ matrix.test }}
+          name: network-debugger-${{ matrix.test }}-${{ github.sha }}
           path: /tmp/db
+          retention-days: 3
         if: ${{ always() }}
 
   scenario-tests:
@@ -412,13 +351,13 @@ jobs:
       - name: Download tests
         uses: actions/download-artifact@v4
         with:
-          pattern: tests*
+          pattern: tests*-${{ github.sha }}
           merge-multiple: true
 
       - name: Download tests
         uses: actions/download-artifact@v4
         with:
-          pattern: tests-webrtc*
+          pattern: tests-webrtc*-${{ github.sha }}
           merge-multiple: true
 
       - name: Setup permissions
@@ -437,8 +376,9 @@ jobs:
       - name: Archive network debugger database
         uses: actions/upload-artifact@v4
         with:
-          name: network-debugger-${{ matrix.test }}
+          name: network-debugger-${{ matrix.test }}-${{ github.sha }}
           path: /tmp/db
+          retention-days: 3
         if: ${{ always() }}
 
   record-replay-tests:
@@ -468,7 +408,7 @@ jobs:
       - name: Download tests
         uses: actions/download-artifact@v4
         with:
-          pattern: tests*
+          pattern: tests*-${{ github.sha }}
           merge-multiple: true
 
       - name: Setup permissions
@@ -478,7 +418,6 @@ jobs:
       - name: Run the test
         run: |
           ./${{ matrix.test }} --test-threads=1
-
 
   bootstrap-test:
     needs: [ build, build-tests ]
@@ -503,12 +442,12 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          pattern: bin
+          name: bin-${{ github.sha }}
 
       - name: Download test
         uses: actions/download-artifact@v4
         with:
-          pattern: tests*
+          pattern: tests*-${{ github.sha }}
           merge-multiple: true
 
       - name: Fix permissions
@@ -538,20 +477,23 @@ jobs:
       - name: Upload logs
         uses: actions/upload-artifact@v4
         with:
-          name: bootstrap-logs
+          name: bootstrap-logs-${{ github.sha }}
           path: ${{ env.OPENMINA_HOME }}/logs/*
+          retention-days: 7
         if: ${{ failure() }}
 
       - name: Upload record
         uses: actions/upload-artifact@v4
         with:
-          name: bootstrap-record
+          name: bootstrap-record-${{ github.sha }}
           path: ${{ env.OPENMINA_HOME }}/recorder/*
+          retention-days: 7
         if: ${{ failure() }}
 
       - name: Archive network debugger database
         uses: actions/upload-artifact@v4
         with:
-          name: network-debugger-test-bootstrap
+          name: network-debugger-test-bootstrap-${{ github.sha }}
           path: /tmp/db
+          retention-days: 3
         if: ${{ always() }}

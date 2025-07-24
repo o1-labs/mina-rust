@@ -1,0 +1,34 @@
+name: 'Setup WebAssembly Build Environment'
+description: 'Setup Rust with WASM target and wasm-bindgen-cli'
+inputs:
+  toolchain:
+    description: 'Rust toolchain version'
+    required: false
+    default: 'nightly'
+  wasm-bindgen-version:
+    description: 'wasm-bindgen-cli version'
+    required: false
+    default: '0.2.99'
+  cache-prefix:
+    description: 'Cache prefix key'
+    required: false
+    default: 'v0'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ inputs.toolchain }}
+        components: rustfmt, rust-src
+
+    - name: Install wasm32 target and wasm-bindgen-cli
+      shell: bash
+      run: |
+        rustup target add wasm32-unknown-unknown
+        cargo install -f wasm-bindgen-cli --version ${{ inputs.wasm-bindgen-version }}
+
+    - name: Setup Rust Cache
+      uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: ${{ inputs.cache-prefix }}

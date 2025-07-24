@@ -1,0 +1,14 @@
+name: 'Wait for Network Debugger'
+description: 'Wait for the network debugger service to be ready'
+inputs:
+  timeout:
+    description: 'Timeout in seconds'
+    required: false
+    default: '30'
+runs:
+  using: 'composite'
+  steps:
+    - name: Wait for the debugger
+      shell: bash
+      run: |
+        timeout ${{ inputs.timeout }} bash -c 'until curl -f http://localhost/health; do sleep 1; done' || echo "Debugger may not be ready"
