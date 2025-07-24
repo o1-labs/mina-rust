@@ -91,15 +91,18 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: nightly
+
       - name: Install documentation dependencies
         run: make docs-install
 
       - name: Build documentation
         run: |
-          cd website
-          # Set base URL for GitHub Pages
-          echo "Building documentation for GitHub Pages..."
-          npm run build
+          make docs-build
         env:
           NODE_ENV: production
 
