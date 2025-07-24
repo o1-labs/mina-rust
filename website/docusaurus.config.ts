@@ -23,7 +23,7 @@ const config: Config = {
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'o1-labs', // Usually your GitHub org/user name.
-  projectName: 'openmina', // Usually your repo name.
+  projectName: 'o1-labs.github.io/openmina', // GH address + repository
 
   onBrokenLinks: 'throw', // Throw error on broken links to enforce link integrity
   onBrokenMarkdownLinks: 'throw',
