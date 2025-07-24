@@ -6,15 +6,7 @@ on:
       - develop
     tags:
       - 'v*'
-    paths:
-      - 'website/**'
-      - 'docs/**'
-      - '.github/workflows/docs.yaml'
   pull_request:
-    paths:
-      - 'website/**'
-      - 'docs/**'
-      - '.github/workflows/docs.yaml'
   workflow_dispatch:
 
 env:
