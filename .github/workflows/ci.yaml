@@ -159,7 +159,7 @@ jobs:
           name: bin
           path: target/release/openmina
 
-  build_wasm:
+  build-wasm:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
