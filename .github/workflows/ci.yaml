@@ -503,7 +503,7 @@ jobs:
       - name: Download binary
         uses: actions/download-artifact@v4
         with:
-          name: bin
+          pattern: bin
 
       - name: Download test
         uses: actions/download-artifact@v4
