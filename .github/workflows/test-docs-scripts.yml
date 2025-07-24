@@ -58,12 +58,6 @@ jobs:
           source ~/.cargo/env
           ./website/docs/developers/scripts/setup/format-and-lint.sh
 
-      - name: Test run tests
-        run: |
-          # Source cargo environment first
-          source ~/.cargo/env
-          ./website/docs/developers/scripts/setup/run-tests.sh
-
       - name: Verify installations
         run: |
           echo "Verifying installed tools..."
@@ -119,12 +113,6 @@ jobs:
           # Source cargo environment first
           source ~/.cargo/env
           ./website/docs/developers/scripts/setup/format-and-lint.sh
-
-      - name: Test run tests
-        run: |
-          # Source cargo environment first
-          source ~/.cargo/env
-          ./website/docs/developers/scripts/setup/run-tests.sh
 
       - name: Verify installations
         run: |

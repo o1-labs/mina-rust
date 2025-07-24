@@ -17,7 +17,6 @@ import InstallDockerMacOSSh from "!!raw-loader!./scripts/setup/install-docker-ma
 import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.sh";
 import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
 import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
-import RunTestsSh from "!!raw-loader!./scripts/setup/run-tests.sh";
 import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
 
 Welcome to OpenMina development! This guide will help you set up your
@@ -116,7 +115,11 @@ components:
 
 ### 3. Run Tests
 
-<CodeBlock language="bash">{RunTestsSh}</CodeBlock>
+You can run a different set of tests. The command `make help` will give you the
+whole set of targets. You can also visit the file
+[ci.yaml](https://github.com/o1-labs/openmina/blob/develop/.github/workflows/ci.yaml)
+to explore the targets used for testing in our continuous integration
+environment.
 
 ## Development Workflow
 
