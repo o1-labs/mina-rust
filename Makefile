@@ -103,7 +103,7 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sed -i 's/[[:space:]]*$$//' {} + && \
+		-exec sed -i'' -e "s/[[:space:]]*$$//" {} + && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
