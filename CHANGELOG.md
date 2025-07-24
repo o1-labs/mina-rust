@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update the CI and code to compare with the latest release 3.2.0-alpha1-7f94ae0
   ([#1236](https://github.com/o1-labs/openmina/pull/1236), fix
   [#1158](https://github.com/o1-labs/openmina/issues/1158))
+- Update the CI and code to compare with the latest release 3.2.0-beta1-978866c
+  ([#1250](https://github.com/o1-labs/openmina/pull/1250)
+
 
 ### Added
 
@@ -33,7 +36,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **Build System**: Enhanced Makefile with documentation-related targets and comprehensive formatting commands ([#1234](https://github.com/o1-labs/openmina/pull/1234))
-
 ### Fixed
 
 - **Documentation**: Resolved broken links and bare URL warnings in Rust
