@@ -267,6 +267,43 @@ encountering broken installation instructions.
 The tests are designed to run on-demand via labels to avoid slowing down regular
 development workflow, as they can take significant time to complete.
 
+### CHANGELOG Guidelines
+
+When making significant changes that affect users or developers, update the
+CHANGELOG.md file:
+
+#### CHANGELOG Structure
+
+The CHANGELOG follows [Keep a Changelog](https://keepachangelog.com/) format
+with these sections under `## [Unreleased]`:
+
+- **OCaml node** - Changes related to OCaml node compatibility
+- **Added** - New features and functionality
+- **Changed** - Changes to existing functionality
+- **Fixed** - Bug fixes
+- **Dependencies** - Dependency updates
+
+#### Entry Format
+
+- Use this format: `- **Category**: Description ([#PR](github-link))`
+- Wrap entries at 80 characters with proper indentation
+- Categories include: CI, Build System, Documentation, Development Tools, etc.
+- Always reference the PR number
+
+#### CHANGELOG Commit Pattern
+
+- Commit message: `CHANGELOG: add entry for patch XXXX`
+- Where XXXX is the PR number
+- Keep the commit message simple and consistent with existing pattern
+
+Example entry:
+
+```markdown
+- **CI**: Generalized build jobs to support multiple platforms (Ubuntu 22.04,
+  Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest) and updated test execution to
+  ubuntu-latest ([#1249](https://github.com/o1-labs/openmina/pull/1249))
+```
+
 ### Critical Pre-Commit Requirements
 
 - **MANDATORY**: Run `make fix-trailing-whitespace` before every commit
