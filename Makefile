@@ -139,7 +139,7 @@ clean: ## Clean build artifacts
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
 	  git clone --depth 1 https://github.com/openmina/circuit-blobs.git; \
-	  ln -s -b "$$PWD"/circuit-blobs/* ledger/; \
+	  ln -s "$$PWD"/circuit-blobs/* ledger/; \
 	else \
 	  echo "circuit-blobs already exists, skipping download."; \
 	fi
