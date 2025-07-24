@@ -34,7 +34,7 @@ impl MultiNodeBasicConnectivityPeerDiscovery {
 
         let ocaml_seed_config = OcamlNodeTestingConfig {
             initial_peers: Vec::new(),
-            daemon_json: DaemonJson::Custom("/var/lib/coda/config_7f94ae0b.json".to_owned()),
+            daemon_json: DaemonJson::Custom("/var/lib/coda/config_978866cd.json".to_owned()),
             block_producer: None,
         };
 
