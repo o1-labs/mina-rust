@@ -16,3 +16,6 @@ rustup component add rustfmt clippy --toolchain 1.84
 
 # Add required components for nightly
 rustup component add rustfmt clippy rust-src --toolchain nightly
+
+# Install taplo (TOML formatter, required for `make format`)
+cargo install taplo-cli --locked

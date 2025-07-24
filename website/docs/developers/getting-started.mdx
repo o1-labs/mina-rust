@@ -39,9 +39,16 @@ development environment and build OpenMina from source.
 
 #### 1. Rust Toolchain
 
-OpenMina requires both stable and nightly Rust toolchains:
+OpenMina requires both stable and nightly Rust toolchains, plus additional tools
+for development:
 
 <CodeBlock language="bash">{InstallRustSh}</CodeBlock>
+
+This installs:
+
+- Rust 1.84 (stable) and nightly toolchains
+- Required components: `rustfmt`, `clippy`, `rust-src`
+- `taplo-cli`: TOML formatter required for `make format`
 
 #### 2. System Dependencies
 
