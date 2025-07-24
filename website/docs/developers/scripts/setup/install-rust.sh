@@ -15,4 +15,4 @@ rustup install nightly
 rustup component add rustfmt clippy --toolchain 1.84
 
 # Add required components for nightly
-rustup component add rustfmt clippy --toolchain nightly
+rustup component add rustfmt clippy rust-src --toolchain nightly
