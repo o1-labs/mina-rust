@@ -32,6 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Development Tools**: Enhanced formatting infrastructure with MDX file
   support and trailing whitespace management
   ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Documentation**: add instructions for developers using MacOS based systems,
+  and test the installation commands in CI
+  ([#1247](https://github.com/o1-labs/openmina/pull/1234)).
 
 ### Changed
 
