@@ -5,10 +5,15 @@ sidebar_position: 1
 # Getting Started for Developers
 
 import CodeBlock from "@theme/CodeBlock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 import InstallRustSh from "!!raw-loader!./scripts/setup/install-rust.sh";
 import InstallSystemDepsSh from "!!raw-loader!./scripts/setup/install-system-deps.sh";
+import InstallSystemDepsMacOSSh from "!!raw-loader!./scripts/setup/install-system-deps-macos.sh";
 import InstallNodejsSh from "!!raw-loader!./scripts/setup/install-nodejs.sh";
+import InstallNodejsMacOSSh from "!!raw-loader!./scripts/setup/install-nodejs-macos.sh";
 import InstallDockerSh from "!!raw-loader!./scripts/setup/install-docker.sh";
+import InstallDockerMacOSSh from "!!raw-loader!./scripts/setup/install-docker-macos.sh";
 import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.sh";
 import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
 import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
@@ -22,8 +27,10 @@ development environment and build OpenMina from source.
 
 ### System Requirements
 
-- **Operating System**: Ubuntu 20.04+ or Debian 11+ (other Linux distributions
-  may work but are not officially supported)
+- **Operating System**:
+  - **Linux**: Ubuntu 20.04+ or Debian 11+ (other Linux distributions may work
+    but are not officially supported)
+  - **macOS**: macOS 12.0+ (Monterey or later)
 - **Memory**: At least 8GB RAM (16GB recommended)
 - **Storage**: At least 20GB free space
 - **Network**: Stable internet connection for downloading dependencies
@@ -38,17 +45,50 @@ OpenMina requires both stable and nightly Rust toolchains:
 
 #### 2. System Dependencies
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallSystemDepsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallSystemDepsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### 3. Additional Development Tools
 
 **Node.js (for documentation and frontend):**
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallNodejsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallNodejsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 **Docker (optional, for containerized builds):**
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallDockerSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallDockerMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### 4. WASM Tools (for web node development)
 
