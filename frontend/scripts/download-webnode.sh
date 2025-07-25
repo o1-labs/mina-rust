@@ -45,8 +45,11 @@ download_circuit_files() {
             echo "$FILE already exists in $DOWNLOAD_DIR, skipping download."
         else
             echo "Downloading $FILE to $DOWNLOAD_DIR..."
-            curl -s -L --retry 3 --retry-delay 5 -o "$DOWNLOAD_DIR/$FILE" "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
-            if [[ $? -ne 0 ]]; then
+            curl -s -L --retry 3 --retry-delay 5 \
+                -o "$DOWNLOAD_DIR/$FILE" \
+                "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
+            curl_exit_code=$?
+            if [[ $curl_exit_code -ne 0 ]]; then
                 echo "Failed to download $FILE after 3 attempts, exiting."
                 exit 1
             else
