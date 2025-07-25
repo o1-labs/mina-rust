@@ -18,7 +18,8 @@ concurrency:
 
 jobs:
   # Test documentation build
-  test-docs:
+  build-docs:
+    if: github.ref != 'refs/heads/develop'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -36,7 +37,7 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
 
-      - name: Install dependencies
+      - name: Install documentation dependencies
         run: make docs-install
 
       - name: Setup Rust
@@ -45,7 +46,7 @@ jobs:
           components: rustfmt
           toolchain: nightly
 
-      - name: Test documentation build
+      - name: Build documentation
         run: make docs-build
 
       - name: Upload build artifacts for testing
@@ -59,7 +60,6 @@ jobs:
   # Deploy to GitHub Pages (only on develop branch)
   deploy:
     if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
-    needs: [test-docs]
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -76,6 +76,9 @@ jobs:
         with:
           fetch-depth: 0  # Full history for versioning
 
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -83,13 +86,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: website/package-lock.json
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
       - name: Setup build dependencies
         run: |
           sudo apt update
           sudo apt install -y protobuf-compiler
+
+      - name: Install documentation dependencies
+        run: make docs-install
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -97,14 +100,8 @@ jobs:
           components: rustfmt
           toolchain: nightly
 
-      - name: Install documentation dependencies
-        run: make docs-install
-
       - name: Build documentation
-        run: |
-          make docs-build
-        env:
-          NODE_ENV: production
+        run: make docs-build
 
       - name: Upload to GitHub Pages
         uses: actions/upload-pages-artifact@v3
@@ -118,7 +115,7 @@ jobs:
   # Create versioned documentation on tag creation
   version-docs:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [test-docs]
+    needs: [build-docs]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
