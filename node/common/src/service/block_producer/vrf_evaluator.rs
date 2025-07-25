@@ -86,60 +86,8 @@ mod tests {
 
     use super::*;
 
-    #[test]
-    #[ignore]
-    fn test_vrf() {
-        let json = std::fs::read_to_string("/tmp/vrf.json").unwrap();
-        let vrf_evaluator_input: VrfEvaluatorInput = serde_json::from_str(&json).unwrap();
-
-        let private = "SOME_KEY";
-        let private = AccountSecretKey::from_str(private).unwrap();
-        let keypair: Keypair = private.into();
-
-        let VrfEvaluatorInput {
-            epoch_seed,
-            delegator_table,
-            global_slot,
-            total_currency,
-            staking_ledger_hash: _,
-        } = &vrf_evaluator_input;
-
-        let now = std::time::Instant::now();
-
-        let vrf_result = delegator_table
-            .iter()
-            .map(|(index, (pub_key, stake))| {
-                let vrf_input = VrfEvaluationInput {
-                    producer_key: keypair.clone(),
-                    global_slot: *global_slot,
-                    epoch_seed: epoch_seed.clone(),
-                    account_pub_key: pub_key.clone(),
-                    delegator_index: *index,
-                    delegated_stake: (*stake).into(),
-                    total_currency: (*total_currency).into(),
-                };
-                // let now = redux::Instant::now();
-                let vrf_result = vrf::evaluate_vrf(vrf_input).unwrap();
-                // let elapsed = now.elapsed();
-                // let slot = global_slot;
-                // eprintln!("vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} index:{index:?}");
-                // openmina_core::info!(openmina_core::log::system_time(); "vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} index:{index:?}");
-
-                // nevaluated.fetch_add(1, std::sync::atomic::Ordering::AcqRel);
-
-                // the first delegate that won the slot
-                if let VrfEvaluationOutput::SlotWon(_) = vrf_result {
-                    return Some(vrf_result);
-                }
-                None
-            })
-            .collect::<Vec<_>>();
-
-        let elapsed = now.elapsed();
-        let slot = vrf_evaluator_input.global_slot;
-        let ndelegator = vrf_evaluator_input.delegator_table.len();
-        // let nevaluated = nevaluated.load(std::sync::atomic::Ordering::Relaxed);
-        eprintln!("TOTAL vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} ndelegators:{ndelegator:?}");
-        dbg!(vrf_result);
-    }
+    // Note: There was a test here that depended on external file /tmp/vrf.json
+    // which was more of a development debugging tool than a real unit test.
+    // It has been removed. If you need to test VRF evaluation, use the tests
+    // in the vrf crate instead.
 }

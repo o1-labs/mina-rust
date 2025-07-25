@@ -4917,8 +4917,9 @@ pub(super) mod tests {
         let _sum = dbg!(sha256_sum(&proof_json));
     }
 
+    /// Utility function to generate RSA keys for development purposes.
+    /// This doesn't test anything but demonstrates RSA key generation.
     #[test]
-    #[ignore]
     fn make_rsa_key() {
         use rsa::{
             pkcs1::{EncodeRsaPrivateKey, EncodeRsaPublicKey},
