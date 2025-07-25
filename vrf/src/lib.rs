@@ -324,7 +324,8 @@ mod test {
     #[test]
     fn test_vrf_performance_small() {
         let start = redux::Instant::now();
-        for i in 1..10 {  // Much smaller than 14,403
+        for i in 1..10 {
+            // Much smaller than 14,403
             let vrf_input = VrfEvaluationInput {
                 producer_key: keypair_from_bs58_string(
                     "EKEEpMELfQkMbJDt2fB4cFXKwSf1x4t7YD4twREy5yuJ84HBZtF9",
@@ -343,11 +344,18 @@ mod test {
             };
             let result = evaluate_vrf(vrf_input).expect("Failed to evaluate VRF");
             // Ensure we get a valid result
-            assert!(matches!(result, VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)));
+            assert!(matches!(
+                result,
+                VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)
+            ));
         }
         let elapsed = start.elapsed();
         // Ensure the small test completes in reasonable time (under 10 seconds)
-        assert!(elapsed.as_secs() < 10, "VRF evaluation took too long: {}s", elapsed.as_secs());
+        assert!(
+            elapsed.as_secs() < 10,
+            "VRF evaluation took too long: {}s",
+            elapsed.as_secs()
+        );
     }
 
     /// Test VRF slot discovery with a smaller dataset suitable for CI.
@@ -355,7 +363,8 @@ mod test {
     /// without taking too long in CI.
     #[test]
     fn test_vrf_slot_discovery_small() {
-        for i in 0..100 {  // Much smaller than 7,000
+        for i in 0..100 {
+            // Much smaller than 7,000
             let vrf_input = VrfEvaluationInput {
                 producer_key: keypair_from_bs58_string(
                     "EKEEpMELfQkMbJDt2fB4cFXKwSf1x4t7YD4twREy5yuJ84HBZtF9",
@@ -375,7 +384,10 @@ mod test {
             let evaluation_result =
                 evaluate_vrf(vrf_input.clone()).expect("Failed to evaluate vrf");
             // Just ensure VRF evaluation works without errors for all slots
-            assert!(matches!(evaluation_result, VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)));
+            assert!(matches!(
+                evaluation_result,
+                VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)
+            ));
         }
     }
 }
