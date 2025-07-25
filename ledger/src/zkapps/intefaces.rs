@@ -1,3 +1,20 @@
+//! zkApp Application Interfaces
+//!
+//! This module defines the trait interfaces that abstract over the different
+//! implementations of zkApp processing (SNARK vs non-SNARK modes).
+//!
+//! The interfaces follow the Mina Protocol zkApp specification and provide
+//! clean abstractions for:
+//! - Witness generation and constraint handling
+//! - Account operations and state management
+//! - Ledger operations and inclusion proofs
+//! - Boolean logic and arithmetic operations
+//! - Authorization and permission checking
+//!
+//! These interfaces allow the same zkApp logic to work in both:
+//! - Circuit mode: Generating constraints for SNARK proofs
+//! - Non-circuit mode: Direct execution for validation
+
 use std::marker::PhantomData;
 
 use mina_hasher::Fp;
@@ -23,16 +40,23 @@ use crate::{
     AccountId, AuthRequired, MyCow, ReceiptChainHash, TokenId, ZkAppAccount,
 };
 
+/// Core trait for witness generation in zkApp circuits.
+///
+/// This trait abstracts the process of generating witnesses (private inputs)
+/// for the zkApp circuit. In circuit mode, this tracks variables and adds
+/// constraints. In non-circuit mode, this is essentially a no-op.
 pub trait WitnessGenerator<F: FieldWitness>
 where
     Self: Sized,
 {
     type Bool: BoolInterface;
 
+    /// Add a value to the witness with constraint checking
     fn exists<T>(&mut self, data: T) -> T
     where
         T: ToFieldElements<F> + Check<F>;
 
+    /// Add a value to the witness without constraint checking
     fn exists_no_check<T>(&mut self, data: T) -> T
     where
         T: ToFieldElements<F>;
@@ -62,6 +86,10 @@ where
     }
 }
 
+/// Handler trait for zkApp-specific operations.
+///
+/// This trait defines the operations that are specific to zkApp processing
+/// and may have different implementations in SNARK vs non-SNARK modes.
 pub trait ZkappHandler {
     type Z: ZkappApplication;
     type AccountUpdate: AccountUpdateInterface;
@@ -283,6 +311,10 @@ where
     type StackFrame: StackFrameInterface;
 }
 
+/// Interface for global blockchain state operations.
+///
+/// This trait provides access to global state that persists across
+/// zkApp command processing, including ledger states and fee tracking.
 pub trait GlobalStateInterface {
     type Ledger;
     type W: WitnessGenerator<Fp>;
@@ -329,6 +361,11 @@ pub trait LocalStateInterface {
     fn add_new_failure_status_bucket(local: &mut zkapp_logic::LocalState<Self::Z>);
 }
 
+/// Interface for zkApp account updates.
+///
+/// An account update represents a single modification to an account
+/// within a zkApp transaction. This trait provides access to the
+/// account update data and methods for authorization checking.
 pub trait AccountUpdateInterface
 where
     Self: Sized,
@@ -406,6 +443,11 @@ pub trait TxnVersionInterface {
     fn older_than_current(version: TxnVersion, w: &mut Self::W) -> Self::Bool;
 }
 
+/// Interface for boolean operations in zkApp circuits.
+///
+/// This trait abstracts boolean logic operations that work in both
+/// circuit and non-circuit modes. In circuit mode, these operations
+/// generate constraints. In non-circuit mode, they perform direct evaluation.
 pub trait BoolInterface
 where
     Self: Sized,
@@ -444,6 +486,10 @@ pub trait TransactionCommitmentInterface {
     ) -> Fp;
 }
 
+/// Interface for account data and operations.
+///
+/// This trait provides access to account state and methods for
+/// modifying account properties like balance, permissions, app state, etc.
 pub trait AccountInterface
 where
     Self: Sized,
@@ -480,6 +526,10 @@ where
     fn set_last_action_slot(&mut self, slot: Self::GlobalSlot);
 }
 
+/// Interface for ledger operations in zkApp processing.
+///
+/// This trait provides the ledger operations needed for zkApp execution,
+/// including account retrieval, modification, and inclusion proof verification.
 pub trait LedgerInterface: LedgerIntf + Clone {
     type W: WitnessGenerator<Fp>;
     type AccountUpdate: AccountUpdateInterface;
@@ -574,6 +624,12 @@ pub trait BranchInterface {
         F: FnOnce(&mut Self::W) -> T;
 }
 
+/// Main trait that ties together all zkApp interfaces.
+///
+/// This trait defines the complete type system for zkApp processing,
+/// specifying all the associated types and their relationships.
+/// It serves as the central abstraction that allows the same zkApp
+/// logic to work in both circuit and non-circuit modes.
 pub trait ZkappApplication
 where
     Self: Sized,

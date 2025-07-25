@@ -1224,10 +1224,20 @@ pub mod zkapp_command {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_basic.ml#L100>
+    /// Represents a field update in a zkApp account update.
+    ///
+    /// This enum allows zkApp account updates to either:
+    /// - Set a field to a new value
+    /// - Keep the current value unchanged
+    ///
+    /// This is used throughout zkApp account updates for optional field modifications.
+    ///
+    /// Reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_basic.ml#L100>
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub enum SetOrKeep<T: Clone> {
+        /// Set the field to this new value
         Set(T),
+        /// Keep the current value unchanged
         Keep,
     }
 
@@ -1879,15 +1889,28 @@ pub mod zkapp_command {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_precondition.ml#L977>
+    /// Preconditions on the protocol state that must hold for a zkApp to execute.
+    ///
+    /// These preconditions allow zkApps to ensure certain blockchain state conditions
+    /// are met before their transaction executes. All specified conditions must be
+    /// satisfied or the transaction will fail.
+    ///
+    /// Reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_precondition.ml#L977>
     #[derive(Debug, Clone, PartialEq)]
     pub struct ZkAppPreconditions {
+        /// Required hash of the snarked ledger
         pub snarked_ledger_hash: Hash<Fp>,
+        /// Required range for blockchain length
         pub blockchain_length: Numeric<Length>,
+        /// Required range for minimum window density
         pub min_window_density: Numeric<Length>,
+        /// Required range for total currency in circulation
         pub total_currency: Numeric<Amount>,
+        /// Required range for global slot since genesis
         pub global_slot_since_genesis: Numeric<Slot>,
+        /// Required conditions on staking epoch data
         pub staking_epoch_data: EpochData,
+        /// Required conditions on next epoch data
         pub next_epoch_data: EpochData,
     }
 
@@ -3582,11 +3605,24 @@ pub mod zkapp_command {
         pub authorization: Signature,
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_command.ml#L959>
+    /// A zkApp command represents a complete zkApp transaction.
+    ///
+    /// This contains all the information needed to execute a zkApp transaction:
+    /// - The fee payer who pays transaction fees and signs the transaction
+    /// - A forest of account updates to be applied atomically
+    /// - An optional memo for the transaction
+    ///
+    /// The account updates are processed in a specific order using a call stack,
+    /// ensuring that permissions and authorization are properly enforced.
+    ///
+    /// Reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/zkapp_command.ml#L959>
     #[derive(Debug, Clone, PartialEq)]
     pub struct ZkAppCommand {
+        /// Account that pays fees and provides base authorization
         pub fee_payer: FeePayer,
+        /// Tree of account updates to be processed
         pub account_updates: CallForest<AccountUpdate>,
+        /// Optional memo attached to the transaction
         pub memo: Memo,
     }
 

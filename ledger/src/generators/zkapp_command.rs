@@ -1,3 +1,19 @@
+//! zkApp Command Generation for Testing
+//!
+//! This module provides utilities for generating zkApp commands for testing purposes.
+//! It includes functions to create valid and invalid zkApp transactions with various
+//! configurations, account updates, and preconditions.
+//!
+//! The generators support:
+//! - Creating arbitrary zkApp commands with configurable parameters
+//! - Generating both valid and invalid transactions for testing edge cases
+//! - Setting up complex account update hierarchies
+//! - Testing various authorization scenarios
+//! - Generating invalid preconditions for failure testing
+//!
+//! These generators are essential for comprehensive testing of the zkApp
+//! implementation against the Mina Protocol specification.
+
 use std::{
     collections::{
         hash_map::Entry::{Occupied, Vacant},
@@ -50,7 +66,12 @@ use super::{Failure, NotPermitedOf, Role};
 // /// Value when we run `dune runtest src/lib/staged_ledger -f`
 // const ACCOUNT_CREATION_FEE: Fee = Fee::from_u64(1000000000);
 
-/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L443>
+/// Generates invalid protocol state preconditions for testing failure cases.
+///
+/// This function creates preconditions that are guaranteed to fail validation
+/// against the current protocol state, allowing testing of zkApp rejection scenarios.
+///
+/// Reference: <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_generators/zkapp_command_generators.ml#L443>
 fn gen_invalid_protocol_state_precondition(psv: &ProtocolStateView) -> ZkAppPreconditions {
     enum Tamperable {
         BlockchainLength,
@@ -1312,16 +1333,30 @@ fn gen_fee_payer(
     }
 }
 
+/// Parameters for generating zkApp commands in tests.
+///
+/// This struct contains all the configuration needed to generate
+/// realistic zkApp commands for testing various scenarios.
 pub struct GenZkappCommandParams<'a> {
+    /// Global slot for the transaction (affects timing preconditions)
     pub global_slot: Option<Slot>,
+    /// Optional failure mode to generate invalid transactions
     pub failure: Option<&'a Failure>,
+    /// Maximum number of account updates to generate
     pub max_account_updates: Option<usize>,
+    /// Maximum number of token-related updates to generate
     pub max_token_updates: Option<usize>,
+    /// Keypair for the fee payer account
     pub fee_payer_keypair: &'a Keypair,
+    /// Map of public keys to keypairs for signing
     pub keymap: &'a HashMap<HashableCompressedPubKey, Keypair>,
+    /// Optional table tracking account states across generations
     pub account_state_tbl: Option<&'a mut HashMap<AccountId, (Account, Role)>>,
+    /// Ledger state for account lookups and modifications
     pub ledger: Mask,
+    /// Protocol state view for precondition generation
     pub protocol_state_view: Option<&'a ProtocolStateView>,
+    /// Optional verification key for zkApp accounts
     pub vk: Option<&'a VerificationKeyWire>,
 }
 
