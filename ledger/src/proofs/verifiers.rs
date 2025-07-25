@@ -22,7 +22,7 @@ use kimchi::{
     mina_curves::pasta::Pallas,
 };
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poly_commitment::srs::SRS;
 
 use crate::{proofs::BACKEND_TOCK_ROUNDS_N, VerificationKey};

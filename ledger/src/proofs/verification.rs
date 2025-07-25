@@ -41,7 +41,7 @@ use kimchi::{
     proof::{PointEvaluations, ProofEvaluations},
 };
 use mina_curves::pasta::{Fq, Vesta};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     bigint::BigInt,
     binprot::BinProtWrite,
@@ -1033,7 +1033,7 @@ mod on_fail {
 mod tests {
     use std::path::Path;
 
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot::BinProtRead, v2};
 
     use crate::proofs::{provers::devnet_circuit_directory, transaction::tests::panic_in_ci};

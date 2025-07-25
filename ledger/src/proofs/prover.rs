@@ -5,7 +5,7 @@ use kimchi::{
     proof::{PointEvaluations, ProofEvaluations, ProverCommitments, RecursionChallenge},
 };
 use mina_curves::pasta::Pallas;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use once_cell::sync::Lazy;
 use poly_commitment::{commitment::CommitmentCurve, evaluation_proof::OpeningProof};
 

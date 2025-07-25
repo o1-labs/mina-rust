@@ -24,7 +24,7 @@ use ark_poly::{
 };
 use kimchi::proof::{PointEvaluations, ProverCommitments, RecursionChallenge};
 use mina_curves::pasta::{Fq, Pallas};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2;
 use poly_commitment::{commitment::b_poly_coefficients, evaluation_proof::OpeningProof};
 

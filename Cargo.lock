@@ -5991,6 +5991,7 @@ dependencies = [
  "lazy_static",
  "libp2p-identity",
  "md5",
+ "mina-curves",
  "mina-hasher",
  "mina-p2p-messages",
  "multihash 0.18.1",

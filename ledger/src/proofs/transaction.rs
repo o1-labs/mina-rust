@@ -8,7 +8,7 @@ use kimchi::{
     proof::RecursionChallenge,
 };
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::{
     self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
     ConsensusProofOfStakeDataEpochDataStakingValueVersionedValueStableV1, CurrencyAmountStableV1,

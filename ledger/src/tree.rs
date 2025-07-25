@@ -5,7 +5,7 @@ use crate::{
     base::AccountIndex,
     tree_version::{TreeVersion, V2},
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use once_cell::sync::Lazy;
 
 #[derive(Clone, Debug)]
