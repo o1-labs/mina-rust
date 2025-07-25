@@ -115,6 +115,32 @@ jobs:
         run: |
           make test-p2p
 
+  docs-tests:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Setup build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y protobuf-compiler
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: 1.84
+
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "v0"
+
+      - name: Test documentation code examples
+        run: |
+          make test-docs
+
   build:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
