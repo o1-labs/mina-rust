@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Documentation**: add instructions for developers using MacOS based systems,
   and test the installation commands in CI
   ([#1247](https://github.com/o1-labs/openmina/pull/1234)).
+- **Development tools**: Add shellcheck to the CI
+  ([#1255](https://github.com/o1-labs/openmina/pull/1255))
 
 ### Changed
 

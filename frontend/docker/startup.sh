@@ -10,12 +10,13 @@ replace_signaling_url() {
         echo "Replacing signaling URL in $HTTPD_CONF..."
 
         sed -i "s|$SIGNALING_URL|$OPENMINA_SIGNALING_URL|g" "$HTTPD_CONF"
-
-        if [[ $? -ne 0 ]]; then
+        sed_exit_code=$?
+        if [[ $sed_exit_code -ne 0 ]]; then
             echo "Failed to replace the signaling URL, exiting."
             exit 1
         else
-            echo "Successfully replaced signaling URL with '$OPENMINA_SIGNALING_URL' in $HTTPD_CONF"
+            echo "Successfully replaced signaling URL with" \
+                "'$OPENMINA_SIGNALING_URL' in $HTTPD_CONF"
         fi
     else
         echo "OPENMINA_SIGNALING_URL is not set. No replacement performed."
@@ -63,8 +64,11 @@ download_circuit_files() {
             echo "$FILE already exists in $DOWNLOAD_DIR, skipping download."
         else
             echo "Downloading $FILE to $DOWNLOAD_DIR..."
-            curl -s -L --retry 3 --retry-delay 5 -o "$DOWNLOAD_DIR/$FILE" "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
-            if [[ $? -ne 0 ]]; then
+            curl -s -L --retry 3 --retry-delay 5 \
+                -o "$DOWNLOAD_DIR/$FILE" \
+                "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
+            curl_exit_code=$?
+            if [[ $curl_exit_code -ne 0 ]]; then
                 echo "Failed to download $FILE after 3 attempts, exiting."
                 exit 1
             else
@@ -80,24 +84,28 @@ download_wasm_files() {
         exit 1
     fi
 
-    WASM_URL="$OPENMINA_BASE_URL/openmina/releases/download/$OPENMINA_WASM_VERSION/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
+    WASM_URL="$OPENMINA_BASE_URL/openmina/releases/download/\
+$OPENMINA_WASM_VERSION/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
     TARGET_DIR="/usr/local/apache2/htdocs/assets/webnode/pkg"
 
     mkdir -p "$TARGET_DIR"
 
     echo "Downloading WASM files from $WASM_URL..."
-    curl -s -L --retry 3 --retry-delay 5 -o "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" "$WASM_URL"
-
-    if [[ $? -ne 0 ]]; then
+    curl -s -L --retry 3 --retry-delay 5 \
+        -o "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" \
+        "$WASM_URL"
+    curl_exit_code=$?
+    if [[ $curl_exit_code -ne 0 ]]; then
         echo "Failed to download the WASM file after 3 attempts, exiting."
         exit 1
     else
         echo "WASM file downloaded successfully. Extracting to $TARGET_DIR..."
 
-        tar -xzf "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" -C "$TARGET_DIR"
-
         # Check if the extraction was successful
-        if [[ $? -ne 0 ]]; then
+        tar -xzf "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" \
+            -C "$TARGET_DIR"
+        tar_exit_code=$?
+        if [[ $tar_exit_code -ne 0 ]]; then
             echo "Failed to extract the WASM file, exiting."
             exit 1
         else
