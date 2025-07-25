@@ -162,6 +162,16 @@ format-md: ## Format all markdown and MDX files to wrap at 80 characters
 lint: ## Run linter (clippy)
 	cargo clippy --all-targets -- -D warnings --allow clippy::mutable_key_type
 
+.PHONY: lint-bash
+lint-bash: ## Check all shell scripts using shellcheck
+	@echo "Running shellcheck on shell scripts..."
+	@find . -name "*.sh" \
+		-not -path "*/target/*" \
+		-not -path "*/node_modules/*" \
+		-not -path "*/website/docs/developers/scripts/setup/*" \
+		-print0 | xargs -0 shellcheck
+	@echo "Shellcheck completed successfully!"
+
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \

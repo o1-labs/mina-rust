@@ -55,6 +55,21 @@ jobs:
       - name: Run transaction Fuzzing check
         run: make check-tx-fuzzing
 
+  shellcheck:
+    name: Shellcheck - ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: |
+          sudo apt update || true
+          sudo apt install -y shellcheck || true
+      - name: Run shellcheck
+        run: make lint-bash
+
   hadolint:
     name: Hadolint - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
