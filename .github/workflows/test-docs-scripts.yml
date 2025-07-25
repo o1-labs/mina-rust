@@ -172,3 +172,41 @@ jobs:
           # Docker Desktop needs to be started manually on macOS
           # We'll just check if it was installed via Homebrew
           docker --version || echo "Docker installed but not running (expected on macOS CI)"
+
+  test-update-ocaml-node-script:
+    name: Test Update OCaml Node Script
+    runs-on: [macos-latest, ubuntu-latest]
+
+      - name: Test update-ocaml-node script reproducibility
+        run: |
+          # Save the current script to use with the old commit state
+          cp ./website/docs/developers/scripts/update-ocaml-node.sh /tmp/update-ocaml-node.sh
+          chmod +x /tmp/update-ocaml-node.sh
+
+          # Check out the parent commit of the example update (cf67d94c)
+          git checkout cf67d94c
+
+          # Run the script from current branch with the same parameters as the example
+          /tmp/update-ocaml-node.sh 7f94ae0b 978866cd "3.2.0-alpha1" "3.2.0-beta1"
+
+          # Check if the changes match the expected diff from commit 31caeee6
+          git diff --name-only | sort > actual_files.txt
+          echo ".github/workflows/ci.yaml" > expected_files.txt
+          echo "docker-compose.archive.devnet.compare.yml" >> expected_files.txt
+          echo "node/testing/src/node/ocaml/config.rs" >> expected_files.txt
+          echo "node/testing/src/node/ocaml/mod.rs" >> expected_files.txt
+          echo "node/testing/src/scenarios/multi_node/basic_connectivity_peer_discovery.rs" >> expected_files.txt
+          echo "node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs" >> expected_files.txt
+          sort expected_files.txt > expected_files_sorted.txt
+
+          # Verify the same files were modified
+          if ! diff -q actual_files.txt expected_files_sorted.txt; then
+            echo "ERROR: Script modified different files than expected"
+            echo "Expected files:"
+            cat expected_files_sorted.txt
+            echo "Actual files:"
+            cat actual_files.txt
+            exit 1
+          fi
+
+          echo "SUCCESS: Script produced the expected file changes"

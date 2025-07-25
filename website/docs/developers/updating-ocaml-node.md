@@ -33,8 +33,11 @@ OpenMina provides an automation script to handle the bulk of the update process:
 
 **Example usage:**
 
+For example, to update from `3.2.0-alpha1` to `3.2.0-beta1` (as done in commit
+[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc)):
+
 ```bash
-./website/docs/developers/scripts/update-ocaml-node.sh 12345678 87654321 3.1.0 3.2.0-alpha1
+./website/docs/developers/scripts/update-ocaml-node.sh 7f94ae0b 978866cd "3.2.0-alpha1" "3.2.0-beta1"
 ```
 
 **Parameters:**
@@ -74,11 +77,13 @@ After making updates:
 
 ## 5. Commit Structure
 
-Following the pattern from PR #1236:
+Following the pattern from commit
+[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc):
 
-1. **Main Update Commit**: "Update OCaml node dependencies to [version]"
-2. **Changelog**: Add entry documenting the version bump
-3. **Config Updates**: Separate commit for configuration file changes if needed
+1. **Main Update Commit**: "OCaml nodes: bump up to release [version]"
+   - Updates 6 files: CI workflows, Docker compose, and testing configurations
+   - Atomic change affecting all OCaml node references
+2. **Changelog**: Add entry documenting the version bump if needed
 
 ## Related Resources
 
