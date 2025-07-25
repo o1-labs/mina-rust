@@ -18,58 +18,53 @@ Visit the
 find the latest release version and associated container image tags.
 
 For example, release `3.2.0-alpha1` provides updated container images and
-configuration files.
+configuration files. You'll need:
 
-## 2. Update GCR Links in Code
+- The new version number (e.g., `3.2.0-alpha1`)
+- The 8-character configuration hash from the release page
 
-Use `git grep` to find all Google Container Registry (GCR) references that need
-updating:
+## 2. Automated Update with Script
 
-```bash
-# Search for GCR image references
-git grep "gcr.io/o1labs-192920/mina-daemon"
-
-# Search for any mina-daemon references
-git grep "mina-daemon"
-```
-
-Update the image tags in the found files to match the new release version.
-Typically this involves changing version strings in Docker Compose files,
-testing configurations, and CI workflows.
-
-## 3. Update Configuration Files
-
-Update the configuration file hash to match the new release. The config files
-with the pattern `config_[8-character-hash]` come from the OCaml node release
-and need to be referenced in the OpenMina codebase.
-
-The configuration hash corresponds to the genesis state and network parameters
-for the specific release. You may need to:
-
-- Update references to the config filename in code to match the new hash
-- Download or reference the new config files from the OCaml node release
-- Verify the new configuration is compatible with OpenMina
-
-## 4. Example Workflow
-
-Based on PR #1236, a typical update involves:
+OpenMina provides an automation script to handle the bulk of the update process:
 
 ```bash
-# 1. Find current references
-git grep "gcr.io/o1labs-192920/mina-daemon"
-git grep "3\.1\.0" # Search for old version numbers
-
-# 2. Update image tags throughout the codebase
-# Replace old tags with new release version
-
-# 3. Search for config file references in code
-git grep "config_"
-
-# 4. Update any hardcoded version references
-git grep -i "mina.*3\.1\.0" # Example for version 3.1.0
+./website/docs/developers/scripts/update-ocaml-node.sh <old_hash> <new_hash> <old_version> <new_version>
 ```
 
-## 5. Verification Steps
+**Example usage:**
+
+For example, to update from `3.2.0-alpha1` to `3.2.0-beta1` (as done in commit
+[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc)):
+
+```bash
+./website/docs/developers/scripts/update-ocaml-node.sh 7f94ae0b 978866cd "3.2.0-alpha1" "3.2.0-beta1"
+```
+
+**Parameters:**
+
+- `old_hash`: Current 8-character config hash
+- `new_hash`: New 8-character config hash from the release
+- `old_version`: Current version (e.g., `3.1.0`)
+- `new_version`: New version (e.g., `3.2.0-alpha1`)
+
+The script automatically updates:
+
+- Configuration file references in testing code
+- Docker image tags in CI workflows and compose files
+- Version strings throughout the codebase
+
+## 3. Manual Verification
+
+After running the script, verify all references were updated correctly:
+
+```bash
+# Search for any remaining old references
+git grep "gcr.io/o1labs-192920/mina-daemon"
+git grep "config_<old_hash>"
+git grep "<old_version>"
+```
+
+## 4. Verification Steps
 
 After making updates:
 
@@ -80,13 +75,15 @@ After making updates:
    with the updated OCaml node
 5. **CI Pipeline**: Verify that automated testing passes with new versions
 
-## 6. Commit Structure
+## 5. Commit Structure
 
-Following the pattern from PR #1236:
+Following the pattern from commit
+[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc):
 
-1. **Main Update Commit**: "Update OCaml node dependencies to [version]"
-2. **Changelog**: Add entry documenting the version bump
-3. **Config Updates**: Separate commit for configuration file changes if needed
+1. **Main Update Commit**: "OCaml nodes: bump up to release [version]"
+   - Updates 6 files: CI workflows, Docker compose, and testing configurations
+   - Atomic change affecting all OCaml node references
+2. **Changelog**: Add entry documenting the version bump if needed
 
 ## Related Resources
 
