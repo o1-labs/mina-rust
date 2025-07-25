@@ -15,14 +15,20 @@ scenario_test!(
 );
 
 scenario_test!(
-    #[ignore = "investigate falure"]
+    /// Integration test for initial node joining behavior.
+    /// This test is ignored because it was failing and needs investigation.
+    /// It tests the basic connectivity when a node initially joins the network.
+    #[ignore = "Integration test failure - needs investigation of joining behavior"]
     initial_joining,
     SoloNodeBasicConnectivityInitialJoining,
     SoloNodeBasicConnectivityInitialJoining
 );
 
 scenario_test!(
-    #[ignore = "investigate falure"]
+    /// Integration test for root snarked ledger synchronization.
+    /// This test is ignored because it was failing and needs investigation.
+    /// It tests the node's ability to sync the root snarked ledger from peers.
+    #[ignore = "Integration test failure - needs investigation of ledger sync behavior"]
     sync_root_snarked_ledger,
     SoloNodeSyncRootSnarkedLedger,
     SoloNodeSyncRootSnarkedLedger

@@ -4406,9 +4406,13 @@ pub(super) mod tests {
             .collect()
     }
 
+    /// Development utility test for converting transaction requests from binary files.
+    /// This test is ignored because it depends on specific binary test files that may not exist
+    /// and because mina_p2p_messages currently has compilation issues with serde traits.
+    /// This is primarily a development tool rather than a validation test.
     #[allow(unused)]
     #[test]
-    #[ignore]
+    #[ignore = "Development utility - depends on external binary files and has compilation issues"]
     fn test_convert_requests() {
         use binprot::BinProtWrite;
         use mina_p2p_messages::v2::*;
@@ -4669,10 +4673,12 @@ pub(super) mod tests {
         assert_eq!(hash, Fp::from_str(EXPECTED).unwrap());
     }
 
-    /// Print requests types
+    /// Development utility test for reading transaction request types from binary files.
+    /// This test is ignored because it depends on specific binary test files in circuit directories
+    /// and is primarily a development tool for analyzing transaction data.
     #[allow(unused)]
     #[test]
-    #[ignore]
+    #[ignore = "Development utility - depends on external binary files in circuit directories"]
     fn test_read_requests() {
         let path = Path::new(env!("CARGO_MANIFEST_DIR"))
             .join(devnet_circuit_directory())
