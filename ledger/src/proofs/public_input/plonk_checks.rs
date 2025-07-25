@@ -8,7 +8,7 @@ use kimchi::{
     proof::{PointEvaluations, ProofEvaluations},
 };
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::{
     proofs::{

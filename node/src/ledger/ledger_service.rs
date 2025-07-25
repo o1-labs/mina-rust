@@ -47,7 +47,7 @@ use ledger::{
     verifier::Verifier,
     Account, AccountId, AccountIndex, BaseLedger, Database, Mask, TokenId, UnregisterBehavior,
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot::BinProtRead,
     list::List,

@@ -1,4 +1,4 @@
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::scan_state::protocol_state::hashes_abstract;
 

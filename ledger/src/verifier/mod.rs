@@ -18,7 +18,7 @@ use self::common::CheckResult;
 pub struct Verifier;
 
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::{
     PicklesProofProofsVerified2ReprStableV2, PicklesProofProofsVerifiedMaxStableV2,
 };

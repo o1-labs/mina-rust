@@ -7,7 +7,7 @@ use std::{
 };
 
 use ark_ff::{UniformRand, Zero};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::{CompressedPubKey, Keypair, Signature};
 use rand::{
     rngs::ThreadRng,

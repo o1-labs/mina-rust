@@ -112,7 +112,7 @@ mod tests {
     use super::*;
 
     use mina_curves::pasta::Fq;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
 
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;

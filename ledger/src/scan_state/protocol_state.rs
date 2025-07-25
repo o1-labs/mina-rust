@@ -1,4 +1,4 @@
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::{proofs::block::ProtocolState, ToInputs};
 use poseidon::hash::{

@@ -6,7 +6,7 @@ use std::{
 };
 
 use itertools::Itertools;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{bigint::BigInt, v2};
 use openmina_core::{bug_condition, consensus::ConsensusConstants};
 

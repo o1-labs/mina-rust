@@ -28,7 +28,7 @@ use ledger::{
     TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppUri, TXN_VERSION_CURRENT,
 };
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     array::ArrayN,
     list::List,

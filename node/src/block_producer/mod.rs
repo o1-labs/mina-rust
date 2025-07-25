@@ -209,7 +209,7 @@ impl BlockWithoutProof {
 
 pub fn calc_epoch_seed(
     prev_epoch_seed: &v2::EpochSeed,
-    vrf_hash: mina_hasher::Fp,
+    vrf_hash: mina_curves::pasta::Fp,
 ) -> v2::EpochSeed {
     // TODO(adonagy): fix this unwrap
     let old_seed = prev_epoch_seed.to_field().unwrap();

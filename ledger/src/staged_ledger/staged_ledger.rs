@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::MinaStateProtocolStateValueStableV2;
 use mina_signer::CompressedPubKey;
 use openmina_core::constants::ConstraintConstants;
@@ -5855,7 +5855,7 @@ mod tests_ocaml {
 mod tests {
     use std::{collections::BTreeMap, fs::File};
 
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot, list::List};
 
     use crate::{

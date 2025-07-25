@@ -2,7 +2,7 @@
 mod sparse_ledger;
 mod sparse_ledger_impl;
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 pub use sparse_ledger::*;
 
 use crate::{

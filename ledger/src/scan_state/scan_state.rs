@@ -4,7 +4,7 @@ use blake2::{
     digest::{generic_array::GenericArray, typenum::U32},
     Digest,
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot,
     v2::{
@@ -96,7 +96,7 @@ pub mod transaction_snark {
     use std::sync::Arc;
 
     use itertools::Itertools;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot, string::ByteString, v2::TransactionSnarkProofStableV2};
     use mina_signer::CompressedPubKey;
     use serde::{Deserialize, Serialize};

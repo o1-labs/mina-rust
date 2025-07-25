@@ -4,7 +4,7 @@
 use std::hash::Hasher;
 
 use ark_ff::{BigInteger, BigInteger256};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::AccountId;
 

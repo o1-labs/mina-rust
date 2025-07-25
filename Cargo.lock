@@ -5575,6 +5575,7 @@ dependencies = [
  "hex",
  "lazy_static",
  "linkme",
+ "mina-curves",
  "mina-hasher",
  "mina-p2p-messages",
  "mina-signer",

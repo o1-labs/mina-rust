@@ -5,7 +5,7 @@ use std::{
     sync::atomic::AtomicU64,
 };
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use serde::{Deserialize, Serialize};
 

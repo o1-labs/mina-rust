@@ -3,7 +3,7 @@ use std::{
     path::PathBuf,
 };
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 
 use crate::{

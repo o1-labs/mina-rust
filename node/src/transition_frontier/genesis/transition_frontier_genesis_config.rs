@@ -13,7 +13,7 @@ use ledger::{
     scan_state::currency::Balance,
     BaseLedger,
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot::{
         self,

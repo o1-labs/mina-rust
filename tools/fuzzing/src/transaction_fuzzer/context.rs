@@ -25,7 +25,7 @@ use ledger::{
     Account, AccountId, Database, Mask, Timing, TokenId,
 };
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     bigint, binprot,
     binprot::SmallString1k,

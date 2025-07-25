@@ -1,6 +1,6 @@
 use ark_ff::{BigInteger256, Zero};
 use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::{
     CompositionTypesBranchDataStableV1, PicklesBaseProofsVerifiedStableV1,
 };

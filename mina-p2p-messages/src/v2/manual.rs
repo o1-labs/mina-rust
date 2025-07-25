@@ -586,14 +586,14 @@ impl MinaBaseStagedLedgerHashNonSnarkStableV1 {
     }
 }
 
-impl From<mina_hasher::Fp> for LedgerHash {
-    fn from(value: mina_hasher::Fp) -> Self {
+impl From<mina_curves::pasta::Fp> for LedgerHash {
+    fn from(value: mina_curves::pasta::Fp) -> Self {
         MinaBaseLedgerHash0StableV1(value.into()).into()
     }
 }
 
-impl From<&mina_hasher::Fp> for LedgerHash {
-    fn from(value: &mina_hasher::Fp) -> Self {
+impl From<&mina_curves::pasta::Fp> for LedgerHash {
+    fn from(value: &mina_curves::pasta::Fp) -> Self {
         MinaBaseLedgerHash0StableV1(value.into()).into()
     }
 }

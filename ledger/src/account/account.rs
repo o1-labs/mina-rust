@@ -1,7 +1,7 @@
 use std::{io::Cursor, str::FromStr, sync::Arc};
 
 use ark_ff::{BigInteger256, One, UniformRand, Zero};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot::{BinProtRead, BinProtWrite},
     v2,

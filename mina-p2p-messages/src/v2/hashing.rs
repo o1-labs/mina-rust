@@ -3,7 +3,7 @@ use std::{fmt, io, sync::Arc};
 use ark_ff::fields::arithmetic::InvalidBigInt;
 use binprot::{BinProtRead, BinProtWrite};
 use generated::MinaStateBlockchainStateValueStableV2;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poseidon::hash::{
     hash_with_kimchi,
     params::{MINA_PROTO_STATE, MINA_PROTO_STATE_BODY},
@@ -454,7 +454,7 @@ impl generated::MinaBlockBlockStableV2 {
 }
 
 impl MinaHash for MinaStateProtocolStateBodyValueStableV2 {
-    fn try_hash(&self) -> Result<mina_hasher::Fp, InvalidBigInt> {
+    fn try_hash(&self) -> Result<mina_curves::pasta::Fp, InvalidBigInt> {
         let mut inputs = Inputs::new();
         self.to_input(&mut inputs)?;
         Ok(hash_with_kimchi(
@@ -465,7 +465,7 @@ impl MinaHash for MinaStateProtocolStateBodyValueStableV2 {
 }
 
 impl MinaHash for MinaStateProtocolStateValueStableV2 {
-    fn try_hash(&self) -> Result<mina_hasher::Fp, InvalidBigInt> {
+    fn try_hash(&self) -> Result<mina_curves::pasta::Fp, InvalidBigInt> {
         Ok(fp_state_hash_from_fp_hashes(
             self.previous_state_hash.to_field()?,
             MinaHash::try_hash(&self.body)?,
