@@ -218,6 +218,55 @@ referencing Claude.
 6. **Verify commit message contains no emojis and follows 80-character wrap**
 7. Proceed with testing or committing changes
 
+### Documentation Script Testing
+
+When modifying developer setup scripts in `website/docs/developers/scripts/`,
+always test them using the documentation testing workflow:
+
+#### Testing Documentation Scripts
+
+The project includes automated testing of developer setup scripts to ensure they
+work correctly across different platforms. This prevents developers from
+encountering broken installation instructions.
+
+**When to test:**
+
+- After modifying any script in `website/docs/developers/scripts/setup/`
+- When adding new dependencies or tools to the setup process
+- When changing installation procedures
+- When adding support for a new distribution or platform
+
+**How to trigger tests:**
+
+1. **For PRs**: Add the `test-doc-scripts` label to your pull request
+2. **Manual testing**: Use GitHub CLI:
+   `gh pr edit <PR_NUMBER> --add-label test-doc-scripts`
+3. **Remove and re-add**: If tests need to be re-run, remove the label first:
+   ```bash
+   gh pr edit <PR_NUMBER> --remove-label test-doc-scripts
+   gh pr edit <PR_NUMBER> --add-label test-doc-scripts
+   ```
+
+**What gets tested:**
+
+- System dependencies installation (Ubuntu/macOS)
+- Rust toolchain setup (including taplo, wasm-pack, etc.)
+- Node.js installation
+- Docker installation
+- Build processes and formatting tools
+- Tool version verification
+
+**Why this matters:**
+
+- Ensures documentation stays current with actual requirements
+- Prevents "command not found" errors for new developers
+- Tests across multiple platforms (Ubuntu 22.04, 24.04, macOS)
+- Catches environment drift and dependency changes
+- Runs nightly to detect breaking changes early
+
+The tests are designed to run on-demand via labels to avoid slowing down regular
+development workflow, as they can take significant time to complete.
+
 ### Critical Pre-Commit Requirements
 
 - **MANDATORY**: Run `make fix-trailing-whitespace` before every commit

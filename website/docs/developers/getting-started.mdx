@@ -5,14 +5,18 @@ sidebar_position: 1
 # Getting Started for Developers
 
 import CodeBlock from "@theme/CodeBlock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 import InstallRustSh from "!!raw-loader!./scripts/setup/install-rust.sh";
 import InstallSystemDepsSh from "!!raw-loader!./scripts/setup/install-system-deps.sh";
+import InstallSystemDepsMacOSSh from "!!raw-loader!./scripts/setup/install-system-deps-macos.sh";
 import InstallNodejsSh from "!!raw-loader!./scripts/setup/install-nodejs.sh";
+import InstallNodejsMacOSSh from "!!raw-loader!./scripts/setup/install-nodejs-macos.sh";
 import InstallDockerSh from "!!raw-loader!./scripts/setup/install-docker.sh";
+import InstallDockerMacOSSh from "!!raw-loader!./scripts/setup/install-docker-macos.sh";
 import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.sh";
 import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
 import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
-import RunTestsSh from "!!raw-loader!./scripts/setup/run-tests.sh";
 import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
 
 Welcome to OpenMina development! This guide will help you set up your
@@ -22,8 +26,10 @@ development environment and build OpenMina from source.
 
 ### System Requirements
 
-- **Operating System**: Ubuntu 20.04+ or Debian 11+ (other Linux distributions
-  may work but are not officially supported)
+- **Operating System**:
+  - **Linux**: Ubuntu 20.04+ or Debian 11+ (other Linux distributions may work
+    but are not officially supported)
+  - **macOS**: macOS 12.0+ (Monterey or later)
 - **Memory**: At least 8GB RAM (16GB recommended)
 - **Storage**: At least 20GB free space
 - **Network**: Stable internet connection for downloading dependencies
@@ -32,23 +38,63 @@ development environment and build OpenMina from source.
 
 #### 1. Rust Toolchain
 
-OpenMina requires both stable and nightly Rust toolchains:
+OpenMina requires both stable and nightly Rust toolchains, plus additional tools
+for development:
 
 <CodeBlock language="bash">{InstallRustSh}</CodeBlock>
 
+This installs:
+
+- Rust 1.84 (stable) and nightly toolchains
+- Required components: `rustfmt`, `clippy`, `rust-src`
+- `taplo-cli`: TOML formatter required for `make format`
+
 #### 2. System Dependencies
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallSystemDepsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallSystemDepsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### 3. Additional Development Tools
 
 **Node.js (for documentation and frontend):**
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallNodejsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallNodejsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 **Docker (optional, for containerized builds):**
 
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
 <CodeBlock language="bash">{InstallDockerSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallDockerMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### 4. WASM Tools (for web node development)
 
@@ -69,7 +115,11 @@ components:
 
 ### 3. Run Tests
 
-<CodeBlock language="bash">{RunTestsSh}</CodeBlock>
+You can run a different set of tests. The command `make help` will give you the
+whole set of targets. You can also visit the file
+[ci.yaml](https://github.com/o1-labs/openmina/blob/develop/.github/workflows/ci.yaml)
+to explore the targets used for testing in our continuous integration
+environment.
 
 ## Development Workflow
 
@@ -108,12 +158,24 @@ make clean          # Clean build artifacts
 
 ### Environment Configuration
 
-Some components require environment variables:
+Some components require environment variables and database setup:
+
+#### SQLite Database (Required for `make check`)
+
+The heartbeats processor requires an SQLite database to be initialized before
+running `make check`:
 
 ```bash
-# For SQLx database operations (heartbeats processor)
-export DATABASE_URL="sqlite:///tmp/heartbeats.db"
+# Create the SQLite database with required schema
+sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
 
+# Set the database URL environment variable
+export DATABASE_URL="sqlite:///tmp/heartbeats.db"
+```
+
+#### Additional Environment Variables
+
+```bash
 # For archive node development
 export OPENMINA_ARCHIVE_ADDRESS="http://localhost:3007"
 export PG_USER="openmina"
