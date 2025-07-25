@@ -252,8 +252,12 @@ mod test {
         // assert_eq!(expected, evaluation_result)
     }
 
+    /// Performance test that evaluates VRF for a large number of delegators.
+    /// This test is ignored because it takes a long time to run (evaluates 14,403 delegators).
+    /// It's useful for measuring VRF calculation performance with realistic producer sizes.
+    /// Run with: `cargo test test_slot_calculation_time_big_producer -- --ignored`
     #[test]
-    #[ignore]
+    #[ignore = "Performance test - takes several minutes to complete"]
     fn test_slot_calculation_time_big_producer() {
         let start = redux::Instant::now();
         for i in 1..14403 {
@@ -282,8 +286,12 @@ mod test {
         println!("Duration: {}", elapsed.as_secs());
     }
 
+    /// Performance test that searches for winning VRF slots across many global slots.
+    /// This test is ignored because it takes a long time to run (checks 7,000 slots).
+    /// It's useful for understanding VRF winning slot distribution patterns.
+    /// Run with: `cargo test test_first_winning_slot -- --ignored`
     #[test]
-    #[ignore]
+    #[ignore = "Performance test - takes several minutes to complete"]
     fn test_first_winning_slot() {
         for i in 0..7000 {
             let vrf_input = VrfEvaluationInput {
@@ -307,6 +315,67 @@ mod test {
             if evaluation_result != VrfEvaluationOutput::SlotLost(vrf_input.global_slot) {
                 println!("{:?}", evaluation_result);
             }
+        }
+    }
+
+    /// Test VRF evaluation performance with a smaller dataset suitable for CI.
+    /// This runs a reduced version of the big producer test to ensure VRF performance
+    /// doesn't regress without taking too long in CI.
+    #[test]
+    fn test_vrf_performance_small() {
+        let start = redux::Instant::now();
+        for i in 1..10 {  // Much smaller than 14,403
+            let vrf_input = VrfEvaluationInput {
+                producer_key: keypair_from_bs58_string(
+                    "EKEEpMELfQkMbJDt2fB4cFXKwSf1x4t7YD4twREy5yuJ84HBZtF9",
+                ),
+                epoch_seed: EpochSeed::from_str(
+                    "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA",
+                )
+                .unwrap(),
+                global_slot: 6,
+                delegator_index: AccountIndex(i),
+                delegated_stake: BigInt::from_str("1000000000000000")
+                    .expect("Cannot convert to BigInt"),
+                total_currency: BigInt::from_str("6000000000001000")
+                    .expect("Cannot convert to BigInt"),
+                account_pub_key: AccountSecretKey::genesis_producer().public_key(),
+            };
+            let result = evaluate_vrf(vrf_input).expect("Failed to evaluate VRF");
+            // Ensure we get a valid result
+            assert!(matches!(result, VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)));
+        }
+        let elapsed = start.elapsed();
+        // Ensure the small test completes in reasonable time (under 10 seconds)
+        assert!(elapsed.as_secs() < 10, "VRF evaluation took too long: {}s", elapsed.as_secs());
+    }
+
+    /// Test VRF slot discovery with a smaller dataset suitable for CI.
+    /// This runs a reduced version of the winning slot test to ensure basic functionality
+    /// without taking too long in CI.
+    #[test]
+    fn test_vrf_slot_discovery_small() {
+        for i in 0..100 {  // Much smaller than 7,000
+            let vrf_input = VrfEvaluationInput {
+                producer_key: keypair_from_bs58_string(
+                    "EKEEpMELfQkMbJDt2fB4cFXKwSf1x4t7YD4twREy5yuJ84HBZtF9",
+                ),
+                epoch_seed: EpochSeed::from_str(
+                    "2va9BGv9JrLTtrzZttiEMDYw1Zj6a6EHzXjmP9evHDTG3oEquURA",
+                )
+                .unwrap(),
+                global_slot: i,
+                delegator_index: AccountIndex(2),
+                delegated_stake: BigInt::from_str("1000000000000000")
+                    .expect("Cannot convert to BigInt"),
+                total_currency: BigInt::from_str("6000000000001000")
+                    .expect("Cannot convert to BigInt"),
+                account_pub_key: AccountSecretKey::genesis_producer().public_key(),
+            };
+            let evaluation_result =
+                evaluate_vrf(vrf_input.clone()).expect("Failed to evaluate vrf");
+            // Just ensure VRF evaluation works without errors for all slots
+            assert!(matches!(evaluation_result, VrfEvaluationOutput::SlotWon(_) | VrfEvaluationOutput::SlotLost(_)));
         }
     }
 }
