@@ -18,3 +18,4 @@ openmina-core = { path = "../core" }
 tracing = "0.1.40"
 rust-format = { version = "0.3", features = ["token_stream"] }
 anyhow = "1.0.81"
+redux = { workspace = true }

@@ -76,6 +76,13 @@ const sidebars: SidebarsConfig = {
         'developers/why-openmina',
       ],
     },
+    {
+      type: 'category',
+      label: 'Configuration',
+      items: [
+        'developers/network-configuration',
+      ],
+    },
   ],
 
   // Sidebar for researchers - focus on protocol and cryptography

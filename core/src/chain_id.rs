@@ -12,6 +12,18 @@ use std::{
 use binprot::{BinProtRead, BinProtWrite};
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 
+/// Unique identifier for a Mina blockchain network.
+///
+/// The ChainId is a 32-byte hash that uniquely identifies a specific Mina network
+/// configuration. It is computed from various network parameters including:
+/// - Genesis state hash
+/// - Constraint system digests (circuit verification hashes)
+/// - Protocol constants (timing parameters, fees, etc.)
+/// - Protocol version numbers
+/// - Transaction pool configuration
+///
+/// Different networks (mainnet, devnet) will have different ChainIds, and any
+/// change to core protocol parameters will result in a new ChainId.
 #[derive(Clone, PartialEq, Eq)]
 pub struct ChainId([u8; 32]);
 
@@ -45,6 +57,22 @@ fn hash_genesis_constants(
 }
 
 impl ChainId {
+    /// Compute a ChainId from network configuration parameters.
+    ///
+    /// This function deterministically generates a unique ChainId by hashing
+    /// together all the parameters that define a Mina network's behavior.
+    /// Any change to these parameters will result in a different ChainId.
+    ///
+    /// # Arguments
+    /// * `constraint_system_digests` - MD5 hashes of the zkSNARK circuits
+    /// * `genesis_state_hash` - Hash of the network's genesis block
+    /// * `genesis_constants` - Protocol timing and behavior constants
+    /// * `protocol_transaction_version` - Transaction format version
+    /// * `protocol_network_version` - Network protocol version
+    /// * `tx_max_pool_size` - Maximum transaction pool size
+    ///
+    /// # Returns
+    /// A new ChainId uniquely identifying this network configuration
     pub fn compute(
         constraint_system_digests: &[Md5],
         genesis_state_hash: &StateHash,
@@ -68,7 +96,15 @@ impl ChainId {
         ChainId(hasher.finalize().try_into().unwrap())
     }
 
-    /// Computes shared key for libp2p Pnet protocol.
+    /// Computes the preshared key for libp2p private network protocol.
+    ///
+    /// This creates a network-specific encryption key that ensures nodes
+    /// can only communicate with other nodes on the same Mina network.
+    /// The key is derived from the ChainId to automatically separate
+    /// different networks at the transport layer.
+    ///
+    /// # Returns
+    /// A 32-byte preshared key for libp2p Pnet
     pub fn preshared_key(&self) -> [u8; 32] {
         let mut hasher = Blake2b256::default();
         hasher.update(b"/coda/0.0.1/");
@@ -79,10 +115,22 @@ impl ChainId {
         psk_fixed
     }
 
+    /// Convert the ChainId to a hexadecimal string representation.
+    ///
+    /// # Returns
+    /// A 64-character hex string (32 bytes * 2 hex chars per byte)
     pub fn to_hex(&self) -> String {
         hex::encode(self.0)
     }
 
+    /// Parse a ChainId from a hexadecimal string.
+    ///
+    /// # Arguments
+    /// * `s` - A 64-character hex string representing the ChainId
+    ///
+    /// # Returns
+    /// * `Ok(ChainId)` if the string is valid
+    /// * `Err(hex::FromHexError)` if the string is malformed
     pub fn from_hex(s: &str) -> Result<ChainId, hex::FromHexError> {
         let h = hex::decode(s)?;
         let bs = h[..32]
@@ -91,6 +139,16 @@ impl ChainId {
         Ok(ChainId(bs))
     }
 
+    /// Create a ChainId from raw bytes.
+    ///
+    /// # Arguments
+    /// * `bytes` - A byte slice containing at least 32 bytes
+    ///
+    /// # Returns
+    /// A ChainId using the first 32 bytes of the input
+    ///
+    /// # Panics
+    /// Panics if the input contains fewer than 32 bytes
     pub fn from_bytes(bytes: &[u8]) -> ChainId {
         let mut arr = [0u8; 32];
         arr.copy_from_slice(&bytes[..32]);
@@ -147,11 +205,25 @@ impl Debug for ChainId {
     }
 }
 
+/// The ChainId for the Mina devnet.
+///
+/// This ChainId identifies the development/testing network and is computed
+/// from devnet's specific configuration parameters. Nodes must use this
+/// ChainId to participate in the devnet.
+///
+/// Hex representation: `29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6`
 pub const DEVNET_CHAIN_ID: ChainId = ChainId([
     0x29, 0x93, 0x61, 0x04, 0x44, 0x3a, 0xaf, 0x26, 0x4a, 0x7f, 0x01, 0x92, 0xac, 0x64, 0xb1, 0xc7,
     0x17, 0x31, 0x98, 0xc1, 0xed, 0x40, 0x4c, 0x1b, 0xcf, 0xf5, 0xe5, 0x62, 0xe0, 0x5e, 0xb7, 0xf6,
 ]);
 
+/// The ChainId for the Mina mainnet.
+///
+/// This ChainId identifies the production Mina blockchain and is computed
+/// from mainnet's specific configuration parameters. Nodes must use this
+/// ChainId to participate in the mainnet.
+///
+/// Hex representation: `a7351abc7ddf2ea92d1b38cc8e636c271c1dfd2c081c637f62ebc2af34eb7cc1`
 pub const MAINNET_CHAIN_ID: ChainId = ChainId([
     0xa7, 0x35, 0x1a, 0xbc, 0x7d, 0xdf, 0x2e, 0xa9, 0x2d, 0x1b, 0x38, 0xcc, 0x8e, 0x63, 0x6c, 0x27,
     0x1c, 0x1d, 0xfd, 0x2c, 0x08, 0x1c, 0x63, 0x7f, 0x62, 0xeb, 0xc2, 0xaf, 0x34, 0xeb, 0x7c, 0xc1,

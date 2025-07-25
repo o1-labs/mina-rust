@@ -5,35 +5,53 @@ Derives `[openmina_core::ActionEvent]` trait implementation for action.
 For action containers, it simply delegates to inner actions.
 
 ```rust
-# use openmina_core::ActionEvent;
-#
+use openmina_core::{ActionEvent, log::EventContext};
+
+struct MockContext;
+
+impl EventContext for MockContext {
+    fn timestamp(&self) -> redux::Timestamp { redux::Timestamp::global_now() }
+    fn time(&self) -> &dyn tracing::Value { &"test" }
+    fn node_id(&self) -> &dyn tracing::Value { &"test_node" }
+    fn log_node_id(&self) -> bool { true }
+}
+
+let context = MockContext;
+
 #[derive(ActionEvent)]
 enum ActionContainer {
     SubAction1(Action1),
 }
+
 #[derive(ActionEvent)]
 enum Action1 {
     Init,
     Done,
 }
 
-ActionContainer::SubAction1(Action1::Init).action_event(context);
+ActionContainer::SubAction1(Action1::Init).action_event(&context);
 ```
 
 ```rust
+use openmina_core::{ActionEvent, log::EventContext};
+
+enum ActionContainer { SubAction1(Action1) }
+
+enum Action1 { Init, Done }
+
 impl ActionEvent for ActionContainer {
     fn action_event<T>(&self, context: &T)
-    where T: ActionContext
+    where T: EventContext
     {
         match self {
-            ActionContainer(action) => action.action_event(context),
+            ActionContainer::SubAction1(action) => action.action_event(context),
         }
     }
 }
 
 impl ActionEvent for Action1 {
     fn action_event<T>(&self, context: &T)
-    where T: ActionContext
+    where T: EventContext
     {
         match self {
             Action1::Init => openmina_core::action_debug!(context),
@@ -50,7 +68,9 @@ overriden by using `#[action_event(level = ...)]` attribute. Also, actions that
 names ends with `Error` or `Warn` will be traced with `warn` level.
 
 ```rust
-#[derive(openmina_core::ActionEvent)]
+use openmina_core::ActionEvent;
+
+#[derive(ActionEvent)]
 #[action_event(level = trace)]
 pub enum Action {
     ActionDefaultLevel,
@@ -62,12 +82,15 @@ pub enum Action {
 ```
 
 ```rust
-impl openmina_core::ActionEvent for Action {
+use openmina_core::{ActionEvent, log::EventContext};
+
+enum Action { ActionDefaultLevel, ActionOverrideLevel, ActionWithError, ActionWithWarn }
+
+impl ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: EventContext,
     {
-        #[allow(unused_variables)]
         match self {
             Action::ActionDefaultLevel => openmina_core::action_trace!(context),
             Action::ActionOverrideLevel => openmina_core::action_warn!(context),
@@ -84,7 +107,8 @@ If an action has doc-comment, its first line will be used for `summary` field of
 tracing events for the action.
 
 ```rust
-#[derive(openmina_core::ActionEvent)]
+# use openmina_core::ActionEvent;
+#[derive(ActionEvent)]
 pub enum Action {
     Unit,
     /// documentation
@@ -98,10 +122,14 @@ pub enum Action {
 ```
 
 ```rust
-impl openmina_core::ActionEvent for Action {
+use openmina_core::{ActionEvent, log::EventContext};
+
+enum Action { Unit, UnitWithDoc, UnitWithMultilineDoc }
+
+impl ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: EventContext,
     {
         match self {
             Action::Unit => openmina_core::action_debug!(context),
@@ -118,7 +146,9 @@ Certain fields can be added to the tracing event, using
 `#[action_event(fields(...))]` attribute.
 
 ```rust
-#[derive(openmina_core::ActionEvent)]
+use openmina_core::ActionEvent;
+
+#[derive(ActionEvent)]
 pub enum Action {
     NoFields { f1: bool },
     #[action_event(fields(f1))]
@@ -133,10 +163,18 @@ pub enum Action {
 ```
 
 ```rust
-impl openmina_core::ActionEvent for Action {
+use openmina_core::{ActionEvent, log::EventContext};
+enum Action {
+  NoFields { f1: bool },
+  Field { f1: bool },
+  FieldWithName { f1: bool },
+  DebugField { f1: bool },
+  DisplayField { f1: bool }
+}
+impl ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: EventContext,
     {
         match self {
             Action::NoFields { f1 } => openmina_core::action_debug!(context),
@@ -156,7 +194,13 @@ a field's enum variant), logging can be delegated to a function implementing
 that logic.
 
 ```rust
-#[derive(openmina_core::ActionEvent)]
+use openmina_core::ActionEvent;
+
+fn foo<T: openmina_core::log::EventContext>(_: &T) {}
+
+fn bar<T: openmina_core::log::EventContext>(_: &T, _: &bool) {}
+
+#[derive(ActionEvent)]
 pub enum Action {
     #[action_event(expr(foo(context)))]
     Unit,
@@ -166,10 +210,18 @@ pub enum Action {
 ```
 
 ```rust
-impl openmina_core::ActionEvent for Action {
+use openmina_core::{ActionEvent, log::EventContext};
+
+fn foo<T: EventContext>(_: &T) {}
+
+fn bar<T: EventContext>(_: &T, _: &bool) {}
+
+enum Action { Unit, Named { f1: bool } }
+
+impl ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: EventContext,
     {
         #[allow(unused_variables)]
         match self {
