@@ -1,3 +1,18 @@
+//! zkApp Command Logic Implementation
+//!
+//! This module implements the core logic for processing zkApp commands according to
+//! the Mina Protocol specification. It handles account updates, authorization checking,
+//! precondition validation, and state transitions.
+//!
+//! The implementation follows the Redux-style state machine pattern where:
+//! - Actions flow through the system as events
+//! - Enabling conditions check if actions are valid
+//! - Reducers process actions to update state
+//! - Effects trigger service calls when needed
+//!
+//! Reference: Mina Protocol zkApp RFCs and OCaml implementation
+//! <https://github.com/MinaProtocol/mina/blob/develop/src/lib/transaction_logic/zkapp_command_logic.ml>
+
 use mina_hasher::Fp;
 use mina_signer::CompressedPubKey;
 use openmina_core::constants::constraint_constants;
@@ -20,29 +35,56 @@ use crate::proofs::{
     zkapp::StartDataSkeleton,
 };
 
+/// Represents whether we're processing the first account update in a zkApp command.
+/// This affects how the transaction commitment and ledger state are handled.
+///
+/// - `Yes(T)`: This is definitely the first account update (fee payer)
+/// - `No`: This is definitely not the first account update
+/// - `Compute(T)`: Dynamically determine based on call stack state
 pub enum IsStart<T> {
     Yes(T),
     No,
     Compute(T),
 }
 
+/// Result of retrieving the next account update from the call stack.
+/// This represents the state after popping an account update and its children
+/// from the current execution frame.
 struct GetNextAccountUpdateResult<Z: ZkappApplication> {
+    /// The account update to process
     account_update: Z::AccountUpdate,
+    /// Token ID of the caller (used for token permission checks)
     caller_id: TokenId,
+    /// Child account updates that will be processed recursively
     account_update_forest: Z::CallForest,
+    /// Updated call stack after processing
     new_call_stack: Z::CallStack,
+    /// New stack frame for the next iteration
     new_frame: Z::StackFrame,
 }
 
+/// Elements that can be added to a zkApp command's receipt chain.
+/// This is used to build the cryptographic commitment chain that proves
+/// the sequence of account updates in a zkApp transaction.
 #[derive(Clone)]
 pub enum ZkAppCommandElt {
+    /// A commitment hash representing a zkApp command in the receipt chain
     ZkAppCommandCommitment(crate::ReceiptChainHash),
 }
 
+/// Assert that a boolean condition holds during zkApp processing.
+/// This is used for invariant checking and constraint generation in the circuit.
+///
+/// In circuit mode, this adds constraints to ensure the condition is true.
+/// In non-circuit mode, this performs runtime validation.
+///
+/// # Arguments
+/// * `b` - The boolean condition to check
+/// * `s` - Error message if the condition fails
+///
+/// # Reference
+/// <https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929>
 fn assert_<Z: ZkappApplication>(b: Z::Bool, s: &str) -> Result<(), String> {
-    // Used only for circuit generation (add constraints)
-    // <https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929>
-
     if let Boolean::False = b.as_boolean() {
         return Err(s.to_string());
     }
@@ -257,6 +299,23 @@ fn get_next_account_update<Z: ZkappApplication>(
     }
 }
 
+/// Updates the action state for a zkApp account based on new actions.
+///
+/// The action state maintains a rolling hash of the last 5 actions performed
+/// by the zkApp. This function implements the action state update logic:
+/// - If actions is empty, no changes are made
+/// - If this is the same slot as the last action, replace the first element
+/// - If this is a new slot, shift all elements and add new hash to position 0
+///
+/// # Arguments
+/// * `action_state` - Current 5-element action state array
+/// * `actions` - New actions to be added
+/// * `txn_global_slot` - Current transaction's global slot
+/// * `last_action_slot` - Slot when the last action was performed
+/// * `w` - Witness generator for circuit constraints
+///
+/// # Returns
+/// Updated action state array and the new last action slot
 pub fn update_action_state<Z: ZkappApplication>(
     action_state: &[Fp; 5],
     actions: &Actions,
@@ -298,39 +357,88 @@ pub fn update_action_state<Z: ZkappApplication>(
     ([s1_new, s2, s3, s4, s5], last_action_slot)
 }
 
+/// Local state maintained during zkApp command processing.
+/// This tracks the execution state as we iterate through account updates.
 #[derive(Debug, Clone)]
 pub struct LocalState<Z: ZkappApplication> {
+    /// Current execution frame containing account updates to process
     pub stack_frame: Z::StackFrame,
+    /// Stack of frames for nested account update calls
     pub call_stack: Z::CallStack,
+    /// Commitment hash for the current transaction (excluding fee payer)
     pub transaction_commitment: Fp,
+    /// Full commitment hash including fee payer (used for authorization)
     pub full_transaction_commitment: Fp,
+    /// Running balance of fees/excess in this transaction
     pub excess: Z::SignedAmount,
+    /// Running balance of supply changes (account creation fees)
     pub supply_increase: Z::SignedAmount,
+    /// Current ledger state being modified
     pub ledger: Z::Ledger,
+    /// Whether the current account update succeeded
     pub success: Z::Bool,
+    /// Index of the current account update being processed
     pub account_update_index: Z::Index,
+    /// Table tracking failure statuses for error reporting
     pub failure_status_tbl: Z::FailureStatusTable,
+    /// Whether the overall transaction will succeed
     pub will_succeed: Z::Bool,
 }
 
+/// Global state that persists across zkApp command processing.
+/// This represents the overall blockchain state being modified.
 pub type GlobalState<Z> = GlobalStateSkeleton<
     <Z as ZkappApplication>::Ledger,                 // ledger
     <Z as ZkappApplication>::SignedAmount,           // fee_excess & supply_increase
     <Z as ZkappApplication>::GlobalSlotSinceGenesis, // block_global_slot
 >;
 
+/// Data provided when starting zkApp command processing.
+/// This contains the initial account updates and success prediction.
 pub type StartData<Z> = StartDataSkeleton<
     <Z as ZkappApplication>::CallForest, // account_updates
     <Z as ZkappApplication>::Bool,       // will_succeed
 >;
 
+/// Parameters for applying a single zkApp account update.
+/// This contains all the context needed to process one account update.
 pub struct ApplyZkappParams<'a, Z: ZkappApplication> {
+    /// Whether this is the first account update (fee payer)
     pub is_start: IsStart<StartData<Z>>,
+    /// Mutable reference to global blockchain state
     pub global_state: &'a mut Z::GlobalState,
+    /// Mutable reference to local transaction state
     pub local_state: &'a mut LocalState<Z>,
+    /// Additional data needed for this specific account update
     pub single_data: Z::SingleData,
 }
 
+/// Core function for applying a single zkApp account update.
+///
+/// This is the main entry point for processing zkApp commands according to the
+/// Mina Protocol specification. It performs the complete validation and application
+/// logic for one account update in a zkApp transaction.
+///
+/// The function handles:
+/// - Authorization checking (signatures and proofs)
+/// - Precondition validation (account and protocol state)
+/// - Balance changes and fee handling
+/// - Account state updates (app state, permissions, etc.)
+/// - Token permission enforcement
+/// - Action state updates
+/// - Receipt chain updates
+///
+/// # Arguments
+/// * `params` - All parameters needed for processing this account update
+/// * `w` - Witness generator for constraint generation in circuits
+///
+/// # Returns
+/// `Ok(())` if the account update is valid and successfully applied,
+/// `Err(String)` with an error message if validation fails.
+///
+/// # Reference
+/// This implements the zkApp command logic from the Mina Protocol:
+/// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/transaction_logic/zkapp_command_logic.ml>
 pub fn apply<Z>(params: ApplyZkappParams<'_, Z>, w: &mut Z::WitnessGenerator) -> Result<(), String>
 where
     Z: ZkappApplication,
