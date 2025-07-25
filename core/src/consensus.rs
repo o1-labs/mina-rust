@@ -1,3 +1,4 @@
+use core::cmp::{max, min, Ordering};
 use mina_p2p_messages::v2::{
     self, BlockTimeTimeStableV1,
     ConsensusProofOfStakeDataConsensusStateValueStableV2 as MinaConsensusState, StateHash,
@@ -196,8 +197,6 @@ pub fn is_short_range_fork(a: &MinaConsensusState, b: &MinaConsensusState) -> bo
 /// See [Relative Minimum Window Density](https://github.com/MinaProtocol/mina/blob/compatible/docs/specs/consensus/README.md#5412-relative-minimum-window-density)
 /// in the consensus specification for detailed mathematical definitions.
 pub fn relative_min_window_density(b1: &MinaConsensusState, b2: &MinaConsensusState) -> u32 {
-    use std::cmp::{max, min};
-
     let max_slot = max(global_slot(b1), global_slot(b2));
 
     if max_slot < GRACE_PERIOD_END {
@@ -279,23 +278,22 @@ pub fn short_range_fork_take(
     tip_hash: &StateHash,
     candidate_hash: &StateHash,
 ) -> (bool, ConsensusShortRangeForkDecisionReason) {
-    use std::cmp::Ordering::*;
     use ConsensusShortRangeForkDecisionReason::*;
 
     let tip_height = &tip_cs.blockchain_length;
     let candidate_height = &candidate_cs.blockchain_length;
     match candidate_height.cmp(tip_height) {
-        Greater => return (true, ChainLength),
-        Less => return (false, ChainLength),
-        Equal => {}
+        Ordering::Greater => return (true, ChainLength),
+        Ordering::Less => return (false, ChainLength),
+        Ordering::Equal => {}
     }
 
     let tip_vrf = tip_cs.last_vrf_output.blake2b();
     let candidate_vrf = candidate_cs.last_vrf_output.blake2b();
     match candidate_vrf.cmp(&tip_vrf) {
-        Greater => return (true, Vrf),
-        Less => return (false, Vrf),
-        Equal => {}
+        Ordering::Greater => return (true, Vrf),
+        Ordering::Less => return (false, Vrf),
+        Ordering::Equal => {}
     }
 
     (candidate_hash > tip_hash, StateHash)
@@ -344,31 +342,30 @@ pub fn long_range_fork_take(
     tip_hash: &StateHash,
     candidate_hash: &StateHash,
 ) -> (bool, ConsensusLongRangeForkDecisionReason) {
-    use std::cmp::Ordering::*;
     use ConsensusLongRangeForkDecisionReason::*;
 
     let tip_density = relative_min_window_density(tip_cs, candidate_cs);
     let candidate_density = relative_min_window_density(candidate_cs, tip_cs);
     match candidate_density.cmp(&tip_density) {
-        Greater => return (true, SubWindowDensity),
-        Less => return (false, SubWindowDensity),
-        Equal => {}
+        Ordering::Greater => return (true, SubWindowDensity),
+        Ordering::Less => return (false, SubWindowDensity),
+        Ordering::Equal => {}
     }
 
     let tip_height = &tip_cs.blockchain_length;
     let candidate_height = &candidate_cs.blockchain_length;
     match candidate_height.cmp(tip_height) {
-        Greater => return (true, ChainLength),
-        Less => return (false, ChainLength),
-        Equal => {}
+        Ordering::Greater => return (true, ChainLength),
+        Ordering::Less => return (false, ChainLength),
+        Ordering::Equal => {}
     }
 
     let tip_vrf = tip_cs.last_vrf_output.blake2b();
     let candidate_vrf = candidate_cs.last_vrf_output.blake2b();
     match candidate_vrf.cmp(&tip_vrf) {
-        Greater => return (true, Vrf),
-        Less => return (false, Vrf),
-        Equal => {}
+        Ordering::Greater => return (true, Vrf),
+        Ordering::Less => return (false, Vrf),
+        Ordering::Equal => {}
     }
 
     (candidate_hash > tip_hash, StateHash)
