@@ -17,7 +17,7 @@ concurrency:
 
 jobs:
   ledger-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -40,7 +40,7 @@ jobs:
           make test-ledger
 
   ledger-32x9-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -70,7 +70,7 @@ jobs:
           make test-ledger
 
   vrf-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -90,7 +90,7 @@ jobs:
           make test-vrf
 
   p2p-tests:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
@@ -116,15 +116,26 @@ jobs:
           make test-p2p
 
   build:
-    runs-on: ubuntu-22.04
+    # NOTE: If you add or remove platforms from this matrix, make sure to update
+    # the documentation at website/docs/developers/getting-started.mdx
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies
+      - name: Setup build dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
           sudo apt install -y protobuf-compiler
+
+      - name: Setup build dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install protobuf
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -142,52 +153,75 @@ jobs:
           make build-release
 
       - name: Upload binaries
+        if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
           name: bin
           path: target/release/openmina
 
-  build_wasm:
-   runs-on: ubuntu-22.04
-   steps:
-     - name: Git checkout
-       uses: actions/checkout@v4
-
-     - name: Setup build dependencies
-       run: |
-         sudo apt update
-         sudo apt install -y protobuf-compiler
-
-     - name: Setup Rust
-       uses: dtolnay/rust-toolchain@stable
-       with:
-         components: rustfmt, rust-src
-         toolchain: nightly
-
-     - name: Install wasm32 and wasm-bindgen-cli
-       run: |
-         rustup target add wasm32-unknown-unknown
-         cargo install -f wasm-bindgen-cli --version 0.2.99
-
-     - name: Setup Rust Cache
-       uses: Swatinem/rust-cache@v2
-       with:
-         prefix-key: "v0"
-
-     - name: Release build
-       run: |
-         make build-wasm
-
-  build-tests:
-    runs-on: ubuntu-22.04
+  build-wasm:
+    # NOTE: If you add or remove platforms from this matrix, make sure to update
+    # the documentation at website/docs/developers/getting-started.mdx
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies
+      - name: Setup build dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
           sudo apt install -y protobuf-compiler
+
+      - name: Setup build dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install protobuf
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, rust-src
+          toolchain: nightly
+
+      - name: Install wasm32 and wasm-bindgen-cli
+        run: |
+          rustup target add wasm32-unknown-unknown
+          cargo install -f wasm-bindgen-cli --version 0.2.99
+
+      - name: Setup Rust Cache
+        uses: Swatinem/rust-cache@v2
+        with:
+          prefix-key: "v0"
+
+      - name: Release build
+        run: |
+          make build-wasm
+
+  build-tests:
+    # NOTE: If you add or remove platforms from this matrix, make sure to update
+    # the documentation at website/docs/developers/getting-started.mdx
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v4
+
+      - name: Setup build dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          sudo apt update
+          sudo apt install -y protobuf-compiler
+
+      - name: Setup build dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install protobuf
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -210,21 +244,33 @@ jobs:
           while read NAME FILE; do cp -a $FILE target/release/tests/$NAME; done < tests.tsv
 
       - name: Upload tests
+        if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
           name: tests
           path: target/release/tests
 
   build-tests-webrtc:
-    runs-on: ubuntu-22.04
+    # NOTE: If you add or remove platforms from this matrix, make sure to update
+    # the documentation at website/docs/developers/getting-started.mdx
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v4
 
-      - name: Setup build dependencies
+      - name: Setup build dependencies (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
         run: |
           sudo apt update
           sudo apt install -y protobuf-compiler
+
+      - name: Setup build dependencies (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          brew install protobuf
 
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
@@ -242,6 +288,7 @@ jobs:
           make build-tests-webrtc
 
       - name: Upload tests
+        if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
         with:
           name: tests-webrtc
@@ -249,7 +296,7 @@ jobs:
 
   p2p-scenario-tests:
     needs: [ build-tests, build-tests-webrtc ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
       options: --volume debugger_data:/tmp/db
@@ -312,7 +359,7 @@ jobs:
     needs:
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
       options: --volume debugger_data:/tmp/db
@@ -398,7 +445,7 @@ jobs:
     needs:
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
     env:
@@ -435,7 +482,7 @@ jobs:
 
   bootstrap-test:
     needs: [ build, build-tests ]
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     env:
       OPENMINA_HOME: data
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
