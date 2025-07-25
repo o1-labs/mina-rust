@@ -44,8 +44,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - **CI**: Generalized build jobs to support multiple platforms (Ubuntu 22.04,
-  Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest) and updated test execution to
-  ubuntu-latest ([#1249](https://github.com/o1-labs/openmina/pull/1249))
+  Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest), updated test execution to
+  ubuntu-latest, and fixed GLIBC compatibility for scenario tests by using
+  Ubuntu 22.04 for test binary artifacts to ensure compatibility with Debian
+  Bullseye container environment ([#1249](https://github.com/o1-labs/openmina/pull/1249))
 - **Build System**: Enhanced Makefile with documentation-related targets and comprehensive formatting commands ([#1234](https://github.com/o1-labs/openmina/pull/1234))
 ### Fixed
 
