@@ -251,7 +251,7 @@ jobs:
     needs: [ build-tests, build-tests-webrtc ]
     runs-on: ubuntu-22.04
     container:
-      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-alpha1-7f94ae0-bullseye-devnet
+      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
       options: --volume debugger_data:/tmp/db
     env:
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
@@ -314,7 +314,7 @@ jobs:
       - build-tests-webrtc
     runs-on: ubuntu-22.04
     container:
-      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-alpha1-7f94ae0-bullseye-devnet
+      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
       options: --volume debugger_data:/tmp/db
     env:
       # to allow local addrs discovery
@@ -400,7 +400,7 @@ jobs:
       - build-tests-webrtc
     runs-on: ubuntu-22.04
     container:
-      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-alpha1-7f94ae0-bullseye-devnet
+      image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
     env:
       # to allow local addrs discovery
       OPENMINA_DISCOVERY_FILTER_ADDR: false
