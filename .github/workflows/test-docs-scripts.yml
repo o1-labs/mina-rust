@@ -224,7 +224,8 @@ jobs:
   test-update-ocaml-node-script:
     name: Test Update OCaml Node Script
     runs-on: [macos-latest, ubuntu-latest]
-
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    steps:
       - name: Test update-ocaml-node script reproducibility
         run: |
           # Save the current script to use with the old commit state
