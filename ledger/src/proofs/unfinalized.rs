@@ -1,7 +1,6 @@
 use ark_ff::fields::arithmetic::InvalidBigInt;
 use kimchi::proof::{PointEvaluations, ProofEvaluations};
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2;
 
 use crate::proofs::{
@@ -25,8 +24,7 @@ use super::{
 
 pub mod ro {
 
-    use mina_curves::pasta::Fq;
-    use mina_curves::pasta::Fp;
+    use mina_curves::pasta::{Fp, Fq};
 
     use crate::proofs::{
         field::FieldWitness, public_input::scalar_challenge::ScalarChallenge,

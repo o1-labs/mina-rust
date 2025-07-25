@@ -1,7 +1,6 @@
 use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field, FromBytes};
 use kimchi::proof::ProofEvaluations;
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq};
 
 use crate::proofs::field::FieldWitness;
 
@@ -688,8 +687,7 @@ mod tests {
         circuits::expr::Linearization,
         linearization::{constraints_expr, linearization_columns},
     };
-    use mina_curves::pasta::Fq;
-    use mina_curves::pasta::Fp;
+    use mina_curves::pasta::{Fp, Fq};
     use sha2::{Digest, Sha256};
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;

@@ -27,8 +27,7 @@ use ledger::{
     Account, AuthRequired, MutableFp, Permissions, ProofVerified, SetVerificationKey, TokenId,
     TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppUri, TXN_VERSION_CURRENT,
 };
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::{
     array::ArrayN,
     list::List,

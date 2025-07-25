@@ -1,8 +1,7 @@
 use std::{collections::HashMap, path::Path, sync::Arc};
 
 use kimchi::circuits::gate::CircuitGate;
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use once_cell::sync::OnceCell;
 use openmina_core::network::CircuitsConfig;
 

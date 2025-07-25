@@ -40,8 +40,7 @@ use kimchi::{
     mina_curves::pasta::Pallas,
     proof::{PointEvaluations, ProofEvaluations},
 };
-use mina_curves::pasta::{Fq, Vesta};
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq, Vesta};
 use mina_p2p_messages::{
     bigint::BigInt,
     binprot::BinProtWrite,

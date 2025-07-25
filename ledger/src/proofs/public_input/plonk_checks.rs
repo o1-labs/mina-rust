@@ -7,8 +7,7 @@ use kimchi::{
     curve::KimchiCurve,
     proof::{PointEvaluations, ProofEvaluations},
 };
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq};
 
 use crate::{
     proofs::{

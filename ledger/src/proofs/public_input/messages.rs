@@ -8,8 +8,7 @@ use crate::proofs::{
 };
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::{BigInteger256, PrimeField};
-use mina_curves::pasta::{Fq, Pallas};
-use mina_curves::pasta::Fp;
+use mina_curves::pasta::{Fp, Fq, Pallas};
 use poly_commitment::PolyComm;
 
 use poseidon::hash::hash_fields;

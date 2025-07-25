@@ -78,8 +78,7 @@ mod tests {
 
     #[test]
     fn test_cache() {
-        use mina_curves::pasta::Fq;
-        use mina_curves::pasta::Fp;
+        use mina_curves::pasta::{Fp, Fq};
 
         static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
