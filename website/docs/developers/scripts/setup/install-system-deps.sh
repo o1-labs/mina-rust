@@ -6,4 +6,5 @@ sudo apt install -y \
     protobuf-compiler \
     sqlite3 \
     git \
-    curl
+    curl \
+    shellcheck

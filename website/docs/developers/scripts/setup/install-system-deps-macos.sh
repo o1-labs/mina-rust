@@ -10,4 +10,5 @@ brew install \
     protobuf \
     sqlite \
     git \
-    curl
+    curl \
+    shellcheck

@@ -69,6 +69,7 @@ jobs:
           protoc --version
           sqlite3 --version
           wasm-pack --version
+          shellcheck --version
 
   macos:
     name: Test System Setup Scripts (${{ matrix.os }})
@@ -125,6 +126,7 @@ jobs:
           protoc --version
           sqlite3 --version
           wasm-pack --version
+          shellcheck --version
 
   docker-ubuntu:
     name: Test Docker Setup Script (${{ matrix.os }})
