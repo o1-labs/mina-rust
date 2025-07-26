@@ -1,7 +1,7 @@
 use std::{cell::Cell, marker::PhantomData};
 
 use ark_ff::Zero;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use poseidon::hash::{
     params::{

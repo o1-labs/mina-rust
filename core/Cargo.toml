@@ -35,6 +35,7 @@ graphannis-malloc_size_of_derive = { workspace = true }
 ark-ff = { workspace = true }
 hex = "0.4.3"
 libp2p-identity = { version = "=0.2.7", features = ["serde", "peerid"] }
+mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
 mina-p2p-messages = { workspace = true }
 poseidon = { workspace = true }

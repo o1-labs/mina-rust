@@ -21,8 +21,7 @@ use kimchi::{
     linearization::expr_linearization,
     mina_curves::pasta::Pallas,
 };
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use poly_commitment::srs::SRS;
 
 use crate::{proofs::BACKEND_TOCK_ROUNDS_N, VerificationKey};

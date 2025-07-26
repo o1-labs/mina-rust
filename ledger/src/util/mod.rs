@@ -1,8 +1,7 @@
 use std::ops::Neg;
 
 use ark_ff::{BigInteger, PrimeField};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_signer::{CompressedPubKey, CurvePoint, Keypair, PubKey};
 
 mod backtrace;

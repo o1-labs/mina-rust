@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, HashMap, VecDeque};
 
 use ark_ff::Zero;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use poseidon::hash::params::get_merkle_param_for_height;
 

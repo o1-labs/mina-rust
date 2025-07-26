@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use ark_ff::{UniformRand, Zero};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use o1_utils::{field_helpers::FieldHelpersError, FieldHelpers};
 use serde::{Deserialize, Serialize};
 

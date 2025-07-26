@@ -23,7 +23,7 @@ pub mod transaction_fuzzer {
         sparse_ledger::LedgerIntf,
         Account, BaseLedger,
     };
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::bigint::BigInt;
     use openmina_core::constants::ConstraintConstantsUnversioned;
     use std::{

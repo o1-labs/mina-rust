@@ -7,9 +7,8 @@ use ark_ff::{
 };
 use kimchi::curve::KimchiCurve;
 use mina_curves::pasta::{
-    Fq, PallasParameters, ProjectivePallas, ProjectiveVesta, VestaParameters,
+    Fp, Fq, PallasParameters, ProjectivePallas, ProjectiveVesta, VestaParameters,
 };
-use mina_hasher::Fp;
 use mina_poseidon::{constants::PlonkSpongeConstantsKimchi, sponge::DefaultFqSponge};
 
 use poseidon::SpongeParamsForField;

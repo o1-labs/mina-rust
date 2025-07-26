@@ -6,8 +6,7 @@ use crate::{
 };
 use ark_ff::{Field, One, Zero};
 use kimchi::proof::{PointEvaluations, ProofEvaluations, ProverCommitments, ProverProof};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::{string::ByteString, v2};
 use mina_signer::CompressedPubKey;
 use poly_commitment::evaluation_proof::OpeningProof;

@@ -103,9 +103,9 @@ pub fn complete_num_accounts_tree_with_empties(
 
 pub fn hash_node_at_depth(
     depth: usize,
-    left: mina_hasher::Fp,
-    right: mina_hasher::Fp,
-) -> mina_hasher::Fp {
+    left: mina_curves::pasta::Fp,
+    right: mina_curves::pasta::Fp,
+) -> mina_curves::pasta::Fp {
     let height = LEDGER_DEPTH.saturating_sub(depth).saturating_sub(1);
     ledger::V2::hash_node(height, left, right)
 }

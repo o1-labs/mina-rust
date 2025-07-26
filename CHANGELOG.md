@@ -49,6 +49,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Ubuntu 22.04 for test binary artifacts to ensure compatibility with Debian
   Bullseye container environment ([#1249](https://github.com/o1-labs/openmina/pull/1249))
 - **Build System**: Enhanced Makefile with documentation-related targets and comprehensive formatting commands ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- Use consistent `use` statements for fields. Replace `mina_hasher::Fp` with
+  `mina_curves::pasta::Fp`.
+  ([#1269](https://github.com/o1-labs/openmina/pull/1269/)).
+
 ### Fixed
 
 - **Documentation**: Resolved broken links and bare URL warnings in Rust

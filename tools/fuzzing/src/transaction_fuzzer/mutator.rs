@@ -21,7 +21,7 @@ use ledger::{
     Account, AuthRequired, MutableFp, Permissions, Timing, TokenId, TokenSymbol, VerificationKey,
     VerificationKeyWire,
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     array::ArrayN16,
     bigint::BigInt,

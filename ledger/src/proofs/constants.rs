@@ -1,6 +1,5 @@
 use ark_ff::{One, Zero};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 
 use super::{
     field::Boolean,

@@ -1,6 +1,5 @@
 use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_curves::pasta::Vesta;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Vesta};
 use mina_p2p_messages::{bigint::BigInt, v2::PicklesProofProofsVerified2ReprStableV2};
 use poly_commitment::{commitment::CommitmentCurve, srs::SRS};
 

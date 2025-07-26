@@ -1,5 +1,5 @@
 use ark_ff::{PrimeField, ToBytes};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poseidon::hash::Inputs;
 use sha2::{Digest, Sha256};
 

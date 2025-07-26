@@ -99,7 +99,7 @@ pub mod bw19 {
 }
 
 use ark_ff::{FpParameters, One};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use self::tock::Conic;
 

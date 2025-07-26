@@ -7,8 +7,7 @@ use kimchi::{
     oracles::OraclesResult,
     proof::{PointEvaluations, ProofEvaluations, RecursionChallenge},
 };
-use mina_curves::pasta::{Fq, Pallas, Vesta};
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq, Pallas, Vesta};
 use mina_p2p_messages::v2::{
     CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
     PicklesBaseProofsVerifiedStableV1,

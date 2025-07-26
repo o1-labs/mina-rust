@@ -1,5 +1,5 @@
 use core::str::FromStr;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::binprot::BinProtWrite;
 use multihash::{Blake2b256, Hasher};
 use serde::{Deserialize, Deserializer, Serialize};

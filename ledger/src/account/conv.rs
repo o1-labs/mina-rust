@@ -2,7 +2,7 @@
 
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::{fields::arithmetic::InvalidBigInt, Field, PrimeField};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     bigint::BigInt,
     binprot,
