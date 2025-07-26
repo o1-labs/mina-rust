@@ -51,7 +51,7 @@ ark-ff = { workspace = true }
 ark-poly = { version = "0.3.0", features = ["std"] }
 ark-serialize = { version = "0.3.0", features = ["std"] }
 
-rayon = "1.5"
+rayon = "1.10"
 
 bitvec = "1.0.0"
 hex = "0.4.3"

@@ -41,7 +41,7 @@ multihash = "0.18.1"
 num_cpus = "1.0"
 postcard = { version = "1.0.9", features = ["use-std"] }
 rand = "0.8"
-rayon = "1.5"
+rayon = "1.10"
 redux = { workspace = true }
 serde = "1.0.147"
 serde_json = { version = "1.0.82", features = [
