@@ -17,7 +17,7 @@ num_cpus = "1.0"
 rand = "0.8.0"
 rayon = "1.5"
 redux = { workspace = true }
-serde = "1.0.158"
+serde = "1.0.219"
 sha2 = "0.10"
 tokio = { version = "1.26.0" }
 vrf = { workspace = true }

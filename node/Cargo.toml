@@ -25,7 +25,7 @@ num_enum = "0.5.7"
 poseidon = { workspace = true }
 rand = "0.8.0"
 redux = { workspace = true }
-serde = "1.0.147"
+serde = "1.0.219"
 serde_json = { version = "1.0.82", features = [
   "unbounded_depth",
   "arbitrary_precision",
