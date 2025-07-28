@@ -50,9 +50,9 @@ dependencies = [
 
 [[package]]
 name = "aes"
-version = "0.8.3"
+version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ac1f845298e95f983ff1944b728ae08b8cebab80d684f0a832ed0fc74dfa27e2"
+checksum = "b169f7a6d4742236a0a00c541b845991d0ac43e546831af1249753ab4c3aa3a0"
 dependencies = [
  "cfg-if",
  "cipher 0.4.4",
@@ -80,7 +80,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "831010a0f742e1209b3bcea8fab6a8e149051ba6099432c8cb2cc117dec3ead1"
 dependencies = [
  "aead 0.5.2",
- "aes 0.8.3",
+ "aes 0.8.4",
  "cipher 0.4.4",
  "ctr 0.9.2",
  "ghash 0.5.0",
@@ -10373,7 +10373,7 @@ name = "webrtc-dtls"
 version = "0.10.0"
 source = "git+https://github.com/openmina/webrtc.git?rev=aeaa62682b97f6984627bedd6e6811fe17af18eb#aeaa62682b97f6984627bedd6e6811fe17af18eb"
 dependencies = [
- "aes 0.8.3",
+ "aes 0.8.4",
  "aes-gcm 0.10.3",
  "async-trait",
  "bincode",
@@ -10483,7 +10483,7 @@ dependencies = [
 name = "webrtc-sniffer"
 version = "0.16.0"
 dependencies = [
- "aes 0.8.3",
+ "aes 0.8.4",
  "aes-gcm 0.10.3",
  "cbc",
  "clap 4.5.20",
@@ -10510,7 +10510,7 @@ version = "0.13.0"
 source = "git+https://github.com/openmina/webrtc.git?rev=aeaa62682b97f6984627bedd6e6811fe17af18eb#aeaa62682b97f6984627bedd6e6811fe17af18eb"
 dependencies = [
  "aead 0.5.2",
- "aes 0.8.3",
+ "aes 0.8.4",
  "aes-gcm 0.10.3",
  "byteorder",
  "bytes",
