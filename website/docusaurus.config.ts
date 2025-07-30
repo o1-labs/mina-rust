@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'OpenMina Documentation',
+  title: 'OpenMina Docs',
   tagline: 'Rust implementation of the Mina Protocol - lightweight blockchain using zero-knowledge proofs',
   favicon: 'img/favicon.ico',
 
@@ -78,11 +78,11 @@ const config: Config = {
       {name: 'robots', content: 'index,follow'},
       {name: 'googlebot', content: 'index,follow'},
       {property: 'og:type', content: 'website'},
-      {property: 'og:title', content: 'OpenMina Documentation'},
+      {property: 'og:title', content: 'OpenMina Docs'},
       {property: 'og:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
       {property: 'og:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
       {property: 'twitter:card', content: 'summary_large_image'},
-      {property: 'twitter:title', content: 'OpenMina Documentation'},
+      {property: 'twitter:title', content: 'OpenMina Docs'},
       {property: 'twitter:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
       {property: 'twitter:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
     ],
