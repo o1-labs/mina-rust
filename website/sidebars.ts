@@ -71,8 +71,9 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Architecture',
       items: [
-        'developers/architecture',
         'developers/why-openmina',
+        'developers/architecture',
+        'developers/webrtc',
       ],
     },
   ],
