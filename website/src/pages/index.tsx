@@ -23,12 +23,6 @@ function HomepageHeader() {
             to="/docs/node-runners/getting-started">
             Get Started 🚀
           </Link>
-          <Link
-            className="button button--outline button--lg"
-            to="/docs/developers/architecture"
-            style={{marginLeft: '1rem'}}>
-            Architecture Overview 🏗️
-          </Link>
         </div>
       </div>
     </header>
