@@ -10,36 +10,36 @@ type FeatureItem = {
 };
 
 const FeatureList: FeatureItem[] = [
-  {
-    title: 'Easy to Use',
-    Svg: require('@site/static/img/undraw_docusaurus_mountain.svg').default,
-    description: (
-      <>
-        Docusaurus was designed from the ground up to be easily installed and
-        used to get your website up and running quickly.
-      </>
-    ),
-  },
-  {
-    title: 'Focus on What Matters',
-    Svg: require('@site/static/img/undraw_docusaurus_tree.svg').default,
-    description: (
-      <>
-        Docusaurus lets you focus on your docs, and we&apos;ll do the chores. Go
-        ahead and move your docs into the <code>docs</code> directory.
-      </>
-    ),
-  },
-  {
-    title: 'Powered by React',
-    Svg: require('@site/static/img/undraw_docusaurus_react.svg').default,
-    description: (
-      <>
-        Extend or customize your website layout by reusing React. Docusaurus can
-        be extended while reusing the same header and footer.
-      </>
-    ),
-  },
+    {
+        title: 'Run a node anywhere',
+        Svg: require('@site/static/img/Rust_programming_language_black_logo.svg').default,
+        description: (
+            <>
+                In your browser. On your phone. Even in your Tesla.
+            </>
+        ),
+    },
+    {
+        title: 'Why Rust? Safety and Stability',
+        Svg: require('@site/static/img/Rust_programming_language_black_logo.svg').default,
+        description: (
+            <>
+                Mina secures financial data — so we chose Rust for its memory safety,
+                strong guarantees against concurrency bugs, and rock-solid
+                reliability.
+            </>
+        ),
+    },
+    {
+        title: 'Boosting Network Resilience',
+        Svg: require('@site/static/img/Rust_programming_language_black_logo.svg').default,
+        description: (
+            <>
+                Multiple node implementations mean bugs are caught faster and impact
+                fewer nodes — reducing the risk to the whole network.
+            </>
+        ),
+    },
 ];
 
 function Feature({title, Svg, description}: FeatureItem) {
