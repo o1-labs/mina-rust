@@ -90,11 +90,13 @@ impl MinaKeyPair {
 /// ```
 #[derive(Debug, Clone, clap::Args)]
 pub struct MinaEncryptedKey {
-    /// Optional existing secret key to encrypt. If not provided, generates a new random key
+    /// Optional existing secret key to encrypt. If not provided, generates a
+    /// new random key
     #[arg(long, short = 's', env = "OPENMINA_ENC_KEY")]
     secret_key: Option<AccountSecretKey>,
 
-    /// Password to encrypt the key file with. Can be provided via MINA_PRIVKEY_PASS environment variable
+    /// Password to encrypt the key file with. Can be provided via
+    /// MINA_PRIVKEY_PASS environment variable
     #[arg(env = "MINA_PRIVKEY_PASS", default_value = "")]
     password: String,
 
