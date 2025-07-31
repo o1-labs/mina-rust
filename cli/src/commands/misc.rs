@@ -65,7 +65,8 @@ impl MinaKeyPair {
 /// Generate a new Mina key pair and save it as an encrypted JSON file
 ///
 /// This command generates a new random Mina key pair (or uses a provided secret key)
-/// and saves it to an encrypted JSON file format compatible with the Mina protocol.
+/// and saves it to an encrypted JSON file format compatible with key generation
+/// from the OCaml implementation.
 /// The encrypted file can be used as a producer key for block production.
 ///
 /// This command replicates the secret box functionality from `src/lib/secret_box`
