@@ -7,10 +7,11 @@
 //! ## Usage
 //!
 //! This module is used by:
-//! - [`node::account::AccountSecretKey`] - Block producer keys for signing
-//!   blocks and transactions
-//! - [`p2p::identity::SecretKey`] - P2P networking keys for node identity and
-//!   peer authentication
+//! - Block producer keys ([`AccountSecretKey`]) for signing blocks and transactions
+//! - P2P networking keys ([`SecretKey`]) for node identity and peer authentication
+//!
+//! [`AccountSecretKey`]: ../../../node/account/struct.AccountSecretKey.html
+//! [`SecretKey`]: ../../../p2p/identity/struct.SecretKey.html
 //!
 //! ## Encryption Algorithms
 //!
