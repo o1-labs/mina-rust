@@ -32,6 +32,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
+          components: rustfmt
           toolchain: nightly
           cache-prefix: test-doc-commands-v0
 
