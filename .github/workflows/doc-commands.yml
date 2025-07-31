@@ -71,7 +71,7 @@ jobs:
           echo "Testing that generated key can be used by run-block-producer target..."
           # Run with --help to avoid actually starting the producer but verify
           # key validation passes
-          timeout 30s make run-block-producer-devnet COINBASE_RECEIVER="test" || {
+          timeout 30s make run-block-producer NETWORK=devnet COINBASE_RECEIVER=$(cat ./openmina-workdir/producer-key.pub) || {
             EXIT_CODE=$?
             if [ $EXIT_CODE -eq 124 ]; then
               echo "✅ Command started successfully (timed out as expected)"
