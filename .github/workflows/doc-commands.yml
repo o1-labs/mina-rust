@@ -33,7 +33,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           components: rustfmt
-          toolchain: nightly
+          toolchain: 1.84
           cache-prefix: test-doc-commands-v0
 
       - name: Download circuits files
