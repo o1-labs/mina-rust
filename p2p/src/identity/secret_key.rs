@@ -295,7 +295,7 @@ mod tests {
         let expected_peer_id = "12D3KooWDxyuJKSsVEwNR13UVwf4PEfs4yHkk3ecZipBPv3Y3Sac";
 
         let decrypted = SecretKey::from_encrypted_file(key_path, password)
-            .expect("Failed to decrypt secret key file");
+            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", key_path));
 
         let peer_id = decrypted.public_key().peer_id().to_libp2p_string();
         assert_eq!(expected_peer_id, peer_id);
