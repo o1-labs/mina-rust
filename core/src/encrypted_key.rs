@@ -250,6 +250,7 @@ pub trait EncryptedSecretKey {
         // strip the prefix and create keypair
         Ok(decrypted)
     }
+
     /// Encrypts a secret key using password-based encryption.
     ///
     /// This method implements the encryption process compatible with Mina
@@ -280,10 +281,7 @@ pub trait EncryptedSecretKey {
     ///   and nonce
     /// - Default Argon2i parameters: 128MB memory cost, 6 iterations
     /// - Each encryption produces unique salt and nonce for security
-    fn try_encrypt(
-        key: &[u8],
-        password: &str,
-    ) -> Result<EncryptedSecretKeyFile, EncryptionError> {
+    fn try_encrypt(key: &[u8], password: &str) -> Result<EncryptedSecretKeyFile, EncryptionError> {
         let argon2 = setup_argon(Self::PW_DIFF)?;
 
         // add the prefix byte to the key
@@ -310,18 +308,9 @@ pub trait EncryptedSecretKey {
             box_primitive: Self::BOX_PRIMITIVE.to_string(),
             pw_primitive: Self::PW_PRIMITIVE.to_string(),
             nonce: Base58String::new(&nonce, Self::ENCRYPTION_DATA_VERSION_BYTE),
-            pwsalt: Base58String::new(
-                salt_portion,
-                Self::ENCRYPTION_DATA_VERSION_BYTE,
-            ),
-            pwdiff: (
-                argon2.params().m_cost() * 1024,
-                argon2.params().t_cost(),
-            ),
-            ciphertext: Base58String::new(
-                &ciphertext,
-                Self::ENCRYPTION_DATA_VERSION_BYTE,
-            ),
+            pwsalt: Base58String::new(salt_portion, Self::ENCRYPTION_DATA_VERSION_BYTE),
+            pwdiff: (argon2.params().m_cost() * 1024, argon2.params().t_cost()),
+            ciphertext: Base58String::new(&ciphertext, Self::ENCRYPTION_DATA_VERSION_BYTE),
         })
     }
 }
