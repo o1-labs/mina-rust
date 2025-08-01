@@ -100,7 +100,7 @@ services:
         condition: service_healthy
 
   node-ocaml:
-    image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta1-978866c-bullseye-devnet
+    image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-bullseye-devnet
     container_name: node-ocaml
     environment:
       MINA_CLIENT_TRUSTLIST: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
