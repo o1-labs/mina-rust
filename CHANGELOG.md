@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#1158](https://github.com/o1-labs/openmina/issues/1158))
 - Update the CI and code to compare with the latest release 3.2.0-beta1-978866c
   ([#1250](https://github.com/o1-labs/openmina/pull/1250)
+- Update the CI and code to compare with the latest release 3.2.0-beta2-939b08d
+  ([#1250](https://github.com/o1-labs/openmina/pull/1285)
 
 
 ### Added
