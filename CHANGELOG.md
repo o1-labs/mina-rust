@@ -47,6 +47,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1221](https://github.com/o1-labs/openmina/pull/1221)).
 - **Documentation**: add section regarding peers setup and seeds
   ([#1295](https://github.com/o1-labs/openmina/pull/1295))
+- **Node**: add `openmina misc mina-encrypted-key` to generate a new encrypted
+  key with password, as the OCaml node provides
+  ([#1284](https://github.com/o1-labs/openmina/pull/1284/)).
 
 ### Changed
 
