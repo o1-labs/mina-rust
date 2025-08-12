@@ -332,8 +332,8 @@ run-block-producer: build-release ## Run a block producer node on $(NETWORK) net
 
 .PHONY: generate-block-producer-key
 generate-block-producer-key: build-release ## Generate a new block producer key pair (fails if keys exist, use PRODUCER_KEY_FILENAME to customize, MINA_PRIVKEY_PASS for password)
-	@if [ -f "$(PRODUCER_KEY_FILENAME)" ]; then \
-		echo "Error: Producer key already exists at $(PRODUCER_KEY_FILENAME)"; \
+	@if [ -f "$(PRODUCER_KEY_FILENAME)" ] || [ -f "$(PRODUCER_KEY_FILENAME).pub" ]; then \
+		echo "Error: Producer key already exists at $(PRODUCER_KEY_FILENAME) or public key exists at $(PRODUCER_KEY_FILENAME).pub"; \
 		echo ""; \
 		echo "To generate a key with a different filename, set PRODUCER_KEY_FILENAME:"; \
 		echo "  make generate-block-producer-key PRODUCER_KEY_FILENAME=./path/to/new-key"; \
@@ -349,7 +349,7 @@ generate-block-producer-key: build-release ## Generate a new block producer key 
 	echo ""; \
 	echo "✓ Generated new encrypted producer key:"; \
 	echo "  Encrypted key saved to: $(PRODUCER_KEY_FILENAME)"; \
-	echo "  Public key: $$PUBLIC_KEY"; \
+	echo "  Public key: $$PUBLIC_KEY, saved to $(PRODUCER_KEY_FILENAME).pub"; \
 	echo ""; \
 	echo "⚠️  IMPORTANT: Keep your encrypted key file and password secure and backed up!"
 

@@ -1,5 +1,6 @@
 use libp2p_identity::PeerId;
 use node::{account::AccountSecretKey, p2p::identity::SecretKey};
+use std::{fs::File, io::Write};
 
 #[derive(Debug, clap::Args)]
 pub struct Misc {
@@ -111,6 +112,8 @@ impl MinaEncryptedKey {
     /// Generates a new Mina key pair (or uses provided secret key) and saves it
     /// as an encrypted JSON file that can be used for block production.
     ///
+    /// It will also save the public key to the filename suffixed with `.pub`.
+    ///
     /// # Returns
     ///
     /// * `Ok(())` - On successful key generation and file creation
@@ -122,12 +125,30 @@ impl MinaEncryptedKey {
     /// JSON file at the specified path.
     pub fn run(self) -> anyhow::Result<()> {
         let secret_key = self.secret_key.unwrap_or_else(AccountSecretKey::rand);
+        let public_key = secret_key.public_key();
+
+        // Save the public key to a separate file
+        let public_key_file = format!("{}.pub", self.file);
+
+        if File::open(&public_key_file).is_ok() {
+            return Err(anyhow::anyhow!(
+                "Public key file '{}' already exists. Please choose a different file name.",
+                public_key_file
+            ));
+        }
+
         secret_key
             .to_encrypted_file(&self.file, &self.password)
             .map_err(|e| {
                 anyhow::anyhow!("Failed to encrypt key: {} into path '{}'", e, self.file,)
             })?;
-        let public_key = secret_key.public_key();
+        // Write the public key to the file
+        let mut public_key_file = File::create(public_key_file)
+            .map_err(|e| anyhow::anyhow!("Failed to create public key file: {}", e))?;
+        public_key_file
+            .write_all(public_key.to_string().as_bytes())
+            .map_err(|e| anyhow::anyhow!("Failed to write public key: {}", e))?;
+
         println!("secret key: {secret_key}");
         println!("public key: {public_key}");
         Ok(())
