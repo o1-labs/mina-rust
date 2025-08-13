@@ -73,7 +73,15 @@ const sidebars: SidebarsConfig = {
       items: [
         'developers/why-openmina',
         'developers/architecture',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'P2P Networking',
+      items: [
+        'developers/p2p-networking',
         'developers/webrtc',
+        'developers/libp2p',
       ],
     },
   ],
