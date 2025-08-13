@@ -1,3 +1,8 @@
+//! WebRTC connection authentication.
+//!
+//! Provides cryptographic authentication for WebRTC connections using SDP hashes
+//! and public key encryption to prevent man-in-the-middle attacks.
+
 use rand::{CryptoRng, Rng};
 use serde::{Deserialize, Serialize};
 

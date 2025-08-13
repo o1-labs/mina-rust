@@ -1,3 +1,23 @@
+//! Host address resolution for WebRTC connections.
+//!
+//! This module provides the [`Host`] enum for representing different types of
+//! network addresses used in WebRTC signaling. It supports various address
+//! formats including domain names, IPv4/IPv6 addresses, and multiaddr protocol
+//! addresses.
+//!
+//! ## Supported Address Types
+//!
+//! - **Domain Names**: DNS resolvable hostnames (e.g., `signal.example.com`)
+//! - **IPv4 Addresses**: Standard IPv4 addresses (e.g., `192.168.1.1`)
+//! - **IPv6 Addresses**: Standard IPv6 addresses (e.g., `::1`)
+//! - **Multiaddr**: Protocol-aware addressing format for P2P networks
+//!
+//! ## Usage
+//!
+//! The `Host` type is used throughout the WebRTC implementation to specify
+//! signaling server addresses and peer endpoints. It provides automatic
+//! parsing and resolution capabilities for different address formats.
+
 use std::{
     net::{IpAddr, Ipv4Addr, Ipv6Addr, ToSocketAddrs},
     str::FromStr,
