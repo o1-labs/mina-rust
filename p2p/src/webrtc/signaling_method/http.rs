@@ -217,3 +217,188 @@ impl<'de> serde::Deserialize<'de> for HttpSignalingInfo {
         s.parse().map_err(serde::de::Error::custom)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Unit tests for HttpSignalingInfo parsing
+    //!
+    //! Run these tests with:
+    //! ```bash
+    //! cargo test -p p2p signaling_method::http::tests
+    //! ```
+
+    use super::*;
+    use crate::webrtc::Host;
+    use std::net::Ipv4Addr;
+
+    #[test]
+    fn test_from_str_valid_domain_and_port() {
+        let info: HttpSignalingInfo = "example.com/8080".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("example.com".to_string()));
+        assert_eq!(info.port, 8080);
+    }
+
+    #[test]
+    fn test_from_str_valid_domain_and_port_with_leading_slash() {
+        let info: HttpSignalingInfo = "/example.com/8080".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("example.com".to_string()));
+        assert_eq!(info.port, 8080);
+    }
+
+    #[test]
+    fn test_from_str_valid_ipv4_and_port() {
+        let info: HttpSignalingInfo = "192.168.1.1/443".parse().unwrap();
+        assert_eq!(info.host, Host::Ipv4(Ipv4Addr::new(192, 168, 1, 1)));
+        assert_eq!(info.port, 443);
+    }
+
+    #[test]
+    fn test_from_str_valid_ipv6_and_port() {
+        let info: HttpSignalingInfo = "[::1]/8080".parse().unwrap();
+        assert!(matches!(info.host, Host::Ipv6(_)));
+        assert_eq!(info.port, 8080);
+    }
+
+    #[test]
+    fn test_from_str_valid_localhost_and_standard_ports() {
+        let info: HttpSignalingInfo = "localhost/80".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("localhost".to_string()));
+        assert_eq!(info.port, 80);
+
+        let info: HttpSignalingInfo = "localhost/443".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("localhost".to_string()));
+        assert_eq!(info.port, 443);
+    }
+
+    #[test]
+    fn test_from_str_valid_high_port_number() {
+        let info: HttpSignalingInfo = "example.com/65535".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("example.com".to_string()));
+        assert_eq!(info.port, 65535);
+    }
+
+    #[test]
+    fn test_from_str_missing_host() {
+        let result: Result<HttpSignalingInfo, _> = "/8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_missing_port() {
+        let result: Result<HttpSignalingInfo, _> = "example.com".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_empty_string() {
+        let result: Result<HttpSignalingInfo, _> = "".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_only_slashes() {
+        let result: Result<HttpSignalingInfo, _> = "///".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_invalid_port_not_number() {
+        let result: Result<HttpSignalingInfo, _> = "example.com/abc".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::PortParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_invalid_port_too_large() {
+        let result: Result<HttpSignalingInfo, _> = "example.com/99999".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::PortParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_invalid_port_negative() {
+        let result: Result<HttpSignalingInfo, _> = "example.com/-1".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::PortParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_invalid_host_empty() {
+        let result: Result<HttpSignalingInfo, _> = "/8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_extra_components_ignored() {
+        // Should only use first two non-empty components
+        let info: HttpSignalingInfo = "example.com/8080/extra/stuff".parse().unwrap();
+        assert_eq!(info.host, Host::Domain("example.com".to_string()));
+        assert_eq!(info.port, 8080);
+    }
+
+    #[test]
+    fn test_from_str_whitespace_in_components() {
+        // Components with whitespace should be trimmed by the split filter
+        let result: Result<HttpSignalingInfo, _> = "   /  /8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_roundtrip_display_and_from_str() {
+        let original = HttpSignalingInfo {
+            host: Host::Domain("signal.example.com".to_string()),
+            port: 443,
+        };
+
+        let serialized = original.to_string();
+        let deserialized: HttpSignalingInfo = serialized.parse().unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_roundtrip_ipv4() {
+        let original = HttpSignalingInfo {
+            host: Host::Ipv4(Ipv4Addr::new(127, 0, 0, 1)),
+            port: 8080,
+        };
+
+        let serialized = original.to_string();
+        let deserialized: HttpSignalingInfo = serialized.parse().unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+}

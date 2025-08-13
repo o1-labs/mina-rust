@@ -105,9 +105,6 @@ pub enum SignalingMethod {
     /// Uses an SSL gateway/proxy server to reach the actual signaling server.
     /// The first parameter is the cluster ID for routing, and the second
     /// parameter contains the proxy server connection information.
-    ///
-    /// This method supports cluster-based routing for scalable signaling
-    /// infrastructure and is useful in enterprise environments.
     HttpsProxy(u16, HttpSignalingInfo),
 
     /// P2P relay signaling through an existing peer connection.
@@ -391,5 +388,378 @@ impl<'de> serde::Deserialize<'de> for SignalingMethod {
     {
         let s: String = Deserialize::deserialize(deserializer)?;
         s.parse().map_err(serde::de::Error::custom)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    //! Unit tests for SignalingMethod parsing
+    //!
+    //! Run these tests with:
+    //! ```bash
+    //! cargo test -p p2p signaling_method::tests
+    //! ```
+
+    use super::*;
+    use crate::webrtc::Host;
+    use std::net::Ipv4Addr;
+
+    #[test]
+    fn test_from_str_valid_http() {
+        let method: SignalingMethod = "/http/example.com/8080".parse().unwrap();
+        match method {
+            SignalingMethod::Http(info) => {
+                assert_eq!(info.host, Host::Domain("example.com".to_string()));
+                assert_eq!(info.port, 8080);
+            }
+            _ => panic!("Expected Http variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_valid_https() {
+        let method: SignalingMethod = "/https/signal.example.com/443".parse().unwrap();
+        match method {
+            SignalingMethod::Https(info) => {
+                assert_eq!(info.host, Host::Domain("signal.example.com".to_string()));
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected Https variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_valid_https_proxy() {
+        let method: SignalingMethod = "/https_proxy/123/proxy.example.com/443".parse().unwrap();
+        match method {
+            SignalingMethod::HttpsProxy(cluster_id, info) => {
+                assert_eq!(cluster_id, 123);
+                assert_eq!(info.host, Host::Domain("proxy.example.com".to_string()));
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected HttpsProxy variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_valid_https_proxy_max_cluster_id() {
+        let method: SignalingMethod = "/https_proxy/65535/proxy.example.com/443".parse().unwrap();
+        match method {
+            SignalingMethod::HttpsProxy(cluster_id, info) => {
+                assert_eq!(cluster_id, 65535);
+                assert_eq!(info.host, Host::Domain("proxy.example.com".to_string()));
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected HttpsProxy variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_valid_http_ipv4() {
+        let method: SignalingMethod = "/http/192.168.1.1/8080".parse().unwrap();
+        match method {
+            SignalingMethod::Http(info) => {
+                assert_eq!(info.host, Host::Ipv4(Ipv4Addr::new(192, 168, 1, 1)));
+                assert_eq!(info.port, 8080);
+            }
+            _ => panic!("Expected Http variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_valid_https_ipv6() {
+        let method: SignalingMethod = "/https/[::1]/443".parse().unwrap();
+        match method {
+            SignalingMethod::Https(info) => {
+                assert!(matches!(info.host, Host::Ipv6(_)));
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected Https variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_empty_string() {
+        let result: Result<SignalingMethod, _> = "".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_no_leading_slash() {
+        let result: Result<SignalingMethod, _> = "http/example.com/8080".parse();
+        assert!(result.is_err());
+        // Without leading slash, it treats "http" as unknown method since
+        // there's no slash at start
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::UnknownSignalingMethod(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_only_slash() {
+        let result: Result<SignalingMethod, _> = "/".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_unknown_method() {
+        let result: Result<SignalingMethod, _> = "/websocket/example.com/8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::UnknownSignalingMethod(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_unknown_method_with_valid_format() {
+        let result: Result<SignalingMethod, _> = "/ftp/example.com/21".parse();
+        assert!(result.is_err());
+        match result.unwrap_err() {
+            SignalingMethodParseError::UnknownSignalingMethod(method) => {
+                assert_eq!(method, "ftp");
+            }
+            _ => panic!("Expected UnknownSignalingMethod error"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_http_missing_host() {
+        let result: Result<SignalingMethod, _> = "/http".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_http_missing_port() {
+        let result: Result<SignalingMethod, _> = "/http/example.com".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_http_invalid_port() {
+        let result: Result<SignalingMethod, _> = "/http/example.com/abc".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::PortParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_http_port_too_large() {
+        let result: Result<SignalingMethod, _> = "/http/example.com/99999".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::PortParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_https_proxy_missing_cluster_id() {
+        let result: Result<SignalingMethod, _> = "/https_proxy".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_https_proxy_missing_host() {
+        let result: Result<SignalingMethod, _> = "/https_proxy/123".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_from_str_https_proxy_invalid_cluster_id() {
+        let result: Result<SignalingMethod, _> = "/https_proxy/abc/proxy.example.com/443".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::InvalidClusterId
+        ));
+    }
+
+    #[test]
+    fn test_from_str_https_proxy_cluster_id_too_large() {
+        let result: Result<SignalingMethod, _> = "/https_proxy/99999/proxy.example.com/443".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::InvalidClusterId
+        ));
+    }
+
+    #[test]
+    fn test_from_str_https_proxy_negative_cluster_id() {
+        let result: Result<SignalingMethod, _> = "/https_proxy/-1/proxy.example.com/443".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::InvalidClusterId
+        ));
+    }
+
+    #[test]
+    fn test_from_str_invalid_host() {
+        // This will depend on Host's parsing behavior - assuming it rejects
+        // certain formats
+        let result: Result<SignalingMethod, _> = "/http//8080".parse();
+        assert!(result.is_err());
+        // Should be either NotEnoughArgs or HostParseError depending on
+        // implementation
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs | SignalingMethodParseError::HostParseError(_)
+        ));
+    }
+
+    #[test]
+    fn test_from_str_extra_slashes() {
+        let result: Result<SignalingMethod, _> = "//http//example.com//8080//".parse();
+        assert!(result.is_err());
+        // The extra slashes mean method parsing fails - "http" becomes unknown
+        // method
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::UnknownSignalingMethod(_)
+        ));
+    }
+
+    #[test]
+    fn test_roundtrip_http() {
+        let original = SignalingMethod::Http(HttpSignalingInfo {
+            host: Host::Domain("example.com".to_string()),
+            port: 8080,
+        });
+
+        let serialized = original.to_string();
+        let deserialized: SignalingMethod = serialized.parse().unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_roundtrip_https() {
+        let original = SignalingMethod::Https(HttpSignalingInfo {
+            host: Host::Ipv4(Ipv4Addr::new(127, 0, 0, 1)),
+            port: 443,
+        });
+
+        let serialized = original.to_string();
+        let deserialized: SignalingMethod = serialized.parse().unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_roundtrip_https_proxy() {
+        let original = SignalingMethod::HttpsProxy(
+            123,
+            HttpSignalingInfo {
+                host: Host::Domain("proxy.example.com".to_string()),
+                port: 443,
+            },
+        );
+
+        let serialized = original.to_string();
+        let deserialized: SignalingMethod = serialized.parse().unwrap();
+
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_case_sensitivity() {
+        let result: Result<SignalingMethod, _> = "/HTTP/example.com/8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::UnknownSignalingMethod(_)
+        ));
+
+        let result: Result<SignalingMethod, _> = "/Http/example.com/8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::UnknownSignalingMethod(_)
+        ));
+    }
+
+    #[test]
+    fn test_whitespace_handling() {
+        // The parser should filter empty components from split
+        let result: Result<SignalingMethod, _> = "/http/ /8080".parse();
+        assert!(result.is_err());
+        assert!(matches!(
+            result.unwrap_err(),
+            SignalingMethodParseError::NotEnoughArgs
+        ));
+    }
+
+    #[test]
+    fn test_https_proxy_zero_cluster_id() {
+        let method: SignalingMethod = "/https_proxy/0/proxy.example.com/443".parse().unwrap();
+        match method {
+            SignalingMethod::HttpsProxy(cluster_id, info) => {
+                assert_eq!(cluster_id, 0);
+                assert_eq!(info.host, Host::Domain("proxy.example.com".to_string()));
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected HttpsProxy variant"),
+        }
+    }
+
+    #[test]
+    fn test_standard_ports() {
+        let method: SignalingMethod = "/http/localhost/80".parse().unwrap();
+        match method {
+            SignalingMethod::Http(info) => {
+                assert_eq!(info.port, 80);
+            }
+            _ => panic!("Expected Http variant"),
+        }
+
+        let method: SignalingMethod = "/https/localhost/443".parse().unwrap();
+        match method {
+            SignalingMethod::Https(info) => {
+                assert_eq!(info.port, 443);
+            }
+            _ => panic!("Expected Https variant"),
+        }
+    }
+
+    #[test]
+    fn test_https_proxy_with_ipv4() {
+        let method: SignalingMethod = "/https_proxy/456/192.168.1.1/8443".parse().unwrap();
+        match method {
+            SignalingMethod::HttpsProxy(cluster_id, info) => {
+                assert_eq!(cluster_id, 456);
+                assert_eq!(info.host, Host::Ipv4(Ipv4Addr::new(192, 168, 1, 1)));
+                assert_eq!(info.port, 8443);
+            }
+            _ => panic!("Expected HttpsProxy variant"),
+        }
     }
 }
