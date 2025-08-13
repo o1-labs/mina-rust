@@ -43,6 +43,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Makefile**: Add `run-block-producer` target with devnet/mainnet support and
   `generate-block-producer-key` target for key generation
   ([#1221](https://github.com/o1-labs/openmina/pull/1221)).
+- **Documentation**: add section regarding peers setup and seeds
+  ([#1295](https://github.com/o1-labs/openmina/pull/1295))
 
 ### Changed
 

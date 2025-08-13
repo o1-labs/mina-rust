@@ -38,6 +38,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'node-runners/local-demo',
         'node-runners/alpha-testing',
+        'node-runners/network-configuration',
       ],
     },
     {
