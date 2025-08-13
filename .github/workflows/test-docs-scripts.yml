@@ -223,9 +223,18 @@ jobs:
 
   test-update-ocaml-node-script:
     name: Test Update OCaml Node Script
-    runs-on: [macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history
+
       - name: Test update-ocaml-node script reproducibility
         run: |
           # Save the current script to use with the old commit state
