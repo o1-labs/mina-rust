@@ -234,6 +234,10 @@ test-release: ## Run tests in release mode
 test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
 
+.PHONY: test-doc
+test-doc: ## Run documentation tests
+	cargo test --doc --all-features
+
 # Docker build targets
 
 .PHONY: docker-build-all
