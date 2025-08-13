@@ -53,8 +53,6 @@ const sidebars: SidebarsConfig = {
       label: 'Testing',
       items: [
         'node-runners/testing/overview',
-        'node-runners/testing/bootstrap',
-        'node-runners/testing/cluster',
       ],
     },
   ],
