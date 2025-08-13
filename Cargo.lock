@@ -6049,6 +6049,7 @@ dependencies = [
  "openmina-core",
  "proc-macro2 1.0.95",
  "quote 1.0.35",
+ "redux",
  "rust-format",
  "syn 2.0.96",
  "tracing",

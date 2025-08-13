@@ -231,10 +231,11 @@ impl Default for Ports {
 /// Declares a shared storage for ports.
 ///
 /// ```
+/// use p2p_testing::ports_store;
 /// ports_store!(GLOBAL_PORTS);
 ///
 /// #[tokio::test]
-/// fn test1() {
+/// async fn test1() {
 ///     let cluster = ClusterBuilder::default()
 ///         .ports(GLOBAL_PORTS.take(20).await.expect("enough ports"))
 ///         .start()
