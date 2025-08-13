@@ -1,5 +1,5 @@
 use field::FieldWitness;
-use poly_commitment::evaluation_proof::OpeningProof;
+use poly_commitment::ipa::OpeningProof;
 
 pub mod accumulator_check;
 pub mod block;

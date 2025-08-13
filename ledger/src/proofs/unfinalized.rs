@@ -426,7 +426,7 @@ impl<F: FieldWitness> ToFieldElements<F> for Unfinalized {
         fields.extend(
             bulletproof_challenges
                 .iter()
-                .map(|c| two_u64_to_field::<F>(c)),
+                .map(|c| two_u64_to_field::<F, _>(c)),
         );
 
         // Bool

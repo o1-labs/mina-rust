@@ -1,17 +1,15 @@
-use ark_ec::{
-    short_weierstrass_jacobian::GroupProjective, AffineCurve, ProjectiveCurve, SWModelParameters,
-};
-use ark_ff::{
-    fields::arithmetic::InvalidBigInt, BigInteger256, FftField, Field, FpParameters, PrimeField,
-    SquareRootField,
-};
+use ark_ec::{short_weierstrass::Projective, AffineRepr, CurveGroup};
+use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, FftField, Field, PrimeField};
 use kimchi::curve::KimchiCurve;
 use mina_curves::pasta::{
-    Fp, Fq, PallasParameters, ProjectivePallas, ProjectiveVesta, VestaParameters,
+    fields::fft::FpParameters as _, Fp, Fq, PallasParameters, ProjectivePallas, ProjectiveVesta,
+    VestaParameters,
 };
 use mina_poseidon::{constants::PlonkSpongeConstantsKimchi, sponge::DefaultFqSponge};
 
 use poseidon::SpongeParamsForField;
+
+use crate::proofs;
 
 use super::{
     public_input::plonk_checks::{self, ShiftedValue},
@@ -21,8 +19,7 @@ use super::{
     BACKEND_TICK_ROUNDS_N, BACKEND_TOCK_ROUNDS_N,
 };
 
-pub type GroupAffine<F> =
-    ark_ec::short_weierstrass_jacobian::GroupAffine<<F as FieldWitness>::Parameters>;
+pub type GroupAffine<F> = ark_ec::short_weierstrass::Affine<<F as FieldWitness>::Parameters>;
 
 /// All the generics we need during witness generation
 pub trait FieldWitness
@@ -31,7 +28,7 @@ where
         + Send
         + Sync
         + Into<BigInteger256>
-        + TryFrom<BigInteger256, Error = InvalidBigInt>
+        + From<BigInteger256>
         + Into<mina_p2p_messages::bigint::BigInt>
         + From<i64>
         + From<i32>
@@ -39,26 +36,41 @@ where
         + Check<Self>
         + FromFpFq
         + PrimeField
-        + SquareRootField
         + FftField
         + SpongeParamsForField<Self>
         + std::fmt::Debug
         + 'static,
 {
     type Scalar: FieldWitness<Scalar = Self>;
-    type Affine: AffineCurve<Projective = Self::Projective, BaseField = Self, ScalarField = Self::Scalar>
-        + Into<GroupAffine<Self>>
+    type Affine: AffineRepr<
+            Group = Self::Projective,
+            BaseField = Self,
+            ScalarField = <Self as proofs::field::FieldWitness>::Scalar,
+        > + Into<GroupAffine<Self>>
         + KimchiCurve
         + std::fmt::Debug;
-    type Projective: ProjectiveCurve<Affine = Self::Affine, BaseField = Self, ScalarField = Self::Scalar>
-        + From<GroupProjective<Self::Parameters>>
+    type Projective: CurveGroup<
+            Affine = Self::Affine,
+            BaseField = Self,
+            ScalarField = <Self as proofs::field::FieldWitness>::Scalar,
+        > + From<Projective<Self::Parameters>>
         + std::fmt::Debug;
-    type Parameters: SWModelParameters<BaseField = Self, ScalarField = Self::Scalar>
-        + Clone
+    type Parameters: ark_ec::short_weierstrass::SWCurveConfig<
+            BaseField = Self,
+            ScalarField = <Self as proofs::field::FieldWitness>::Scalar,
+        > + Clone
         + std::fmt::Debug;
     type Shifting: plonk_checks::ShiftingValue<Self> + Clone + std::fmt::Debug;
-    type OtherCurve: KimchiCurve<ScalarField = Self, BaseField = Self::Scalar>;
-    type FqSponge: Clone + mina_poseidon::FqSponge<Self::Scalar, Self::OtherCurve, Self>;
+    type OtherCurve: KimchiCurve<
+        ScalarField = Self,
+        BaseField = <Self as proofs::field::FieldWitness>::Scalar,
+    >;
+    type FqSponge: Clone
+        + mina_poseidon::FqSponge<
+            <Self as proofs::field::FieldWitness>::Scalar,
+            Self::OtherCurve,
+            Self,
+        >;
 
     const PARAMS: Params<Self>;
     const SIZE: BigInteger256;
@@ -82,8 +94,8 @@ impl FieldWitness for Fp {
 
     /// <https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L107>
     const PARAMS: Params<Self> = Params::<Self> {
-        a: ark_ff::field_new!(Fp, "0"),
-        b: ark_ff::field_new!(Fp, "5"),
+        a: ark_ff::MontFp!("0"),
+        b: ark_ff::MontFp!("5"),
     };
     const SIZE: BigInteger256 = mina_curves::pasta::fields::FpParameters::MODULUS;
     const NROUNDS: usize = BACKEND_TICK_ROUNDS_N;
@@ -101,8 +113,8 @@ impl FieldWitness for Fq {
 
     /// <https://github.com/openmina/mina/blob/46b6403cb7f158b66a60fc472da2db043ace2910/src/lib/crypto/kimchi_backend/pasta/basic/kimchi_pasta_basic.ml#L95>
     const PARAMS: Params<Self> = Params::<Self> {
-        a: ark_ff::field_new!(Fq, "0"),
-        b: ark_ff::field_new!(Fq, "5"),
+        a: ark_ff::MontFp!("0"),
+        b: ark_ff::MontFp!("5"),
     };
     const SIZE: BigInteger256 = mina_curves::pasta::fields::FqParameters::MODULUS;
     const NROUNDS: usize = BACKEND_TOCK_ROUNDS_N;

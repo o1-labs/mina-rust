@@ -1,4 +1,4 @@
-use ark_ff::{BigInteger256, Field, FromBytes as _};
+use ark_ff::{BigInt, BigInteger256, Field, FromBytes};
 use mina_curves::pasta::Fp;
 
 use crate::{PlonkSpongeConstantsKimchi, Sponge, SpongeParamsForField};
@@ -46,7 +46,8 @@ impl Item {
             Item::U48(v) => {
                 let mut bytes = <[u8; 32]>::default();
                 bytes[..6].copy_from_slice(&v[..]);
-                BigInteger256::read(&bytes[..]).unwrap().to_64x4()[0] // Never fail with only 6 bytes
+                let value = FromBytes::read(&bytes[..]).expect("Must not go wrong");
+                BigInteger256::new(value).0[0] // Never fail with only 6 bytes
             }
             Item::U64(v) => *v,
         }
@@ -162,7 +163,7 @@ impl Inputs {
                 current[0] |= item;
             } else {
                 self.fields
-                    .push(BigInteger256::from_64x4(current).try_into().unwrap()); // Never fail
+                    .push(BigInteger256::new(current).try_into().unwrap()); // Never fail
                 current = [item, 0, 0, 0];
                 nbits = item_nbits;
             }
@@ -170,7 +171,7 @@ impl Inputs {
 
         if nbits > 0 {
             self.fields
-                .push(BigInteger256::from_64x4(current).try_into().unwrap()); // Never fail
+                .push(BigInteger256::new(current).try_into().unwrap()); // Never fail
         }
 
         self.fields
@@ -184,7 +185,9 @@ fn param_to_field_impl(param: &str, default: &[u8; 32]) -> Fp {
     let mut fp = *default;
     fp[..len].copy_from_slice(param_bytes);
 
-    Fp::read(&fp[..]).expect("fp read failed")
+    let value = FromBytes::read(&fp[..]).expect("Error reading");
+    let element = BigInt::new(value);
+    Fp::new(element)
 }
 
 pub fn param_to_field(param: &str) -> Fp {
@@ -431,8 +434,6 @@ pub mod params {
 }
 
 pub mod legacy {
-    use ark_ff::fields::arithmetic::InvalidBigInt;
-
     use super::*;
 
     #[derive(Clone, Debug)]
@@ -492,7 +493,7 @@ pub mod legacy {
         }
     }
 
-    impl<F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>> Inputs<F> {
+    impl<F: Field + From<BigInteger256>> Inputs<F> {
         pub fn to_fields(mut self) -> Vec<F> {
             const NBITS: usize = 255 - 1;
 
@@ -504,7 +505,7 @@ pub mod legacy {
                     let bit_index = index % 64;
                     field[limb_index] |= (*bit as u64) << bit_index;
                 }
-                F::try_from(BigInteger256::from_64x4(field)).unwrap() // Never fail
+                F::from(BigInteger256::new(field)) // Never fail
             }));
             self.fields
         }

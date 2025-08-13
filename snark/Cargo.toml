@@ -14,8 +14,8 @@ mina-signer = { workspace = true }
 o1-utils = { workspace = true }
 poly-commitment = { workspace = true }
 
-ark-ec = { version = "0.3.0", features = ["std"] }
-ark-poly = { version = "0.3.0", features = ["std"] }
+ark-ec.workspace = true
+ark-poly.workspace = true
 derive_more = "0.99.17"
 hex = "0.4"
 ledger = { workspace = true }

@@ -1,5 +1,5 @@
 use ark_ec::{AffineCurve, ProjectiveCurve};
-use ark_ff::{Field, SquareRootField, UniformRand};
+use ark_ff::{Field, UniformRand};
 use ledger::{
     generators::zkapp_command_builder::get_transaction_commitments,
     proofs::{
@@ -199,7 +199,7 @@ impl Generator<Memo> for FuzzerCtx {
 
 pub struct CurvePointGenerator<F>(F, F);
 
-impl<F: Field + From<i32> + SquareRootField> Generator<CurvePointGenerator<F>> for FuzzerCtx {
+impl<F: Field + From<i32>> Generator<CurvePointGenerator<F>> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> CurvePointGenerator<F> {
         /*

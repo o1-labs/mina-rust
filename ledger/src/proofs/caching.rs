@@ -4,14 +4,15 @@ use std::{
     sync::Arc,
 };
 
-use ark_ec::{short_weierstrass_jacobian::GroupAffine, AffineCurve, ModelParameters};
+use ark_ec::{short_weierstrass::Affine, AffineRepr, CurveConfig};
 use ark_ff::fields::arithmetic::InvalidBigInt;
 use ark_poly::{univariate::DensePolynomial, Radix2EvaluationDomain};
 use kimchi::{
     alphas::Alphas,
     circuits::{
         argument::{Argument, ArgumentType},
-        expr::{Linearization, PolishToken},
+        berkeley_columns::{BerkeleyChallengeTerm, Column},
+        expr::{ConstantTerm, Linearization, PolishToken},
         gate::GateType,
         polynomials::{permutation, varbasemul::VarbaseMul},
         wires::{COLUMNS, PERMUTS},
@@ -22,8 +23,12 @@ use kimchi::{
 use mina_curves::pasta::Fq;
 use mina_p2p_messages::bigint::BigInt;
 use once_cell::sync::OnceCell;
-use poly_commitment::{commitment::CommitmentCurve, srs::SRS, PolyComm};
+use poly_commitment::{
+    commitment::CommitmentCurve, hash_map_cache::HashMapCache, ipa::SRS, PolyComm,
+};
 use serde::{Deserialize, Serialize};
+
+use crate::proofs::field::FieldWitness;
 
 use super::VerifierIndex;
 
@@ -59,7 +64,9 @@ struct Radix2EvaluationDomainCached {
     size_inv: BigInt,
     group_gen: BigInt,
     group_gen_inv: BigInt,
-    generator_inv: BigInt,
+    offset: BigInt,
+    offset_inv: BigInt,
+    offset_pow_size: BigInt,
 }
 
 impl From<&Radix2EvaluationDomainCached> for Radix2EvaluationDomain<Fq> {
@@ -71,7 +78,9 @@ impl From<&Radix2EvaluationDomainCached> for Radix2EvaluationDomain<Fq> {
             size_inv: domain.size_inv.to_field().unwrap(), // We trust cached data
             group_gen: domain.group_gen.to_field().unwrap(), // We trust cached data
             group_gen_inv: domain.group_gen_inv.to_field().unwrap(), // We trust cached data
-            generator_inv: domain.generator_inv.to_field().unwrap(), // We trust cached data
+            offset: domain.offset.to_field().unwrap(),
+            offset_inv: domain.offset_inv.to_field().unwrap(),
+            offset_pow_size: domain.offset_pow_size.to_field().unwrap(),
         }
     }
 }
@@ -85,7 +94,9 @@ impl From<&Radix2EvaluationDomain<Fq>> for Radix2EvaluationDomainCached {
             size_inv: domain.size_inv.into(),
             group_gen: domain.group_gen.into(),
             group_gen_inv: domain.group_gen_inv.into(),
-            generator_inv: domain.generator_inv.into(),
+            offset: domain.offset.into(),
+            offset_inv: domain.offset_inv.into(),
+            offset_pow_size: domain.offset_pow_size.into(),
         }
     }
 }
@@ -98,12 +109,12 @@ pub struct GroupAffineCached {
     infinity: bool,
 }
 
-impl<'a, T> From<&'a GroupAffine<T>> for GroupAffineCached
+impl<'a, T> From<&'a ark_ec::models::short_weierstrass::Affine<T>> for GroupAffineCached
 where
-    T: ark_ec::SWModelParameters,
-    BigInt: From<&'a <T as ModelParameters>::BaseField>,
+    T: ark_ec::short_weierstrass::SWCurveConfig,
+    BigInt: From<&'a <T as CurveConfig>::BaseField>,
 {
-    fn from(pallas: &'a GroupAffine<T>) -> Self {
+    fn from(pallas: &'a Affine<T>) -> Self {
         Self {
             x: (&pallas.x).into(),
             y: (&pallas.y).into(),
@@ -112,17 +123,23 @@ where
     }
 }
 
-impl<T> From<&GroupAffineCached> for GroupAffine<T>
+impl<T> From<&GroupAffineCached> for ark_ec::models::short_weierstrass::Affine<T>
 where
-    T: ark_ec::SWModelParameters,
-    <T as ModelParameters>::BaseField: TryFrom<ark_ff::BigInteger256, Error = InvalidBigInt>,
+    T: ark_ec::short_weierstrass::SWCurveConfig,
+    <T as CurveConfig>::BaseField: From<ark_ff::BigInteger256>,
+    <T as CurveConfig>::BaseField: From<ark_ff::BigInt<4>>,
 {
+    // TODO_NOT_SURE
+    // This is copy of old `GroupAffine::new` function
     fn from(pallas: &GroupAffineCached) -> Self {
-        Self::new(
-            pallas.x.to_field().unwrap(), // We trust cached data
-            pallas.y.to_field().unwrap(), // We trust cached data
-            pallas.infinity,
-        )
+        let point = Self {
+            x: pallas.x.to_field().unwrap(), // We trust cached data
+            y: pallas.y.to_field().unwrap(), // We trust cached data
+            infinity: pallas.infinity,
+        };
+        assert!(point.is_on_curve());
+        assert!(point.is_in_correct_subgroup_assuming_on_curve());
+        point
     }
 }
 
@@ -136,9 +153,11 @@ where
     GroupAffineCached: From<&'a A>,
 {
     fn from(value: &'a PolyComm<A>) -> Self {
-        let PolyComm { elems } = value;
+        let PolyComm { chunks } = value;
 
-        Self { elems: into(elems) }
+        Self {
+            elems: into(chunks),
+        }
     }
 }
 
@@ -149,7 +168,9 @@ where
     fn from(value: &'a PolyCommCached) -> Self {
         let PolyCommCached { elems } = value;
 
-        Self { elems: into(elems) }
+        Self {
+            chunks: into(elems),
+        }
     }
 }
 
@@ -159,20 +180,33 @@ struct SRSCached {
     h: GroupAffineCached,
     lagrange_bases: HashMap<usize, Vec<PolyCommCached>>,
 }
-
 impl<'a, G> From<&'a SRS<G>> for SRSCached
 where
     G: CommitmentCurve,
-    GroupAffineCached: From<&'a G>,
-    PolyCommCached: From<&'a PolyComm<G>>,
-    BigInt: From<&'a <G as AffineCurve>::ScalarField>,
-    BigInt: From<&'a <G as AffineCurve>::BaseField>,
+    GroupAffineCached: for<'y> From<&'y G>,
+    PolyCommCached: for<'x> From<&'x PolyComm<G>>,
+    BigInt: From<&'a <G as AffineRepr>::ScalarField>,
+    BigInt: From<&'a <G as AffineRepr>::BaseField>,
 {
     fn from(srs: &'a SRS<G>) -> Self {
         Self {
             g: into(&srs.g),
             h: (&srs.h).into(),
-            lagrange_bases: into_with(&srs.lagrange_bases, |(key, value)| (*key, into(value))),
+            lagrange_bases: {
+                let cloned = srs.lagrange_bases.clone();
+                let map = HashMap::from(cloned);
+                map.into_iter()
+                    .map(|(key, value)| {
+                        (
+                            key,
+                            value
+                                .into_iter()
+                                .map(|pc| PolyCommCached::from(&pc))
+                                .collect(),
+                        )
+                    })
+                    .collect()
+            },
         }
     }
 }
@@ -185,7 +219,20 @@ where
         Self {
             g: into(&srs.g),
             h: (&srs.h).into(),
-            lagrange_bases: into_with(&srs.lagrange_bases, |(key, value)| (*key, into(value))),
+            lagrange_bases: {
+                let lagrange_bases = srs
+                    .lagrange_bases
+                    .iter()
+                    .map(|(key, value)| {
+                        (
+                            *key,
+                            value.iter().map(|poly| PolyComm::from(poly)).collect(),
+                        )
+                    })
+                    .collect();
+
+                HashMapCache::new_from_hashmap(lagrange_bases)
+            },
         }
     }
 }
@@ -237,47 +284,54 @@ struct VerifierIndexCached {
     w: BigInt,    // Fq
     endo: BigInt, // Fq
     lookup_index: Option<LookupVerifierIndex<Pallas>>,
-    linearization: Linearization<Vec<PolishToken<BigInt>>>, // Fq
+    linearization: Linearization<Vec<PolishToken<BigInt, Column, BerkeleyChallengeTerm>>, Column>, // Fq
     zk_rows: u64,
 }
 
-fn conv_token<'a, T, U, F>(token: &'a PolishToken<T>, fun: F) -> PolishToken<U>
+fn conv_token<'a, T, U, F>(
+    token: &'a PolishToken<T, Column, BerkeleyChallengeTerm>,
+    fun: F,
+) -> PolishToken<U, Column, BerkeleyChallengeTerm>
 where
     T: 'a,
     F: Fn(&T) -> U,
 {
     match token {
-        PolishToken::Alpha => PolishToken::Alpha,
-        PolishToken::Beta => PolishToken::Beta,
-        PolishToken::Gamma => PolishToken::Gamma,
-        PolishToken::JointCombiner => PolishToken::JointCombiner,
-        PolishToken::EndoCoefficient => PolishToken::EndoCoefficient,
-        PolishToken::Mds { row, col } => PolishToken::Mds {
-            row: *row,
-            col: *col,
+        PolishToken::Constant(constant_term) => match constant_term {
+            ConstantTerm::EndoCoefficient => PolishToken::Constant(ConstantTerm::EndoCoefficient),
+            &ConstantTerm::Mds { row, col } => {
+                PolishToken::Constant(ConstantTerm::Mds { row, col })
+            }
+            ConstantTerm::Literal(literal) => {
+                PolishToken::Constant(ConstantTerm::Literal(fun(literal)))
+            }
         },
-        PolishToken::Literal(f) => PolishToken::Literal(fun(f)),
-        PolishToken::Cell(var) => PolishToken::Cell(*var),
+        PolishToken::Challenge(challenge) => PolishToken::Challenge(*challenge),
+        PolishToken::Cell(variable) => PolishToken::Cell(*variable),
         PolishToken::Dup => PolishToken::Dup,
-        PolishToken::Pow(int) => PolishToken::Pow(*int),
+        PolishToken::Pow(p) => PolishToken::Pow(*p),
         PolishToken::Add => PolishToken::Add,
         PolishToken::Mul => PolishToken::Mul,
         PolishToken::Sub => PolishToken::Sub,
         PolishToken::VanishesOnZeroKnowledgeAndPreviousRows => {
             PolishToken::VanishesOnZeroKnowledgeAndPreviousRows
         }
-        PolishToken::UnnormalizedLagrangeBasis(int) => PolishToken::UnnormalizedLagrangeBasis(*int),
+        PolishToken::UnnormalizedLagrangeBasis(row_offset) => {
+            PolishToken::UnnormalizedLagrangeBasis(*row_offset)
+        }
         PolishToken::Store => PolishToken::Store,
-        PolishToken::Load(int) => PolishToken::Load(*int),
-        PolishToken::SkipIf(flags, int) => PolishToken::SkipIf(*flags, *int),
-        PolishToken::SkipIfNot(flags, int) => PolishToken::SkipIfNot(*flags, *int),
+        PolishToken::Load(load) => PolishToken::Load(*load),
+        PolishToken::SkipIf(feature_flag, value) => PolishToken::SkipIf(*feature_flag, *value),
+        PolishToken::SkipIfNot(feature_flag, value) => {
+            PolishToken::SkipIfNot(*feature_flag, *value)
+        }
     }
 }
 
 fn conv_linearization<'a, T, U, F>(
-    linearization: &'a Linearization<Vec<PolishToken<T>>>,
+    linearization: &'a Linearization<Vec<PolishToken<T, Column, BerkeleyChallengeTerm>>, Column>,
     fun: F,
-) -> Linearization<Vec<PolishToken<U>>>
+) -> Linearization<Vec<PolishToken<U, Column, BerkeleyChallengeTerm>>, Column>
 where
     T: 'a,
     F: Fn(&T) -> U,
@@ -285,7 +339,8 @@ where
     let constant_term = &linearization.constant_term;
     let index_terms = &linearization.index_terms;
 
-    let conv_token = |token: &PolishToken<T>| conv_token(token, &fun);
+    let conv_token =
+        |token: &PolishToken<T, Column, BerkeleyChallengeTerm>| conv_token(token, &fun);
 
     Linearization {
         constant_term: into_with(constant_term, conv_token),
@@ -330,7 +385,10 @@ impl From<&VerifierIndex<Fq>> for VerifierIndexCached {
         Self {
             domain: domain.into(),
             max_poly_size: *max_poly_size,
-            srs: (&**srs).into(),
+            srs: {
+                let s = srs.as_ref();
+                SRSCached::from(s)
+            },
             public: *public,
             prev_challenges: *prev_challenges,
             sigma_comm: sigma_comm.clone(),
@@ -395,7 +453,11 @@ impl From<&VerifierIndexCached> for VerifierIndex<Fq> {
         Self {
             domain: domain.into(),
             max_poly_size: *max_poly_size,
-            srs: Arc::new(srs.into()),
+            srs: {
+                let srs = srs;
+                let s: SRS<_> = SRS::from(srs);
+                Arc::new(s)
+            },
             public: *public,
             prev_challenges: *prev_challenges,
             sigma_comm: sigma_comm.clone(),
@@ -464,9 +526,9 @@ pub fn verifier_index_from_bytes(
 pub fn srs_to_bytes<'a, G>(srs: &'a SRS<G>) -> Vec<u8>
 where
     G: CommitmentCurve,
-    GroupAffineCached: From<&'a G>,
-    BigInt: From<&'a <G as AffineCurve>::ScalarField>,
-    BigInt: From<&'a <G as AffineCurve>::BaseField>,
+    GroupAffineCached: for<'y> From<&'y G>,
+    BigInt: From<&'a <G as AffineRepr>::ScalarField>,
+    BigInt: From<&'a <G as AffineRepr>::BaseField>,
 {
     let srs: SRSCached = srs.into();
 

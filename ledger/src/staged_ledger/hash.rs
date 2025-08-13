@@ -158,8 +158,11 @@ impl NonStark {
 
         let mut ledger_hash_bytes: [u8; 32] = <[u8; 32]>::default();
 
-        let ledger_hash = ledger_hash.into_repr();
-        ledger_hash.write(ledger_hash_bytes.as_mut_slice()).unwrap();
+        let ledger_hash = ledger_hash.into_bigint();
+        ledger_hash
+            .0
+            .write(ledger_hash_bytes.as_mut_slice())
+            .unwrap();
         ledger_hash_bytes.reverse();
 
         sha.update(ledger_hash_bytes.as_slice());

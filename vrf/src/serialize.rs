@@ -6,7 +6,8 @@ where
     S: Serializer,
 {
     let mut bytes = vec![];
-    a.serialize(&mut bytes).map_err(serde::ser::Error::custom)?;
+    a.serialize_uncompressed(&mut bytes)
+        .map_err(serde::ser::Error::custom)?;
     s.serialize_bytes(&bytes)
 }
 
@@ -15,6 +16,6 @@ where
     D: Deserializer<'de>,
 {
     let s: Vec<u8> = serde::de::Deserialize::deserialize(data)?;
-    let a = A::deserialize(s.as_slice());
+    let a = A::deserialize_uncompressed(s.as_slice());
     a.map_err(serde::de::Error::custom)
 }

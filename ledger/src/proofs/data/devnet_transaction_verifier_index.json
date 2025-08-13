@@ -1,150 +1,150 @@
 {
-    "domain": "00400000000000000e000000004000000000000000000000000000000000000000000000000000000000000001007c5305bad0e88a82a4a5e10f46220000000000000000000000000000ff3fe7beaf68d0348b89bdd305c696e458495971539c8db379b03b2524706887551e19429440c0d6dda9640e2856b0ed40f84fc0f5f9ed7dd028cf3d4d38cd355b2e6766666640914f6b25dda1d064704fa799999999999999999999999999999919",
+    "domain": "00400000000000000e000000004000000000000000000000000000000000000000000000000000000000000001007c5305bad0e88a82a4a5e10f46220000000000000000000000000000ff3fe7beaf68d0348b89bdd305c696e458495971539c8db379b03b2524706887551e19429440c0d6dda9640e2856b0ed40f84fc0f5f9ed7dd028cf3d4d38cd355b2e010000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000",
     "max_poly_size": 32768,
     "zk_rows": 3,
     "public": 40,
     "prev_challenges": 2,
     "sigma_comm": [
         {
-            "elems": [
+            "chunks": [
                 "90c73b1ec54c26bae22caca2ebfb7f428273d8bb4e707cb411e10da092a31b2e80"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "bcb575448cecbf9c1395c1d68056f5ff42a46d286763e264bc75281e779b140d00"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "eda3d8981033895b4212aef150ea7bd4183414e0292eae7c6968450f1dd4662800"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "b20ca3c2e55ccc53430ec74e85afde8d52934609f88ba397bba0e137900f0a0c00"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "eb98c43a4354ed8ce7e486fd09401423f72c06c674fe97312cf1b4a1f0fe2a3400"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "99db19342a4e6101c2a0307d64a2233a636dcfb00a3757725a0f0499c5a3e91400"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "9a0500bbe7e4ff39f236658f15ab3ab7a9492199f4f336601e60bb90b6073b1480"
             ]
         }
     ],
     "coefficients_comm": [
         {
-            "elems": [
+            "chunks": [
                 "299f4b3e51427c64b4681f8b3e315556076d3ccb76e2d2328d8a1ac753016c1a00"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "965430e5c1615641e0cc8c5e371a3ce402d7adf50dfa109602ed7ee7eec1df0200"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "27f6e5c0cb30793dd572d830db227b696211fd3b3f37f7096e80fce44a29713c80"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "1770f3f6bc84d5287d550f8abcd9df38f25ef0f3dd1b161bd3cbcea66fec650380"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "8d3394f89b8e5814754a99885c19856137a3de15ba8079ea586bc2e71d058c2c00"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "e1043c2698170acf5ac6e0621db06689884ab62e953a8292e73143ae0354482280"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "eb45515b4445bef8beea8f72c456b9d147ed28c0eeea8b21d7b7a4b58042bc1400"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "03dd51e41b61d6e52d3e370fded80e6a25c1aa35715c1481dfd533e3ed81453180"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "a3a26573549290670c346a03b3d2cbfb1ea834cbd748688ba10790efb02a893180"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "21c87f7f2e6e6aa2ad762b01db220c90574f5e2fc1c572f469b9fa25d02fc81300"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "5f3f0a0b06cb16ddf2ef13d54fbde08f3cfc5721126f8f1e8038de67921dd13780"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "fb9a0d228e8cdc829c748c8b8d7751998b81805959d307dcbf2f3b601daa813300"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "1019ec7567d56fc10eefa766c8b75033eab1dccea27b413d748549485213263300"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "641190c8bb3021d87f0c0c20dcfee80c2287e986ba0c818077ff73a67e6d393f80"
             ]
         },
         {
-            "elems": [
+            "chunks": [
                 "6db248045f24c41a5557c5fac1c95f3500c97476746035a9c58a1a5e1a88d72c00"
             ]
         }
     ],
     "generic_comm": {
-        "elems": [
+        "chunks": [
             "a1c3dfaace548babe5bcee0b85cef11d19e5a4fa0b34174761a4780582a2b61100"
         ]
     },
     "psm_comm": {
-        "elems": [
+        "chunks": [
             "e40983dc71ab596a8ada1c5b61f562a8aef8ffbc5f1b597f39da39bc6eb5233880"
         ]
     },
     "complete_add_comm": {
-        "elems": [
+        "chunks": [
             "5eb9158f8e25ff0d9b11a16ccd67af47a189a0d30093c09026c2420742033d1a00"
         ]
     },
     "mul_comm": {
-        "elems": [
+        "chunks": [
             "854aa61b80095185fa2a85001652da3cb73857aa72359ceb0241ca5928479e2f00"
         ]
     },
     "emul_comm": {
-        "elems": [
+        "chunks": [
             "6c916fe9d7aea7194dac9509e8e424234761dbbe038ab48f73115cc4e3538b0180"
         ]
     },
     "endomul_scalar_comm": {
-        "elems": [
+        "chunks": [
             "845f2d1bdbcc25c5ad005decc9bd3f0cdd928c157aadc55a88dd1cd74f8ee51b00"
         ]
     },

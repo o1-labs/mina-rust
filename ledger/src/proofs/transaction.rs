@@ -1,12 +1,14 @@
 use std::{collections::HashMap, rc::Rc, str::FromStr, sync::Arc};
 
 use anyhow::Context;
-use ark_ec::{short_weierstrass_jacobian::GroupProjective, AffineCurve, ProjectiveCurve};
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field, PrimeField};
+use ark_ec::{short_weierstrass::Projective, AffineRepr, CurveGroup, PrimeGroup};
+use ark_ff::{fields::arithmetic::InvalidBigInt, AdditiveGroup, BigInteger256, Field, PrimeField};
 use kimchi::{
     circuits::{gate::CircuitGate, wires::COLUMNS},
+    groupmap::GroupMap,
     proof::RecursionChallenge,
 };
+use kimchi_stubs::lagrange_basis::WithLagrangeBasis;
 use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2::{
     self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
@@ -23,10 +25,12 @@ use mina_p2p_messages::v2::{
 };
 use mina_poseidon::constants::PlonkSpongeConstantsKimchi;
 use mina_signer::{CompressedPubKey, PubKey};
+use rand::rngs::StdRng;
 
 use crate::{
     decompress_pk, gen_keypair,
     proofs::{
+        self,
         constants::{StepTransactionProof, WrapTransactionProof},
         unfinalized::AllEvals,
         util::sha256_sum,
@@ -83,7 +87,7 @@ impl Iterator for FieldBitsIterator {
 pub fn bigint_to_bits<const NBITS: usize>(bigint: BigInteger256) -> [bool; NBITS] {
     let mut bits = FieldBitsIterator {
         index: 0,
-        bigint: bigint.to_64x4(),
+        bigint: bigint.0,
     }
     .take(NBITS);
     std::array::from_fn(|_| bits.next().unwrap())
@@ -101,7 +105,7 @@ where
 fn bigint_to_bits2(bigint: BigInteger256, nbits: usize) -> Box<[bool]> {
     FieldBitsIterator {
         index: 0,
-        bigint: bigint.to_64x4(),
+        bigint: bigint.0,
     }
     .take(nbits)
     .collect()
@@ -125,24 +129,29 @@ where
     bits
 }
 
-pub fn endos<F>() -> (F, F::Scalar)
+pub fn endos<F>() -> (F, <F as proofs::field::FieldWitness>::Scalar)
 where
     F: FieldWitness,
 {
-    use poly_commitment::srs::endos;
+    use poly_commitment::ipa::endos;
 
     // Let's keep them in cache since they're used everywhere
-    cache!((F, F::Scalar), endos::<GroupAffine<F>>())
+    cache!(
+        (F, <F as proofs::field::FieldWitness>::Scalar),
+        endos::<GroupAffine<F>>()
+    )
 }
 
 pub fn make_group<F>(x: F, y: F) -> GroupAffine<F>
 where
     F: FieldWitness,
 {
-    GroupAffine::<F>::new(x, y, false)
+    GroupAffine::<F>::new(x, y)
 }
 
 pub mod scalar_challenge {
+    use crate::proofs;
+
     use super::*;
 
     // TODO: `scalar` might be a `F::Scalar` here
@@ -319,7 +328,8 @@ pub mod scalar_challenge {
 
         let res = w.exists({
             let chal = ScalarChallenge::from(chal).to_field(&e);
-            InnerCurve::<F>::of_affine(t).scale(<F::Scalar>::one() / chal)
+            InnerCurve::<F>::of_affine(t)
+                .scale(<<F as proofs::field::FieldWitness>::Scalar>::one() / chal)
         });
         let _ = endo::<F, F2, NBITS>(res.to_affine(), chal, w);
         res.to_affine()
@@ -1239,7 +1249,7 @@ impl<F: FieldWitness> From<(F, F)> for InnerCurve<F> {
 
 impl<F: FieldWitness> InnerCurve<F> {
     pub fn one() -> Self {
-        let inner = F::Projective::prime_subgroup_generator();
+        let inner = F::Projective::generator();
         Self { inner }
     }
 
@@ -1253,11 +1263,13 @@ impl<F: FieldWitness> InnerCurve<F> {
     where
         S: Into<BigInteger256>,
     {
+        use std::ops::Mul;
         let scale: BigInteger256 = scale.into();
-        let scale = scale.to_64x4();
-        Self {
-            inner: self.inner.mul(scale),
-        }
+        let scale = scale.0;
+        // Self {
+        // inner: self.inner.mul(scale),
+        // }
+        todo!()
     }
 
     fn add_fast(&self, other: Self, w: &mut Witness<F>) -> Self {
@@ -1277,7 +1289,7 @@ impl<F: FieldWitness> InnerCurve<F> {
 
     pub fn of_affine(affine: GroupAffine<F>) -> Self {
         // Both `inner` below are the same type, but we use `into()` to make it generic
-        let inner: GroupProjective<F::Parameters> = affine.into_projective();
+        let inner: Projective<F::Parameters> = affine.into_group();
         let inner: F::Projective = inner.into();
         Self { inner }
     }
@@ -1287,7 +1299,7 @@ impl<F: FieldWitness> InnerCurve<F> {
         let mut rng = get_rng();
 
         // Both `proj` below are the same type, but we use `into()` to make it generic
-        let proj: GroupProjective<F::Parameters> = ark_ff::UniformRand::rand(&mut rng);
+        let proj: Projective<F::Parameters> = ark_ff::UniformRand::rand(&mut rng);
         let proj: F::Projective = proj.into();
 
         let proj2 = proj;
@@ -3680,7 +3692,7 @@ pub fn messages_for_next_wrap_proof_padding() -> Fp {
             old_bulletproof_challenges: vec![], // Filled with padding, in `hash()` below
         };
         let hash: [u64; 4] = msg.hash();
-        Fp::try_from(BigInteger256::from_64x4(hash)).unwrap() // Never fail
+        Fp::try_from(BigInteger256::new(hash)).unwrap() // Never fail
     })
 }
 
@@ -3746,8 +3758,8 @@ impl MessagesForNextStepProof<'_> {
         let fields: Vec<Fp> = self.to_fields();
         let field: Fp = ::poseidon::hash::hash_fields(&fields);
 
-        let bigint: BigInteger256 = field.into_repr();
-        bigint.to_64x4()
+        let bigint: BigInteger256 = field.into_bigint();
+        bigint.0
     }
 
     /// Implementation of `to_field_elements`
@@ -3889,15 +3901,17 @@ pub fn make_prover_index<C: ProofConstants, F: FieldWitness>(
     let (endo_q, _endo_r) = endos::<F>();
 
     // TODO: `proof-systems` needs to change how the SRS is used
-    let srs: poly_commitment::srs::SRS<F::OtherCurve> = {
+    let srs: poly_commitment::ipa::SRS<F::OtherCurve> = {
         let srs = get_srs_mut::<F>();
-        let mut srs = srs.lock().unwrap();
-        srs.add_lagrange_basis(cs.domain.d1);
-        srs.clone()
+        let srs = srs.lock().unwrap().clone();
+        // TODO_NOT_SURE
+        // srs.add_lagrange_basis(cs.domain.d1);
+        // srs.with_lagrange_basis(cs.domain.d1);
+        srs
     };
 
-    let mut index = ProverIndex::<F>::create(cs, endo_q, Arc::new(srs));
-    index.verifier_index = verifier_index;
+    let mut index = ProverIndex::<F>::create(cs, endo_q, Arc::new(srs), false);
+    index.verifier_index = verifier_index.map(|i| i.as_ref().clone());
 
     // Compute and cache the verifier index digest
     index.compute_verifier_index_digest::<F::FqSponge>();
@@ -3981,11 +3995,13 @@ pub(super) fn create_proof<C: ProofConstants, F: FieldWitness>(
     }
 
     // NOTE: Not random in `cfg(test)`
+    // let mut rng = get_rng();
     let mut rng = get_rng();
 
     let now = redux::Instant::now();
-    let group_map = kimchi::groupmap::GroupMap::<F::Scalar>::setup();
-    let proof = kimchi::proof::ProverProof::create_recursive::<F::FqSponge, EFrSponge<F>>(
+    let group_map =
+        kimchi::groupmap::GroupMap::<<F as proofs::field::FieldWitness>::Scalar>::setup();
+    let proof = kimchi::proof::ProverProof::create_recursive::<F::FqSponge, EFrSponge<F>, _>(
         &group_map,
         computed_witness,
         &[],
@@ -3995,8 +4011,6 @@ pub(super) fn create_proof<C: ProofConstants, F: FieldWitness>(
         &mut rng,
     )
     .map_err(|e| {
-        use kimchi::groupmap::GroupMap;
-
         let prev_challenges_hash = debug::hash_prev_challenge::<F>(&prev_challenges);
         let witness_primary_hash = debug::hash_slice(&w.primary);
         let witness_aux_hash = debug::hash_slice(w.aux());
@@ -4040,14 +4054,18 @@ pub mod debug {
     use sha2::Digest;
 
     fn hash_field<F: FieldWitness>(state: &mut sha2::Sha256, f: &F) {
-        for limb in f.montgomery_form_ref() {
+        let ark_ff::BigInt(int): BigInteger256 = (*f).into();
+        for limb in int {
             state.update(limb.to_le_bytes());
         }
     }
 
     fn hash_field_slice<F: FieldWitness>(state: &mut sha2::Sha256, slice: &[F]) {
         state.update(slice.len().to_le_bytes());
-        for f in slice.iter().flat_map(|f| f.montgomery_form_ref()) {
+        for f in slice.iter().flat_map(|f| {
+            let ark_ff::BigInt(int): BigInteger256 = (*f).into();
+            int
+        }) {
             state.update(f.to_le_bytes());
         }
     }
@@ -4066,8 +4084,8 @@ pub mod debug {
         let mut hasher = sha2::Sha256::new();
         for RecursionChallenge { chals, comm } in prevs {
             hash_field_slice(&mut hasher, chals);
-            let poly_commitment::PolyComm { elems } = comm;
-            for elem in elems {
+            let poly_commitment::PolyComm { chunks } = comm;
+            for elem in chunks {
                 match elem.to_coordinates() {
                     None => {
                         hasher.update([0]);
@@ -4235,7 +4253,7 @@ pub(super) fn generate_tx_proof(
     let statement_with_sok = statement.with_digest(sok_digest);
 
     let dlog_plonk_index =
-        PlonkVerificationKeyEvals::from(&**tx_wrap_prover.index.verifier_index.as_ref().unwrap());
+        PlonkVerificationKeyEvals::from(&*tx_wrap_prover.index.verifier_index.as_ref().unwrap());
 
     let statement_with_sok = Rc::new(w.exists(statement_with_sok));
     transaction_snark::main(&statement_with_sok, tx_witness, w)?;

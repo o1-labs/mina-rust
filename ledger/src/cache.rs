@@ -68,9 +68,9 @@ macro_rules! cache_one {
 
 #[cfg(test)]
 mod tests {
-    use crate::proofs::field::FieldWitness;
-    use ark_ec::short_weierstrass_jacobian::GroupAffine;
-    use poly_commitment::srs::endos;
+    use crate::proofs::{self, field::FieldWitness};
+    use ark_ec::short_weierstrass::Affine;
+    use poly_commitment::ipa::endos;
     use std::sync::atomic::{AtomicUsize, Ordering::Relaxed};
 
     #[cfg(target_family = "wasm")]
@@ -82,10 +82,10 @@ mod tests {
 
         static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
-        fn my_test<F: FieldWitness>() -> (F, F::Scalar) {
-            cache!((F, F::Scalar), {
+        fn my_test<F: FieldWitness>() -> (F, <F as proofs::field::FieldWitness>::Scalar) {
+            cache!((F, <F as proofs::field::FieldWitness>::Scalar), {
                 COUNTER.fetch_add(1, Relaxed);
-                endos::<GroupAffine<F::Parameters>>()
+                endos::<Affine<F::Parameters>>()
             })
         }
 

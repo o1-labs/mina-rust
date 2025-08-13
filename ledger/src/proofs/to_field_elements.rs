@@ -9,7 +9,7 @@ use kimchi::proof::{PointEvaluations, ProofEvaluations, ProverCommitments, Prove
 use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::{string::ByteString, v2};
 use mina_signer::CompressedPubKey;
-use poly_commitment::evaluation_proof::OpeningProof;
+use poly_commitment::ipa::OpeningProof;
 
 use crate::{
     proofs::{
@@ -894,11 +894,11 @@ impl ToFieldElements<Fp> for PerProofWitness {
         } = wrap_proof;
 
         for w in w_comm {
-            push_affines(&w.elems, fields);
+            push_affines(&w.chunks, fields);
         }
 
-        push_affines(&z_comm.elems, fields);
-        push_affines(&t_comm.elems, fields);
+        push_affines(&z_comm.chunks, fields);
+        push_affines(&t_comm.chunks, fields);
 
         for (a, b) in lr {
             push_affine(*a, fields);
@@ -937,10 +937,10 @@ impl ToFieldElements<Fp> for PerProofWitness {
             messages_for_next_wrap_proof: _,
         } = proof_state;
 
-        two_u64_to_field::<Fp>(alpha).to_field_elements(fields);
-        two_u64_to_field::<Fp>(beta).to_field_elements(fields);
-        two_u64_to_field::<Fp>(gamma).to_field_elements(fields);
-        two_u64_to_field::<Fp>(zeta).to_field_elements(fields);
+        two_u64_to_field::<Fp, _>(alpha).to_field_elements(fields);
+        two_u64_to_field::<Fp, _>(beta).to_field_elements(fields);
+        two_u64_to_field::<Fp, _>(gamma).to_field_elements(fields);
+        two_u64_to_field::<Fp, _>(zeta).to_field_elements(fields);
 
         zeta_to_srs_length.to_field_elements(fields);
         zeta_to_domain_size.to_field_elements(fields);
@@ -966,7 +966,7 @@ impl ToFieldElements<Fp> for PerProofWitness {
 
         combined_inner_product.to_field_elements(fields);
         b.to_field_elements(fields);
-        two_u64_to_field::<Fp>(xi).to_field_elements(fields);
+        two_u64_to_field::<Fp, _>(xi).to_field_elements(fields);
         bulletproof_challenges.to_field_elements(fields);
 
         // Index
@@ -987,7 +987,7 @@ impl ToFieldElements<Fp> for PerProofWitness {
             Fp::from(domain_log2).to_field_elements(fields);
         }
 
-        four_u64_to_field::<Fp>(sponge_digest_before_evaluations)
+        four_u64_to_field::<Fp, _>(sponge_digest_before_evaluations)
             .unwrap() // Never fail, `sponge_digest_before_evaluations` was previously a `Fp`
             .to_field_elements(fields);
 
