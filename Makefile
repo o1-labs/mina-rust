@@ -15,7 +15,7 @@ PG_HOST	?= localhost
 PG_PORT	?= 5432
 
 # Block producer configuration
-PRODUCER_KEY ?= ./openmina-workdir/producer-key
+PRODUCER_KEY_FILENAME ?= ./openmina-workdir/producer-key
 COINBASE_RECEIVER ?=
 OPENMINA_LIBP2P_EXTERNAL_IP ?=
 OPENMINA_LIBP2P_PORT ?= 8302
@@ -313,44 +313,45 @@ run-archive: build-release ## Run an archive node with local storage
 
 .PHONY: run-block-producer
 run-block-producer: build-release ## Run a block producer node on $(NETWORK) network
-	@if [ ! -f "$(PRODUCER_KEY)" ]; then \
-		echo "Error: Producer key not found at $(PRODUCER_KEY)"; \
-		echo "Please place your producer private key at $(PRODUCER_KEY)"; \
+	@if [ ! -f "$(PRODUCER_KEY_FILENAME)" ]; then \
+		echo "Error: Producer key not found at $(PRODUCER_KEY_FILENAME)"; \
+		echo "Please place your producer private key at $(PRODUCER_KEY_FILENAME)"; \
 		exit 1; \
 	fi
-	MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)" \
-		cargo run --bin openmina \
+	cargo run \
+		--bin openmina \
+		--package=cli \
 		--release -- \
 		node \
-		--producer-key $(PRODUCER_KEY) \
+		--producer-key $(PRODUCER_KEY_FILENAME) \
 		$(if $(COINBASE_RECEIVER),--coinbase-receiver $(COINBASE_RECEIVER)) \
 		$(if $(OPENMINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(OPENMINA_LIBP2P_EXTERNAL_IP)) \
 		$(if $(OPENMINA_LIBP2P_PORT),--libp2p-port $(OPENMINA_LIBP2P_PORT)) \
 		--network $(NETWORK)
 
-.PHONY: run-block-producer-devnet
-run-block-producer-devnet: ## Run a block producer node on devnet
-	$(MAKE) run-block-producer NETWORK=devnet
-
-.PHONY: run-block-producer-mainnet
-run-block-producer-mainnet: ## Run a block producer node on mainnet
-	$(MAKE) run-block-producer NETWORK=mainnet
 
 .PHONY: generate-block-producer-key
-generate-block-producer-key: build-release ## Generate a new block producer key pair
+generate-block-producer-key: build-release ## Generate a new block producer key pair (fails if keys exist, use PRODUCER_KEY_FILENAME to customize, MINA_PRIVKEY_PASS for password)
+	@if [ -f "$(PRODUCER_KEY_FILENAME)" ] || [ -f "$(PRODUCER_KEY_FILENAME).pub" ]; then \
+		echo "Error: Producer key already exists at $(PRODUCER_KEY_FILENAME) or public key exists at $(PRODUCER_KEY_FILENAME).pub"; \
+		echo ""; \
+		echo "To generate a key with a different filename, set PRODUCER_KEY_FILENAME:"; \
+		echo "  make generate-block-producer-key PRODUCER_KEY_FILENAME=./path/to/new-key"; \
+		echo ""; \
+		echo "Or remove the existing key first to regenerate it."; \
+		exit 1; \
+	fi
 	@mkdir -p openmina-workdir
-	@echo "Generating new block producer key pair..."
-	@OUTPUT=$$(cargo run --release --package=cli --bin openmina -- misc mina-key-pair); \
-	SECRET_KEY=$$(echo "$$OUTPUT" | grep "secret key:" | cut -d' ' -f3); \
+	@echo "Generating new encrypted block producer key..."
+	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin openmina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
 	PUBLIC_KEY=$$(echo "$$OUTPUT" | grep "public key:" | cut -d' ' -f3); \
-	echo "$$SECRET_KEY" > $(PRODUCER_KEY); \
-	chmod 600 $(PRODUCER_KEY); \
+	chmod 600 $(PRODUCER_KEY_FILENAME); \
 	echo ""; \
-	echo "✓ Generated new producer key pair:"; \
-	echo "  Secret key saved to: $(PRODUCER_KEY)"; \
-	echo "  Public key: $$PUBLIC_KEY"; \
+	echo "✓ Generated new encrypted producer key:"; \
+	echo "  Encrypted key saved to: $(PRODUCER_KEY_FILENAME)"; \
+	echo "  Public key: $$PUBLIC_KEY, saved to $(PRODUCER_KEY_FILENAME).pub"; \
 	echo ""; \
-	echo "⚠️  IMPORTANT: Keep your secret key secure and backed up!"
+	echo "⚠️  IMPORTANT: Keep your encrypted key file and password secure and backed up!"
 
 .PHONY: postgres-clean
 postgres-clean:

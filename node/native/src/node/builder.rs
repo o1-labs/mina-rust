@@ -213,8 +213,12 @@ impl NodeBuilder {
         password: &str,
         provers: Option<BlockProver>,
     ) -> anyhow::Result<&mut Self> {
-        let key = AccountSecretKey::from_encrypted_file(path, password)
-            .context("Failed to decrypt secret key file")?;
+        let key = AccountSecretKey::from_encrypted_file(&path, password).with_context(|| {
+            format!(
+                "Failed to decrypt secret key file: {}",
+                path.as_ref().display()
+            )
+        })?;
         Ok(self.block_producer(key, provers))
     }
 

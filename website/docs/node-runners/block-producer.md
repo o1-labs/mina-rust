@@ -85,7 +85,32 @@ using the Makefile target. This method requires building from source.
    ```
 
    This will create a new key pair and save the private key to
-   `openmina-workdir/producer-key`.
+   `openmina-workdir/producer-key` and the public key to
+   `openmina-workdir/producer-key.pub`. The command will fail if keys already
+   exist to prevent accidental overwriting.
+
+   To generate keys with a password:
+
+   ```bash
+   make generate-block-producer-key MINA_PRIVKEY_PASS="YourPassword"
+   ```
+
+   To generate keys with a custom filename:
+
+   ```bash
+   make generate-block-producer-key PRODUCER_KEY_FILENAME=./path/to/custom-key
+   ```
+
+   This will create `./path/to/custom-key` (private) and
+   `./path/to/custom-key.pub` (public).
+
+   You can combine both options:
+
+   ```bash
+   make generate-block-producer-key \
+     PRODUCER_KEY_FILENAME=./path/to/custom-key \
+     MINA_PRIVKEY_PASS="YourPassword"
+   ```
 
    **Option B: Use an existing key**
 
@@ -99,34 +124,32 @@ using the Makefile target. This method requires building from source.
    For devnet (default):
 
    ```bash
-   make run-block-producer-devnet COINBASE_RECEIVER="YourWalletAddress" \
-   MINA_PRIVKEY_PASS="YourPassword"
-   ```
-
-   Or explicitly specify devnet:
-
-   ```bash
-   make run-block-producer NETWORK=devnet COINBASE_RECEIVER="YourWalletAddress" \
-   MINA_PRIVKEY_PASS="YourPassword"
+   make run-block-producer \
+       MINA_PRIVKEY_PASS="YourPassword" \
+       NETWORK=devnet \
+       COINBASE_RECEIVER="YourWalletAddress"
    ```
 
    For mainnet (when supported):
 
    ```bash
-   make run-block-producer-mainnet COINBASE_RECEIVER="YourWalletAddress" \
-   MINA_PRIVKEY_PASS="YourPassword"
+   make run-block-producer \
+       COINBASE_RECEIVER="YourWalletAddress" \
+       MINA_PRIVKEY_PASS="YourPassword" \
+       NETWORK=mainnet
    ```
 
    Optional parameters:
    - `OPENMINA_LIBP2P_EXTERNAL_IP` - Sets external IP address
    - `OPENMINA_LIBP2P_PORT` - Sets libp2p communication port
-   - `PRODUCER_KEY` - Path to producer key (default:
+   - `PRODUCER_KEY_FILENAME` - Path to producer key (default:
      `./openmina-workdir/producer-key`)
 
    Example with all options:
 
    ```bash
-   make run-block-producer-devnet \
+   make run-block-producer \
+     NETWORK=devnet \
      COINBASE_RECEIVER="YourWalletAddress" \
      MINA_PRIVKEY_PASS="YourPassword" \
      OPENMINA_LIBP2P_EXTERNAL_IP="1.2.3.4" \

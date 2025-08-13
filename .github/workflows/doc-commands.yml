@@ -32,7 +32,8 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          components: rustfmt
+          toolchain: 1.84
           cache-prefix: test-doc-commands-v0
 
       - name: Download circuits files
@@ -71,7 +72,7 @@ jobs:
           echo "Testing that generated key can be used by run-block-producer target..."
           # Run with --help to avoid actually starting the producer but verify
           # key validation passes
-          timeout 30s make run-block-producer-devnet COINBASE_RECEIVER="test" || {
+          timeout 30s make run-block-producer NETWORK=devnet COINBASE_RECEIVER=$(cat ./openmina-workdir/producer-key.pub) || {
             EXIT_CODE=$?
             if [ $EXIT_CODE -eq 124 ]; then
               echo "✅ Command started successfully (timed out as expected)"
@@ -82,6 +83,61 @@ jobs:
               echo "✅ Command validation passed (exit code: $EXIT_CODE)"
             fi
           }
+
+      - name: Test generate-block-producer-key with custom filename
+        run: |
+          echo "Testing generate-block-producer-key with custom PRODUCER_KEY_FILENAME..."
+          make generate-block-producer-key PRODUCER_KEY_FILENAME=./openmina-workdir/custom-producer-key
+
+          # Verify custom private key file exists
+          if [ ! -f "./openmina-workdir/custom-producer-key" ]; then
+            echo "❌ Custom producer key file was not generated"
+            exit 1
+          fi
+
+          # Verify custom public key file exists
+          if [ ! -f "./openmina-workdir/custom-producer-key.pub" ]; then
+            echo "❌ Custom producer public key file was not generated"
+            exit 1
+          fi
+
+          # Check file permissions (should be 600 for private key)
+          PERMS=$(stat -c "%a" "./openmina-workdir/custom-producer-key")
+          if [ "$PERMS" != "600" ]; then
+            echo "❌ Custom producer key file has incorrect permissions: $PERMS (expected: 600)"
+            exit 1
+          fi
+
+          # Check both files are not empty
+          if [ ! -s "./openmina-workdir/custom-producer-key" ]; then
+            echo "❌ Custom producer key file is empty"
+            exit 1
+          fi
+
+          if [ ! -s "./openmina-workdir/custom-producer-key.pub" ]; then
+            echo "❌ Custom producer public key file is empty"
+            exit 1
+          fi
+
+          echo "✅ Custom producer key pair generated successfully"
+
+      - name: Test generate-block-producer-key failure when keys exist
+        run: |
+          echo "Testing that generate-block-producer-key fails when keys already exist..."
+
+          # Try to generate keys again with default filename (should fail)
+          if make generate-block-producer-key 2>/dev/null; then
+            echo "❌ Command should have failed when keys already exist"
+            exit 1
+          fi
+
+          # Try to generate keys again with custom filename (should fail)
+          if make generate-block-producer-key PRODUCER_KEY_FILENAME=./openmina-workdir/custom-producer-key 2>/dev/null; then
+            echo "❌ Command should have failed when custom keys already exist"
+            exit 1
+          fi
+
+          echo "✅ Command correctly fails when keys already exist"
 
       - name: Test other documented make targets exist
         run: |
