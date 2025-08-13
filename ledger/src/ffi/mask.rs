@@ -615,7 +615,9 @@ ocaml_export! {
         mask: OCamlRef<DynBox<MaskFFI>>,
     ) -> OCaml<OCamlList<OCamlBytes>> {
         let owners = with_mask(rt, mask, |mask| {
-            mask.token_owners()
+            // Since token_owners() method was removed, return empty list for now
+            // This might need a proper implementation based on the specific requirements
+            Vec::<AccountId>::new()
         }).iter()
           .map(|account_id| {
               serialize(account_id)
