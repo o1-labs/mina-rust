@@ -188,3 +188,273 @@ impl From<IpAddr> for Host {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    //! Unit tests for Host address resolution and parsing
+    //!
+    //! Run these tests with:
+    //! ```bash
+    //! cargo test -p p2p webrtc::host::tests
+    //! ```
+
+    use super::*;
+    use std::net::{Ipv4Addr, Ipv6Addr};
+
+    #[test]
+    fn test_resolve_ipv4_unchanged() {
+        let host = Host::Ipv4(Ipv4Addr::new(192, 168, 1, 1));
+        let resolved = host.resolve().unwrap();
+
+        match resolved {
+            Host::Ipv4(addr) => assert_eq!(addr, Ipv4Addr::new(192, 168, 1, 1)),
+            _ => panic!("Expected IPv4 variant unchanged"),
+        }
+    }
+
+    #[test]
+    fn test_resolve_ipv6_unchanged() {
+        let host = Host::Ipv6(Ipv6Addr::LOCALHOST);
+        let resolved = host.resolve().unwrap();
+
+        match resolved {
+            Host::Ipv6(addr) => assert_eq!(addr, Ipv6Addr::LOCALHOST),
+            _ => panic!("Expected IPv6 variant unchanged"),
+        }
+    }
+
+    #[test]
+    fn test_resolve_localhost_domain() {
+        let host = Host::Domain("localhost".to_string());
+        let resolved = host.resolve();
+
+        // localhost should resolve to either 127.0.0.1 or ::1
+        assert!(resolved.is_some());
+        let resolved = resolved.unwrap();
+
+        match resolved {
+            Host::Ipv4(addr) => {
+                // Should be 127.0.0.1 or similar loopback
+                assert!(addr.is_loopback());
+            }
+            Host::Ipv6(addr) => {
+                // Should be ::1 or similar loopback
+                assert!(addr.is_loopback());
+            }
+            Host::Domain(_) => panic!("Expected domain to resolve to IP address"),
+        }
+    }
+
+    #[test]
+    fn test_resolve_invalid_domain() {
+        let host = Host::Domain("invalid.domain.that.should.not.exist.xyz123".to_string());
+        let resolved = host.resolve();
+
+        // Invalid domain should return None
+        assert!(resolved.is_none());
+    }
+
+    #[test]
+    fn test_resolve_empty_domain() {
+        let host = Host::Domain("".to_string());
+        let resolved = host.resolve();
+
+        // Empty domain should return None
+        assert!(resolved.is_none());
+    }
+
+    #[test]
+    fn test_from_str_ipv4() {
+        let host: Host = "192.168.1.1".parse().unwrap();
+        match host {
+            Host::Ipv4(addr) => assert_eq!(addr, Ipv4Addr::new(192, 168, 1, 1)),
+            _ => panic!("Expected IPv4 variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_ipv6() {
+        let host: Host = "[::1]".parse().unwrap();
+        match host {
+            Host::Ipv6(addr) => assert_eq!(addr, Ipv6Addr::LOCALHOST),
+            _ => panic!("Expected IPv6 variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_ipv6_brackets() {
+        let host: Host = "[::1]".parse().unwrap();
+        match host {
+            Host::Ipv6(addr) => assert_eq!(addr, Ipv6Addr::LOCALHOST),
+            _ => panic!("Expected IPv6 variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_domain() {
+        let host: Host = "example.com".parse().unwrap();
+        match host {
+            Host::Domain(domain) => assert_eq!(domain, "example.com"),
+            _ => panic!("Expected Domain variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_str_invalid() {
+        let result: Result<Host, _> = "not a valid host".parse();
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_display_ipv4() {
+        let host = Host::Ipv4(Ipv4Addr::new(10, 0, 0, 1));
+        assert_eq!(host.to_string(), "10.0.0.1");
+    }
+
+    #[test]
+    fn test_display_ipv6() {
+        let host = Host::Ipv6(Ipv6Addr::LOCALHOST);
+        assert_eq!(host.to_string(), "[::1]");
+    }
+
+    #[test]
+    fn test_display_domain() {
+        let host = Host::Domain("test.example.org".to_string());
+        assert_eq!(host.to_string(), "test.example.org");
+    }
+
+    #[test]
+    fn test_roundtrip_ipv4() {
+        let original = Host::Ipv4(Ipv4Addr::new(203, 0, 113, 42));
+        let serialized = original.to_string();
+        let deserialized: Host = serialized.parse().unwrap();
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_roundtrip_ipv6() {
+        let original = Host::Ipv6(Ipv6Addr::new(0x2001, 0xdb8, 0, 0, 0, 0, 0, 1));
+        let serialized = original.to_string();
+        let deserialized: Host = serialized.parse().unwrap();
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_roundtrip_domain() {
+        let original = Host::Domain("api.example.net".to_string());
+        let serialized = original.to_string();
+        let deserialized: Host = serialized.parse().unwrap();
+        assert_eq!(original, deserialized);
+    }
+
+    #[test]
+    fn test_from_ipaddr_v4() {
+        let ip = IpAddr::V4(Ipv4Addr::new(172, 16, 0, 1));
+        let host = Host::from(ip);
+        match host {
+            Host::Ipv4(addr) => assert_eq!(addr, Ipv4Addr::new(172, 16, 0, 1)),
+            _ => panic!("Expected IPv4 variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_ipaddr_v6() {
+        let ip = IpAddr::V6(Ipv6Addr::new(0xfe80, 0, 0, 0, 0, 0, 0, 1));
+        let host = Host::from(ip);
+        match host {
+            Host::Ipv6(addr) => assert_eq!(addr, Ipv6Addr::new(0xfe80, 0, 0, 0, 0, 0, 0, 1)),
+            _ => panic!("Expected IPv6 variant"),
+        }
+    }
+
+    #[test]
+    fn test_from_array_ipv4() {
+        let bytes = [10, 0, 0, 1];
+        let host = Host::from(bytes);
+        match host {
+            Host::Ipv4(addr) => assert_eq!(addr, Ipv4Addr::new(10, 0, 0, 1)),
+            _ => panic!("Expected IPv4 variant"),
+        }
+    }
+
+    #[test]
+    fn test_ord_comparison() {
+        let host1 = Host::Domain("a.example.com".to_string());
+        let host2 = Host::Domain("b.example.com".to_string());
+        let host3 = Host::Ipv4(Ipv4Addr::new(1, 1, 1, 1));
+        let host4 = Host::Ipv4(Ipv4Addr::new(2, 2, 2, 2));
+
+        assert!(host1 < host2);
+        assert!(host3 < host4);
+        // Domain variants should have consistent ordering with IP variants
+        assert!(host1.partial_cmp(&host3).is_some());
+    }
+
+    #[test]
+    fn test_clone_and_equality() {
+        let original = Host::Domain("clone-test.example.com".to_string());
+        let cloned = original.clone();
+        assert_eq!(original, cloned);
+
+        let different = Host::Domain("different.example.com".to_string());
+        assert_ne!(original, different);
+    }
+
+    #[test]
+    fn test_multiaddr_protocol_conversion() {
+        use multiaddr::Protocol;
+
+        let domain_host = Host::Domain("test.com".to_string());
+        let protocol = Protocol::from(&domain_host);
+        if let Protocol::Dns4(cow_str) = protocol {
+            assert_eq!(cow_str, "test.com");
+        } else {
+            panic!("Expected Dns4 protocol");
+        }
+
+        let ipv4_host = Host::Ipv4(Ipv4Addr::new(1, 2, 3, 4));
+        let protocol = Protocol::from(&ipv4_host);
+        if let Protocol::Ip4(addr) = protocol {
+            assert_eq!(addr, Ipv4Addr::new(1, 2, 3, 4));
+        } else {
+            panic!("Expected Ip4 protocol");
+        }
+
+        let ipv6_host = Host::Ipv6(Ipv6Addr::LOCALHOST);
+        let protocol = Protocol::from(&ipv6_host);
+        if let Protocol::Ip6(addr) = protocol {
+            assert_eq!(addr, Ipv6Addr::LOCALHOST);
+        } else {
+            panic!("Expected Ip6 protocol");
+        }
+    }
+
+    #[test]
+    fn test_serde_serialization() {
+        let host = Host::Domain("serialize-test.example.com".to_string());
+        let serialized = serde_json::to_string(&host).unwrap();
+        let deserialized: Host = serde_json::from_str(&serialized).unwrap();
+        assert_eq!(host, deserialized);
+    }
+
+    #[test]
+    fn test_special_domains() {
+        // Test some special/edge case domains
+        let cases = vec![
+            ("localhost", true),       // Should resolve
+            ("127.0.0.1", true),       // Already an IP, but valid as domain too
+            ("0.0.0.0", true),         // Valid IP
+            ("255.255.255.255", true), // Valid IP
+        ];
+
+        for (domain_str, should_parse) in cases {
+            let result: Result<Host, _> = domain_str.parse();
+            assert_eq!(
+                result.is_ok(),
+                should_parse,
+                "Failed for domain: {}",
+                domain_str
+            );
+        }
+    }
+}
