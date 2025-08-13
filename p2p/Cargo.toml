@@ -51,6 +51,7 @@ zeroize = { version = "1.8" }
 
 mina-p2p-messages = { workspace = true }
 redux = { workspace = true }
+linkme = { workspace = true }
 
 crypto-bigint = { version = "0.5.5", features = [
   "generic-array",

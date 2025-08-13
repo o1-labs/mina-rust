@@ -27,14 +27,14 @@ use crate::{
     P2pChannelEvent, P2pConnectionEvent, P2pEvent, PeerId,
 };
 
-#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs"))]
+#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", not(feature = "p2p-webrtc-cpp")))]
 mod imports {
     pub use super::webrtc_rs::{
         build_api, certificate_from_pem_key, webrtc_signal_send, Api, RTCCertificate, RTCChannel,
         RTCConnection, RTCConnectionState, RTCSignalingError,
     };
 }
-#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp"))]
+#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp", not(feature = "p2p-webrtc-rs")))]
 mod imports {
     pub use super::webrtc_cpp::{
         build_api, certificate_from_pem_key, webrtc_signal_send, Api, RTCCertificate, RTCChannel,
@@ -44,6 +44,15 @@ mod imports {
 #[cfg(target_arch = "wasm32")]
 mod imports {
     pub use super::web::{
+        build_api, certificate_from_pem_key, webrtc_signal_send, Api, RTCCertificate, RTCChannel,
+        RTCConnection, RTCConnectionState, RTCSignalingError,
+    };
+}
+
+// Fallback when both webrtc features are enabled - prefer webrtc-rs
+#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", feature = "p2p-webrtc-cpp"))]
+mod imports {
+    pub use super::webrtc_rs::{
         build_api, certificate_from_pem_key, webrtc_signal_send, Api, RTCCertificate, RTCChannel,
         RTCConnection, RTCConnectionState, RTCSignalingError,
     };
@@ -102,14 +111,14 @@ pub struct PeerState {
     pub abort: Aborter,
 }
 
-#[derive(thiserror::Error, derive_more::From, Debug)]
+#[derive(thiserror::Error, Debug)]
 pub(super) enum Error {
-    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs"))]
+    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", not(feature = "p2p-webrtc-cpp")))]
     #[error("{0}")]
-    Rtc(::webrtc::Error),
-    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp"))]
+    RtcRs(::webrtc::Error),
+    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp", not(feature = "p2p-webrtc-rs")))]
     #[error("{0}")]
-    Rtc(::datachannel::Error),
+    RtcCpp(::datachannel::Error),
     #[cfg(target_arch = "wasm32")]
     #[error("js error: {0:?}")]
     RtcJs(String),
@@ -117,9 +126,22 @@ pub(super) enum Error {
     Signaling(RTCSignalingError),
     #[error("unexpected cmd received")]
     UnexpectedCmd,
-    #[from(ignore)]
     #[error("channel closed")]
     ChannelClosed,
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", not(feature = "p2p-webrtc-cpp")))]
+impl From<::webrtc::Error> for Error {
+    fn from(error: ::webrtc::Error) -> Self {
+        Self::RtcRs(error)
+    }
+}
+
+#[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp", not(feature = "p2p-webrtc-rs")))]
+impl From<::datachannel::Error> for Error {
+    fn from(error: ::datachannel::Error) -> Self {
+        Self::RtcCpp(error)
+    }
 }
 
 #[cfg(target_arch = "wasm32")]
@@ -376,13 +398,32 @@ async fn peer_start(
     // there is a link between peer identity and connection.
     let (remote_auth_tx, remote_auth_rx) = oneshot::channel::<ConnectionAuthEncrypted>();
     let mut remote_auth_tx = Some(remote_auth_tx);
+    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", not(feature = "p2p-webrtc-cpp")))]
     main_channel.on_message(move |data| {
         if let Some(tx) = remote_auth_tx.take() {
             if let Ok(auth) = data.try_into() {
                 let _ = tx.send(auth);
             }
         }
-        #[cfg(not(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp")))]
+        std::future::ready(())
+    });
+    
+    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp", not(feature = "p2p-webrtc-rs")))]
+    main_channel.on_message(move |data| {
+        if let Some(tx) = remote_auth_tx.take() {
+            if let Ok(auth) = data.try_into() {
+                let _ = tx.send(auth);
+            }
+        }
+    });
+    
+    #[cfg(target_arch = "wasm32")]
+    main_channel.on_message(move |data| {
+        if let Some(tx) = remote_auth_tx.take() {
+            if let Ok(auth) = data.try_into() {
+                let _ = tx.send(auth);
+            }
+        }
         std::future::ready(())
     });
     let msg = match cmd_receiver.recv().await {
@@ -654,6 +695,7 @@ async fn peer_loop(
                     let mut buf = Vec::new();
                     let event_sender_clone = event_sender.clone();
 
+                    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-rs", not(feature = "p2p-webrtc-cpp")))]
                     chan.on_message(move |mut data| {
                         while !data.is_empty() {
                             let res = match process_msg(chan_id, &mut buf, &mut len, &mut data) {
@@ -664,7 +706,33 @@ async fn peer_loop(
                             let _ =
                                 event_sender_clone(P2pChannelEvent::Received(peer_id, res).into());
                         }
-                        #[cfg(not(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp")))]
+                        std::future::ready(())
+                    });
+                    
+                    #[cfg(all(not(target_arch = "wasm32"), feature = "p2p-webrtc-cpp", not(feature = "p2p-webrtc-rs")))]
+                    chan.on_message(move |mut data| {
+                        while !data.is_empty() {
+                            let res = match process_msg(chan_id, &mut buf, &mut len, &mut data) {
+                                Ok(None) => continue,
+                                Ok(Some(msg)) => Ok(msg),
+                                Err(err) => Err(err),
+                            };
+                            let _ =
+                                event_sender_clone(P2pChannelEvent::Received(peer_id, res).into());
+                        }
+                    });
+                    
+                    #[cfg(target_arch = "wasm32")]
+                    chan.on_message(move |mut data| {
+                        while !data.is_empty() {
+                            let res = match process_msg(chan_id, &mut buf, &mut len, &mut data) {
+                                Ok(None) => continue,
+                                Ok(Some(msg)) => Ok(msg),
+                                Err(err) => Err(err),
+                            };
+                            let _ =
+                                event_sender_clone(P2pChannelEvent::Received(peer_id, res).into());
+                        }
                         std::future::ready(())
                     });
 

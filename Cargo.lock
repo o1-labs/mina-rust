@@ -6404,6 +6404,7 @@ dependencies = [
  "js-sys",
  "libc",
  "libp2p-identity",
+ "linkme",
  "local-ip-address",
  "mina-p2p-messages",
  "mio 1.0.3",
