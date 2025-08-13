@@ -1,15 +1,12 @@
 use std::{borrow::Cow, ops::Neg, rc::Rc};
 
 use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, One, Zero};
-use ark_poly::{
-    univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain, Radix2EvaluationDomain,
-};
+use ark_poly::{univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain};
 use kimchi::{
     circuits::{expr::RowOffset, scalars::RandomOracles, wires::COLUMNS},
     oracles::OraclesResult,
     proof::{PointEvaluations, ProofEvaluations, RecursionChallenge},
 };
-use kimchi_stubs::WithLagrangeBasis;
 use mina_curves::pasta::{Fp, Fq, Pallas, Vesta};
 use mina_p2p_messages::v2::{
     CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
@@ -1879,7 +1876,7 @@ pub mod wrap_verifier {
         let actual_shift = { OPS_BITS_PER_CHUNK * chunks_needed(input_length) };
         let pow2pow = |x: InnerCurve<Fq>, n: usize| (0..n).fold(x, |acc, _| acc.clone() + acc);
 
-        let mut base_and_correction = |h: Domain| {
+        let base_and_correction = |h: Domain| {
             let d = 2u64.pow(h.log2_size() as u32);
             match lagrange_commitment::<Fq>(srs, d, i).chunks.as_slice() {
                 &[g] => {

@@ -51,12 +51,12 @@ mina-p2p-messages = { path = "mina-p2p-messages" }
 poseidon = { path = "poseidon" }
 
 # UNCOMMENTED_IN_CI mina-curves = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina", features = [ "32x9" ] }
-mina-curves = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-hasher = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-signer = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 kimchi = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 kimchi-stubs = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
+mina-curves = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
+mina-hasher = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 mina-poseidon = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
+mina-signer = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 o1-utils = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 poly-commitment = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
 

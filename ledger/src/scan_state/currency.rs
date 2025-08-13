@@ -1,6 +1,6 @@
 use std::cmp::Ordering::{Equal, Greater, Less};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field};
+use ark_ff::{BigInteger256, Field};
 use mina_p2p_messages::v2::BlockTimeTimeStableV1;
 use rand::Rng;
 

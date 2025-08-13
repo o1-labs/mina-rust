@@ -8,7 +8,6 @@ use kimchi::{
     groupmap::GroupMap,
     proof::RecursionChallenge,
 };
-use kimchi_stubs::lagrange_basis::WithLagrangeBasis;
 use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2::{
     self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
@@ -25,7 +24,6 @@ use mina_p2p_messages::v2::{
 };
 use mina_poseidon::constants::PlonkSpongeConstantsKimchi;
 use mina_signer::{CompressedPubKey, PubKey};
-use rand::rngs::StdRng;
 
 use crate::{
     decompress_pk, gen_keypair,
@@ -1263,13 +1261,9 @@ impl<F: FieldWitness> InnerCurve<F> {
     where
         S: Into<BigInteger256>,
     {
-        use std::ops::Mul;
         let scale: BigInteger256 = scale.into();
-        let scale = scale.0;
-        // Self {
-        // inner: self.inner.mul(scale),
-        // }
-        todo!()
+        let inner = self.inner.mul_bigint(scale);
+        Self { inner }
     }
 
     fn add_fast(&self, other: Self, w: &mut Witness<F>) -> Self {

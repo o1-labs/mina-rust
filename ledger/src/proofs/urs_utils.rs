@@ -1,6 +1,6 @@
 /// Copy-pasted from https://github.com/MinaProtocol/mina/blob/cf2a732ae39f4e784707e1fc32832da805bb7d09/src/lib/crypto/kimchi_bindings/stubs/src/urs_utils.rs
 use ark_ec::{AffineRepr, CurveGroup, VariableBaseMSM};
-use ark_ff::{batch_inversion, One, PrimeField, UniformRand, Zero};
+use ark_ff::{batch_inversion, One, UniformRand, Zero};
 use poly_commitment::{
     commitment::{b_poly_coefficients, CommitmentCurve},
     ipa::SRS,

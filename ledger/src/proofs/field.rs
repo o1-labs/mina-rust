@@ -1,5 +1,5 @@
 use ark_ec::{short_weierstrass::Projective, AffineRepr, CurveGroup};
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, FftField, Field, PrimeField};
+use ark_ff::{BigInteger256, FftField, Field, PrimeField};
 use kimchi::curve::KimchiCurve;
 use mina_curves::pasta::{
     fields::fft::FpParameters as _, Fp, Fq, PallasParameters, ProjectivePallas, ProjectiveVesta,

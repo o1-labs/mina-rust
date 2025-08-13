@@ -171,7 +171,7 @@ impl Inputs {
 
         if nbits > 0 {
             self.fields
-                .push(BigInteger256::new(current).try_into().unwrap()); // Never fail
+                .push(BigInteger256::new(current).into()); // Never fail
         }
 
         self.fields

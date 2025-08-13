@@ -495,7 +495,7 @@ mod scalars {
         proof::PointEvaluations,
     };
 
-    use crate::proofs::{field::field::sub, transaction::endos};
+    use crate::proofs::transaction::endos;
 
     use super::*;
 
@@ -754,11 +754,11 @@ mod scalars {
                 let x = sub_eval(x, ctx);
                 field::mul(x, y, ctx.w)
             }
-            Operations::Sub(operations, operations1) => todo!(),
-            Operations::Double(operations) => todo!(),
-            Operations::Square(operations) => todo!(),
-            Operations::Cache(cache_id, operations) => todo!(),
-            Operations::IfFeature(feature_flag, operations, operations1) => todo!(),
+            Operations::Sub(_, _) => todo!(),
+            Operations::Double(_) => todo!(),
+            Operations::Square(_) => todo!(),
+            Operations::Cache(_, _) => todo!(),
+            Operations::IfFeature(_, _, _) => todo!(),
         }
     }
 

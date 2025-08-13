@@ -337,7 +337,7 @@ fn make_verifier_index(index: VerifierIndex<Fq>) -> VerifierIndex<Fq> {
 
     // <https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L310-L314>
     let srs = {
-        let mut srs = SRS::create(max_poly_size);
+        let srs = SRS::create(max_poly_size);
         srs.with_lagrange_basis(domain);
         Arc::new(srs)
     };

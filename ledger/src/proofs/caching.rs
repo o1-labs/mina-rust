@@ -28,8 +28,6 @@ use poly_commitment::{
 };
 use serde::{Deserialize, Serialize};
 
-use crate::proofs::field::FieldWitness;
-
 use super::VerifierIndex;
 
 fn into<'a, U, T>(slice: &'a [U]) -> Vec<T>

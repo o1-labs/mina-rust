@@ -111,7 +111,6 @@ impl NetworkConfig {
 pub mod devnet {
     use super::{CircuitsConfig, NetworkId};
     use crate::constants::{ConstraintConstants, ForkConstants};
-    use mina_curves::pasta::Fp;
 
     pub const NETWORK_ID: NetworkId = NetworkId::TESTNET;
     pub const NAME: &str = "devnet";
@@ -190,7 +189,6 @@ pub mod devnet {
 pub mod mainnet {
     use super::{CircuitsConfig, NetworkId};
     use crate::constants::{ConstraintConstants, ForkConstants};
-    use mina_curves::pasta::Fp;
 
     pub const NETWORK_ID: NetworkId = NetworkId::MAINNET;
     pub const NAME: &str = "mainnet";
