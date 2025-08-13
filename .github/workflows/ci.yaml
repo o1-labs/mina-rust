@@ -259,11 +259,10 @@ jobs:
           - 80:80
 
     steps:
-      - name: Install libssl3 # Our binaries are built on a newer ubuntu and require libssl3
+      - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           echo "deb http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list.d/bookworm.list
            apt-get update && \
-              apt-get install -y --no-install-recommends libssl3 && \
+              apt-get install -y --no-install-recommends libssl3t64 && \
               apt-get clean && \
               rm -rf /var/lib/apt/lists/*
 
@@ -340,11 +339,10 @@ jobs:
           - 80:80
 
     steps:
-      - name: Install libssl3 # Our binaries are built on a newer ubuntu and require libssl3
+      - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           echo "deb http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list.d/bookworm.list
            apt-get update && \
-              apt-get install -y --no-install-recommends libssl3 && \
+              apt-get install -y --no-install-recommends libssl3t64 && \
               apt-get clean && \
               rm -rf /var/lib/apt/lists/*
 
@@ -397,11 +395,10 @@ jobs:
       fail-fast: false
 
     steps:
-      - name: Install libssl3 # Our binaries are built on a newer ubuntu and require libssl3
+      - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           echo "deb http://deb.debian.org/debian bookworm main" > /etc/apt/sources.list.d/bookworm.list
            apt-get update && \
-              apt-get install -y --no-install-recommends libssl3 && \
+              apt-get install -y --no-install-recommends libssl3t64 && \
               apt-get clean && \
               rm -rf /var/lib/apt/lists/*
 
