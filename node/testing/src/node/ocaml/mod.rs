@@ -411,7 +411,7 @@ fn run_ocaml() {
         graphql_port: 3086,
         client_port: 8301,
         initial_peers: Vec::new(),
-        daemon_json: DaemonJson::Custom("/var/lib/coda/config_978866cd.json".to_owned()),
+        daemon_json: DaemonJson::Custom("/var/lib/coda/config_939b08d8.json".to_owned()),
         block_producer: None,
     })
     .unwrap();
