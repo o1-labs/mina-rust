@@ -1,104 +1,78 @@
 # How to build and launch a node from source
 
-This installation guide has been tested on Debian and Ubuntu and should work on
-most distributions of Linux.
+## Building from Source
 
-## Prerequisites
+For detailed instructions on how to build OpenMina from source, including system
+dependencies, toolchain setup, and platform-specific instructions, please refer
+to the [Getting Started for Developers](../developers/getting-started.mdx)
+guide.
 
-Ubuntu or Debian-based Linux distribution with the following packages installed:
+The developer guide includes:
 
-- `curl`
-- `git`
-- `libssl-dev`
-- `pkg-config`
-- `protobuf-compiler`
-- `build-essential`
+- Tested setup instructions for Ubuntu 22.04, Ubuntu 24.04, and macOS
+- Complete toolchain installation (Rust, Node.js, Docker, etc.)
+- Build verification and testing procedures
+- Environment configuration
 
-Example (debian-based):
+## Running the Node
 
-```sh
-# Either using "sudo" or as the "root" user
-sudo apt install curl git libssl-dev pkg-config protobuf-compiler build-essential
-```
+Once you have built OpenMina following the developer guide, you can run the node
+using the provided Makefile targets:
 
-Example (macOS):
+### Available Make Targets
 
-If you have not yet installed homebrew:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-```
-
-```sh
-brew install curl git openssl pkg-config protobuf gcc make
-```
-
-## Steps (for Debian-based Linux distros and macOS):
-
-Open up the command line and enter the following:
-
-And then:
-
-```sh
-# Install rustup and set the default Rust toolchain to 1.84 (newer versions work too)
-curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain 1.84
-# Setup the current shell with rustup
-source "$HOME/.cargo/env"
-# Clone the openmina repository
-git clone https://github.com/openmina/openmina.git
-cd openmina/
-# Build and run the node
-cargo run --release -p cli node
-```
-
-# How to launch the UI:
-
-## Prerequisites
-
-### 1. Node.js v20.11.1
-
-#### MacOS
+#### Basic Node
 
 ```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-brew install node@20.11.1
+# Run a basic node (defaults: NETWORK=devnet, VERBOSITY=info)
+make run-node
+
+# Run with custom network and verbosity level
+make run-node NETWORK=mainnet VERBOSITY=debug
 ```
 
-#### Linux
+#### Archive Node
 
 ```bash
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-source ~/.bashrc
-nvm install 20.11.1
+# Run an archive node with local storage
+make run-archive
+
+# Run archive node on mainnet
+make run-archive NETWORK=mainnet
 ```
 
-#### Windows
+For comprehensive archive node setup including different storage options,
+database configuration, and Docker Compose deployment, see the detailed
+[Archive Node](./archive-node.md) documentation.
 
-Download [Node.js v20.11.1](https://nodejs.org/) from the official website, open
-the installer and follow the prompts to complete the installation.
+### Configuration Variables
 
-### 2. Angular CLI v16.2.0
+The Makefile supports the following configuration variables that can be
+overridden:
+
+- `NETWORK` - Network to connect to (default: `devnet`, options: `devnet`,
+  `mainnet`)
+- `VERBOSITY` - Logging verbosity level (default: `info`, options: `error`,
+  `warn`, `info`, `debug`, `trace`)
+
+### Advanced Configuration and CLI Parameters
+
+For detailed information about all available command-line parameters and
+advanced configuration options, please refer to the
+[Rust API Documentation](https://o1-labs.github.io/openmina/api-docs/cli/commands/node/struct.Node.html)
+which contains comprehensive documentation for all supported parameters
+including:
+
+- Network and connection options
+- Block producer configuration
+- Archive node settings
+- Logging and debugging options
+- P2P networking parameters
+- Snarker configuration
+- And more
+
+You can also get help directly from the command line:
 
 ```bash
-npm install -g @angular/cli@16.2.0
-```
-
-### 3. Installation
-
-Open a terminal and navigate to this project's root directory
-
-```bash
-cd PROJECT_LOCATION/openmina/frontend
-```
-
-Install the dependencies
-
-```bash
-npm install
-```
-
-## Run the application
-
-```bash
-npm start
+./target/release/openmina node --help
 ```

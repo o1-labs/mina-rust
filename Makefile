@@ -22,6 +22,7 @@ OPENMINA_LIBP2P_PORT ?= 8302
 
 # Utilities
 NETWORK ?= devnet
+VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
 .PHONY: help
@@ -38,7 +39,7 @@ build-ledger: download-circuits ## Build the ledger binary and library, requires
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
-	cargo build --release --package=cli --bin openmina
+	@cargo build --release --package=cli --bin openmina
 
 .PHONY: build-testing
 build-testing: ## Build the testing binary with scenario generators
@@ -293,6 +294,11 @@ docker-build-producer-dashboard: ## Build producer dashboard Docker image
 docker-build-test: ## Build test Docker image
 	docker build -t $(DOCKER_ORG)/openmina-test:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.test node/testing/docker/
+
+# Node running targets
+.PHONY: run-node
+run-node: build-release ## Run a basic node (NETWORK=devnet, VERBOSITY=info)
+	@cargo run --release --package=cli --bin openmina -- node --network $(NETWORK) --verbosity $(VERBOSITY)
 
 # Postgres related targets + archive node
 .PHONY: run-archive
