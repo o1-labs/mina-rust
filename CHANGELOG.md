@@ -13,9 +13,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1236](https://github.com/o1-labs/openmina/pull/1236), fix
   [#1158](https://github.com/o1-labs/openmina/issues/1158))
 - Update the CI and code to compare with the latest release 3.2.0-beta1-978866c
-  ([#1250](https://github.com/o1-labs/openmina/pull/1250)
+  ([#1250](https://github.com/o1-labs/openmina/pull/1250))
 - Update the CI and code to compare with the latest release 3.2.0-beta2-939b08d
-  ([#1250](https://github.com/o1-labs/openmina/pull/1285)
+  ([#1285](https://github.com/o1-labs/openmina/pull/1285))
 
 
 ### Added
@@ -58,7 +58,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ubuntu-latest, and fixed GLIBC compatibility for scenario tests by using
   Ubuntu 22.04 for test binary artifacts to ensure compatibility with Debian
   Bullseye container environment ([#1249](https://github.com/o1-labs/openmina/pull/1249))
-- **Build System**: Enhanced Makefile with documentation-related targets and comprehensive formatting commands ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Build System**: Enhanced Makefile with documentation-related targets and
+  comprehensive formatting commands
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
 - Use consistent `use` statements for fields. Replace `mina_hasher::Fp` with
   `mina_curves::pasta::Fp`.
   ([#1269](https://github.com/o1-labs/openmina/pull/1269/)).
