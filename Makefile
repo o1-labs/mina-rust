@@ -234,6 +234,26 @@ test-release: ## Run tests in release mode
 test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
 
+.PHONY: nextest
+nextest: ## Run tests with cargo-nextest for faster execution
+	@cargo nextest run
+
+.PHONY: nextest-release
+nextest-release: ## Run tests in release mode with cargo-nextest
+	@cargo nextest run --release
+
+.PHONY: nextest-p2p
+nextest-p2p: ## Run P2P tests with cargo-nextest
+	@cargo nextest run -p p2p --tests
+
+.PHONY: nextest-ledger
+nextest-ledger: build-ledger ## Run ledger tests with cargo-nextest, requires nightly Rust
+	@cd ledger && cargo +nightly nextest run --release
+
+.PHONY: nextest-vrf
+nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
+	@cd vrf && cargo +nightly nextest run --release
+
 # Docker build targets
 
 .PHONY: docker-build-all
