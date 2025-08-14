@@ -224,7 +224,7 @@ test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly 
 
 .PHONY: test-p2p
 test-p2p: ## Run P2P tests
-	cargo test -p p2p --tests
+	cargo test -p p2p --tests --release
 
 .PHONY: test-release
 test-release: ## Run tests in release mode
