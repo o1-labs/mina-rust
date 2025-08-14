@@ -12,6 +12,7 @@ env:
 
 jobs:
   build-openmina-node-image:
+    timeout-minutes: 40
     strategy:
       matrix:
         arch:
@@ -63,6 +64,7 @@ jobs:
 
   # Frontend
   build-openmina-frontend-image:
+    timeout-minutes: 5
     strategy:
       matrix:
         arch:

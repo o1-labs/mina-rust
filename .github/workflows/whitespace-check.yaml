@@ -8,6 +8,7 @@ on:
 
 jobs:
   check-whitespace:
+    timeout-minutes: 1
     runs-on: ubuntu-22.04
     steps:
       - name: Checkout repository

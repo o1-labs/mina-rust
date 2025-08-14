@@ -7,6 +7,7 @@ on:
 
 jobs:
   lint:
+    timeout-minutes: 10
     name: Lint - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -36,6 +37,7 @@ jobs:
           DATABASE_URL: "sqlite:///tmp/heartbeats.db"
 
   lint-tx-fuzzing:
+    timeout-minutes: 5
     name: Lint transaction Fuzzing - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -56,6 +58,7 @@ jobs:
         run: make check-tx-fuzzing
 
   shellcheck:
+    timeout-minutes: 1
     name: Shellcheck - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
@@ -71,6 +74,7 @@ jobs:
         run: make lint-bash
 
   hadolint:
+    timeout-minutes: 1
     name: Hadolint - ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
