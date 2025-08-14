@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   ledger-tests:
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
@@ -73,6 +74,7 @@ jobs:
         run: make test-ledger
 
   vrf-tests:
+    timeout-minutes: 8
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
@@ -94,6 +96,7 @@ jobs:
         run: make test-vrf
 
   p2p-tests:
+    timeout-minutes: 6
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
@@ -239,6 +242,7 @@ jobs:
   p2p-scenario-tests:
     needs: [ build-tests, build-tests-webrtc ]
     runs-on: ubuntu-24.04
+    timeout-minutes: 20
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
       options: --volume debugger_data:/tmp/db
@@ -298,6 +302,7 @@ jobs:
         if: ${{ always() }}
 
   scenario-tests:
+    timeout-minutes: 20
     needs:
       - build-tests
       - build-tests-webrtc
@@ -384,6 +389,7 @@ jobs:
         if: ${{ always() }}
 
   record-replay-tests:
+    timeout-minutes: 30
     needs:
       - build-tests
       - build-tests-webrtc
@@ -421,6 +427,7 @@ jobs:
           ./${{ matrix.test }} --test-threads=1
 
   bootstrap-test:
+    timeout-minutes: 4
     needs: [ build, build-tests ]
     runs-on: ubuntu-24.04
     env:
