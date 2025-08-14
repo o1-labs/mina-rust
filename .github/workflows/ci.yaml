@@ -115,6 +115,7 @@ jobs:
         run: make test-p2p
 
   build:
+    timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
@@ -147,6 +148,7 @@ jobs:
           retention-days: 7
 
   build-wasm:
+    timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
@@ -170,6 +172,7 @@ jobs:
         run: make build-wasm
 
   build-tests:
+    timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
@@ -208,6 +211,7 @@ jobs:
           retention-days: 7
 
   build-tests-webrtc:
+    timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
