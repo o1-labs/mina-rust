@@ -5,17 +5,38 @@ on:
   pull_request:
     paths-ignore: [ "frontend" ]
   workflow_dispatch:
+    inputs:
+      refresh_cache:
+        description: 'Refresh cargo cache'
+        required: false
+        type: boolean
+        default: false
 
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: full
   OPENMINA_PANIC_ON_BUG: true
+  CARGO_INCREMENTAL: 1
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  refresh-cache:
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.refresh_cache == 'true' }}
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          enable-cache: false
+      - name: Clean cargo cache
+        run: cargo clean
+
   ledger-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
