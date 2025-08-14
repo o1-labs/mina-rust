@@ -13,46 +13,46 @@ import type {SidebarsConfig} from '@docusaurus/plugin-content-docs';
  Create as many sidebars as you want.
  */
 const sidebars: SidebarsConfig = {
-  // Sidebar for node runners - focus on operational guides
+  // Sidebar for node operators - focus on operational guides
   nodeRunnersSidebar: [
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Introduction',
       items: [
-        'node-runners/getting-started',
-        'node-runners/docker-installation',
-        'node-runners/building-from-source',
+        'node-operators/getting-started',
+        'node-operators/docker-installation',
+        'node-operators/building-from-source',
       ],
     },
     {
       type: 'category',
       label: 'Node Types',
       items: [
-        'node-runners/block-producer',
-        'node-runners/archive-node',
+        'node-operators/block-producer',
+        'node-operators/archive-node',
       ],
     },
     {
       type: 'category',
       label: 'Operations',
       items: [
-        'node-runners/local-demo',
-        'node-runners/alpha-testing',
-        'node-runners/network-configuration',
+        'node-operators/local-demo',
+        'node-operators/alpha-testing',
+        'node-operators/network-configuration',
       ],
     },
     {
       type: 'category',
       label: 'Web Node',
       items: [
-        'node-runners/webnode/local-webnode',
+        'node-operators/webnode/local-webnode',
       ],
     },
     {
       type: 'category',
       label: 'Testing',
       items: [
-        'node-runners/testing/overview',
+        'node-operators/testing/overview',
       ],
     },
   ],
@@ -61,7 +61,7 @@ const sidebars: SidebarsConfig = {
   developersSidebar: [
     {
       type: 'category',
-      label: 'Getting Started',
+      label: 'Introduction',
       items: [
         'developers/getting-started',
         'developers/updating-ocaml-node',

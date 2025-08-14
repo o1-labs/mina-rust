@@ -1,23 +1,425 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
-.heroBanner {
-  padding: 4rem 0;
+/* Hero Section */
+.hero {
+  padding: 6rem 0 4rem;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
   text-align: center;
+}
+
+.heroBackground {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+}
+
+.heroBackgroundSvg {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.heroTitle {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin-bottom: 1.5rem;
+  background: linear-gradient(135deg, var(--text) 30%, var(--accent) 70%, var(--accent-2) 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: var(--text);
+  letter-spacing: -0.02em;
+}
+
+.heroSubtitle {
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--muted);
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heroButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Button Styles */
+.btnPrimary {
+  background: var(--grad-primary);
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(177, 76, 255, 0.3);
+}
+
+.btnPrimary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(177, 76, 255, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+.btnSecondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 20px;
+  font-weight: 500;
+  font-size: 1rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btnSecondary:hover {
+  border-color: var(--accent-3);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 207, 255, 0.2);
+  text-decoration: none;
+  color: var(--text);
+}
+
+/* Quick Navigation Section */
+.quickNav {
+  padding: 4rem 0;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 50%, var(--bg) 100%);
+  position: relative;
+}
+
+.quickNav::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(177, 76, 255, 0.03) 20%, 
+    rgba(255, 107, 53, 0.04) 40%, 
+    rgba(255, 0, 122, 0.03) 60%, 
+    rgba(0, 207, 255, 0.03) 80%, 
+    transparent 100%
+  );
+  pointer-events: none;
+}
+
+.quickNavGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.quickNavCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 2rem;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
   position: relative;
   overflow: hidden;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.quickNavCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--grad-primary);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 0;
 }
 
-.buttons {
+.quickNavCard::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: var(--grad-primary);
+  border-radius: 16px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: -1;
+}
+
+.quickNavCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(177, 76, 255, 0.2);
+  border-color: rgba(177, 76, 255, 0.3);
+  text-decoration: none;
+  color: var(--text);
+}
+
+.quickNavCard:hover::before {
+  opacity: 0.05;
+}
+
+.quickNavCard:hover::after {
+  opacity: 0.8;
+}
+
+.cardIcon {
+  background: var(--grad-primary);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* Alternate orange gradient for some cards */
+.quickNavCard:nth-child(2) .cardIcon {
+  background: var(--grad-orange);
+}
+
+.quickNavCard:nth-child(3) .cardIcon {
+  background: linear-gradient(135deg, var(--accent-3) 0%, var(--accent-orange) 100%);
+}
+
+.cardContent {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.cardTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.cardDescription {
+  font-size: 0.95rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.5;
+}
+
+.cardArrow {
+  color: var(--muted);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.quickNavCard:hover .cardArrow {
+  color: var(--accent-3);
+  transform: translateX(4px);
+}
+
+/* Project Blurb Section */
+.projectBlurb {
+  padding: 4rem 0;
+  background: linear-gradient(45deg, var(--surface) 0%, var(--bg) 100%);
+  border-top: 2px solid transparent;
+  border-image: var(--grad-primary) 1;
+  position: relative;
+}
+
+.projectBlurb::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--grad-primary);
+}
+
+.blurbContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.blurbContent p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.blurbContent a {
+  color: var(--accent-3);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+
+.blurbContent a:hover {
+  border-bottom-color: var(--accent-3);
+}
+
+.githubLink {
+  display: flex;
+  justify-content: center;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 996px) {
+  .hero {
+    padding: 4rem 0 3rem;
+  }
+  
+  .heroTitle {
+    font-size: 2.75rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+  
+  .quickNav {
+    padding: 3rem 0;
+  }
+  
+  .quickNavGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+  
+  .quickNavCard {
+    padding: 1.5rem;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .heroContent {
+    padding: 0 1rem;
+  }
+  
+  .heroTitle {
+    font-size: 2.25rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+  
+  .heroButtons {
+    flex-direction: column;
+    width: 100%;
+  }
+  
+  .btnPrimary,
+  .btnSecondary {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+  
+  .quickNavCard {
+    flex-direction: column;
+    text-align: center;
+    gap: 1rem;
+    align-items: center;
+  }
+  
+  .cardContent {
+    text-align: center;
+    align-self: center;
+    width: 100%;
+  }
+  
+  .cardIcon {
+    align-self: center;
+  }
+  
+  .cardTitle {
+    text-align: center;
+  }
+  
+  .cardDescription {
+    text-align: center;
+  }
+  
+  .cardArrow {
+    align-self: center;
+  }
+}
+
+/* Motion Preferences */
+@media (prefers-reduced-motion: reduce) {
+  .btnPrimary,
+  .btnSecondary,
+  .quickNavCard,
+  .cardArrow {
+    transition: none;
+  }
+  
+  .quickNavCard:hover {
+    transform: none;
+  }
+  
+  .btnPrimary:hover {
+    transform: none;
+  }
+  
+  .btnSecondary:hover {
+    transform: none;
+  }
+  
+  .quickNavCard:hover .cardArrow {
+    transform: none;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.btnPrimary:focus,
+.btnSecondary:focus,
+.quickNavCard:focus {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
 }

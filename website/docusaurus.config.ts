@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'OpenMina Documentation',
-  tagline: 'Rust implementation of the Mina Protocol - lightweight blockchain using zero-knowledge proofs',
+  title: 'Mina Rust Node Documentation',
+  tagline: 'Rust implementation of the Mina Protocol (originally OCaml) - lightweight blockchain using zero knowledge proofs',
   favicon: 'img/favicon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -68,28 +68,34 @@ const config: Config = {
 
   themeConfig: {
     // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/rust-node-social-card.svg',
+    // Default to dark mode
+    colorMode: {
+      defaultMode: 'dark',
+      disableSwitch: false,
+      respectPrefersColorScheme: false,
+    },
 
     // SEO improvements and metadata
     metadata: [
-      {name: 'keywords', content: 'OpenMina, Mina Protocol, Rust, blockchain, zero-knowledge proofs, zkProofs, cryptocurrency, decentralized'},
-      {name: 'description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs. Learn how to run nodes, develop applications, and understand the protocol.'},
+      {name: 'keywords', content: 'Rust node, Mina Protocol, Rust, blockchain, zero knowledge proofs, zkProofs, cryptocurrency, decentralized'},
+      {name: 'description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs. Learn how to run nodes, develop applications, and understand the protocol.'},
       {name: 'author', content: 'o1Labs'},
       {name: 'robots', content: 'index,follow'},
       {name: 'googlebot', content: 'index,follow'},
       {property: 'og:type', content: 'website'},
-      {property: 'og:title', content: 'OpenMina Documentation'},
-      {property: 'og:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
-      {property: 'og:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
+      {property: 'og:title', content: 'Mina Rust Node Documentation'},
+      {property: 'og:description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs.'},
+      {property: 'og:image', content: 'https://o1-labs.github.io/openmina/img/rust-node-social-card.svg'},
       {property: 'twitter:card', content: 'summary_large_image'},
-      {property: 'twitter:title', content: 'OpenMina Documentation'},
-      {property: 'twitter:description', content: 'OpenMina is a Rust implementation of the Mina Protocol - a lightweight blockchain using zero-knowledge proofs.'},
-      {property: 'twitter:image', content: 'https://o1-labs.github.io/openmina/img/docusaurus-social-card.jpg'},
+      {property: 'twitter:title', content: 'Mina Rust Node Documentation'},
+      {property: 'twitter:description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs.'},
+      {property: 'twitter:image', content: 'https://o1-labs.github.io/openmina/img/rust-node-social-card.svg'},
     ],
     navbar: {
-      title: 'OpenMina',
+      title: '',
       logo: {
-        alt: 'OpenMina Logo',
+        alt: 'Mina Rust Node Logo',
         src: 'img/logo.svg',
       },
       items: [
@@ -97,19 +103,13 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'nodeRunnersSidebar',
           position: 'left',
-          label: 'Node Runners',
+          label: 'Node Operators',
         },
         {
           type: 'docSidebar',
           sidebarId: 'developersSidebar',
           position: 'left',
           label: 'Developers',
-        },
-        {
-          type: 'docSidebar',
-          sidebarId: 'researchersSidebar',
-          position: 'left',
-          label: 'Researchers',
         },
         {
           href: 'https://o1-labs.github.io/openmina/api-docs/',
@@ -135,16 +135,12 @@ const config: Config = {
           title: 'Documentation',
           items: [
             {
-              label: 'Node Runners',
-              to: '/docs/node-runners/getting-started',
+              label: 'Node Operators',
+              to: '/docs/node-operators/getting-started',
             },
             {
               label: 'Developers',
               to: '/docs/developers/architecture',
-            },
-            {
-              label: 'Researchers',
-              to: '/docs/researchers/protocol',
             },
             {
               label: 'API Documentation',
@@ -207,7 +203,7 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} o1Labs. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} o1Labs.`,
     },
     prism: {
       theme: prismThemes.github,

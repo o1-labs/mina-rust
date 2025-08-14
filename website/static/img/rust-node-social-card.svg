@@ -1,0 +1,35 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b0c10"/>
+      <stop offset="100%" stop-color="#121317"/>
+    </linearGradient>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b14cff"/>
+      <stop offset="100%" stop-color="#ff007a"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+    
+  <!-- Abstract background elements -->
+  <g opacity="0.1">
+    <circle cx="100" cy="100" r="150" fill="url(#grad)"/>
+    <circle cx="1100" cy="500" r="200" fill="url(#grad)"/>
+  </g>
+    
+  <!-- Center content -->
+  <g transform="translate(600,315)">
+    <!-- Title -->
+    <text x="0" y="-60" font-family="Inter, sans-serif" font-size="64" font-weight="700" fill="#ffffff" text-anchor="middle">The Mina Rust Node</text>
+    
+    <!-- Subtitle -->
+    <text x="0" y="0" font-family="Inter, sans-serif" font-size="28" font-weight="400" fill="#a0a0a0" text-anchor="middle">Rust implementation of the Mina Protocol (originally OCaml)</text>
+    
+    <!-- Subtitle continued -->
+    <text x="0" y="40" font-family="Inter, sans-serif" font-size="28" font-weight="400" fill="#a0a0a0" text-anchor="middle">Lightweight blockchain using zero knowledge proofs</text>
+    
+    <!-- Gradient accent -->
+    <rect x="-150" y="80" width="300" height="4" fill="url(#grad)" rx="2"/>
+  </g>
+</svg>

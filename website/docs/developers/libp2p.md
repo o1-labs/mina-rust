@@ -16,7 +16,7 @@ integrity. Without a P2P network, nodes in the Mina blockchain would be isolated
 and unable to exchange vital information, leading to fragmentation and
 compromising the blockchain's trustless nature.
 
-OpenMina implements a LibP2P networking stack to ensure compatibility with
+The Rust node implements a LibP2P networking stack to ensure compatibility with
 existing OCaml Mina nodes while providing a foundation for the transition to
 WebRTC-based communication between Rust nodes.
 
@@ -47,7 +47,7 @@ easier to manage and debug.
 
 ![LibP2P Stack Layers](https://github.com/openmina/openmina/assets/60480123/25bb08e8-d877-42b6-9c1f-b2ce29b14520)
 
-_Above: A simplified overview of the OpenMina LibP2P networking stack. The
+_Above: A simplified overview of the Rust node LibP2P networking stack. The
 abstraction is in ascending order, i.e. the layers at the top have more
 abstraction than the layers at the bottom._
 
@@ -87,8 +87,8 @@ Mina nodes use the following RPCs:
 ### Overview
 
 The P2P layer enables nodes in the Mina network to discover and connect with
-each other. OpenMina nodes must be able to connect to peers, both other OpenMina
-nodes (written in Rust) as well as native Mina nodes (written in OCaml).
+each other. Rust nodes must be able to connect to peers, both other Rust nodes
+(written in Rust) as well as native Mina nodes (written in OCaml).
 
 To achieve this compatibility, we implement peer discovery via Kademlia as part
 of our LibP2P networking stack. Previously, we used the RPC `get_initial_peers`
@@ -273,13 +273,14 @@ sense that it is backwards-compatible. For example, since multiple transports
 are supported, we can change `tcp` to `udp`, and the address will still be
 readable and valid.
 
-## Integration with OpenMina
+## Integration with the Rust Node
 
-The LibP2P implementation in OpenMina serves as a compatibility layer, enabling
-communication between:
+The LibP2P implementation in the Mina Rust Node serves as a compatibility layer,
+enabling communication between:
 
-- **OCaml Mina nodes** ↔ **Rust OpenMina nodes** (via LibP2P)
-- **Rust OpenMina nodes** ↔ **Rust OpenMina nodes** (preferably via WebRTC)
+- **OCaml Mina nodes** ↔ **Mina Rust Node instances** (via LibP2P)
+- **Mina Rust Node instances** ↔ **Mina Rust Node instances** (preferably via
+  WebRTC)
 
 This dual-transport approach allows for gradual migration from the existing
 OCaml implementation to the new Rust implementation while maintaining network
@@ -291,4 +292,4 @@ connectivity and compatibility.
   design goals
 - [WebRTC Implementation](webrtc) - WebRTC transport layer for Rust-to-Rust
   communication
-- [Architecture Overview](architecture) - Overall OpenMina architecture
+- [Architecture Overview](architecture) - Overall Rust node architecture

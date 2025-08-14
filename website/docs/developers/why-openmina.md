@@ -1,12 +1,12 @@
 ---
 sidebar_position: 2
-title: Why OpenMina?
+title: Why the Rust Node?
 description:
-  Learn about the motivation and benefits of developing OpenMina as an
+  Learn about the motivation and benefits of developing the Mina Rust Node as an
   alternative Mina Protocol implementation
 ---
 
-# Why are we developing the Open Mina node and the Mina Web node?
+# Why are we developing the Mina Rust Node and the Mina Web node?
 
 ## Diversifying the Mina ecosystem
 

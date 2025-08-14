@@ -20,8 +20,8 @@ import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.s
 import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
 import NixDevelop from "!!raw-loader!./scripts/setup/nix-develop.sh";
 
-Welcome to OpenMina development! This guide will help you set up your
-development environment and build OpenMina from source.
+Welcome to Mina Rust Node development! This guide will help you set up your
+development environment and build the Mina Rust Node from source.
 
 ## Prerequisites
 
@@ -57,8 +57,8 @@ development environment and build OpenMina from source.
 
 #### 2. Rust Toolchain
 
-OpenMina requires both stable and nightly Rust toolchains, plus additional tools
-for development:
+The Mina Rust Node requires both stable and nightly Rust toolchains, plus
+additional tools for development:
 
 <CodeBlock language="bash">{InstallRustSh}</CodeBlock>
 
@@ -111,7 +111,7 @@ to install the dependencies automatically and enter the shell:
 
 <CodeBlock language="bash">{NixDevelop}</CodeBlock>
 
-## Clone and Build OpenMina
+## Clone and Build the Mina Rust Node
 
 ### 1. Clone the Repository and Build
 
@@ -136,7 +136,7 @@ environment.
 
 ### Code Quality and Formatting
 
-OpenMina maintains strict code quality standards:
+The Mina Rust Node maintains strict code quality standards:
 
 <CodeBlock language="bash">{FormatAndLintSh}</CodeBlock>
 
@@ -196,11 +196,11 @@ export PG_DB="openmina_archive"
 
 ## Architecture Overview
 
-For detailed information about OpenMina's architecture, Redux-style state
-machine pattern, and component organization, please see the
+For detailed information about the Mina Rust Node's architecture, Redux-style
+state machine pattern, and component organization, please see the
 [Architecture Documentation](./architecture.md).
 
-## Running OpenMina
+## Running the Mina Rust Node
 
 ### Basic Node
 
@@ -234,7 +234,7 @@ make docs-serve
 
 ### Logging
 
-OpenMina uses structured logging with different levels:
+The Mina Rust Node uses structured logging with different levels:
 
 ```bash
 # Set log level
@@ -257,7 +257,7 @@ npm start
 
 ### Testing Framework
 
-OpenMina includes a comprehensive testing framework:
+The Mina Rust Node includes a comprehensive testing framework:
 
 ```bash
 # Build testing binary
@@ -290,4 +290,4 @@ make build-testing
 - **API Docs**:
   [Rust Documentation](https://o1-labs.github.io/openmina/api-docs/)
 
-Welcome to the OpenMina development community! 🎉
+Welcome to the Mina Rust Node development community! 🎉

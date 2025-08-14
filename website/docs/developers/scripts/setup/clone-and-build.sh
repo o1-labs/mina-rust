@@ -6,5 +6,5 @@ echo "Downloading required circuits..."
 make download-circuits
 
 # Build in debug mode (faster compilation, slower runtime)
-echo "Building OpenMina in debug mode..."
+echo "Building the Mina Rust Node in debug mode..."
 make build

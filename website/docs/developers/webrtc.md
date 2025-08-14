@@ -1,14 +1,14 @@
 ---
 sidebar_position: 3
 title: WebRTC Implementation
-description: Technical introduction to WebRTC for OpenMina engineers
+description: Technical introduction to WebRTC for Mina Rust Node engineers
 slug: /developers/webrtc
 ---
 
-# WebRTC Introduction for OpenMina Engineers
+# WebRTC Introduction for Mina Rust Node Engineers
 
 This document provides a technical introduction to WebRTC for engineers working
-on OpenMina's networking layer.
+on the Mina Rust Node's networking layer.
 
 ## What is WebRTC?
 
@@ -16,8 +16,8 @@ WebRTC (Web Real-Time Communication) is a protocol that enables direct
 peer-to-peer communication between network endpoints, bypassing the need for
 centralized servers in data exchange. It's particularly valuable for blockchain
 nodes that need efficient, low-latency communication, and critically enables
-communication between nodes running in web browsers - a key aspect of OpenMina's
-architecture.
+communication between nodes running in web browsers - a key aspect of the Mina
+Rust Node's architecture.
 
 For detailed technical specifications, see the
 [W3C WebRTC 1.0 specification](https://www.w3.org/TR/webrtc/).
@@ -70,9 +70,9 @@ These represent different potential connection pathways:
 
 ICE dynamically selects the best path based on connectivity and performance.
 
-## OpenMina's WebRTC Implementation
+## Mina Rust Node WebRTC Implementation
 
-OpenMina's WebRTC implementation is located in
+The Mina Rust Node's WebRTC implementation is located in
 [`p2p/src/webrtc/`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/index.html)
 and provides a structured approach to peer-to-peer connections for blockchain
 communication.
@@ -114,7 +114,7 @@ Provides cryptographic authentication:
 
 ### Security Features
 
-OpenMina's WebRTC implementation includes several security measures:
+The Mina Rust Node's WebRTC implementation includes several security measures:
 
 1. **Chain ID Verification**: Ensures peers are on the same blockchain
 2. **Identity Authentication**: Uses public key cryptography to verify peer
@@ -154,9 +154,9 @@ OpenMina's WebRTC implementation includes several security measures:
    and encrypted with
    [`ConnectionAuth::encrypt()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html#method.encrypt)
 
-### Integration with OpenMina Architecture
+### Integration with Mina Rust Node Architecture
 
-The WebRTC implementation follows OpenMina's Redux-style architecture:
+The WebRTC implementation follows the Mina Rust Node's Redux-style architecture:
 
 - State management through actions and reducers
 - Event-driven connection lifecycle
@@ -165,9 +165,9 @@ The WebRTC implementation follows OpenMina's Redux-style architecture:
 
 ## Web Node Integration
 
-WebRTC is particularly crucial for OpenMina's **Web Node** - the browser-based
-version of the Mina protocol. Web browsers have networking restrictions that
-make traditional peer-to-peer protocols challenging:
+WebRTC is particularly crucial for the Mina Rust Node's **Web Node** - the
+browser-based version of the Mina protocol. Web browsers have networking
+restrictions that make traditional peer-to-peer protocols challenging:
 
 - **Browser Security Model**: Web browsers restrict direct TCP/UDP connections
 - **NAT Traversal**: WebRTC's built-in NAT traversal works seamlessly in browser
@@ -183,10 +183,10 @@ native applications or manage complex network configurations.
 
 ## Future Considerations
 
-While the current OpenMina OCaml implementation doesn't use WebRTC, the Rust
+While the current OCaml implementation doesn't use WebRTC, the Rust
 implementation provides a foundation for enhancing peer discovery and reducing
 infrastructure dependencies.
 
-The WebRTC implementation represents a key component in OpenMina's evolution
-toward a fully decentralized, efficient blockchain networking layer that works
-seamlessly across desktop, server, and browser environments.
+The WebRTC implementation represents a key component in the Mina Rust Node's
+evolution toward a fully decentralized, efficient blockchain networking layer
+that works seamlessly across desktop, server, and browser environments.

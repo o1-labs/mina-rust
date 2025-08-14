@@ -2,20 +2,20 @@
 sidebar_position: 7
 title: Network Configuration
 description:
-  Learn about OpenMina's network configuration and how to contribute to the
-  default peer list
-slug: /node-runners/network-configuration
+  Learn about Mina Rust Node's network configuration and how to contribute to
+  the default peer list
+slug: /node-operators/network-configuration
 ---
 
 # Network Configuration
 
-This guide explains OpenMina's network configuration and how you can contribute
-to improving the network's connectivity.
+This guide explains the Mina Rust Node's network configuration and how you can
+contribute to improving the network's connectivity.
 
 ## Default Peers
 
-OpenMina includes hardcoded default peers for both mainnet and devnet networks
-to ensure reliable initial connectivity. These peers are defined in the
+The Mina Rust Node includes hardcoded default peers for both mainnet and devnet
+networks to ensure reliable initial connectivity. These peers are defined in the
 [`devnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/devnet/fn.default_peers.html)
 and
 [`mainnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
@@ -51,11 +51,11 @@ criteria:
 
 ### Contribution Process
 
-#### 1. Via OpenMina Repository
+#### 1. Via Rust Node Repository
 
-For OpenMina-specific peer additions:
+For Rust node-specific peer additions:
 
-1. Fork the [OpenMina repository](https://github.com/o1-labs/openmina)
+1. Fork the [Rust node repository](https://github.com/o1-labs/openmina)
 2. Edit the appropriate default peer list in `core/src/network.rs`:
    - For mainnet: Update the
      [`mainnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
@@ -129,7 +129,7 @@ When running a seed node:
 
 ### Community Resources
 
-- **GitHub Discussions**: Join discussions on the OpenMina repository
+- **GitHub Discussions**: Join discussions on the Mina Rust Node repository
 - **Discord**: Connect with the community on the
   [Mina Protocol Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
 - **Forums**: Participate in
@@ -139,8 +139,8 @@ When running a seed node:
 
 ### Custom Peer Lists
 
-While OpenMina uses default peers for initial connectivity, you can configure
-your node to use custom peer lists using command-line options:
+While the Mina Rust Node uses default peers for initial connectivity, you can
+configure your node to use custom peer lists using command-line options:
 
 #### Adding Individual Peers
 
@@ -195,7 +195,7 @@ on custom peer lists.
 
 Monitor your node's network connectivity through:
 
-- OpenMina's built-in dashboard
+- The Mina Rust Node's built-in dashboard
 - Peer connection metrics
 - Network synchronization status
 
