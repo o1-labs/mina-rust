@@ -1,11 +1,11 @@
 use std::{collections::BTreeSet, sync::Arc, time::Duration};
 
 use ledger::scan_state::transaction_logic::valid;
-use mina_p2p_messages::v2;
-use openmina_core::{
+use mina_core::{
     block::{AppliedBlock, ArcBlockWithHash},
     consensus::consensus_take,
 };
+use mina_p2p_messages::v2;
 use serde::{Deserialize, Serialize};
 
 use crate::account::AccountPublicKey;

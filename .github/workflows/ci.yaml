@@ -488,13 +488,13 @@ jobs:
 
       - name: Bootstrap node
         env:
-          OPENMINA_COMMAND: openmina
+          OPENMINA_COMMAND: mina
           NO_PEER_DISCOVERY: "true"
           OUT_PATH: ${{ env.OPENMINA_HOME }}/logs/bootstrap_output
           RECORD: state-with-input-actions
         run: |
           mkdir -p $OUT_PATH
-          PATH=$PATH:$(pwd) OPENMINA_COMMAND=openmina NO_PEER_DISCOVERY=true ./bootstrap --nocapture || {
+          PATH=$PATH:$(pwd) OPENMINA_COMMAND=mina NO_PEER_DISCOVERY=true ./bootstrap --nocapture || {
             echo "::group::Stderr"
             cat $OUT_PATH.stderr
             echo "::endgroup::"

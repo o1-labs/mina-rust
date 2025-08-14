@@ -213,7 +213,7 @@ pub fn event_source_effects<S: Service>(store: &mut Store<S>, action: EventSourc
                 P2pEvent::Channel(e) => match e {
                     P2pChannelEvent::Opened(peer_id, chan_id, res) => match res {
                         Err(err) => {
-                            openmina_core::log::warn!(meta.time(); kind = "P2pChannelEvent::Opened", peer_id = peer_id.to_string(), error = err);
+                            mina_core::log::warn!(meta.time(); kind = "P2pChannelEvent::Opened", peer_id = peer_id.to_string(), error = err);
                             // TODO(binier): dispatch error action.
                         }
                         Ok(_) => match chan_id {

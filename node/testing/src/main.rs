@@ -1,13 +1,13 @@
 use clap::Parser;
 
-use node::p2p::webrtc::Host;
-use openmina_node_testing::{
+use mina_node_testing::{
     cluster::{Cluster, ClusterConfig},
     exit_with_error,
     scenario::Scenario,
     scenarios::Scenarios,
     server, setup,
 };
+use node::p2p::webrtc::Host;
 
 pub type CommandError = anyhow::Error;
 
@@ -62,7 +62,7 @@ impl Command {
         let rt = setup();
         let _rt_guard = rt.enter();
 
-        let (shutdown_tx, shutdown_rx) = openmina_core::channels::oneshot::channel();
+        let (shutdown_tx, shutdown_rx) = mina_core::channels::oneshot::channel();
         let mut shutdown_tx = Some(shutdown_tx);
 
         ctrlc::set_handler(move || match shutdown_tx.take() {

@@ -8,7 +8,7 @@ use node::{
     transition_frontier::genesis::GenesisConfig,
 };
 
-use openmina_node_account::AccountPublicKey;
+use mina_node_account::AccountPublicKey;
 use reqwest::Url;
 
 use node::{
@@ -18,7 +18,7 @@ use node::{
     SnarkerStrategy,
 };
 
-use openmina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
+use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
 
 /// OpenMina node configuration and runtime options
 ///
@@ -296,7 +296,7 @@ impl Node {
 
         rayon::ThreadPoolBuilder::new()
             .num_threads(num_cpus::get().max(2) - 1)
-            .thread_name(|i| format!("openmina_rayon_{i}"))
+            .thread_name(|i| format!("mina_rayon_{i}"))
             .build_global()
             .context("failed to initialize threadpool")?;
 
@@ -410,7 +410,7 @@ impl Node {
 
         if let Some(producer_key_path) = self.producer_key {
             let password = &self.producer_key_password;
-            openmina_core::thread::spawn(|| {
+            mina_core::thread::spawn(|| {
                 node::core::info!(node::core::log::system_time(); summary = "loading provers index");
                 BlockProver::make(Some(block_verifier_index), Some(work_verifier_index));
                 node::core::info!(node::core::log::system_time(); summary = "loaded provers index");
@@ -468,7 +468,7 @@ impl Node {
             node_builder.snarker(sec_key, self.snarker_fee, self.snarker_strategy);
         }
 
-        openmina_core::set_work_dir(work_dir.clone().into());
+        mina_core::set_work_dir(work_dir.clone().into());
 
         node_builder
             .http_server(self.port)

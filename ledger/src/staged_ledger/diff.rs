@@ -1,4 +1,4 @@
-use openmina_core::constants::ConstraintConstants;
+use mina_core::constants::ConstraintConstants;
 
 use crate::{
     scan_state::{

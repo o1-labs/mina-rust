@@ -1,4 +1,4 @@
-use openmina_core::log::ActionEvent;
+use mina_core::log::ActionEvent;
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
@@ -22,7 +22,7 @@ use super::{
     ChannelId, ChannelMsg, MsgId,
 };
 
-#[derive(Serialize, Deserialize, Debug, Clone, openmina_core::ActionEvent)]
+#[derive(Serialize, Deserialize, Debug, Clone, mina_core::ActionEvent)]
 pub enum P2pChannelsAction {
     MessageReceived(P2pChannelsMessageReceivedAction),
     SignalingDiscovery(P2pChannelsSignalingDiscoveryAction),
@@ -35,7 +35,7 @@ pub enum P2pChannelsAction {
     StreamingRpc(P2pChannelsStreamingRpcAction),
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone, openmina_core::ActionEvent)]
+#[derive(Serialize, Deserialize, Debug, Clone, mina_core::ActionEvent)]
 pub enum P2pChannelsEffectfulAction {
     InitChannel {
         peer_id: PeerId,
@@ -130,7 +130,7 @@ impl From<P2pChannelsMessageReceivedAction> for crate::P2pAction {
 impl ActionEvent for P2pChannelsMessageReceivedAction {
     fn action_event<T>(&self, _context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
     }
 }

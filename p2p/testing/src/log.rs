@@ -1,6 +1,6 @@
 use std::{env, sync::atomic::AtomicBool};
 
-use openmina_core::log::inner::Level;
+use mina_core::log::inner::Level;
 use tracing::Subscriber;
 use tracing_subscriber::{layer::SubscriberExt, Layer};
 

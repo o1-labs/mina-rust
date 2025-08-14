@@ -40,8 +40,8 @@ vrf = { workspace = true }
 graphannis-malloc_size_of = { workspace = true }
 graphannis-malloc_size_of_derive = { workspace = true }
 
-openmina-core = { path = "../core" }
-openmina-node-account = { workspace = true }
+mina-core = { path = "../core" }
+mina-node-account = { workspace = true }
 p2p = { path = "../p2p" }
 postcard = { version = "1.0.9", features = ["use-std"] }
 snark = { path = "../snark" }

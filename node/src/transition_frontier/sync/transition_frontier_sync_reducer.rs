@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, VecDeque};
 
+use mina_core::block::{AppliedBlock, ArcBlockWithHash};
 use mina_p2p_messages::v2::StateHash;
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
 
 use super::{
     ledger::{

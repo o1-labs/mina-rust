@@ -12,8 +12,8 @@ use crate::{
     token, ConnectionAddr, Data, P2pLimits, P2pNetworkConnectionError, P2pNetworkSchedulerAction,
     P2pNetworkStreamProtobufError, P2pNetworkYamuxAction, P2pState, PeerId, YamuxFlags,
 };
+use mina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
 use multiaddr::Multiaddr;
-use openmina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
 use prost::Message;
 use quick_protobuf::BytesReader;
 use redux::{ActionWithMeta, Dispatcher};

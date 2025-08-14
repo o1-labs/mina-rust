@@ -18,7 +18,7 @@ pub fn vrf_evaluator(
 ) {
     while let Some(vrf_evaluator_input) = vrf_evaluation_receiver.blocking_recv() {
         // let bytes = serde_json::to_string(&vrf_evaluator_input).unwrap();
-        // openmina_core::http::download("vrf.json".to_string(), bytes.as_bytes().to_vec()).unwrap();
+        // mina_core::http::download("vrf.json".to_string(), bytes.as_bytes().to_vec()).unwrap();
 
         let keypair = &keypair;
         let VrfEvaluatorInput {
@@ -123,7 +123,7 @@ mod tests {
                 // let elapsed = now.elapsed();
                 // let slot = global_slot;
                 // eprintln!("vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} index:{index:?}");
-                // openmina_core::info!(openmina_core::log::system_time(); "vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} index:{index:?}");
+                // mina_core::info!(mina_core::log::system_time(); "vrf::evaluate_vrf: {elapsed:?} slot:{slot:?} index:{index:?}");
 
                 // nevaluated.fetch_add(1, std::sync::atomic::Ordering::AcqRel);
 

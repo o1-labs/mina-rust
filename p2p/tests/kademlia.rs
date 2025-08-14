@@ -1,4 +1,4 @@
-use openmina_core::Substate;
+use mina_core::Substate;
 use p2p::{
     identity::SecretKey, P2pAction, P2pNetworkAction, P2pNetworkKadAction, P2pNetworkKadBucket,
     P2pNetworkKademliaAction, P2pNetworkKademliaRpcReply, P2pNetworkKademliaStreamAction, P2pState,
@@ -398,7 +398,7 @@ fn bad_node_reducer(
                     Substate::new(state, dispatcher),
                     meta.with_action(action.clone()),
                 ) {
-                    openmina_core::warn!(time; "error = {error}");
+                    mina_core::warn!(time; "error = {error}");
                 }
             }
             Action::Idle(_) | Action::P2pEffectful(_) => {}

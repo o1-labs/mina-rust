@@ -99,7 +99,7 @@ impl<T: P2pServiceWebrtcWithLibp2p> P2pConnectionService for T {
                     Host::Ipv4(ip4) => ip4.into(),
                     Host::Ipv6(ip6) => ip6.into(),
                     host => {
-                        openmina_core::error!(openmina_core::log::system_time(); "unsupported host for internal libp2p: {host}");
+                        mina_core::error!(mina_core::log::system_time(); "unsupported host for internal libp2p: {host}");
                         return;
                     }
                 };
@@ -212,7 +212,7 @@ where
 
 impl P2pServiceCtx {
     pub fn mocked(sec_key: SecretKey) -> Self {
-        use openmina_core::channels::mpsc;
+        use mina_core::channels::mpsc;
         Self {
             sec_key: sec_key.clone(),
             #[cfg(feature = "p2p-libp2p")]

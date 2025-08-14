@@ -1,4 +1,4 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use p2p::{
     channels::{
         rpc::{P2pRpcId, P2pRpcRequest, P2pRpcResponse},

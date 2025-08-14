@@ -1,6 +1,6 @@
 use super::{super::*, *};
 use crate::{Data, P2pState, PeerId};
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

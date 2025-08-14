@@ -10,6 +10,11 @@ use ledger::{
     transaction_pool::{diff, ValidCommandWithHash},
     Account, AccountId,
 };
+use mina_core::{
+    block::{AppliedBlock, ArcBlockWithHash},
+    consensus::{ConsensusConstants, ConsensusTime},
+};
+use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::{
     bigint::BigInt,
     v2::{
@@ -20,11 +25,6 @@ use mina_p2p_messages::{
         TransactionSnarkWorkTStableV2,
     },
 };
-use openmina_core::{
-    block::{AppliedBlock, ArcBlockWithHash},
-    consensus::{ConsensusConstants, ConsensusTime},
-};
-use openmina_node_account::AccountPublicKey;
 use p2p::bootstrap::P2pNetworkKadBootstrapStats;
 pub use rpc_state::*;
 
@@ -39,11 +39,11 @@ mod rpc_impls;
 mod heartbeat;
 pub use heartbeat::{NodeHeartbeat, ProducedBlockInfo, SignedNodeHeartbeat};
 
-pub use openmina_core::requests::{RpcId, RpcIdType};
+pub use mina_core::requests::{RpcId, RpcIdType};
 
 use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
+use mina_core::snark::SnarkJobId;
 use mina_p2p_messages::v2::{CurrencyFeeStableV1, NonZeroCurvePoint};
-use openmina_core::snark::SnarkJobId;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 

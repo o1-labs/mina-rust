@@ -54,10 +54,10 @@
 //! ## Example
 //!
 //! ```rust
-//! use openmina_core::ChainId;
+//! use mina_core::ChainId;
 //!
 //! // Use predefined network
-//! let mainnet_id = openmina_core::MAINNET_CHAIN_ID;
+//! let mainnet_id = mina_core::MAINNET_CHAIN_ID;
 //! println!("Mainnet ID: {}", mainnet_id);
 //!
 //! // Parse from hex string
@@ -133,7 +133,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// ## Example Usage
 ///
 /// ```rust
-/// use openmina_core::{ChainId, MAINNET_CHAIN_ID};
+/// use mina_core::{ChainId, MAINNET_CHAIN_ID};
 ///
 /// // Use predefined mainnet ID
 /// let mainnet = MAINNET_CHAIN_ID;
@@ -218,7 +218,7 @@ impl ChainId {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_core::ChainId;
+    /// use mina_core::ChainId;
     /// use mina_p2p_messages::v2::UnsignedExtendedUInt32StableV1;
     ///
     /// let chain_id = ChainId::compute(
@@ -284,7 +284,7 @@ impl ChainId {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_core::MAINNET_CHAIN_ID;
+    /// use mina_core::MAINNET_CHAIN_ID;
     ///
     /// let psk = MAINNET_CHAIN_ID.preshared_key();
     /// // Use psk to configure libp2p Pnet transport
@@ -312,7 +312,7 @@ impl ChainId {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_core::MAINNET_CHAIN_ID;
+    /// use mina_core::MAINNET_CHAIN_ID;
     ///
     /// let hex_id = MAINNET_CHAIN_ID.to_hex();
     /// assert_eq!(hex_id.len(), 64);
@@ -347,7 +347,7 @@ impl ChainId {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_core::ChainId;
+    /// use mina_core::ChainId;
     ///
     /// let chain_id = ChainId::from_hex(
     ///     "a7351abc7ddf2ea92d1b38cc8e636c271c1dfd2c081c637f62ebc2af34eb7cc1"
@@ -382,7 +382,7 @@ impl ChainId {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_core::ChainId;
+    /// use mina_core::ChainId;
     ///
     /// let bytes = [0u8; 32]; // All zeros for testing
     /// let chain_id = ChainId::from_bytes(&bytes);
@@ -464,7 +464,7 @@ impl Debug for ChainId {
 /// # Usage
 ///
 /// ```rust
-/// use openmina_core::DEVNET_CHAIN_ID;
+/// use mina_core::DEVNET_CHAIN_ID;
 ///
 /// println!("Devnet ID: {}", DEVNET_CHAIN_ID.to_hex());
 /// let psk = DEVNET_CHAIN_ID.preshared_key();
@@ -497,7 +497,7 @@ pub const DEVNET_CHAIN_ID: ChainId = ChainId([
 /// # Usage
 ///
 /// ```rust
-/// use openmina_core::MAINNET_CHAIN_ID;
+/// use mina_core::MAINNET_CHAIN_ID;
 ///
 /// println!("Mainnet ID: {}", MAINNET_CHAIN_ID.to_hex());
 /// let psk = MAINNET_CHAIN_ID.preshared_key();

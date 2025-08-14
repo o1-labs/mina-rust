@@ -49,8 +49,8 @@ pub fn fetch_blocking(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
         return std::fs::read(path);
     }
 
-    openmina_core::info!(
-        openmina_core::log::system_time();
+    mina_core::info!(
+        mina_core::log::system_time();
         kind = "ledger proofs",
         message = "circuit-blobs not found locally, so fetching it...",
         filename = filename.as_ref().to_str().unwrap(),
@@ -66,8 +66,8 @@ pub fn fetch_blocking(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
 
     // cache it to home dir.
     let cache_path = base_dir.join(filename);
-    openmina_core::info!(
-        openmina_core::log::system_time();
+    mina_core::info!(
+        mina_core::log::system_time();
         kind = "ledger proofs",
         message = "caching circuit-blobs",
         path = cache_path.to_str().unwrap(),
@@ -83,7 +83,7 @@ pub async fn fetch(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
     let prefix =
         option_env!("CIRCUIT_BLOBS_HTTP_PREFIX").unwrap_or("/assets/webnode/circuit-blobs");
     let url = format!("{prefix}/{}", filename.as_ref().to_str().unwrap());
-    openmina_core::http::get_bytes(&url).await
+    mina_core::http::get_bytes(&url).await
     // http::get_bytes(&git_release_url(filename)).await
 }
 
@@ -92,5 +92,5 @@ pub fn fetch_blocking(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
     let prefix =
         option_env!("CIRCUIT_BLOBS_HTTP_PREFIX").unwrap_or("/assets/webnode/circuit-blobs");
     let url = format!("{prefix}/{}", filename.as_ref().to_str().unwrap());
-    openmina_core::http::get_bytes_blocking(&url)
+    mina_core::http::get_bytes_blocking(&url)
 }

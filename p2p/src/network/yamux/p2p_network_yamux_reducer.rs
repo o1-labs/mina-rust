@@ -1,6 +1,6 @@
 use std::collections::VecDeque;
 
-use openmina_core::{bug_condition, fuzz_maybe, fuzzed_maybe, Substate, SubstateAccess};
+use mina_core::{bug_condition, fuzz_maybe, fuzzed_maybe, Substate, SubstateAccess};
 
 use crate::{
     yamux::p2p_network_yamux_state::{YamuxFrame, YamuxFrameInner},

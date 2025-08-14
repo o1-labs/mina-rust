@@ -1,4 +1,4 @@
-use openmina_core::snark::Snark;
+use mina_core::snark::Snark;
 use redux::Timestamp;
 
 use super::{

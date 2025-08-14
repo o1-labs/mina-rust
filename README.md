@@ -58,12 +58,17 @@ network connectivity, block production, SNARK generation, and debugging tools.
 
 This repository contains the complete Mina Rust Node implementation:
 
-- **[node/](node)** - Core node business logic and state machine
-- **[p2p/](p2p)** - Networking layer (libp2p + WebRTC)
-- **[ledger/](ledger)** - Ledger implementation and transaction processing
-- **[snark/](snark)** - SNARK proof verification
-- **[cli/](cli)** - Command-line interface
-- **[frontend/](frontend)** - Web-based node dashboard
+- [core/](core) - Provides basic types needed to be shared across different
+  components of the node.
+- [ledger/](ledger) - Mina ledger implementation in Rust.
+- [snark/](snark) - Snark/Proof verification.
+- [p2p/](p2p) - P2p implementation for Mina node.
+- [node/](node) - Combines all the business logic of the node.
+  - [native/](node/native) - OS specific pieces of the node, which is used to
+    run the node natively (Linux/Mac/Windows).
+  - [testing/](node/testing) - Testing framework for Mina node.
+- [cli/](cli) - Mina CLI.
+- [frontend/](frontend) - OpenMina frontend.
 
 **[Learn more about the architecture →](https://o1-labs.github.io/openmina/docs/developers/getting-started)**
 

@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use binprot::BinProtRead;
+use mina_core::{bug_condition, error, fuzz_maybe, fuzzed_maybe, Substate};
 use mina_p2p_messages::{
     rpc,
     rpc_kernel::{
@@ -10,7 +11,6 @@ use mina_p2p_messages::{
     v2,
     versioned::Ver,
 };
-use openmina_core::{bug_condition, error, fuzz_maybe, fuzzed_maybe, Substate};
 use redux::Dispatcher;
 
 use crate::{

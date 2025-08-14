@@ -4,7 +4,7 @@ pub use ledger_read_actions::*;
 
 mod ledger_read_state;
 pub use ledger_read_state::*;
-use openmina_core::{
+use mina_core::{
     block::AppliedBlock,
     requests::{RequestId, RpcId, RpcIdType},
 };

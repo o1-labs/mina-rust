@@ -1698,14 +1698,14 @@ dependencies = [
  "dialoguer",
  "hex",
  "libp2p-identity",
+ "mina-core",
+ "mina-node-account",
+ "mina-node-native",
  "mina-p2p-messages",
  "mina-tree",
  "nix 0.26.4",
  "node",
  "num_cpus",
- "openmina-core",
- "openmina-node-account",
- "openmina-node-native",
  "rand",
  "rayon",
  "redux",
@@ -3610,9 +3610,9 @@ dependencies = [
  "dotenv",
  "firestore",
  "gcloud-sdk",
+ "mina-core",
  "mina-p2p-messages",
  "mina-tree",
- "openmina-core",
  "serde",
  "serde_json",
  "snark",
@@ -5090,12 +5090,120 @@ dependencies = [
 ]
 
 [[package]]
+name = "mina-archive-breadcrumb-compare"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "binprot",
+ "clap 4.5.20",
+ "mina-p2p-messages",
+ "reqwest 0.11.24",
+ "serde",
+ "serde_json",
+ "similar",
+ "tokio",
+]
+
+[[package]]
+name = "mina-bootstrap-sandbox"
+version = "0.16.0"
+dependencies = [
+ "base64 0.22.0",
+ "binprot",
+ "bs58 0.5.0",
+ "env_logger",
+ "libp2p",
+ "libp2p-rpc-behaviour",
+ "log",
+ "mina-core",
+ "mina-curves",
+ "mina-p2p-messages",
+ "mina-signer",
+ "mina-transport",
+ "mina-tree",
+ "rand",
+ "serde",
+ "serde_json",
+ "structopt",
+ "thiserror 1.0.60",
+ "tokio",
+]
+
+[[package]]
+name = "mina-core"
+version = "0.16.0"
+dependencies = [
+ "argon2",
+ "ark-ff",
+ "base64 0.22.0",
+ "binprot",
+ "binprot_derive",
+ "bs58 0.4.0",
+ "crypto_secretbox",
+ "flume",
+ "graphannis-malloc_size_of",
+ "graphannis-malloc_size_of_derive",
+ "hex",
+ "js-sys",
+ "lazy_static",
+ "libp2p-identity",
+ "md5",
+ "mina-curves",
+ "mina-fuzzer",
+ "mina-hasher",
+ "mina-macros",
+ "mina-p2p-messages",
+ "multihash 0.18.1",
+ "once_cell",
+ "poseidon",
+ "rand",
+ "redux",
+ "serde",
+ "serde_json",
+ "sha2 0.10.8",
+ "slab",
+ "thiserror 1.0.60",
+ "time",
+ "tokio",
+ "tracing",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "wasm_thread",
+ "web-sys",
+]
+
+[[package]]
 name = "mina-curves"
 version = "0.1.0"
 source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
 dependencies = [
  "ark-ec",
  "ark-ff",
+]
+
+[[package]]
+name = "mina-fuzzer"
+version = "0.16.0"
+dependencies = [
+ "lazy_static",
+ "rand",
+ "rand_distr",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "mina-gossipsub-sandbox"
+version = "0.16.0"
+dependencies = [
+ "bs58 0.5.0",
+ "env_logger",
+ "libp2p",
+ "log",
+ "mina-transport",
+ "rand",
+ "structopt",
+ "tokio",
 ]
 
 [[package]]
@@ -5109,6 +5217,208 @@ dependencies = [
  "mina-poseidon",
  "o1-utils",
  "serde",
+]
+
+[[package]]
+name = "mina-macros"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "mina-core",
+ "proc-macro2 1.0.95",
+ "quote 1.0.35",
+ "rust-format",
+ "syn 2.0.96",
+ "tracing",
+]
+
+[[package]]
+name = "mina-node-account"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "bs58 0.4.0",
+ "hex",
+ "lazy_static",
+ "mina-core",
+ "mina-hasher",
+ "mina-p2p-messages",
+ "mina-signer",
+ "rand",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.60",
+]
+
+[[package]]
+name = "mina-node-common"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "ark-ff",
+ "aws-config",
+ "aws-sdk-s3",
+ "binprot",
+ "binprot_derive",
+ "bitflags 2.8.0",
+ "gloo-timers",
+ "gloo-utils",
+ "google-cloud-auth",
+ "google-cloud-storage",
+ "jsonpath-rust",
+ "libp2p-identity",
+ "mina-core",
+ "mina-p2p-messages",
+ "mina-signer",
+ "mina-tree",
+ "mio 1.0.3",
+ "node",
+ "rand",
+ "rayon",
+ "redux",
+ "reqwest 0.12.12",
+ "rsa",
+ "serde",
+ "serde_json",
+ "sha3",
+ "thiserror 1.0.60",
+ "tokio",
+ "tracing",
+ "tracing-appender",
+ "tracing-subscriber",
+ "tracing-wasm",
+ "vrf",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+]
+
+[[package]]
+name = "mina-node-invariants"
+version = "0.16.0"
+dependencies = [
+ "documented",
+ "lazy_static",
+ "node",
+ "redux",
+ "serde",
+ "serde_json",
+ "strum 0.26.2",
+ "strum_macros 0.26.4",
+]
+
+[[package]]
+name = "mina-node-native"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "bs58 0.4.0",
+ "bytes",
+ "dataloader",
+ "derive_more",
+ "getrandom",
+ "hex",
+ "jsonpath-rust",
+ "juniper",
+ "juniper_warp",
+ "libp2p-identity",
+ "mina-core",
+ "mina-node-common",
+ "mina-p2p-messages",
+ "mina-producer-dashboard",
+ "mina-signer",
+ "mina-tree",
+ "nix 0.26.4",
+ "node",
+ "o1-utils",
+ "rand",
+ "rayon",
+ "redux",
+ "reqwest 0.11.24",
+ "serde",
+ "serde_json",
+ "sha3",
+ "strum 0.26.2",
+ "strum_macros 0.26.4",
+ "thiserror 1.0.60",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "vrf",
+ "warp",
+]
+
+[[package]]
+name = "mina-node-testing"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "axum",
+ "base64 0.22.0",
+ "bs58 0.4.0",
+ "clap 4.5.20",
+ "console",
+ "ctrlc",
+ "derive_more",
+ "documented",
+ "hex",
+ "lazy_static",
+ "libp2p",
+ "libp2p-identity",
+ "mina-core",
+ "mina-node-invariants",
+ "mina-node-native",
+ "mina-p2p-messages",
+ "mina-tree",
+ "multiaddr",
+ "multihash 0.18.1",
+ "nix 0.27.1",
+ "node",
+ "num_cpus",
+ "postcard",
+ "rand",
+ "rayon",
+ "redux",
+ "reqwest 0.11.24",
+ "serde",
+ "serde_json",
+ "strum 0.26.2",
+ "strum_macros 0.26.4",
+ "temp-dir",
+ "thiserror 1.0.60",
+ "time",
+ "tokio",
+ "tower-http",
+ "tracing",
+ "tracing-log",
+ "vrf",
+]
+
+[[package]]
+name = "mina-node-web"
+version = "0.16.0"
+dependencies = [
+ "anyhow",
+ "bytes",
+ "console_error_panic_hook",
+ "derive_more",
+ "gloo-utils",
+ "js-sys",
+ "jsonpath-rust",
+ "libp2p-identity",
+ "mina-node-common",
+ "mina-p2p-messages",
+ "mina-signer",
+ "mina-tree",
+ "node",
+ "rand",
+ "rayon",
+ "redux",
+ "serde",
+ "serde_json",
+ "thiserror 1.0.60",
+ "vrf",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
 ]
 
 [[package]]
@@ -5132,10 +5442,10 @@ dependencies = [
  "lazy_static",
  "mina-curves",
  "mina-hasher",
+ "mina-macros",
  "mina-signer",
  "num-bigint",
  "o1-utils",
- "openmina-macros",
  "poseidon",
  "rsexp",
  "rsexp-derive",
@@ -5168,6 +5478,30 @@ dependencies = [
  "rayon",
  "serde",
  "serde_with 1.14.0",
+]
+
+[[package]]
+name = "mina-producer-dashboard"
+version = "0.16.0"
+dependencies = [
+ "bincode",
+ "clap 4.5.20",
+ "dotenvy",
+ "graphql_client",
+ "mina-node-account",
+ "mina-p2p-messages",
+ "num-bigint",
+ "num-traits",
+ "reqwest 0.11.24",
+ "serde",
+ "serde_json",
+ "sled",
+ "sqlx",
+ "thiserror 1.0.60",
+ "time",
+ "tokio",
+ "vrf",
+ "warp",
 ]
 
 [[package]]
@@ -5224,8 +5558,10 @@ dependencies = [
  "kimchi",
  "lazy_static",
  "libc",
+ "mina-core",
  "mina-curves",
  "mina-hasher",
+ "mina-macros",
  "mina-p2p-messages",
  "mina-poseidon",
  "mina-signer",
@@ -5233,8 +5569,6 @@ dependencies = [
  "o1-utils",
  "ocaml-interop",
  "once_cell",
- "openmina-core",
- "openmina-macros",
  "poly-commitment",
  "poseidon",
  "postcard",
@@ -5575,15 +5909,15 @@ dependencies = [
  "hex",
  "lazy_static",
  "linkme",
+ "mina-core",
  "mina-curves",
  "mina-hasher",
+ "mina-node-account",
  "mina-p2p-messages",
  "mina-signer",
  "mina-tree",
  "multihash 0.18.1",
  "num_enum 0.5.11",
- "openmina-core",
- "openmina-node-account",
  "p2p",
  "poseidon",
  "postcard",
@@ -5934,340 +6268,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "624a8340c38c1b80fd549087862da4ba43e08858af025b236e509b6649fc13d5"
 
 [[package]]
-name = "openmina-archive-breadcrumb-compare"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "binprot",
- "clap 4.5.20",
- "mina-p2p-messages",
- "reqwest 0.11.24",
- "serde",
- "serde_json",
- "similar",
- "tokio",
-]
-
-[[package]]
-name = "openmina-bootstrap-sandbox"
-version = "0.16.0"
-dependencies = [
- "base64 0.22.0",
- "binprot",
- "bs58 0.5.0",
- "env_logger",
- "libp2p",
- "libp2p-rpc-behaviour",
- "log",
- "mina-curves",
- "mina-p2p-messages",
- "mina-signer",
- "mina-transport",
- "mina-tree",
- "openmina-core",
- "rand",
- "serde",
- "serde_json",
- "structopt",
- "thiserror 1.0.60",
- "tokio",
-]
-
-[[package]]
-name = "openmina-core"
-version = "0.16.0"
-dependencies = [
- "argon2",
- "ark-ff",
- "base64 0.22.0",
- "binprot",
- "binprot_derive",
- "bs58 0.4.0",
- "crypto_secretbox",
- "flume",
- "graphannis-malloc_size_of",
- "graphannis-malloc_size_of_derive",
- "hex",
- "js-sys",
- "lazy_static",
- "libp2p-identity",
- "md5",
- "mina-curves",
- "mina-hasher",
- "mina-p2p-messages",
- "multihash 0.18.1",
- "once_cell",
- "openmina-fuzzer",
- "openmina-macros",
- "poseidon",
- "rand",
- "redux",
- "serde",
- "serde_json",
- "sha2 0.10.8",
- "slab",
- "thiserror 1.0.60",
- "time",
- "tokio",
- "tracing",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "wasm_thread",
- "web-sys",
-]
-
-[[package]]
-name = "openmina-fuzzer"
-version = "0.16.0"
-dependencies = [
- "lazy_static",
- "rand",
- "rand_distr",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "openmina-gossipsub-sandbox"
-version = "0.16.0"
-dependencies = [
- "bs58 0.5.0",
- "env_logger",
- "libp2p",
- "log",
- "mina-transport",
- "rand",
- "structopt",
- "tokio",
-]
-
-[[package]]
-name = "openmina-macros"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "openmina-core",
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "rust-format",
- "syn 2.0.96",
- "tracing",
-]
-
-[[package]]
-name = "openmina-node-account"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "bs58 0.4.0",
- "hex",
- "lazy_static",
- "mina-hasher",
- "mina-p2p-messages",
- "mina-signer",
- "openmina-core",
- "rand",
- "serde",
- "serde_json",
- "thiserror 1.0.60",
-]
-
-[[package]]
-name = "openmina-node-common"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "ark-ff",
- "aws-config",
- "aws-sdk-s3",
- "binprot",
- "binprot_derive",
- "bitflags 2.8.0",
- "gloo-timers",
- "gloo-utils",
- "google-cloud-auth",
- "google-cloud-storage",
- "jsonpath-rust",
- "libp2p-identity",
- "mina-p2p-messages",
- "mina-signer",
- "mina-tree",
- "mio 1.0.3",
- "node",
- "openmina-core",
- "rand",
- "rayon",
- "redux",
- "reqwest 0.12.12",
- "rsa",
- "serde",
- "serde_json",
- "sha3",
- "thiserror 1.0.60",
- "tokio",
- "tracing",
- "tracing-appender",
- "tracing-subscriber",
- "tracing-wasm",
- "vrf",
- "wasm-bindgen",
- "wasm-bindgen-futures",
-]
-
-[[package]]
-name = "openmina-node-invariants"
-version = "0.16.0"
-dependencies = [
- "documented",
- "lazy_static",
- "node",
- "redux",
- "serde",
- "serde_json",
- "strum 0.26.2",
- "strum_macros 0.26.4",
-]
-
-[[package]]
-name = "openmina-node-native"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "bs58 0.4.0",
- "bytes",
- "dataloader",
- "derive_more",
- "getrandom",
- "hex",
- "jsonpath-rust",
- "juniper",
- "juniper_warp",
- "libp2p-identity",
- "mina-p2p-messages",
- "mina-signer",
- "mina-tree",
- "nix 0.26.4",
- "node",
- "o1-utils",
- "openmina-core",
- "openmina-node-common",
- "openmina-producer-dashboard",
- "rand",
- "rayon",
- "redux",
- "reqwest 0.11.24",
- "serde",
- "serde_json",
- "sha3",
- "strum 0.26.2",
- "strum_macros 0.26.4",
- "thiserror 1.0.60",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "vrf",
- "warp",
-]
-
-[[package]]
-name = "openmina-node-testing"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "axum",
- "base64 0.22.0",
- "bs58 0.4.0",
- "clap 4.5.20",
- "console",
- "ctrlc",
- "derive_more",
- "documented",
- "hex",
- "lazy_static",
- "libp2p",
- "libp2p-identity",
- "mina-p2p-messages",
- "mina-tree",
- "multiaddr",
- "multihash 0.18.1",
- "nix 0.27.1",
- "node",
- "num_cpus",
- "openmina-core",
- "openmina-node-invariants",
- "openmina-node-native",
- "postcard",
- "rand",
- "rayon",
- "redux",
- "reqwest 0.11.24",
- "serde",
- "serde_json",
- "strum 0.26.2",
- "strum_macros 0.26.4",
- "temp-dir",
- "thiserror 1.0.60",
- "time",
- "tokio",
- "tower-http",
- "tracing",
- "tracing-log",
- "vrf",
-]
-
-[[package]]
-name = "openmina-node-web"
-version = "0.16.0"
-dependencies = [
- "anyhow",
- "bytes",
- "console_error_panic_hook",
- "derive_more",
- "gloo-utils",
- "js-sys",
- "jsonpath-rust",
- "libp2p-identity",
- "mina-p2p-messages",
- "mina-signer",
- "mina-tree",
- "node",
- "openmina-node-common",
- "rand",
- "rayon",
- "redux",
- "serde",
- "serde_json",
- "thiserror 1.0.60",
- "vrf",
- "wasm-bindgen",
- "wasm-bindgen-futures",
-]
-
-[[package]]
-name = "openmina-producer-dashboard"
-version = "0.16.0"
-dependencies = [
- "bincode",
- "clap 4.5.20",
- "dotenvy",
- "graphql_client",
- "mina-p2p-messages",
- "num-bigint",
- "num-traits",
- "openmina-node-account",
- "reqwest 0.11.24",
- "serde",
- "serde_json",
- "sled",
- "sqlx",
- "thiserror 1.0.60",
- "time",
- "tokio",
- "vrf",
- "warp",
-]
-
-[[package]]
 name = "openssl"
 version = "0.10.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6405,13 +6405,13 @@ dependencies = [
  "libc",
  "libp2p-identity",
  "local-ip-address",
+ "mina-core",
+ "mina-fuzzer",
+ "mina-macros",
  "mina-p2p-messages",
  "mio 1.0.3",
  "multiaddr",
  "multihash 0.18.1",
- "openmina-core",
- "openmina-fuzzer",
- "openmina-macros",
  "p2p-testing",
  "prost 0.12.4",
  "prost-build",
@@ -6451,8 +6451,8 @@ dependencies = [
  "libp2p",
  "libp2p-identity",
  "libp2p-rpc-behaviour",
+ "mina-core",
  "mina-p2p-messages",
- "openmina-core",
  "p2p",
  "pin-project-lite",
  "rand",
@@ -7514,9 +7514,9 @@ checksum = "c08c74e62047bb2de4ff487b251e4a92e24f48745648451635cec7d591162d9f"
 name = "replay_dynamic_effects"
 version = "0.16.0"
 dependencies = [
+ "mina-node-invariants",
+ "mina-node-native",
  "node",
- "openmina-node-invariants",
- "openmina-node-native",
 ]
 
 [[package]]
@@ -8557,6 +8557,7 @@ dependencies = [
  "hex",
  "kimchi",
  "linkme",
+ "mina-core",
  "mina-curves",
  "mina-hasher",
  "mina-p2p-messages",
@@ -8566,7 +8567,6 @@ dependencies = [
  "num-bigint",
  "o1-utils",
  "once_cell",
- "openmina-core",
  "poly-commitment",
  "poseidon",
  "rand",
@@ -9705,6 +9705,7 @@ dependencies = [
  "itertools 0.12.0",
  "leb128",
  "md5",
+ "mina-core",
  "mina-curves",
  "mina-hasher",
  "mina-p2p-messages",
@@ -9714,7 +9715,6 @@ dependencies = [
  "num-bigint",
  "object 0.37.1",
  "once_cell",
- "openmina-core",
  "poseidon",
  "rand",
  "ring_buffer",
@@ -10091,12 +10091,12 @@ dependencies = [
  "itertools 0.12.0",
  "mina-curves",
  "mina-hasher",
+ "mina-node-account",
  "mina-p2p-messages",
  "mina-signer",
  "mina-tree",
  "num",
  "o1-utils",
- "openmina-node-account",
  "poseidon",
  "rand",
  "redux",

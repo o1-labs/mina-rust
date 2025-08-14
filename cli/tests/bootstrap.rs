@@ -8,8 +8,8 @@ use std::{
 };
 
 use clap::Parser;
+use mina_core::log::system_time;
 use node::stats::sync::{SyncSnarkedLedger, SyncStagedLedger, SyncStatsSnapshot};
-use openmina_core::log::system_time;
 use redux::Timestamp;
 
 #[test]

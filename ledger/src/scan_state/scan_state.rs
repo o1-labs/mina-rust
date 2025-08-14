@@ -4,6 +4,7 @@ use blake2::{
     digest::{generic_array::GenericArray, typenum::U32},
     Digest,
 };
+use mina_core::{constants::ConstraintConstants, snark::SnarkJobId};
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot,
@@ -14,7 +15,6 @@ use mina_p2p_messages::{
     },
 };
 use mina_signer::CompressedPubKey;
-use openmina_core::{constants::ConstraintConstants, snark::SnarkJobId};
 use sha2::Sha256;
 
 use crate::{
@@ -548,10 +548,10 @@ pub mod transaction_snark {
 
         pub type Checked = Work;
 
-        impl TryFrom<&openmina_core::snark::Snark> for Work {
+        impl TryFrom<&mina_core::snark::Snark> for Work {
             type Error = InvalidBigInt;
 
-            fn try_from(value: &openmina_core::snark::Snark) -> Result<Self, Self::Error> {
+            fn try_from(value: &mina_core::snark::Snark) -> Result<Self, Self::Error> {
                 Ok(Self {
                     prover: (&value.snarker).try_into()?,
                     fee: (&value.fee).into(),

@@ -1,5 +1,5 @@
+use mina_core::ChainId;
 use multiaddr::Multiaddr;
-use openmina_core::ChainId;
 use serde::{Deserialize, Serialize};
 
 use crate::{identity::PublicKey, PeerId};

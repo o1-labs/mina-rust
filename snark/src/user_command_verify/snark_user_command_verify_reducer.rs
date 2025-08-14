@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, Substate, SubstateAccess};
+use mina_core::{bug_condition, Substate, SubstateAccess};
 use redux::EnablingCondition;
 
 use crate::user_command_verify_effectful::SnarkUserCommandVerifyEffectfulAction;

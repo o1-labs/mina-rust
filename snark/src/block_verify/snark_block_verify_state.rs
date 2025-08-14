@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 
-use openmina_core::{block::BlockHash, requests::PendingRequests};
+use mina_core::{block::BlockHash, requests::PendingRequests};
 
 use crate::{BlockVerifier, VerifierSRS};
 

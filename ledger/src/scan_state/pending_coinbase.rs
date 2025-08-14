@@ -21,9 +21,9 @@
 use std::{collections::HashMap, fmt::Write, marker::PhantomData};
 
 use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use mina_core::constants::constraint_constants;
 use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::constraint_constants;
 use poseidon::hash::{
     hash_noinputs, hash_with_kimchi,
     params::{

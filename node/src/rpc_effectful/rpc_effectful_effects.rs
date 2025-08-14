@@ -34,10 +34,10 @@ use ledger::{
     Account,
 };
 use malloc_size_of::{MallocSizeOf, MallocSizeOfOps};
+use mina_core::{block::ArcBlockWithHash, bug_condition};
+use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::{rpc_kernel::QueryHeader, v2};
 use mina_signer::CompressedPubKey;
-use openmina_core::{block::ArcBlockWithHash, bug_condition};
-use openmina_node_account::AccountPublicKey;
 use p2p::channels::streaming_rpc::{
     staged_ledger_parts::calc_total_pieces_to_transfer, P2pStreamingRpcReceiveProgress,
 };
@@ -46,7 +46,7 @@ use redux::ActionWithMeta;
 macro_rules! respond_or_log {
     ($e:expr, $t:expr) => {
         if let Err(err) = $e {
-            openmina_core::log::warn!($t; "Failed to respond: {err}");
+            mina_core::log::warn!($t; "Failed to respond: {err}");
         }
     };
 }
@@ -606,7 +606,7 @@ pub fn rpc_effects<S: Service>(store: &mut Store<S>, action: ActionWithMeta<RpcE
             //             ))
             //         }
             //     });
-            // openmina_core::log::debug!(meta.time(); summary = "readiness check", result = format!("{synced:?}"));
+            // mina_core::log::debug!(meta.time(); summary = "readiness check", result = format!("{synced:?}"));
             respond_or_log!(
                 store.service().respond_readiness_check(rpc_id, synced),
                 meta.time()

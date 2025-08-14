@@ -1,6 +1,6 @@
 use chacha20poly1305::{aead::generic_array::GenericArray, AeadInPlace, ChaCha20Poly1305, KeyInit};
 use crypto_bigint::consts::U12;
-use openmina_core::{bug_condition, fuzzed_maybe, Substate};
+use mina_core::{bug_condition, fuzzed_maybe, Substate};
 
 use crate::{
     connection::incoming::{P2pConnectionIncomingAction, P2pConnectionIncomingState},

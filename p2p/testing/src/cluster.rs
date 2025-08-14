@@ -8,7 +8,7 @@ use std::{
 
 use futures::StreamExt;
 use libp2p::{multiaddr::multiaddr, swarm::DialError, Multiaddr};
-use openmina_core::{channels::mpsc, ChainId, Substate, DEVNET_CHAIN_ID};
+use mina_core::{channels::mpsc, ChainId, Substate, DEVNET_CHAIN_ID};
 use p2p::{
     connection::outgoing::{
         P2pConnectionOutgoingAction, P2pConnectionOutgoingInitLibp2pOpts,
@@ -163,7 +163,7 @@ impl ClusterBuilder {
         let last_idle_instant = idle_interval.tick().await.into_std();
         let is_error = self.is_error;
         let total_duration = self.total_duration;
-        openmina_core::info!(openmina_core::log::system_time(); "starting the cluster");
+        mina_core::info!(mina_core::log::system_time(); "starting the cluster");
         let next_poll = Default::default();
         Ok(Cluster {
             chain_id,
@@ -397,7 +397,7 @@ impl Cluster {
                 };
 
                 if let Err(error) = result {
-                    openmina_core::warn!(time; "error = {error}");
+                    mina_core::warn!(time; "error = {error}");
                 }
             }),
             override_fn.unwrap_or(|store, action| {

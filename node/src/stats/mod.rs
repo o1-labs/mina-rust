@@ -16,7 +16,7 @@ pub mod block_producer {
 }
 use block_producer::BlockProducerStats;
 
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
+use mina_core::block::{AppliedBlock, ArcBlockWithHash};
 use redux::{ActionMeta, ActionWithMeta, Timestamp};
 
 use crate::{

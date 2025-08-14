@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use mina_p2p_messages::{binprot::BinProtRead, v2::PicklesProofProofsVerifiedMaxStableV2};
 
-pub use openmina_core::dummy::*;
+pub use mina_core::dummy::*;
 
 #[cfg(any(test, feature = "fuzzing"))]
 use crate::VerificationKey;

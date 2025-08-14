@@ -5,12 +5,12 @@ use crate::{
 use ledger::{
     dummy::dummy_blockchain_proof, scan_state::transaction_logic::local_state::LocalState,
 };
-use mina_p2p_messages::v2;
-use openmina_core::{
+use mina_core::{
     block::{genesis::genesis_and_negative_one_protocol_states, BlockWithHash},
     constants::PROTOCOL_VERSION,
     error,
 };
+use mina_p2p_messages::v2;
 use p2p::P2pInitializeAction;
 
 use super::{
@@ -104,9 +104,9 @@ impl TransitionFrontierGenesisState {
                         error!(meta.time(); "incorrect state: {:?}", global_state.transition_frontier.genesis);
                         return;
                     };
-                    use openmina_core::{constants, ChainId};
+                    use mina_core::{constants, ChainId};
                     let constraint_system_digests =
-                        openmina_core::NetworkConfig::global().constraint_system_digests;
+                        mina_core::NetworkConfig::global().constraint_system_digests;
                     let chain_id = ChainId::compute(
                         constraint_system_digests,
                         genesis_hash,

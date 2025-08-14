@@ -1,4 +1,4 @@
-use openmina_core::bug_condition;
+use mina_core::bug_condition;
 use redux::ActionMeta;
 
 use crate::{

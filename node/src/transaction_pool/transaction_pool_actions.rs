@@ -8,13 +8,13 @@ use ledger::{
     },
     Account, AccountId,
 };
+use mina_core::{
+    transaction::{TransactionPoolMessageSource, TransactionWithHash},
+    ActionEvent,
+};
 use mina_p2p_messages::{
     list::List,
     v2::{self},
-};
-use openmina_core::{
-    transaction::{TransactionPoolMessageSource, TransactionWithHash},
-    ActionEvent,
 };
 use redux::Callback;
 use serde::{Deserialize, Serialize};

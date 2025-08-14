@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use openmina_core::{bug_condition, pseudo_rng, Substate};
+use mina_core::{bug_condition, pseudo_rng, Substate};
 use rand::prelude::*;
 use redux::ActionWithMeta;
 

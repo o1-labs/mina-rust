@@ -1,11 +1,11 @@
 # P2P Networking
 
-This directory contains OpenMina's peer-to-peer networking implementation.
+This directory contains Mina's peer-to-peer networking implementation.
 
 ## Documentation
 
-For comprehensive documentation about OpenMina's P2P networking architecture,
-please visit our documentation website:
+For comprehensive documentation about Mina's P2P networking architecture, please
+visit our documentation website:
 
 📖
 **[P2P Networking Documentation](https://o1-labs.github.io/openmina/developers/p2p-networking)**

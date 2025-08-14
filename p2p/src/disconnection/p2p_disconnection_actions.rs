@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use super::P2pDisconnectionReason;

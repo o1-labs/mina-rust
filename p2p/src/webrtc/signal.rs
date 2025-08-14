@@ -37,7 +37,7 @@
 use binprot_derive::{BinProtRead, BinProtWrite};
 use derive_more::From;
 use malloc_size_of_derive::MallocSizeOf;
-use openmina_core::ChainId;
+use mina_core::ChainId;
 use serde::{Deserialize, Serialize};
 
 use crate::identity::{EncryptableType, PeerId, PublicKey};

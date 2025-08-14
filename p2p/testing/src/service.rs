@@ -1,6 +1,6 @@
 use std::{collections::VecDeque, time::Instant};
 
-use openmina_core::channels::mpsc;
+use mina_core::channels::mpsc;
 use p2p::{
     identity::SecretKey,
     service_impl::{

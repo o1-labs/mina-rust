@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
-use openmina_core::{
+use mina_core::{
     snark::{Snark, SnarkJobCommitment, SnarkJobId},
     ActionEvent,
 };

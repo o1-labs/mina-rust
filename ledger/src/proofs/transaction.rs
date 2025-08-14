@@ -2264,8 +2264,8 @@ pub mod transaction_snark {
         transaction_logic::transaction_union_payload::{TransactionUnion, TransactionUnionPayload},
     };
     use ::poseidon::hash::legacy;
+    use mina_core::constants::constraint_constants;
     use mina_signer::Signature;
-    use openmina_core::constants::constraint_constants;
 
     use super::*;
 
@@ -2570,7 +2570,7 @@ pub mod transaction_snark {
         inputs.append_field(*px);
         inputs.append_field(*py);
         inputs.append_field(*rx);
-        let signature_prefix = openmina_core::NetworkConfig::global().legacy_signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().legacy_signature_prefix;
         let hash = checked_legacy_hash(signature_prefix, inputs, w);
 
         w.exists(field_to_bits::<_, 255>(hash))
@@ -2632,7 +2632,7 @@ pub mod transaction_snark {
         inputs.append_field(*px);
         inputs.append_field(*py);
         inputs.append_field(*rx);
-        let signature_prefix = openmina_core::NetworkConfig::global().signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().signature_prefix;
         let hash = checked_hash(signature_prefix, &inputs.to_fields(), w);
 
         w.exists(field_to_bits::<_, 255>(hash))

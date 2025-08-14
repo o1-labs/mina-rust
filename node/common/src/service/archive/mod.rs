@@ -5,8 +5,8 @@ use node::{
 };
 use std::{env, io::Write};
 
+use mina_core::NetworkConfig;
 use mina_p2p_messages::v2::PrecomputedBlock;
-use openmina_core::NetworkConfig;
 use std::net::SocketAddr;
 
 use super::NodeService;
@@ -276,7 +276,7 @@ impl ArchiveService {
             .unwrap();
 
         thread::Builder::new()
-            .name("openmina_archive".to_owned())
+            .name("mina_archive".to_owned())
             .spawn(move || {
                 runtime.block_on(Self::run(archive_receiver, options, work_dir));
             })
@@ -290,7 +290,7 @@ impl ArchiveService {
         work_dir: String,
     ) {
         thread::Builder::new()
-            .name("openmina_archive".to_owned())
+            .name("mina_archive".to_owned())
             .spawn(move || {
                 Self::run(archive_receiver, options, work_dir);
             })

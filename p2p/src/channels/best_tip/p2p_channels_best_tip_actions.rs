@@ -1,4 +1,4 @@
-use openmina_core::{block::ArcBlockWithHash, ActionEvent};
+use mina_core::{block::ArcBlockWithHash, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use crate::{

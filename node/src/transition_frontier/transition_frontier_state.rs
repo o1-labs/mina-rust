@@ -1,13 +1,13 @@
 use std::collections::BTreeMap;
 
 use ledger::transaction_pool::diff::BestTipDiff;
+use mina_core::{
+    block::{AppliedBlock, ArcBlockWithHash},
+    bug_condition,
+};
 use mina_p2p_messages::v2::{
     MinaStateProtocolStateBodyValueStableV2, MinaStateProtocolStateValueStableV2, StateHash,
     TransactionHash,
-};
-use openmina_core::{
-    block::{AppliedBlock, ArcBlockWithHash},
-    bug_condition,
 };
 use serde::{Deserialize, Serialize};
 

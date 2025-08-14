@@ -11,7 +11,7 @@ use ledger::{
     AuthRequired, Permissions, ReceiptChainHash, SetVerificationKey, Timing, TokenId, TokenSymbol,
     VotingFor, ZkAppAccount, ZkAppUri,
 };
-use openmina_node_account::{AccountPublicKey, AccountSecretKey};
+use mina_node_account::{AccountPublicKey, AccountSecretKey};
 
 use crate::ledger::LEDGER_DEPTH;
 

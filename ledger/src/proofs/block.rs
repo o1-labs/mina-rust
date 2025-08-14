@@ -3,9 +3,9 @@ use std::{rc::Rc, sync::Arc};
 use anyhow::Context;
 use ark_ff::fields::arithmetic::InvalidBigInt;
 use consensus::ConsensusState;
+use mina_core::constants::{constraint_constants, ForkConstants};
 use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2;
-use openmina_core::constants::{constraint_constants, ForkConstants};
 use poseidon::hash::{
     params::{MINA_PROTO_STATE, MINA_PROTO_STATE_BODY},
     Inputs,

@@ -1,6 +1,7 @@
 use std::{sync::Arc, time::Duration};
 
 use ledger::proofs::provers::BlockProver;
+use mina_node_common::{p2p::TaskSpawner, NodeServiceCommonBuilder};
 use mina_p2p_messages::v2::{self, NonZeroCurvePoint};
 use node::{
     account::AccountSecretKey,
@@ -14,7 +15,6 @@ use node::{
     BlockProducerConfig, GlobalConfig, LedgerConfig, P2pConfig, SnarkConfig, SnarkerConfig,
     SnarkerStrategy, TransitionFrontierConfig,
 };
-use openmina_node_common::{p2p::TaskSpawner, NodeServiceCommonBuilder};
 use rand::Rng;
 
 use super::{Node, P2pTaskSpawner};

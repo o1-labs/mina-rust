@@ -1,6 +1,6 @@
 use crate::{ConnectionAddr, Data, P2pAction, P2pState, PeerId, StreamId};
+use mina_core::ActionEvent;
 use multiaddr::Multiaddr;
-use openmina_core::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 

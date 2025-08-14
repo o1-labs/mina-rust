@@ -6,7 +6,7 @@ use crate::{
     channels::{ChannelId, ChannelMsg, MsgId, P2pChannelsEffectfulAction},
     P2pNetworkRpcAction, P2pPeerAction, P2pState,
 };
-use openmina_core::{block::BlockWithHash, bug_condition, error, Substate};
+use mina_core::{block::BlockWithHash, bug_condition, error, Substate};
 use redux::ActionWithMeta;
 use std::collections::VecDeque;
 

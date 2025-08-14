@@ -62,7 +62,7 @@ impl EpochData {
 mod test {
 
     use ledger::{scan_state::currency::Balance, Timing};
-    use openmina_node_account::AccountPublicKey;
+    use mina_node_account::AccountPublicKey;
     use std::str::FromStr;
 
     use crate::daemon_json::DaemonJson;

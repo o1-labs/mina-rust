@@ -39,20 +39,20 @@ build-ledger: download-circuits ## Build the ledger binary and library, requires
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
-	@cargo build --release --package=cli --bin openmina
+	@cargo build --release --package=cli --bin mina
 
 .PHONY: build-testing
 build-testing: ## Build the testing binary with scenario generators
-	cargo build --release --features scenario-generators --bin openmina-node-testing
+	cargo build --release --features scenario-generators --bin mina-node-testing
 
 .PHONY: build-tests
 build-tests: ## Build tests for scenario testing
 	@mkdir -p target/release/tests
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli \
 		--message-format=json > cargo-build-test.json
 	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' \
@@ -65,12 +65,12 @@ build-tests: ## Build tests for scenario testing
 build-tests-webrtc: ## Build tests for WebRTC
 	@mkdir -p target/release/tests
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli
 # Update ./.gitignore accordingly if cargo-build-test.json is changed
 	@cargo build --release \
 		--features=scenario-generators,p2p-webrtc \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--tests \
 		--message-format=json \
 		> cargo-build-test.json
@@ -334,13 +334,13 @@ docker-build-test: ## Build test Docker image
 # Node running targets
 .PHONY: run-node
 run-node: build-release ## Run a basic node (NETWORK=devnet, VERBOSITY=info)
-	@cargo run --release --package=cli --bin openmina -- node --network $(NETWORK) --verbosity $(VERBOSITY)
+	@cargo run --release --package=cli --bin mina -- node --network $(NETWORK) --verbosity $(VERBOSITY)
 
 # Postgres related targets + archive node
 .PHONY: run-archive
 run-archive: build-release ## Run an archive node with local storage
 	OPENMINA_ARCHIVE_ADDRESS=$(OPENMINA_ARCHIVE_ADDRESS) \
-		cargo run --bin openmina \
+		cargo run --bin mina \
 		--release -- \
 		node \
 		--archive-archiver-process \
@@ -355,7 +355,7 @@ run-block-producer: build-release ## Run a block producer node on $(NETWORK) net
 		exit 1; \
 	fi
 	cargo run \
-		--bin openmina \
+		--bin mina \
 		--package=cli \
 		--release -- \
 		node \
@@ -379,7 +379,7 @@ generate-block-producer-key: build-release ## Generate a new block producer key 
 	fi
 	@mkdir -p openmina-workdir
 	@echo "Generating new encrypted block producer key..."
-	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin openmina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
+	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin mina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
 	PUBLIC_KEY=$$(echo "$$OUTPUT" | grep "public key:" | cut -d' ' -f3); \
 	chmod 600 $(PRODUCER_KEY_FILENAME); \
 	echo ""; \

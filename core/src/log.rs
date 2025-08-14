@@ -88,7 +88,7 @@ macro_rules! error {
     };
 }
 
-pub const ACTION_TRACE_TARGET: &str = "openmina_core::log::action";
+pub const ACTION_TRACE_TARGET: &str = "mina_core::log::action";
 
 #[macro_export]
 macro_rules! action_event {
