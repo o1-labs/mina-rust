@@ -115,6 +115,7 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
+      fail-fast: false  # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
     runs-on: ${{ matrix.os }}
@@ -146,6 +147,7 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
+      fail-fast: false  # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
     runs-on: ${{ matrix.os }}
@@ -168,6 +170,7 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
+      fail-fast: false  # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
     runs-on: ${{ matrix.os }}
@@ -205,6 +208,7 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
+      fail-fast: false  # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
     runs-on: ${{ matrix.os }}
