@@ -215,13 +215,7 @@ jobs:
           cache-prefix: build-tests-${{ matrix.os }}-v0
 
       - name: Build tests
-        run: |
-          mkdir -p target/release/tests
-
-          cargo build --release --tests --package=openmina-node-testing --package=cli
-          cargo build --release --tests --package=openmina-node-testing --package=cli --message-format=json > cargo-build-test.json
-          jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' cargo-build-test.json > tests.tsv
-          while read NAME FILE; do cp -a $FILE target/release/tests/$NAME; done < tests.tsv
+        run: make build-tests
 
       - name: Upload tests
         if: matrix.os == 'ubuntu-22.04'

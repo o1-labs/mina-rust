@@ -45,6 +45,22 @@ build-release: ## Build the project in release mode
 build-testing: ## Build the testing binary with scenario generators
 	cargo build --release --features scenario-generators --bin openmina-node-testing
 
+.PHONY: build-tests
+build-tests: ## Build tests for scenario testing
+	@mkdir -p target/release/tests
+	@cargo build --release --tests \
+		--package=openmina-node-testing \
+		--package=cli
+	@cargo build --release --tests \
+		--package=openmina-node-testing \
+		--package=cli \
+		--message-format=json > cargo-build-test.json
+	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' \
+		cargo-build-test.json > tests.tsv
+	@while read NAME FILE; do \
+		cp -a $$FILE target/release/tests/$$NAME; \
+	done < tests.tsv
+
 .PHONY: build-tests-webrtc
 build-tests-webrtc: ## Build tests for WebRTC
 	@mkdir -p target/release/tests
