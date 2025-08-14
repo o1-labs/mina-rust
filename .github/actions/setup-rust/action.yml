@@ -30,4 +30,6 @@ runs:
       if: inputs.enable-cache == 'true'
       uses: Swatinem/rust-cache@v2
       with:
-        prefix-key: ${{ inputs.cache-prefix }}
+        prefix-key: ${{ inputs.cache-prefix }}-${{ inputs.toolchain }}
+        shared-key: shared-${{ inputs.toolchain }}
+        save-if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' }}

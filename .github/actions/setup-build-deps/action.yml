@@ -5,6 +5,10 @@ inputs:
     description: 'Include SQLite3 in the installation'
     required: false
     default: 'false'
+  install-nextest:
+    description: 'Install cargo-nextest for faster test execution'
+    required: false
+    default: 'false'
 runs:
   using: 'composite'
   steps:
@@ -24,3 +28,9 @@ runs:
       shell: bash
       run: |
         brew install protobuf
+
+    - name: Install cargo-nextest
+      if: inputs.install-nextest == 'true'
+      uses: taiki-e/install-action@v2
+      with:
+        tool: nextest

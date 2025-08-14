@@ -45,6 +45,22 @@ build-release: ## Build the project in release mode
 build-testing: ## Build the testing binary with scenario generators
 	cargo build --release --features scenario-generators --bin openmina-node-testing
 
+.PHONY: build-tests
+build-tests: ## Build tests for scenario testing
+	@mkdir -p target/release/tests
+	@cargo build --release --tests \
+		--package=openmina-node-testing \
+		--package=cli
+	@cargo build --release --tests \
+		--package=openmina-node-testing \
+		--package=cli \
+		--message-format=json > cargo-build-test.json
+	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' \
+		cargo-build-test.json > tests.tsv
+	@while read NAME FILE; do \
+		cp -a $$FILE target/release/tests/$$NAME; \
+	done < tests.tsv
+
 .PHONY: build-tests-webrtc
 build-tests-webrtc: ## Build tests for WebRTC
 	@mkdir -p target/release/tests
@@ -224,7 +240,7 @@ test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly 
 
 .PHONY: test-p2p
 test-p2p: ## Run P2P tests
-	cargo test -p p2p --tests
+	cargo test -p p2p --tests --release
 
 .PHONY: test-release
 test-release: ## Run tests in release mode
@@ -233,6 +249,26 @@ test-release: ## Run tests in release mode
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
+
+.PHONY: nextest
+nextest: ## Run tests with cargo-nextest for faster execution
+	@cargo nextest run
+
+.PHONY: nextest-release
+nextest-release: ## Run tests in release mode with cargo-nextest
+	@cargo nextest run --release
+
+.PHONY: nextest-p2p
+nextest-p2p: ## Run P2P tests with cargo-nextest
+	@cargo nextest run -p p2p --tests
+
+.PHONY: nextest-ledger
+nextest-ledger: build-ledger ## Run ledger tests with cargo-nextest, requires nightly Rust
+	@cd ledger && cargo +nightly nextest run --release
+
+.PHONY: nextest-vrf
+nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
+	@cd vrf && cargo +nightly nextest run --release
 
 # Docker build targets
 
