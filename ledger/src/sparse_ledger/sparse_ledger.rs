@@ -4,8 +4,8 @@ use std::{
 };
 
 use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use mina_core::constants::constraint_constants;
 use mina_curves::pasta::Fp;
-use openmina_core::constants::constraint_constants;
 
 use crate::{
     scan_state::{

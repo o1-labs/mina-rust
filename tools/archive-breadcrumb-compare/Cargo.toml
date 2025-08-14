@@ -1,5 +1,5 @@
 [package]
-name = "openmina-archive-breadcrumb-compare"
+name = "mina-archive-breadcrumb-compare"
 version = "0.16.0"
 edition = "2021"
 

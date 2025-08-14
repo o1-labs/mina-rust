@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
+use mina_core::block::{AppliedBlock, ArcBlockWithHash};
 use mina_p2p_messages::v2::{self, LedgerHash, MinaStateProtocolStateValueStableV2, StateHash};
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 use strum_macros::Display;

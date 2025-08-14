@@ -22,37 +22,37 @@ We are testing two versions of the node:
 ### Solo node
 
 We want to be able to test whether the Rust node is compatible with the OCaml
-node. We achieve this by attempting to connect the Openmina node to the existing
-OCaml testnet.
+node. We achieve this by attempting to connect the Must Rust node to the
+existing OCaml testnet.
 
 For that purpose, we are utilizing a _solo node_, which is a single Open Mina
 node connected to a network of OCaml nodes. Currently, we are using the public
 testnet, but later on we want to use our own network of OCaml nodes on our
 cluster.
 
-This test is performed by launching an Openmina node and connecting it to seed
+This test is performed by launching an Must Rust node and connecting it to seed
 nodes of the public (or private) OCaml testnet.
 
 _The source code for this test can be found in this repo:_
 
-[https://github.com/openmina/openmina/blob/develop/node/testing/src/scenarios/solo_node/basic_connectivity_initial_joining.rs](https://github.com/openmina/openmina/blob/develop/node/testing/src/scenarios/solo_node/basic_connectivity_initial_joining.rs)
+[https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/solo_node/basic_connectivity_initial_joining.rs](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/solo_node/basic_connectivity_initial_joining.rs)
 
 We are testing these scenarios:
 
-1. Whether the Openmina node can accept an incoming connection from OCaml node.
-   This test will prove our Openmina node is listening to incoming connections
+1. Whether the Must Rust node can accept an incoming connection from OCaml node.
+   This test will prove our Must Rust node is listening to incoming connections
    and can accept them.
-2. Whether the OCaml node can discover and connect to an Openmina node that is
-   advertising itself. This is done by advertising the Openmina node so that the
-   OCaml node can discover it and connect to the node.
+2. Whether the OCaml node can discover and connect to an Must Rust node that is
+   advertising itself. This is done by advertising the Must Rust node so that
+   the OCaml node can discover it and connect to the node.
 
    This test is the same as the previous one, except we do not inform the OCaml
    node to connect to it explicitly, it should find it automatically and connect
    using peer discovery (performed through Kademlia). This test will ensure the
-   Openmina node uses Kademlia in a way that is compatible with the OCaml node.
+   Must Rust node uses Kademlia in a way that is compatible with the OCaml node.
 
 However, with this test, we are currently experiencing problems that may be
-caused by OCaml nodes not being currently able to "see" the Openmina nodes,
+caused by OCaml nodes not being currently able to "see" the Must Rust nodes,
 because our implementation of the p2p layer is incomplete.
 
 We have implemented the missing protocol (Kademlia) into the p2p layer to make
@@ -64,7 +64,7 @@ We are also missing certain p2p protocols like `/mina/peer-exchange`,
 `/mina/bitswap-exchange`, `/mina/node-status`, `/ipfs/id/1.0.0`
 
 While these p2p protocol may not be relevant, it is possible OCaml nodes do not
-recognize the Openmina node because we are missing some of them.
+recognize the Must Rust node because we are missing some of them.
 
 We run these tests until:
 
@@ -146,7 +146,7 @@ made, it will search for more peers every hour.
 - The malicious peer can deliberately choose the peer_id and deny access to the
   information, just always say there are no providers. This problem has been
   inherited from the OCaml implementation of the node. We have mitigated it by
-  making the Openmina node not rely on GetProviders, instead, we only do
+  making the Must Rust node not rely on GetProviders, instead, we only do
   AddProviders to advertise ourselves, but treat any peer of the Kademlia
   network as a valid Mina peer, no matter if it is a provider or not, so a
   malicious peer can prevent OCaml nodes from discovering us, but it will not
@@ -164,10 +164,10 @@ made, it will search for more peers every hour.
 
 ### Multi node
 
-We also want to test a scenario in which the network consists only of Openmina
-nodes. If the Openmina node is using a functionality that is implemented only in
-the OCaml node, and it does not perform it correctly, then we will not be able
-to see it with solo node test.
+We also want to test a scenario in which the network consists only of Must Rust
+nodes. If the Must Rust node is using a functionality that is implemented only
+in the OCaml node, and it does not perform it correctly, then we will not be
+able to see it with solo node test.
 
 For that purpose, we utilize a Multi node test, which involves a network of our
 nodes, without any third party, so that the testing is completely local and
@@ -175,7 +175,7 @@ under our control.
 
 _The source code for this test can be found in this repo:_
 
-[https://github.com/openmina/openmina/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9](https://github.com/openmina/openmina/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9)
+[https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9)
 
 #### How it's tested
 

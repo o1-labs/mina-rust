@@ -1,4 +1,4 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 
 use multiaddr::Multiaddr;
 use serde::{Deserialize, Serialize};

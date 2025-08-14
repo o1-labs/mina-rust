@@ -1,6 +1,5 @@
 use ledger::scan_state::currency::{Amount, Signed};
-use mina_p2p_messages::{list::List, v2};
-use openmina_core::{
+use mina_core::{
     block::ArcBlockWithHash,
     bug_condition,
     consensus::{
@@ -9,6 +8,7 @@ use openmina_core::{
     },
     constants::constraint_constants,
 };
+use mina_p2p_messages::{list::List, v2};
 use p2p::P2pNetworkPubsubAction;
 use redux::{callback, Dispatcher, Timestamp};
 
@@ -677,7 +677,7 @@ impl BlockProducerEnabled {
             },
         };
         let Ok(block_hash) = block.protocol_state.try_hash() else {
-            openmina_core::log::inner::error!("Invalid protocol state");
+            mina_core::log::inner::error!("Invalid protocol state");
             return;
         };
 

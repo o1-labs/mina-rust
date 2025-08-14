@@ -74,5 +74,5 @@ including:
 You can also get help directly from the command line:
 
 ```bash
-./target/release/openmina node --help
+./target/release/mina node --help
 ```

@@ -24,7 +24,7 @@ pub enum P2pAction {
 ```
 
 link to the definition of the node("root") action:
-[openmina_node::Action](node/src/action.rs).
+[mina_node::Action](node/src/action.rs).
 
 ## Enabling Condition
 
@@ -99,7 +99,7 @@ type Reducer<State, Action> = fn(&mut State, &Action);
 ```
 
 Main reducer function that gets called on every action:
-[openmina_node::reducer](node/src/reducer.rs).
+[mina_node::reducer](node/src/reducer.rs).
 
 ## Effects(side-effects)
 
@@ -120,7 +120,7 @@ type Effects<State, Service, Action> = fn(&mut Store<State, Service, Action>, &A
 ```
 
 Main effects function that gets called on every action:
-[openmina_node::effects](node/src/effects.rs).
+[mina_node::effects](node/src/effects.rs).
 
 ## Service
 
@@ -135,7 +135,7 @@ in another thread.
 
 ## State
 
-Our global state. [openmina_node::State](node/src/state.rs)
+Our global state. [mina_node::State](node/src/state.rs)
 
 ## Store
 
@@ -216,8 +216,8 @@ There are 2 types of effects:
    For example, we could receive rpc request on p2p layer to send our current
    best tip. Since [p2p](p2p/) is in a separate crate, it's not even possible to
    answer that rpc there, as in that crate, we only have partial view (p2p part)
-   of the state. But we do have that access in [openmina-node](node/) crate, so
-   we write effects to respond to that rpc
+   of the state. But we do have that access in [mina-node](node/) crate, so we
+   write effects to respond to that rpc
    [in there](https://github.com/openmina/openmina/blob/f6bde2138157dcdacd4baa0cd07c22506dc2a7c0/node/src/p2p/p2p_effects.rs#L517).
 
 Examples of the flow:

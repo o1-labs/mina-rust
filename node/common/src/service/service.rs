@@ -35,7 +35,7 @@ pub struct NodeService {
     pub rng: StdRng,
 
     /// Events sent on this channel are retrieved and processed in the
-    /// `event_source` state machine defined in the `openmina-node` crate.
+    /// `event_source` state machine defined in the `mina-node` crate.
     pub event_sender: EventSender,
     pub event_receiver: EventReceiver,
 

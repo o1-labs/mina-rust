@@ -4,8 +4,8 @@ pub use config::{ClusterConfig, ProofKind};
 mod p2p_task_spawner;
 
 mod node_id;
+use mina_core::channels::Aborter;
 pub use node_id::{ClusterNodeId, ClusterOcamlNodeId};
-use openmina_core::channels::Aborter;
 
 pub mod runner;
 
@@ -20,6 +20,8 @@ use std::{
 use libp2p::futures::{stream::FuturesUnordered, StreamExt};
 
 use ledger::proofs::provers::BlockProver;
+use mina_node_invariants::{InvariantResult, Invariants};
+use mina_node_native::{http_server, NodeServiceBuilder};
 use node::{
     account::{AccountPublicKey, AccountSecretKey},
     core::{
@@ -36,8 +38,6 @@ use node::{
     BuildEnv, Config, GlobalConfig, LedgerConfig, P2pConfig, SnarkConfig, State,
     TransitionFrontierConfig,
 };
-use openmina_node_invariants::{InvariantResult, Invariants};
-use openmina_node_native::{http_server, NodeServiceBuilder};
 use serde::{de::DeserializeOwned, Serialize};
 use temp_dir::TempDir;
 
@@ -52,13 +52,13 @@ use crate::{
 };
 
 #[allow(dead_code)]
-fn openmina_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
-    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/openmina").join(path))
+fn mina_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
+    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/mina").join(path))
 }
 
 #[allow(dead_code)]
 fn read_index<T: DeserializeOwned>(name: &str) -> Option<T> {
-    openmina_path(name)
+    mina_path(name)
         .and_then(|path| {
             if !path.exists() {
                 return None;
@@ -86,7 +86,7 @@ fn read_index<T: DeserializeOwned>(name: &str) -> Option<T> {
 
 #[allow(dead_code)]
 fn write_index<T: Serialize>(name: &str, index: &T) -> Option<()> {
-    openmina_path(name)
+    mina_path(name)
         .and_then(|path| {
             let Some(parent) = path.parent() else {
                 warn!(system_time(); "cannot get parent for {path:?}");
@@ -334,7 +334,7 @@ impl Cluster {
         let shutdown = shutdown_listener.clone();
         let rpc_sender = real_service.rpc_sender();
         thread::Builder::new()
-            .name("openmina_http_server".to_owned())
+            .name("mina_http_server".to_owned())
             .spawn(move || {
                 let local_set = tokio::task::LocalSet::new();
                 let task = async {
@@ -367,7 +367,7 @@ impl Cluster {
 
             store.service.dyn_effects(store.state.get(), &action);
             let peer_id = store.state().p2p.my_id();
-            openmina_core::log::trace!(action.time(); "{peer_id}: {:?}", action.action().kind());
+            mina_core::log::trace!(action.time(); "{peer_id}: {:?}", action.action().kind());
 
             for (invariant, res) in Invariants::check_all(store, &action) {
                 // TODO(binier): record instead of panicing.

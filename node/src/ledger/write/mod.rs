@@ -4,7 +4,7 @@ pub use ledger_write_actions::*;
 
 mod ledger_write_state;
 pub use ledger_write_state::*;
-use openmina_core::block::AppliedBlock;
+use mina_core::block::AppliedBlock;
 
 mod ledger_write_reducer;
 

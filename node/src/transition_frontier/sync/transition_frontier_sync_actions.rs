@@ -1,5 +1,5 @@
+use mina_core::{block::ArcBlockWithHash, consensus::consensus_take, ActionEvent};
 use mina_p2p_messages::v2::{LedgerHash, StateHash};
-use openmina_core::{block::ArcBlockWithHash, consensus::consensus_take, ActionEvent};
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 

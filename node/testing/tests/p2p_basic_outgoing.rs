@@ -1,4 +1,4 @@
-use openmina_node_testing::scenarios::p2p::basic_outgoing_connections::{
+use mina_node_testing::scenarios::p2p::basic_outgoing_connections::{
     ConnectToInitialPeers, ConnectToInitialPeersBecomeReady, ConnectToUnavailableInitialPeers,
     DontConnectToInitialPeerWithSameId, DontConnectToNodeWithSameId, DontConnectToSelfInitialPeer,
     MakeMultipleOutgoingConnections, MakeOutgoingConnection,

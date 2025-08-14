@@ -1,5 +1,5 @@
 use crate::{network::identify::P2pNetworkIdentify, ConnectionAddr, P2pState, PeerId};
-use openmina_macros::ActionEvent;
+use mina_macros::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

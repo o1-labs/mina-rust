@@ -482,8 +482,8 @@ where
     (&srs).into()
 }
 
-pub fn openmina_cache_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
-    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/openmina").join(path))
+pub fn mina_cache_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
+    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/mina").join(path))
 }
 
 pub fn ensure_path_exists<P: AsRef<Path> + Clone>(path: P) -> Result<(), std::io::Error> {

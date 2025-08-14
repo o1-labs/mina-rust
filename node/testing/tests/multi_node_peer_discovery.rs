@@ -1,5 +1,5 @@
 #[cfg(not(feature = "p2p-webrtc"))]
-use openmina_node_testing::scenarios::multi_node::basic_connectivity_peer_discovery::MultiNodeBasicConnectivityPeerDiscovery;
+use mina_node_testing::scenarios::multi_node::basic_connectivity_peer_discovery::MultiNodeBasicConnectivityPeerDiscovery;
 
 mod common;
 

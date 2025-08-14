@@ -15,6 +15,8 @@ use ledger::{
     },
     Mask,
 };
+use mina_core::channels::Aborter;
+use mina_node_native::NodeService;
 use mina_p2p_messages::{
     string::ByteString,
     v2::{
@@ -61,8 +63,6 @@ use node::{
     transition_frontier::{archive::archive_service::ArchiveService, genesis::GenesisConfig},
     ActionWithMeta, State,
 };
-use openmina_core::channels::Aborter;
-use openmina_node_native::NodeService;
 use redux::Instant;
 
 use crate::{
@@ -74,7 +74,7 @@ pub type DynEffects = Box<dyn FnMut(&State, &NodeTestingService, &ActionWithMeta
 
 #[derive(Hash, Ord, PartialOrd, Eq, PartialEq)]
 pub struct PendingEventIdType;
-impl openmina_core::requests::RequestIdType for PendingEventIdType {
+impl mina_core::requests::RequestIdType for PendingEventIdType {
     fn request_id_type() -> &'static str {
         "PendingEventId"
     }
@@ -548,7 +548,7 @@ impl BlockProducerService for NodeTestingService {
                 let _ = self.real.event_sender().send(dummy_proof_event(block_hash));
             }
             ProofKind::ConstraintsChecked => {
-                match openmina_node_native::block_producer::prove(
+                match mina_node_native::block_producer::prove(
                     self.provers(),
                     &mut input,
                     &keypair,
@@ -582,7 +582,7 @@ impl BlockProducerService for NodeTestingService {
                     {
                         Ok(proof.clone())
                     } else {
-                        openmina_node_native::block_producer::prove(
+                        mina_node_native::block_producer::prove(
                             self.provers(),
                             &mut input,
                             &keypair,

@@ -1,7 +1,7 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 
 use crate::{
     connection::{outgoing::P2pConnectionOutgoingInitOpts, P2pConnectionEffectfulAction},

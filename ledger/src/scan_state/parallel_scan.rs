@@ -2601,7 +2601,7 @@ mod tests {
         },
     };
 
-    use openmina_core::thread;
+    use mina_core::thread;
     use rand::Rng;
 
     use super::*;

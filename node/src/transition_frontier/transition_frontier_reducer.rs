@@ -2,7 +2,7 @@ use super::{
     sync::{SyncError, TransitionFrontierSyncState},
     TransitionFrontierAction, TransitionFrontierActionWithMetaRef, TransitionFrontierState,
 };
-use openmina_core::block::AppliedBlock;
+use mina_core::block::AppliedBlock;
 
 impl TransitionFrontierState {
     pub fn reducer(
@@ -21,7 +21,7 @@ impl TransitionFrontierState {
         match action {
             TransitionFrontierAction::Genesis(a) => {
                 super::genesis::TransitionFrontierGenesisState::reducer(
-                    openmina_core::Substate::from_compatible_substate(state_context),
+                    mina_core::Substate::from_compatible_substate(state_context),
                     meta.with_action(a),
                 )
             }
@@ -56,14 +56,14 @@ impl TransitionFrontierState {
             }
             TransitionFrontierAction::Candidate(a) => {
                 super::candidate::TransitionFrontierCandidatesState::reducer(
-                    openmina_core::Substate::from_compatible_substate(state_context),
+                    mina_core::Substate::from_compatible_substate(state_context),
                     meta.with_action(a),
                 );
             }
             TransitionFrontierAction::Sync(a) => {
                 let best_chain = state.best_chain.clone();
                 super::sync::TransitionFrontierSyncState::reducer(
-                    openmina_core::Substate::from_compatible_substate(state_context),
+                    mina_core::Substate::from_compatible_substate(state_context),
                     meta.with_action(a),
                     &best_chain,
                 );

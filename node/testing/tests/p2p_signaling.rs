@@ -1,6 +1,6 @@
 #![cfg(feature = "p2p-webrtc")]
 
-use openmina_node_testing::scenarios::p2p::signaling::P2pSignaling;
+use mina_node_testing::scenarios::p2p::signaling::P2pSignaling;
 
 mod common;
 

@@ -75,11 +75,11 @@ pub fn preshared_key(chain_id: &ChainId) -> [u8; 32] {
 }
 
 pub use log::ActionEvent;
+pub use mina_macros::*;
 use multihash::Blake2b256;
-pub use openmina_macros::*;
 
 #[cfg(feature = "fuzzing")]
-pub use openmina_fuzzer::*;
+pub use mina_fuzzer::*;
 
 #[macro_export]
 macro_rules! fuzz_maybe {

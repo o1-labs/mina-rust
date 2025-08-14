@@ -1,6 +1,7 @@
 use std::{io::Cursor, str::FromStr, sync::Arc};
 
 use ark_ff::{BigInteger256, One, UniformRand, Zero};
+use mina_core::constants::PROTOCOL_VERSION;
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot::{BinProtRead, BinProtWrite},
@@ -8,7 +9,6 @@ use mina_p2p_messages::{
 };
 use mina_signer::CompressedPubKey;
 use once_cell::sync::{Lazy, OnceCell};
-use openmina_core::constants::PROTOCOL_VERSION;
 use rand::{prelude::ThreadRng, seq::SliceRandom, Rng};
 use serde::{Deserialize, Serialize};
 

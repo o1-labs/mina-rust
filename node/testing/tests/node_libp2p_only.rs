@@ -1,6 +1,6 @@
 #![cfg(feature = "scenario-generators")]
 
-use openmina_node_testing::{cluster::ClusterConfig, scenarios::Scenarios, setup};
+use mina_node_testing::{cluster::ClusterConfig, scenarios::Scenarios, setup};
 
 #[test]
 fn node_libp2p_only_all_scenarios() {

@@ -1,5 +1,5 @@
 name: 'Setup Container Dependencies'
-description: 'Install libssl3t64 in container for OpenMina binaries'
+description: 'Install libssl3t64 in container for Mina binaries'
 runs:
   using: 'composite'
   steps:

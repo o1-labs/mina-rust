@@ -1,30 +1,30 @@
 #!/bin/bash
 
-OPENMINA_BASE_URL="https://github.com/openmina"
+MINA_BASE_URL="https://github.com/openmina"
 
 replace_signaling_url() {
-    if [ -n "$OPENMINA_SIGNALING_URL" ]; then
+    if [ -n "$MINA_SIGNALING_URL" ]; then
         HTTPD_CONF="/usr/local/apache2/conf/httpd.conf"
         SIGNALING_URL="http://localhost:3000/mina/webrtc/signal"
 
         echo "Replacing signaling URL in $HTTPD_CONF..."
 
-        sed -i "s|$SIGNALING_URL|$OPENMINA_SIGNALING_URL|g" "$HTTPD_CONF"
+        sed -i "s|$SIGNALING_URL|$MINA_SIGNALING_URL|g" "$HTTPD_CONF"
         sed_exit_code=$?
         if [[ $sed_exit_code -ne 0 ]]; then
             echo "Failed to replace the signaling URL, exiting."
             exit 1
         else
             echo "Successfully replaced signaling URL with" \
-                "'$OPENMINA_SIGNALING_URL' in $HTTPD_CONF"
+                "'$MINA_SIGNALING_URL' in $HTTPD_CONF"
         fi
     else
-        echo "OPENMINA_SIGNALING_URL is not set. No replacement performed."
+        echo "MINA_SIGNALING_URL is not set. No replacement performed."
     fi
 }
 
 download_circuit_files() {
-    CIRCUITS_BASE_URL="$OPENMINA_BASE_URL/circuit-blobs/releases/download"
+    CIRCUITS_BASE_URL="$MINA_BASE_URL/circuit-blobs/releases/download"
     CIRCUITS_VERSION="3.0.1devnet"
 
     DEVNET_CIRCUIT_FILES=(
@@ -79,20 +79,20 @@ download_circuit_files() {
 }
 
 download_wasm_files() {
-    if [ -z "$OPENMINA_WASM_VERSION" ]; then
-        echo "Error: OPENMINA_WASM_VERSION is not set. Exiting."
+    if [ -z "$MINA_WASM_VERSION" ]; then
+        echo "Error: MINA_WASM_VERSION is not set. Exiting."
         exit 1
     fi
 
-    WASM_URL="$OPENMINA_BASE_URL/openmina/releases/download/\
-$OPENMINA_WASM_VERSION/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
+    WASM_URL="$MINA_BASE_URL/openmina/releases/download/\
+$MINA_WASM_VERSION/openmina-$MINA_WASM_VERSION-webnode-wasm.tar.gz"
     TARGET_DIR="/usr/local/apache2/htdocs/assets/webnode/pkg"
 
     mkdir -p "$TARGET_DIR"
 
     echo "Downloading WASM files from $WASM_URL..."
     curl -s -L --retry 3 --retry-delay 5 \
-        -o "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" \
+        -o "/tmp/openmina-$MINA_WASM_VERSION-webnode-wasm.tar.gz" \
         "$WASM_URL"
     curl_exit_code=$?
     if [[ $curl_exit_code -ne 0 ]]; then
@@ -102,7 +102,7 @@ $OPENMINA_WASM_VERSION/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
         echo "WASM file downloaded successfully. Extracting to $TARGET_DIR..."
 
         # Check if the extraction was successful
-        tar -xzf "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz" \
+        tar -xzf "/tmp/openmina-$MINA_WASM_VERSION-webnode-wasm.tar.gz" \
             -C "$TARGET_DIR"
         tar_exit_code=$?
         if [[ $tar_exit_code -ne 0 ]]; then
@@ -112,13 +112,13 @@ $OPENMINA_WASM_VERSION/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
             echo "WASM files extracted successfully to $TARGET_DIR"
 
             # Inject caching logic into openmina_node_web.js
-            OPENMINA_JS="$TARGET_DIR/openmina_node_web.js"
+            MINA_JS="$TARGET_DIR/openmina_node_web.js"
             INDEX_HTML="/usr/local/apache2/htdocs/index.html"
-            inject_caching_logic "$OPENMINA_JS" "$INDEX_HTML"
+            inject_caching_logic "$MINA_JS" "$INDEX_HTML"
         fi
     fi
 
-    rm "/tmp/openmina-$OPENMINA_WASM_VERSION-webnode-wasm.tar.gz"
+    rm "/tmp/openmina-$MINA_WASM_VERSION-webnode-wasm.tar.gz"
 }
 
 get_short_sha1() {
@@ -192,12 +192,12 @@ inject_caching_logic() {
     echo "Successfully injected caching logic into $js_file"
 }
 
-if [ -n "$OPENMINA_FRONTEND_ENVIRONMENT" ]; then
-  echo "Using environment: $OPENMINA_FRONTEND_ENVIRONMENT"
-  cp -f /usr/local/apache2/htdocs/assets/environments/"$OPENMINA_FRONTEND_ENVIRONMENT".js \
+if [ -n "$MINA_FRONTEND_ENVIRONMENT" ]; then
+  echo "Using environment: $MINA_FRONTEND_ENVIRONMENT"
+  cp -f /usr/local/apache2/htdocs/assets/environments/"$MINA_FRONTEND_ENVIRONMENT".js \
         /usr/local/apache2/htdocs/assets/environments/env.js
 
-  if [ "$OPENMINA_FRONTEND_ENVIRONMENT" = "webnode" ]; then
+  if [ "$MINA_FRONTEND_ENVIRONMENT" = "webnode" ]; then
     echo "Environment is 'webnode'. Downloading circuit and WASM files..."
     download_wasm_files
     download_circuit_files

@@ -286,7 +286,7 @@ async fn mutual_rust_to_libp2p() -> anyhow::Result<()> {
 
 /// Tests that a Rust node can resolve mutual connection between itself and a libp2p-based node.
 #[tokio::test]
-#[ignore = "TODO: see https://github.com/openmina/openmina/issues/399"]
+#[ignore = "TODO: see https://github.com/o1-labs/mina-rust/issues/399"]
 async fn mutual_rust_to_libp2p_port_reuse() -> anyhow::Result<()> {
     let mut cluster = ClusterBuilder::default()
         .ports_with_len(10)

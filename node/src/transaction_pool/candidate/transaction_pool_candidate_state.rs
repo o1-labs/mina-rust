@@ -2,8 +2,8 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use mina_core::transaction::TransactionPoolMessageSource;
 use mina_p2p_messages::v2;
-use openmina_core::transaction::TransactionPoolMessageSource;
 use p2p::P2pNetworkPubsubMessageCacheId;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
@@ -395,7 +395,7 @@ impl TransactionPoolCandidatesState {
         // TODO(binier)
         match transaction.hash() {
             Err(err) => {
-                openmina_core::bug_condition!("tx hashing failed: {err}");
+                mina_core::bug_condition!("tx hashing failed: {err}");
             }
             Ok(hash) => self.transaction_remove(&hash),
         };

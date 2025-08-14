@@ -7,7 +7,7 @@ pub use p2p_channels_snark_actions::*;
 mod p2p_channels_snark_reducer;
 
 use binprot_derive::{BinProtRead, BinProtWrite};
-use openmina_core::snark::SnarkInfo;
+use mina_core::snark::SnarkInfo;
 use serde::{Deserialize, Serialize};
 
 #[derive(BinProtWrite, BinProtRead, Serialize, Deserialize, Debug, Clone)]

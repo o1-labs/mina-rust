@@ -1,5 +1,5 @@
+use mina_core::{bug_condition, requests::RequestId};
 use mina_p2p_messages::v2;
-use openmina_core::{bug_condition, requests::RequestId};
 use p2p::{
     channels::{
         rpc::{P2pChannelsRpcAction, P2pRpcId, P2pRpcRequest, P2pRpcResponse},

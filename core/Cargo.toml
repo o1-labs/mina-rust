@@ -1,5 +1,5 @@
 [package]
-name = "openmina-core"
+name = "mina-core"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -14,10 +14,10 @@ crypto_secretbox = { version = "0.1.1", features = ["std"] }
 flume = { version = "0.11.1", features = ["async", "spin"] }
 lazy_static = "1.4.0"
 md5 = "0.7.0"
+mina-fuzzer = { path = "../fuzzer", optional = true }
+mina-macros = { path = "../macros" }
 multihash = { version = "0.18.1", features = ["blake2b"] }
 once_cell = "1"
-openmina-fuzzer = { path = "../fuzzer", optional = true }
-openmina-macros = { path = "../macros" }
 rand = "0.8.0"
 redux = { workspace = true }
 serde = { version = "1.0.147", features = ["rc"] }
@@ -54,4 +54,4 @@ web-sys = { version = "0.3", features = ["Window", "Response"] }
 serde_json = { version = "1" }
 
 [features]
-fuzzing = ["openmina-fuzzer"]
+fuzzing = ["mina-fuzzer"]

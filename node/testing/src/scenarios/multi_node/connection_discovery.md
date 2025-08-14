@@ -1,6 +1,6 @@
 # **OCaml Peers Discovery Tests**
 
-As we develop the Openmina node, a new Rust-based node implementation for the
+As we develop the Mina Rust node, a new Rust-based node implementation for the
 Mina network, we must ensure that the Rust node can utilize the Kademlia
 protocol (KAD) to discover and connect to OCaml nodes, and vice versa.
 

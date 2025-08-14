@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
+use mina_core::constants::ConstraintConstants;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
 
 use crate::{
     scan_state::{

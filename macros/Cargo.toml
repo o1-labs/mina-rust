@@ -1,5 +1,5 @@
 [package]
-name = "openmina-macros"
+name = "mina-macros"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -14,7 +14,7 @@ quote = "1.0.35"
 syn = "2.0.53"
 
 [dev-dependencies]
-openmina-core = { path = "../core" }
+mina-core = { path = "../core" }
 tracing = "0.1.40"
 rust-format = { version = "0.3", features = ["token_stream"] }
 anyhow = "1.0.81"

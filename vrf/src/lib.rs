@@ -2,9 +2,9 @@ use ark_ec::AffineCurve;
 use ark_ff::PrimeField;
 use ledger::AccountIndex;
 use message::VrfMessage;
+use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::v2::EpochSeed;
 use num::{rational::Ratio, BigInt, ToPrimitive};
-use openmina_node_account::AccountPublicKey;
 use output::VrfOutput;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -175,11 +175,11 @@ mod test {
     use ledger::AccountIndex;
     use num::BigInt;
 
+    use mina_node_account::AccountSecretKey;
     use mina_p2p_messages::{
         bigint::BigInt as MinaBigInt,
         v2::{EpochSeed, MinaBaseEpochSeedStableV1},
     };
-    use openmina_node_account::AccountSecretKey;
 
     use crate::{genesis_vrf, keypair_from_bs58_string, VrfEvaluationInput, VrfEvaluationOutput};
 

@@ -17,8 +17,8 @@ pub fn replayer() -> P2pConnectionOutgoingInitOpts {
 }
 
 pub fn devnet() -> Vec<ListenerNode> {
-    let seeds = std::env::var("OPENMINA_SCENARIO_SEEDS")
-        .unwrap_or_else(|_| node::p2p::DEVNET_SEEDS.join(" "));
+    let seeds =
+        std::env::var("MINA_SCENARIO_SEEDS").unwrap_or_else(|_| node::p2p::DEVNET_SEEDS.join(" "));
     seeds
         .split_whitespace()
         .map(P2pConnectionOutgoingInitOpts::from_str)

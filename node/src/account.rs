@@ -1,1 +1,1 @@
-pub use openmina_node_account::*;
+pub use mina_node_account::*;

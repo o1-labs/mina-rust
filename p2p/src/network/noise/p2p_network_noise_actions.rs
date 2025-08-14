@@ -1,6 +1,6 @@
 use super::p2p_network_noise_state::Sk;
 use crate::{ConnectionAddr, Data, P2pNetworkAction, P2pState, PeerId};
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

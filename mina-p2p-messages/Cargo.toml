@@ -25,7 +25,7 @@ strum_macros = "0.26.4"
 thiserror = "1.0.32"
 time = "0.3.36"
 
-openmina-macros = { path = "../macros" }
+mina-macros = { path = "../macros" }
 
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }

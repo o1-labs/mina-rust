@@ -1,4 +1,4 @@
-name: Openmina CI
+name: Mina CI
 on:
   push:
     branches: [ main, develop ]
@@ -15,7 +15,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: full
-  OPENMINA_PANIC_ON_BUG: true
+  MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
   RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
 
@@ -165,7 +165,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bin-${{ github.sha }}
-          path: target/release/openmina
+          path: target/release/mina
           retention-days: 7
 
   build-wasm:
@@ -331,7 +331,7 @@ jobs:
       options: --volume debugger_data:/tmp/db
     env:
       # to allow local addrs discovery
-      OPENMINA_DISCOVERY_FILTER_ADDR: false
+      MINA_DISCOVERY_FILTER_ADDR: false
       # to allow connection with replayer
       # TODO: remove when replayer supports identify
       KEEP_CONNECTION_WITH_UNKNOWN_STREAM: true
@@ -417,7 +417,7 @@ jobs:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
     env:
       # to allow local addrs discovery
-      OPENMINA_DISCOVERY_FILTER_ADDR: false
+      MINA_DISCOVERY_FILTER_ADDR: false
     strategy:
       matrix:
         test: [record_replay, webrtc_record_replay]
@@ -450,7 +450,7 @@ jobs:
     needs: [ build, build-tests ]
     runs-on: ubuntu-24.04
     env:
-      OPENMINA_HOME: data
+      MINA_HOME: data
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
 
     services:
@@ -479,7 +479,7 @@ jobs:
 
       - name: Fix permissions
         run: |
-          chmod +x bootstrap openmina
+          chmod +x bootstrap mina
 
       # TODO: use curl
       - name: Wait for the debugger
@@ -488,13 +488,13 @@ jobs:
 
       - name: Bootstrap node
         env:
-          OPENMINA_COMMAND: openmina
+          MINA_COMMAND: mina
           NO_PEER_DISCOVERY: "true"
-          OUT_PATH: ${{ env.OPENMINA_HOME }}/logs/bootstrap_output
+          OUT_PATH: ${{ env.MINA_HOME }}/logs/bootstrap_output
           RECORD: state-with-input-actions
         run: |
           mkdir -p $OUT_PATH
-          PATH=$PATH:$(pwd) OPENMINA_COMMAND=openmina NO_PEER_DISCOVERY=true ./bootstrap --nocapture || {
+          PATH=$PATH:$(pwd) MINA_COMMAND=mina NO_PEER_DISCOVERY=true ./bootstrap --nocapture || {
             echo "::group::Stderr"
             cat $OUT_PATH.stderr
             echo "::endgroup::"
@@ -505,7 +505,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bootstrap-logs-${{ github.sha }}
-          path: ${{ env.OPENMINA_HOME }}/logs/*
+          path: ${{ env.MINA_HOME }}/logs/*
           retention-days: 7
         if: ${{ failure() }}
 
@@ -513,7 +513,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: bootstrap-record-${{ github.sha }}
-          path: ${{ env.OPENMINA_HOME }}/recorder/*
+          path: ${{ env.MINA_HOME }}/recorder/*
           retention-days: 7
         if: ${{ failure() }}
 

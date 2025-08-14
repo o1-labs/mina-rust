@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
+use mina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
 use quick_protobuf::{serialize_into_vec, BytesReader};
 use redux::ActionWithMeta;
 

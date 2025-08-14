@@ -1,4 +1,4 @@
-use openmina_node_testing::scenarios::p2p::basic_connection_handling::{
+use mina_node_testing::scenarios::p2p::basic_connection_handling::{
     AllNodesConnectionsAreSymmetric, MaxNumberOfPeersIncoming, MaxNumberOfPeersIs1,
     SeedConnectionsAreSymmetric, SimultaneousConnections,
 };

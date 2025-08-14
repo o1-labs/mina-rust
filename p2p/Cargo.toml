@@ -57,14 +57,14 @@ crypto-bigint = { version = "0.5.5", features = [
   "serde",
   "alloc",
 ] }
-openmina-core = { path = "../core" }
-openmina-macros = { path = "../macros" }
+mina-core = { path = "../core" }
+mina-macros = { path = "../macros" }
 quick-protobuf = "0.8.1"
 salsa-simple = { path = "../tools/salsa-simple" }
 
 prost = { version = "0.12.4" }
 
-openmina-fuzzer = { path = "../fuzzer", optional = true }
+mina-fuzzer = { path = "../fuzzer", optional = true }
 
 [build-dependencies]
 prost-build = { version = "0.14.1" }
@@ -123,4 +123,4 @@ p2p-webrtc = ["p2p-webrtc-rs"]
 p2p-webrtc-rs = ["webrtc", "rcgen"]
 p2p-webrtc-cpp = ["datachannel"]
 p2p-libp2p = ["fuzzing", "dep:reqwest", "dep:faster-stun"]
-fuzzing = ["openmina-fuzzer", "openmina-core/fuzzing"]
+fuzzing = ["mina-fuzzer", "mina-core/fuzzing"]

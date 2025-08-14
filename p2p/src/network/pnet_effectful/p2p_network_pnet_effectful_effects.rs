@@ -1,4 +1,4 @@
-use openmina_core::fuzzed_maybe;
+use mina_core::fuzzed_maybe;
 
 use super::P2pNetworkPnetEffectfulAction;
 use crate::{P2pMioService, P2pNetworkSelectAction, SelectKind};

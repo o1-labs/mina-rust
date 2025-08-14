@@ -188,10 +188,10 @@ export DATABASE_URL="sqlite:///tmp/heartbeats.db"
 
 ```bash
 # For archive node development
-export OPENMINA_ARCHIVE_ADDRESS="http://localhost:3007"
-export PG_USER="openmina"
-export PG_PW="openminaopenmina"
-export PG_DB="openmina_archive"
+export MINA_ARCHIVE_ADDRESS="http://localhost:3007"
+export PG_USER="mina"
+export PG_PW="minamina"
+export PG_DB="mina_archive"
 ```
 
 ## Architecture Overview
@@ -206,7 +206,7 @@ state machine pattern, and component organization, please see the
 
 ```bash
 # Run a basic node (after building)
-./target/release/openmina node --network devnet
+./target/release/mina node --network devnet
 ```
 
 ### Archive Node
@@ -241,7 +241,7 @@ The Mina Rust Node uses structured logging with different levels:
 export RUST_LOG=debug
 
 # Run with verbose logging
-RUST_LOG=trace ./target/release/openmina node --network devnet
+RUST_LOG=trace ./target/release/mina node --network devnet
 ```
 
 ### Frontend Development
@@ -264,7 +264,7 @@ The Mina Rust Node includes a comprehensive testing framework:
 make build-testing
 
 # Run specific test scenarios
-./target/release/openmina-node-testing --help
+./target/release/mina-node-testing --help
 ```
 
 ## Next Steps
@@ -282,12 +282,12 @@ make build-testing
 ## Getting Help
 
 - **Documentation**:
-  [https://o1-labs.github.io/openmina/](https://o1-labs.github.io/openmina/)
+  [https://o1-labs.github.io/mina-rust/](https://o1-labs.github.io/mina-rust/)
 - **Discord**:
-  [OpenMina Community](https://discord.com/channels/484437221055922177/1290662938734231552)
+  [Mina Rust Community](https://discord.com/channels/484437221055922177/1290662938734231552)
 - **Forums**: [Mina Protocol Forums](https://forums.minaprotocol.com/)
 - **Issues**: [GitHub Issues](https://github.com/o1-labs/mina-rust/issues)
 - **API Docs**:
-  [Rust Documentation](https://o1-labs.github.io/openmina/api-docs/)
+  [Rust Documentation](https://o1-labs.github.io/mina-rust/api-docs/)
 
 Welcome to the Mina Rust Node development community! 🎉

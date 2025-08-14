@@ -4,7 +4,7 @@ use base64::Engine;
 use ed25519_dalek::{
     ed25519::signature::SignerMut, pkcs8::EncodePrivateKey as _, SigningKey as Ed25519SecretKey,
 };
-use openmina_core::{EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError};
+use mina_core::{EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError};
 use rand::{CryptoRng, Rng};
 use serde::{Deserialize, Serialize};
 use zeroize::Zeroizing;

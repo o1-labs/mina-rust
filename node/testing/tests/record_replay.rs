@@ -1,4 +1,4 @@
-use openmina_node_testing::scenarios::record_replay::{
+use mina_node_testing::scenarios::record_replay::{
     block_production::RecordReplayBlockProduction, bootstrap::RecordReplayBootstrap,
 };
 

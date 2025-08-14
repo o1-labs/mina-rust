@@ -1,5 +1,5 @@
+use mina_core::channels::Aborted;
 use node::{core::thread, p2p::service_impl::TaskSpawner};
-use openmina_core::channels::Aborted;
 
 #[derive(Clone)]
 pub struct P2pTaskSpawner {
@@ -23,7 +23,7 @@ impl TaskSpawner for P2pTaskSpawner {
             .build()
             .unwrap();
         thread::Builder::new()
-            .name(format!("openmina_p2p_{name}"))
+            .name(format!("mina_p2p_{name}"))
             .spawn(move || {
                 let fut = async {
                     tokio::select! {

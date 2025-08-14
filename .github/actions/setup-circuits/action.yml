@@ -1,5 +1,5 @@
 name: 'Download Circuit Files'
-description: 'Download required circuit files for OpenMina'
+description: 'Download required circuit files for Mina'
 runs:
   using: 'composite'
   steps:

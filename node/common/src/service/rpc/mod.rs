@@ -139,7 +139,7 @@ macro_rules! state_field_filter {
 /// field, returns [None].
 ///
 /// ```ignore
-/// use openmina_node_native::rpc::strip_root_field;
+/// use mina_node_native::rpc::strip_root_field;
 ///
 /// let filter = strip_root_field("$.field", "field");
 /// assert_eq!(filter, Some(""));

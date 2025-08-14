@@ -7,7 +7,7 @@ pub use p2p_channels_best_tip_actions::*;
 mod p2p_channels_best_tip_reducer;
 
 use binprot_derive::{BinProtRead, BinProtWrite};
-use openmina_core::block::ArcBlock;
+use mina_core::block::ArcBlock;
 use serde::{Deserialize, Serialize};
 
 #[derive(BinProtWrite, BinProtRead, Serialize, Deserialize, Debug, Clone)]

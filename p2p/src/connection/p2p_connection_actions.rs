@@ -4,7 +4,7 @@ use super::{
     outgoing::P2pConnectionOutgoingAction,
     outgoing_effectful::P2pConnectionOutgoingEffectfulAction,
 };
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

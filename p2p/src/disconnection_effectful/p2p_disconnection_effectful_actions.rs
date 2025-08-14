@@ -1,4 +1,4 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use crate::{P2pPeerStatus, P2pState, PeerId};

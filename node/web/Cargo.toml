@@ -1,5 +1,5 @@
 [package]
-name = "openmina-node-web"
+name = "mina-node-web"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -31,9 +31,9 @@ js-sys = "0.3"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 
+mina-node-common = { path = "../common" }
 node = { path = "../../node" }
-openmina-node-common = { path = "../common" }
 
 [features]
 default = ["p2p-webrtc"]
-p2p-webrtc = ["openmina-node-common/p2p-webrtc"]
+p2p-webrtc = ["mina-node-common/p2p-webrtc"]

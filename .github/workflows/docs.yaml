@@ -161,14 +161,14 @@ jobs:
       - name: Create versioned documentation archive
         run: |
           cd website/build
-          tar -czf "../../openmina-docs-${{ steps.version.outputs.version }}.tar.gz" .
+          tar -czf "../../mina-docs-${{ steps.version.outputs.version }}.tar.gz" .
           cd ../..
-          zip -r "openmina-docs-${{ steps.version.outputs.version }}.zip" website/build
+          zip -r "mina-docs-${{ steps.version.outputs.version }}.zip" website/build
 
       - name: Upload versioned documentation as release asset
         uses: actions/upload-artifact@v4
         with:
           name: versioned-docs-${{ steps.version.outputs.version }}
           path: |
-            openmina-docs-${{ steps.version.outputs.version }}.tar.gz
-            openmina-docs-${{ steps.version.outputs.version }}.zip
+            mina-docs-${{ steps.version.outputs.version }}.tar.gz
+            mina-docs-${{ steps.version.outputs.version }}.zip

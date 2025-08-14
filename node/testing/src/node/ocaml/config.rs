@@ -136,7 +136,7 @@ impl OcamlNodeExecutable {
 
     fn docker_container_name(tmp_dir: &temp_dir::TempDir) -> String {
         let path = tmp_dir.path().file_name().unwrap().to_str().unwrap();
-        format!("openmina_testing_ocaml_{}", &path[1..])
+        format!("mina_testing_ocaml_{}", &path[1..])
     }
 
     /// Additional logic for killing the node.

@@ -18,7 +18,7 @@ use crate::{
     },
     State,
 };
-use openmina_core::consensus::ConsensusConstants;
+use mina_core::consensus::ConsensusConstants;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 

@@ -1,12 +1,12 @@
 //! WebRTC Signaling Transport Methods
 //!
 //! This module defines the different transport methods available for WebRTC signaling
-//! in OpenMina's peer-to-peer network. WebRTC requires an external signaling mechanism
+//! in Mina Rust's peer-to-peer network. WebRTC requires an external signaling mechanism
 //! to exchange connection metadata before establishing direct peer-to-peer connections.
 //!
 //! ## Signaling Transport Methods
 //!
-//! OpenMina supports multiple signaling transport methods to accommodate different
+//! The Mina Rust node supports multiple signaling transport methods to accommodate different
 //! network environments and security requirements:
 //!
 //! ### HTTP/HTTPS Direct Connections
@@ -305,7 +305,7 @@ impl FromStr for SignalingMethod {
     /// # Examples
     ///
     /// ```
-    /// use openmina::signaling_method::SignalingMethod;
+    /// use mina::signaling_method::SignalingMethod;
     ///
     /// // HTTP signaling
     /// let method: SignalingMethod = "/http/localhost/8080".parse()?;

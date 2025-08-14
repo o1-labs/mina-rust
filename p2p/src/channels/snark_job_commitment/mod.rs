@@ -7,7 +7,7 @@ pub use p2p_channels_snark_job_commitment_actions::*;
 mod p2p_channels_snark_job_commitment_reducer;
 
 use binprot_derive::{BinProtRead, BinProtWrite};
-use openmina_core::snark::SnarkJobCommitment;
+use mina_core::snark::SnarkJobCommitment;
 use serde::{Deserialize, Serialize};
 
 #[derive(BinProtWrite, BinProtRead, Serialize, Deserialize, Debug, Clone)]

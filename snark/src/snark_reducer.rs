@@ -1,4 +1,4 @@
-use openmina_core::{Substate, SubstateAccess};
+use mina_core::{Substate, SubstateAccess};
 use redux::EnablingCondition;
 
 use crate::{

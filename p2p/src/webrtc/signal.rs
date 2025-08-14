@@ -1,8 +1,8 @@
 //! WebRTC Signaling Data Structures
 //!
-//! This module defines the core signaling data structures used in OpenMina's WebRTC
-//! peer-to-peer communication system. It provides the message types for WebRTC
-//! connection establishment, including offers, answers, and connection responses.
+//! This module defines the core signaling data structures used in Mina Rust's WebRTC peer-to-peer
+//! communication system. It provides the message types for WebRTC connection establishment,
+//! including offers, answers, and connection responses.
 //!
 //! ## Overview
 //!
@@ -37,7 +37,7 @@
 use binprot_derive::{BinProtRead, BinProtWrite};
 use derive_more::From;
 use malloc_size_of_derive::MallocSizeOf;
-use openmina_core::ChainId;
+use mina_core::ChainId;
 use serde::{Deserialize, Serialize};
 
 use crate::identity::{EncryptableType, PeerId, PublicKey};

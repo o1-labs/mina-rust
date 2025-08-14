@@ -1,5 +1,5 @@
 #[cfg(feature = "p2p-webrtc")]
-use openmina_node_testing::{scenarios::Scenarios, setup};
+use mina_node_testing::{scenarios::Scenarios, setup};
 
 #[cfg(feature = "p2p-webrtc")]
 #[test]

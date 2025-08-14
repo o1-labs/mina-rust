@@ -12,8 +12,8 @@ mod transition_frontier_sync_ledger_reducer;
 mod transition_frontier_sync_ledger_effects;
 pub use transition_frontier_sync_ledger_effects::*;
 
+use mina_core::block::ArcBlockWithHash;
 use mina_p2p_messages::v2::{LedgerHash, MinaBaseStagedLedgerHashStableV1, StateHash};
-use openmina_core::block::ArcBlockWithHash;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, Copy)]

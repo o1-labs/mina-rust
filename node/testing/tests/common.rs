@@ -17,7 +17,7 @@ macro_rules! scenario_test {
         #[tokio::test]
         $(#[$meta])?
         async fn $name() {
-            use openmina_node_testing::{
+            use mina_node_testing::{
                 cluster::Cluster,
                 scenarios::{ClusterRunner, Scenarios},
                 setup_without_rt, wait_for_other_tests,

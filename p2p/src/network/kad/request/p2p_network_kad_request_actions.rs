@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use redux::{Callback, EnablingCondition};
 use serde::{Deserialize, Serialize};
 

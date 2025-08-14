@@ -19,13 +19,13 @@ crate-type = ["staticlib", "cdylib", "lib"]
 [dependencies]
 juniper = { workspace = true }
 kimchi = { workspace = true }
+mina-core = { path = "../core" }
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
+mina-macros = { path = "../macros" }
 mina-poseidon = { workspace = true }
 mina-signer = { workspace = true }
 o1-utils = { workspace = true }
-openmina-core = { path = "../core" }
-openmina-macros = { path = "../macros" }
 poly-commitment = { workspace = true }
 poseidon = { workspace = true }
 redux = { workspace = true }
