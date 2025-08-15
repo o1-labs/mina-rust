@@ -5,10 +5,10 @@ sidebar_position: 4
 # Updating the OCaml Node
 
 When a new Mina Protocol release becomes available, you need to update the OCaml
-node references in OpenMina. The OCaml node releases are used to verify that the
-current OpenMina version maintains compatibility with the official Mina Protocol
-implementation through end-to-end and scenario testing. This guide walks through
-the process based on the workflow used in
+node references in the Mina Rust Node. The OCaml node releases are used to
+verify that the current Mina Rust Node version maintains compatibility with the
+official Mina Protocol implementation through end-to-end and scenario testing.
+This guide walks through the process based on the workflow used in
 [PR #1236](https://github.com/o1-labs/openmina/pull/1236).
 
 ## 1. Check for New Releases
@@ -25,7 +25,8 @@ configuration files. You'll need:
 
 ## 2. Automated Update with Script
 
-OpenMina provides an automation script to handle the bulk of the update process:
+The Mina Rust Node provides an automation script to handle the bulk of the
+update process:
 
 ```bash
 ./website/docs/developers/scripts/update-ocaml-node.sh <old_hash> <new_hash> <old_version> <new_version>
@@ -71,8 +72,8 @@ After making updates:
 1. **Build and Test**: Run the test suite to ensure compatibility
 2. **Check References**: Verify all version references are updated consistently
 3. **Configuration Validation**: Ensure new config files are properly referenced
-4. **End-to-End Testing**: Run scenario tests to verify OpenMina compatibility
-   with the updated OCaml node
+4. **End-to-End Testing**: Run scenario tests to verify Mina Rust Node
+   compatibility with the updated OCaml node
 5. **CI Pipeline**: Verify that automated testing passes with new versions
 
 ## 5. Commit Structure
@@ -88,6 +89,6 @@ Following the pattern from commit
 ## Related Resources
 
 - [Mina Protocol Releases](https://github.com/MinaProtocol/mina/releases/)
-- [OpenMina Architecture Documentation](./architecture.md)
+- [Mina Rust Node Architecture Documentation](./architecture.md)
 - [Example PR #1236](https://github.com/o1-labs/openmina/pull/1236)
-- [Node Runners Guide](../node-runners/getting-started.md)
+- [Node Operators Guide](../node-operators/getting-started.md)

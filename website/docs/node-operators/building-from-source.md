@@ -2,10 +2,10 @@
 
 ## Building from Source
 
-For detailed instructions on how to build OpenMina from source, including system
-dependencies, toolchain setup, and platform-specific instructions, please refer
-to the [Getting Started for Developers](../developers/getting-started.mdx)
-guide.
+For detailed instructions on how to build the Mina Rust Node from source,
+including system dependencies, toolchain setup, and platform-specific
+instructions, please refer to the
+[Getting Started for Developers](../developers/getting-started.mdx) guide.
 
 The developer guide includes:
 
@@ -16,8 +16,8 @@ The developer guide includes:
 
 ## Running the Node
 
-Once you have built OpenMina following the developer guide, you can run the node
-using the provided Makefile targets:
+Once you have built the Mina Rust Node following the developer guide, you can
+run the node using the provided Makefile targets:
 
 ### Available Make Targets
 

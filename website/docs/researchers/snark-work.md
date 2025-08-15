@@ -3,7 +3,7 @@ sidebar_position: 2
 title: SNARK Work
 description:
   Understanding how SNARK proofs are generated, committed, and distributed in
-  the OpenMina network
+  the Mina Rust Node network
 ---
 
 # SNARK Work
@@ -83,7 +83,8 @@ node other peers in the network through direct WebRTC P2P communication.
 
 ### Receiving a SNARK from an OCaml node
 
-The Rust node receives a SNARK proof from an OCaml node (an OCaml SNARK worker).
+The Mina Rust Node receives a SNARK proof from an OCaml node (an OCaml SNARK
+worker).
 
 ![image](https://github.com/openmina/openmina/assets/60480123/fbde0660-df6d-4184-8d8c-b2f8832b711b)
 
@@ -108,9 +109,9 @@ WebRTC.
 
 ![Image](https://github.com/openmina/openmina/assets/60480123/46ec6804-b767-4054-aaeb-0287ab9cda09)
 
-### Receiving SNARK from Rust node
+### Receiving SNARK from Mina Rust Node
 
-Rust node sends SNARK via P2P.
+The Mina Rust Node sends SNARK via P2P.
 
 ![Image](https://github.com/openmina/openmina/assets/60480123/067de8a5-246e-4b59-a85b-7f2393cc19c3)
 
@@ -152,6 +153,6 @@ The SNARK proof is then sent to the SNARK pool.
 
 ![SNARK proof broadcast diagram](https://github.com/openmina/openmina/assets/60480123/7c937f0b-9e4c-491e-a785-86ecf68754ff)
 
-From here, it is broadcast to Rust nodes directly via WebRTC P2P, and to OCaml
-nodes indirectly via the `mina/snark-work/1.0.0` (SNARK pool diff) topic of the
-PubSub P2P network.
+From here, it is broadcast to Mina Rust Node instances directly via WebRTC P2P,
+and to OCaml nodes indirectly via the `mina/snark-work/1.0.0` (SNARK pool diff)
+topic of the PubSub P2P network.

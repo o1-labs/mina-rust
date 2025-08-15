@@ -2,22 +2,23 @@
 sidebar_position: 4
 title: P2P Networking Overview
 description:
-  Comprehensive guide to OpenMina's peer-to-peer networking implementation
+  Comprehensive guide to the Mina Rust Node's peer-to-peer networking
+  implementation
 slug: /developers/p2p-networking
 ---
 
-# P2P Networking in OpenMina
+# P2P Networking in the Mina Rust Node
 
-This document provides a comprehensive overview of OpenMina's peer-to-peer
-networking implementation, covering the design goals, architecture, and key
-features that enable secure, scalable, and decentralized communication.
+This document provides a comprehensive overview of the Mina Rust Node's
+peer-to-peer networking implementation, covering the design goals, architecture,
+and key features that enable secure, scalable, and decentralized communication.
 
 ## Design Goals
 
 In blockchain networks, particularly in Mina, **security**,
 **decentralization**, **scalability**, and **eventual consistency** (in that
-order) are crucial. OpenMina's P2P design achieves these goals while building on
-Mina Protocol's existing architecture.
+order) are crucial. The Mina Rust Node's P2P design achieves these goals while
+building on Mina Protocol's existing architecture.
 
 ### Security
 
@@ -58,8 +59,8 @@ transaction/snark pools) without crude rebroadcasts.
 
 ## Transport Layer
 
-OpenMina uses WebRTC as the primary transport protocol for peer-to-peer
-communication. WebRTC provides several advantages for security and
+The Mina Rust Node uses WebRTC as the primary transport protocol for
+peer-to-peer communication. WebRTC provides several advantages for security and
 decentralization:
 
 - **NAT Traversal**: Built-in support for connecting peers behind NAT routers
@@ -84,7 +85,7 @@ from:
 
 ### Long Polling Approach
 
-OpenMina implements a poll-based approach resembling
+The Mina Rust Node implements a poll-based approach resembling
 [long polling](https://www.pubnub.com/guides/long-polling/):
 
 **Core Principle**: Instead of peers flooding with messages, recipients must
@@ -109,7 +110,8 @@ reason about peer state and adjust messages accordingly.
 ### Connection Establishment
 
 WebRTC connections require exchanging **Offer** and **Answer** messages through
-a process called **Signaling**. OpenMina supports multiple signaling methods:
+a process called **Signaling**. The Mina Rust Node supports multiple signaling
+methods:
 
 #### HTTP API Signaling
 
@@ -129,7 +131,7 @@ a process called **Signaling**. OpenMina supports multiple signaling methods:
 
 ### Communication Channels
 
-OpenMina uses different
+The Mina Rust Node uses different
 [WebRTC DataChannels](https://developer.mozilla.org/en-US/docs/Web/API/RTCDataChannel)
 for each protocol, providing isolation and optimized handling:
 
@@ -152,7 +154,7 @@ sending a response, maintaining the poll-based architecture.
 
 ### Efficient Pool Propagation
 
-OpenMina achieves scalable, eventually consistent, and efficient pool
+The Mina Rust Node achieves scalable, eventually consistent, and efficient pool
 propagation by leveraging the poll-based approach:
 
 #### Consistency Strategy
@@ -180,12 +182,13 @@ efficiently tracks sent messages:
 
 ## OCaml Node Compatibility
 
-For compatibility with existing OCaml nodes, OpenMina includes a
+For compatibility with existing OCaml nodes, the Mina Rust Node includes a
 [libp2p implementation](libp2p):
 
 - **Inter-Implementation Communication**: OCaml ↔ Rust via LibP2P
 - **Intra-Implementation Communication**: Rust ↔ Rust via WebRTC
-- **Gradual Migration**: Enables smooth transition as more nodes adopt OpenMina
+- **Gradual Migration**: Enables smooth transition as more nodes adopt the Mina
+  Rust Node
 
 ## Future Enhancements
 
@@ -219,5 +222,5 @@ increases propagation speed across the network.
 
 - [WebRTC Implementation](webrtc) - Detailed WebRTC transport layer
   documentation
-- [Architecture Overview](architecture) - Overall OpenMina architecture
+- [Architecture Overview](architecture) - Overall Mina Rust Node architecture
 - [Getting Started](getting-started) - Development environment setup
