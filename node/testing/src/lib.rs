@@ -36,7 +36,7 @@ pub fn setup() -> tokio::runtime::Runtime {
 pub fn setup_without_rt() {
     lazy_static::lazy_static! {
         static ref INIT: () = {
-            let level = std::env::var("OPENMINA_TRACING_LEVEL").ok().and_then(|level| {
+            let level = std::env::var("MINA_TRACING_LEVEL").ok().and_then(|level| {
                 match level.parse() {
                     Ok(v) => Some(v),
                     Err(e) => {

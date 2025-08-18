@@ -27,7 +27,7 @@ pub enum MiscCommand {
 
 #[derive(Debug, Clone, clap::Args)]
 pub struct P2PKeyPair {
-    #[arg(long, short = 's', env = "OPENMINA_P2P_SEC_KEY")]
+    #[arg(long, short = 's', env = "MINA_P2P_SEC_KEY")]
     p2p_secret_key: Option<SecretKey>,
 }
 
@@ -48,7 +48,7 @@ impl P2PKeyPair {
 
 #[derive(Debug, Clone, clap::Args)]
 pub struct MinaKeyPair {
-    #[arg(long, short = 's', env = "OPENMINA_SEC_KEY")]
+    #[arg(long, short = 's', env = "MINA_SEC_KEY")]
     secret_key: Option<AccountSecretKey>,
 }
 
@@ -93,7 +93,7 @@ impl MinaKeyPair {
 pub struct MinaEncryptedKey {
     /// Optional existing secret key to encrypt. If not provided, generates a
     /// new random key
-    #[arg(long, short = 's', env = "OPENMINA_ENC_KEY")]
+    #[arg(long, short = 's', env = "MINA_ENC_KEY")]
     secret_key: Option<AccountSecretKey>,
 
     /// Password to encrypt the key file with. Can be provided via

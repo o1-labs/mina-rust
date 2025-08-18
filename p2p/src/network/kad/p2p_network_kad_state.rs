@@ -70,7 +70,7 @@ impl Default for P2pNetworkKadState {
             requests: Default::default(),
             streams: Default::default(),
             status: Default::default(),
-            filter_addrs: std::env::var("OPENMINA_DISCOVERY_FILTER_ADDR")
+            filter_addrs: std::env::var("MINA_DISCOVERY_FILTER_ADDR")
                 .ok()
                 .and_then(|s| s.parse().ok())
                 .unwrap_or(true),

@@ -161,7 +161,7 @@ impl Default for RTCConfigIceServers {
         Self(vec![
             RTCConfigIceServer {
                 urls: vec!["stun:65.109.110.75:3478".to_owned()],
-                username: Some("openmina".to_owned()),
+                username: Some("mina".to_owned()),
                 credential: Some("webrtc".to_owned()),
             },
             RTCConfigIceServer {

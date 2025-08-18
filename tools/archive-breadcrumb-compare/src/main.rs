@@ -18,11 +18,11 @@ struct Args {
     ocaml_node_dir: PathBuf,
 
     /// Openmina Node GraphQL endpoint
-    #[arg(env = "OPENMINA_NODE_GRAPHQL")]
+    #[arg(env = "MINA_NODE_GRAPHQL")]
     openmina_node_graphql: Option<String>,
 
     /// Openmina Node directory path
-    #[arg(env = "OPENMINA_NODE_DIR", required = true)]
+    #[arg(env = "MINA_NODE_DIR", required = true)]
     openmina_node_dir: PathBuf,
 
     /// Check for missing breadcrumbs

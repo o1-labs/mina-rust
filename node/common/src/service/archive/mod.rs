@@ -64,7 +64,7 @@ impl ArchiveServiceClients {
         };
 
         let local_path = if options.uses_local_precomputed_storage() {
-            let env_path = env::var("OPENMINA_LOCAL_PRECOMPUTED_STORAGE_PATH");
+            let env_path = env::var("MINA_LOCAL_PRECOMPUTED_STORAGE_PATH");
             let default = format!("{}/archive-precomputed", work_dir);
             Some(env_path.unwrap_or(default))
         } else {
@@ -72,8 +72,8 @@ impl ArchiveServiceClients {
         };
 
         let archiver_address = if options.uses_archiver_process() {
-            let address = std::env::var("OPENMINA_ARCHIVE_ADDRESS")
-                .expect("OPENMINA_ARCHIVE_ADDRESS is not set");
+            let address =
+                std::env::var("MINA_ARCHIVE_ADDRESS").expect("MINA_ARCHIVE_ADDRESS is not set");
             let address = reqwest::Url::parse(&address).expect("Invalid URL");
 
             // Convert URL to SocketAddr

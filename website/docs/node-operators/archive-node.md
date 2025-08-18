@@ -14,7 +14,7 @@ Stores blocks in a database by receiving them directly from the openmina node
 
 **Required Environment Variables**:
 
-- `OPENMINA_ARCHIVE_ADDRESS`: Network address for the archiver service
+- `MINA_ARCHIVE_ADDRESS`: Network address for the archiver service
 
 ### Local Storage (`--archive-local-storage`)
 
@@ -26,8 +26,8 @@ Stores blocks in the local filesystem
 
 **Optional Environment Variables**:
 
-- `OPENMINA_ARCHIVE_LOCAL_STORAGE_PATH`: Custom path for block storage (default:
-  ~/.openmina/archive-precomputed)
+- `MINA_ARCHIVE_LOCAL_STORAGE_PATH`: Custom path for block storage (default:
+  ~/.mina/archive-precomputed)
 
 ### GCP Storage (`--archive-gcp-storage`)
 
@@ -48,7 +48,7 @@ Uploads blocks to an AWS S3 bucket
 - `AWS_SECRET_ACCESS_KEY`: IAM user secret key
 - `AWS_DEFAULT_REGION`: AWS region name
 - `AWS_SESSION_TOKEN`: Temporary session token for temporary credentials
-- `OPENMINA_AWS_BUCKET_NAME`: Target S3 bucket name
+- `MINA_AWS_BUCKET_NAME`: Target S3 bucket name
 
 ## Redundancy
 

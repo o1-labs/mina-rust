@@ -5,14 +5,14 @@ pub mod replay;
 pub mod snark;
 
 #[derive(Debug, clap::Parser)]
-#[command(name = "openmina", about = "Openmina Cli")]
-pub struct OpenminaCli {
+#[command(name = "mina", about = "Mina Cli")]
+pub struct MinaCli {
     #[arg(
         global = true,
         long,
         value_enum,
         default_value_t = Network::Devnet,
-        env = "OPENMINA_NETWORK"
+        env = "MINA_NETWORK"
     )]
     /// Select the network (devnet or mainnet)
     pub network: Network,

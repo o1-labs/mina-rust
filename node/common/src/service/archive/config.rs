@@ -24,10 +24,10 @@ impl ArchiveStorageOptions {
 
     pub fn validate_env_vars(&self) -> Result<(), String> {
         if self.contains(ArchiveStorageOptions::ARCHIVER_PROCESS)
-            && env::var("OPENMINA_ARCHIVE_ADDRESS").is_err()
+            && env::var("MINA_ARCHIVE_ADDRESS").is_err()
         {
             return Err(
-                "OPENMINA_ARCHIVE_ADDRESS is required when ARCHIVER_PROCESS is enabled".to_string(),
+                "MINA_ARCHIVE_ADDRESS is required when ARCHIVER_PROCESS is enabled".to_string(),
             );
         }
 
@@ -58,16 +58,16 @@ impl ArchiveStorageOptions {
                 );
             }
 
-            if env::var("OPENMINA_AWS_BUCKET_NAME").is_err() {
+            if env::var("MINA_AWS_BUCKET_NAME").is_err() {
                 return Err(
-                    "OPENMINA_AWS_BUCKET_NAME is required when AWS_PRECOMPUTED_STORAGE is enabled"
+                    "MINA_AWS_BUCKET_NAME is required when AWS_PRECOMPUTED_STORAGE is enabled"
                         .to_string(),
                 );
             }
 
-            // if env::var("OPENMINA_AWS_BUCKET_PATH").is_err() {
+            // if env::var("MINA_AWS_BUCKET_PATH").is_err() {
             //     return Err(
-            //         "OPENMINA_AWS_BUCKET_PATH is required when AWS_PRECOMPUTED_STORAGE is enabled"
+            //         "MINA_AWS_BUCKET_PATH is required when AWS_PRECOMPUTED_STORAGE is enabled"
             //             .to_string(),
             //     );
             // }

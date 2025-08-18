@@ -15,10 +15,10 @@ PG_HOST	?= localhost
 PG_PORT	?= 5432
 
 # Block producer configuration
-PRODUCER_KEY_FILENAME ?= ./openmina-workdir/producer-key
+PRODUCER_KEY_FILENAME ?= ./mina-workdir/producer-key
 COINBASE_RECEIVER ?=
-OPENMINA_LIBP2P_EXTERNAL_IP ?=
-OPENMINA_LIBP2P_PORT ?= 8302
+MINA_LIBP2P_EXTERNAL_IP ?=
+MINA_LIBP2P_PORT ?= 8302
 
 # Utilities
 NETWORK ?= devnet
@@ -91,7 +91,7 @@ build-wasm: ## Build WebAssembly node
 # Update ./.gitignore accordingly if the out-dir is changed
 	@wasm-bindgen --keep-debug --web \
 		--out-dir pkg \
-		target/wasm32-unknown-unknown/release/openmina_node_web.wasm
+		target/wasm32-unknown-unknown/release/mina_node_web.wasm
 
 .PHONY: check
 check: ## Check code for compilation errors
@@ -339,7 +339,7 @@ run-node: build-release ## Run a basic node (NETWORK=devnet, VERBOSITY=info)
 # Postgres related targets + archive node
 .PHONY: run-archive
 run-archive: build-release ## Run an archive node with local storage
-	OPENMINA_ARCHIVE_ADDRESS=$(OPENMINA_ARCHIVE_ADDRESS) \
+	MINA_ARCHIVE_ADDRESS=$(MINA_ARCHIVE_ADDRESS) \
 		cargo run --bin mina \
 		--release -- \
 		node \
@@ -361,8 +361,8 @@ run-block-producer: build-release ## Run a block producer node on $(NETWORK) net
 		node \
 		--producer-key $(PRODUCER_KEY_FILENAME) \
 		$(if $(COINBASE_RECEIVER),--coinbase-receiver $(COINBASE_RECEIVER)) \
-		$(if $(OPENMINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(OPENMINA_LIBP2P_EXTERNAL_IP)) \
-		$(if $(OPENMINA_LIBP2P_PORT),--libp2p-port $(OPENMINA_LIBP2P_PORT)) \
+		$(if $(MINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(MINA_LIBP2P_EXTERNAL_IP)) \
+		$(if $(MINA_LIBP2P_PORT),--libp2p-port $(MINA_LIBP2P_PORT)) \
 		--network $(NETWORK)
 
 
@@ -377,7 +377,7 @@ generate-block-producer-key: build-release ## Generate a new block producer key 
 		echo "Or remove the existing key first to regenerate it."; \
 		exit 1; \
 	fi
-	@mkdir -p openmina-workdir
+	@mkdir -p mina-workdir
 	@echo "Generating new encrypted block producer key..."
 	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin mina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
 	PUBLIC_KEY=$$(echo "$$OUTPUT" | grep "public key:" | cut -d' ' -f3); \

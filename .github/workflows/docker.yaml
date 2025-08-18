@@ -1,4 +1,4 @@
-name: OpenMina Docker Build
+name: Mina Docker Build
 on:
   workflow_dispatch: {}
   push:
@@ -11,7 +11,7 @@ env:
     REGISTRY_FRONTEND_IMAGE: openmina/frontend
 
 jobs:
-  build-openmina-node-image:
+  build-mina-node-image:
     timeout-minutes: 40
     strategy:
       matrix:
@@ -63,7 +63,7 @@ jobs:
           retention-days: 1
 
   # Frontend
-  build-openmina-frontend-image:
+  build-mina-frontend-image:
     timeout-minutes: 5
     strategy:
       matrix:

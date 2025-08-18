@@ -1,10 +1,10 @@
-# OpenMina Codebase Navigation Guide
+# Mina Codebase Navigation Guide
 
-This file helps understand and navigate the OpenMina codebase structure.
+This file helps understand and navigate the Mina codebase structure.
 
 ## Project Overview
 
-OpenMina is a Rust implementation of the Mina Protocol, a lightweight blockchain
+Mina is a Rust implementation of the Mina Protocol, a lightweight blockchain
 using zero-knowledge proofs. It follows a Redux-style state machine architecture
 for predictable, debuggable behavior.
 
@@ -127,7 +127,7 @@ Each component directory contains a `summary.md` file documenting:
 
 ## Documentation Website
 
-OpenMina includes a comprehensive documentation website built with Docusaurus:
+Mina includes a comprehensive documentation website built with Docusaurus:
 
 ### Quick Access
 

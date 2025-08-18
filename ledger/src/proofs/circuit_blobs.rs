@@ -35,12 +35,7 @@ pub fn fetch_blocking(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
 
     let home_base_dir = home_base_dir();
     let found = None
-        .or_else(|| {
-            try_base_dir(
-                std::env::var("OPENMINA_CIRCUIT_BLOBS_BASE_DIR").ok()?,
-                filename,
-            )
-        })
+        .or_else(|| try_base_dir(std::env::var("MINA_CIRCUIT_BLOBS_BASE_DIR").ok()?, filename))
         .or_else(|| try_base_dir(env!("CARGO_MANIFEST_DIR").to_string(), filename))
         .or_else(|| try_base_dir(home_base_dir.clone()?, filename))
         .or_else(|| try_base_dir("/usr/local/lib/openmina/circuit-blobs", filename));

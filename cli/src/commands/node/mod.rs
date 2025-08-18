@@ -53,29 +53,24 @@ use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuil
 pub struct Node {
     /// Working directory for node data, logs, and configuration files
     ///
-    /// Can be set via OPENMINA_HOME environment variable.
+    /// Can be set via MINA_HOME environment variable.
     /// Defaults to ~/.openmina
-    #[arg(
-        long,
-        short = 'd',
-        default_value = "~/.openmina",
-        env = "OPENMINA_HOME"
-    )]
+    #[arg(long, short = 'd', default_value = "~/.openmina", env = "MINA_HOME")]
     pub work_dir: String,
 
     /// P2P networking secret key for node identity
     ///
     /// If not provided, a new key will be generated automatically.
-    /// Can be set via OPENMINA_P2P_SEC_KEY environment variable.
-    #[arg(long, short = 's', env = "OPENMINA_P2P_SEC_KEY")]
+    /// Can be set via MINA_P2P_SEC_KEY environment variable.
+    #[arg(long, short = 's', env = "MINA_P2P_SEC_KEY")]
     pub p2p_secret_key: Option<SecretKey>,
 
-    // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+    // warning, this overrides `MINA_P2P_SEC_KEY`
     /// Compatibility with OCaml Mina node
     #[arg(long)]
     pub libp2p_keypair: Option<String>,
 
-    // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+    // warning, this overrides `MINA_P2P_SEC_KEY`
     /// Compatibility with OCaml Mina node
     #[arg(env = "MINA_LIBP2P_PASS")]
     pub libp2p_password: Option<String>,
@@ -110,15 +105,11 @@ pub struct Node {
     pub verbosity: Level,
 
     /// Disable filesystem logging
-    #[arg(
-        long,
-        env = "OPENMINA_DISABLE_FILESYSTEM_LOGGING",
-        default_value_t = false
-    )]
+    #[arg(long, env = "MINA_DISABLE_FILESYSTEM_LOGGING", default_value_t = false)]
     pub disable_filesystem_logging: bool,
 
     /// Specify custom path for log files
-    #[arg(long, env = "OPENMINA_LOG_PATH", default_value = "$OPENMINA_HOME")]
+    #[arg(long, env = "MINA_LOG_PATH", default_value = "$MINA_HOME")]
     pub log_path: String,
 
     /// Initial peers to connect to on startup
@@ -240,14 +231,14 @@ pub struct Node {
     /// Enable local precomputed storage.
     ///
     /// This option requires the following environment variables to be set:
-    /// - OPENMINA_ARCHIVE_LOCAL_STORAGE_PATH (otherwise the path to the working directory will be used)
+    /// - MINA_ARCHIVE_LOCAL_STORAGE_PATH (otherwise the path to the working directory will be used)
     #[arg(long, env)]
     pub archive_local_storage: bool,
 
     /// Enable archiver process.
     ///
     /// This requires the following environment variables to be set:
-    /// - OPENMINA_ARCHIVE_ADDRESS
+    /// - MINA_ARCHIVE_ADDRESS
     #[arg(long, env)]
     pub archive_archiver_process: bool,
 
@@ -267,7 +258,7 @@ pub struct Node {
     /// - AWS_SECRET_ACCESS_KEY
     /// - AWS_SESSION_TOKEN
     /// - AWS_DEFAULT_REGION
-    /// - OPENMINA_AWS_BUCKET_NAME
+    /// - MINA_AWS_BUCKET_NAME
     #[arg(long, env)]
     pub archive_aws_storage: bool,
 
@@ -280,7 +271,7 @@ impl Node {
         let work_dir = shellexpand::full(&self.work_dir).unwrap().into_owned();
 
         let _guard = if !self.disable_filesystem_logging {
-            let log_output_dir = if self.log_path == "$OPENMINA_HOME" {
+            let log_output_dir = if self.log_path == "$MINA_HOME" {
                 work_dir.clone()
             } else {
                 self.log_path.clone()
@@ -350,7 +341,7 @@ impl Node {
             node_builder.p2p_sec_key(sec_key);
         }
 
-        // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+        // warning, this overrides `MINA_P2P_SEC_KEY`
         if let (Some(key_file), Some(password)) = (&self.libp2p_keypair, &self.libp2p_password) {
             match SecretKey::from_encrypted_file(key_file, password) {
                 Ok(sk) => {

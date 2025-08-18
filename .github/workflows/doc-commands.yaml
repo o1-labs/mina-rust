@@ -47,20 +47,20 @@ jobs:
       - name: Verify generated key file
         run: |
           echo "Verifying generated key file exists and has correct permissions..."
-          if [ ! -f "./openmina-workdir/producer-key" ]; then
+          if [ ! -f "./mina-workdir/producer-key" ]; then
             echo "❌ Producer key file was not generated"
             exit 1
           fi
 
           # Check file permissions (should be 600)
-          PERMS=$(stat -c "%a" "./openmina-workdir/producer-key")
+          PERMS=$(stat -c "%a" "./mina-workdir/producer-key")
           if [ "$PERMS" != "600" ]; then
             echo "❌ Producer key file has incorrect permissions: $PERMS (expected: 600)"
             exit 1
           fi
 
           # Check file is not empty
-          if [ ! -s "./openmina-workdir/producer-key" ]; then
+          if [ ! -s "./mina-workdir/producer-key" ]; then
             echo "❌ Producer key file is empty"
             exit 1
           fi
@@ -72,7 +72,7 @@ jobs:
           echo "Testing that generated key can be used by run-block-producer target..."
           # Run with --help to avoid actually starting the producer but verify
           # key validation passes
-          timeout 30s make run-block-producer NETWORK=devnet COINBASE_RECEIVER=$(cat ./openmina-workdir/producer-key.pub) || {
+          timeout 30s make run-block-producer NETWORK=devnet COINBASE_RECEIVER=$(cat ./mina-workdir/producer-key.pub) || {
             EXIT_CODE=$?
             if [ $EXIT_CODE -eq 124 ]; then
               echo "✅ Command started successfully (timed out as expected)"
@@ -87,34 +87,34 @@ jobs:
       - name: Test generate-block-producer-key with custom filename
         run: |
           echo "Testing generate-block-producer-key with custom PRODUCER_KEY_FILENAME..."
-          make generate-block-producer-key PRODUCER_KEY_FILENAME=./openmina-workdir/custom-producer-key
+          make generate-block-producer-key PRODUCER_KEY_FILENAME=./mina-workdir/custom-producer-key
 
           # Verify custom private key file exists
-          if [ ! -f "./openmina-workdir/custom-producer-key" ]; then
+          if [ ! -f "./mina-workdir/custom-producer-key" ]; then
             echo "❌ Custom producer key file was not generated"
             exit 1
           fi
 
           # Verify custom public key file exists
-          if [ ! -f "./openmina-workdir/custom-producer-key.pub" ]; then
+          if [ ! -f "./mina-workdir/custom-producer-key.pub" ]; then
             echo "❌ Custom producer public key file was not generated"
             exit 1
           fi
 
           # Check file permissions (should be 600 for private key)
-          PERMS=$(stat -c "%a" "./openmina-workdir/custom-producer-key")
+          PERMS=$(stat -c "%a" "./mina-workdir/custom-producer-key")
           if [ "$PERMS" != "600" ]; then
             echo "❌ Custom producer key file has incorrect permissions: $PERMS (expected: 600)"
             exit 1
           fi
 
           # Check both files are not empty
-          if [ ! -s "./openmina-workdir/custom-producer-key" ]; then
+          if [ ! -s "./mina-workdir/custom-producer-key" ]; then
             echo "❌ Custom producer key file is empty"
             exit 1
           fi
 
-          if [ ! -s "./openmina-workdir/custom-producer-key.pub" ]; then
+          if [ ! -s "./mina-workdir/custom-producer-key.pub" ]; then
             echo "❌ Custom producer public key file is empty"
             exit 1
           fi
@@ -132,7 +132,7 @@ jobs:
           fi
 
           # Try to generate keys again with custom filename (should fail)
-          if make generate-block-producer-key PRODUCER_KEY_FILENAME=./openmina-workdir/custom-producer-key 2>/dev/null; then
+          if make generate-block-producer-key PRODUCER_KEY_FILENAME=./mina-workdir/custom-producer-key 2>/dev/null; then
             echo "❌ Command should have failed when custom keys already exist"
             exit 1
           fi

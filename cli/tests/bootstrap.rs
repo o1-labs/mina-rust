@@ -19,10 +19,10 @@ fn bootstrap() -> anyhow::Result<()> {
     Ok(())
 }
 
-const FORK_VAR: &str = "OPENMINA_BOOTSTRAP_FORK";
+const FORK_VAR: &str = "MINA_BOOTSTRAP_FORK";
 const HTTP_PORT: u16 = 49998;
 const P2P_PORT: u16 = 49999;
-const COMMAND_VAR: &str = "OPENMINA_COMMAND";
+const COMMAND_VAR: &str = "MINA_COMMAND";
 
 fn spawn_node() -> anyhow::Result<Child> {
     if std::env::var(FORK_VAR).is_ok() {
@@ -34,12 +34,10 @@ fn spawn_node() -> anyhow::Result<Child> {
 }
 
 fn run_node() -> anyhow::Result<()> {
-    if let Err(e) = cli::commands::OpenminaCli::parse_from([
-        std::env::args().next().unwrap(),
-        String::from("node"),
-    ])
-    .command
-    .run()
+    if let Err(e) =
+        cli::commands::MinaCli::parse_from([std::env::args().next().unwrap(), String::from("node")])
+            .command
+            .run()
     {
         anyhow::bail!(format!("{e:#}"));
     }

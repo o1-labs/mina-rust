@@ -33,7 +33,7 @@
 //!
 //! ## Network Identifiers
 //!
-//! OpenMina includes predefined chain IDs for official networks:
+//! Mina includes predefined chain IDs for official networks:
 //!
 //! - [`MAINNET_CHAIN_ID`]: The production Mina blockchain
 //! - [`DEVNET_CHAIN_ID`]: The development/testing blockchain
@@ -42,7 +42,7 @@
 //!
 //! ## Usage in Networking
 //!
-//! Chain IDs are used throughout OpenMina's networking stack:
+//! Chain IDs are used throughout Mina's networking stack:
 //!
 //! - **Peer Discovery**: Nodes advertise their chain ID to find compatible
 //!   peers

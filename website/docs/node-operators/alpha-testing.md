@@ -32,16 +32,16 @@ Ensure you have **Docker** installed:
 
    Additional optional parameters:
 
-   `OPENMINA_LIBP2P_EXTERNAL_IP` Sets your node’s external IP address to help
-   other nodes find it.
+   `MINA_LIBP2P_EXTERNAL_IP` Sets your node’s external IP address to help other
+   nodes find it.
 
-   `OPENMINA_LIBP2P_PORT` Sets the port for Libp2p communication.
+   `MINA_LIBP2P_PORT` Sets the port for Libp2p communication.
 
 3. **Start the Node on Devnet and Save Logs**: Start the node and save the logs
    for later analysis:
 
    ```bash
-   docker compose up --pull always && docker compose logs > openmina-node.log
+   docker compose up --pull always && docker compose logs > mina-node.log
    ```
 
 4. **Access the Dashboard**: Open `http://localhost:8070` in your browser.
@@ -66,7 +66,7 @@ Ensure you have **Docker** installed:
 If you’ve saved logs to a file, you can use tail or similar tools to view them:
 
 ```bash
-tail -f openmina-node.log
+tail -f mina-node.log
 ```
 
 ### Restart the Node:
