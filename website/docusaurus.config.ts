@@ -18,12 +18,12 @@ const config: Config = {
   url: 'https://o1-labs.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/openmina/',
+  baseUrl: '/mina-rust/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'o1-labs', // Usually your GitHub org/user name.
-  projectName: 'openmina', // Usually your repo name.
+  projectName: 'mina-rust', // Usually your repo name.
 
   onBrokenLinks: 'throw', // Throw error on broken links to enforce link integrity
   onBrokenMarkdownLinks: 'throw',
@@ -55,7 +55,7 @@ const config: Config = {
             },
           },
           // Enable edit links to GitHub
-          editUrl: 'https://github.com/o1-labs/openmina/tree/develop/website/docs/',
+          editUrl: 'https://github.com/o1-labs/mina-rust/tree/develop/website/docs/',
         },
         blog: false, // Disable blog for technical documentation
         theme: {
@@ -86,11 +86,11 @@ const config: Config = {
       {property: 'og:type', content: 'website'},
       {property: 'og:title', content: 'Mina Rust Node Documentation'},
       {property: 'og:description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs.'},
-      {property: 'og:image', content: 'https://o1-labs.github.io/openmina/img/rust-node-social-card.svg'},
+      {property: 'og:image', content: 'https://o1-labs.github.io/mina-rust/img/rust-node-social-card.svg'},
       {property: 'twitter:card', content: 'summary_large_image'},
       {property: 'twitter:title', content: 'Mina Rust Node Documentation'},
       {property: 'twitter:description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs.'},
-      {property: 'twitter:image', content: 'https://o1-labs.github.io/openmina/img/rust-node-social-card.svg'},
+      {property: 'twitter:image', content: 'https://o1-labs.github.io/mina-rust/img/rust-node-social-card.svg'},
     ],
     navbar: {
       title: '',
@@ -112,7 +112,7 @@ const config: Config = {
           label: 'Developers',
         },
         {
-          href: 'https://o1-labs.github.io/openmina/api-docs/',
+          href: 'https://o1-labs.github.io/mina-rust/api-docs/',
           label: 'API Docs',
           position: 'left',
         },
@@ -122,7 +122,7 @@ const config: Config = {
           dropdownActiveClassDisabled: true,
         },
         {
-          href: 'https://github.com/o1-labs/openmina',
+          href: 'https://github.com/o1-labs/mina-rust',
           label: 'GitHub',
           position: 'right',
         },
@@ -144,7 +144,7 @@ const config: Config = {
             },
             {
               label: 'API Documentation',
-              href: 'https://o1-labs.github.io/openmina/api-docs/',
+              href: 'https://o1-labs.github.io/mina-rust/api-docs/',
             },
           ],
         },
@@ -153,15 +153,15 @@ const config: Config = {
           items: [
             {
               label: 'GitHub',
-              href: 'https://github.com/o1-labs/openmina',
+              href: 'https://github.com/o1-labs/mina-rust',
             },
             {
               label: 'Issues',
-              href: 'https://github.com/o1-labs/openmina/issues',
+              href: 'https://github.com/o1-labs/mina-rust/issues',
             },
             {
               label: 'Discussions',
-              href: 'https://github.com/o1-labs/openmina/discussions',
+              href: 'https://github.com/o1-labs/mina-rust/discussions',
             },
             {
               label: 'Twitter',

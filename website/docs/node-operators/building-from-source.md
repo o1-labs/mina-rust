@@ -59,7 +59,7 @@ overridden:
 
 For detailed information about all available command-line parameters and
 advanced configuration options, please refer to the
-[Rust API Documentation](https://o1-labs.github.io/openmina/api-docs/cli/commands/node/struct.Node.html)
+[Rust API Documentation](https://o1-labs.github.io/mina-rust/api-docs/cli/commands/node/struct.Node.html)
 which contains comprehensive documentation for all supported parameters
 including:
 

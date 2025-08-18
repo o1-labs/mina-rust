@@ -39,7 +39,7 @@ const quickNavItems: QuickNavItem[] = [
   {
     title: 'API Docs',
     description: 'Comprehensive API reference',
-    to: 'https://o1-labs.github.io/openmina/api-docs/',
+    to: 'https://o1-labs.github.io/mina-rust/api-docs/',
     icon: (
       <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
         <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
@@ -149,7 +149,7 @@ function ProjectBlurb() {
           </p>
           <div className={styles.githubLink}>
             <Link
-              href="https://github.com/o1-labs/openmina"
+              href="https://github.com/o1-labs/mina-rust"
               target="_blank"
               rel="noopener noreferrer"
               className={styles.btnSecondary}

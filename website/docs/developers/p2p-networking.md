@@ -170,7 +170,7 @@ propagation by leveraging the poll-based approach:
 #### Data Structure
 
 A special
-[distributed pool data structure](https://github.com/openmina/openmina/blob/develop/core/src/distributed_pool.rs)
+[distributed pool data structure](https://github.com/o1-labs/mina-rust/blob/develop/core/src/distributed_pool.rs)
 efficiently tracks sent messages:
 
 - **Append-Only Log**: Each entry indexed by number

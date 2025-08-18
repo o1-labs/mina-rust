@@ -62,7 +62,7 @@ The Mina Rust Node supports different node configurations:
 ## Need Help?
 
 - Check our troubleshooting guides
-- Visit our [GitHub repository](https://github.com/o1-labs/openmina)
+- Visit our [GitHub repository](https://github.com/o1-labs/mina-rust)
 - Join the community discussions on
   [Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
 - Participate in discussions on the

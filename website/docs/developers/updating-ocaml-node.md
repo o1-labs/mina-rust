@@ -9,7 +9,7 @@ node references in the Mina Rust Node. The OCaml node releases are used to
 verify that the current Mina Rust Node version maintains compatibility with the
 official Mina Protocol implementation through end-to-end and scenario testing.
 This guide walks through the process based on the workflow used in
-[PR #1236](https://github.com/o1-labs/openmina/pull/1236).
+[PR #1236](https://github.com/o1-labs/mina-rust/pull/1236).
 
 ## 1. Check for New Releases
 
@@ -35,7 +35,7 @@ update process:
 **Example usage:**
 
 For example, to update from `3.2.0-alpha1` to `3.2.0-beta1` (as done in commit
-[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc)):
+[31caeee6](https://github.com/o1-labs/mina-rust/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc)):
 
 ```bash
 ./website/docs/developers/scripts/update-ocaml-node.sh 7f94ae0b 978866cd "3.2.0-alpha1" "3.2.0-beta1"
@@ -79,7 +79,7 @@ After making updates:
 ## 5. Commit Structure
 
 Following the pattern from commit
-[31caeee6](https://github.com/o1-labs/openmina/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc):
+[31caeee6](https://github.com/o1-labs/mina-rust/commit/31caeee6af7bf20b8578a23bf69718dbe68fe5cc):
 
 1. **Main Update Commit**: "OCaml nodes: bump up to release [version]"
    - Updates 6 files: CI workflows, Docker compose, and testing configurations
@@ -90,5 +90,5 @@ Following the pattern from commit
 
 - [Mina Protocol Releases](https://github.com/MinaProtocol/mina/releases/)
 - [Mina Rust Node Architecture Documentation](./architecture.md)
-- [Example PR #1236](https://github.com/o1-labs/openmina/pull/1236)
+- [Example PR #1236](https://github.com/o1-labs/mina-rust/pull/1236)
 - [Node Operators Guide](../node-operators/getting-started.md)

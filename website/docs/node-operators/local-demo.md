@@ -6,7 +6,7 @@ operating system, follow these steps:
 ## Setup Option 1: Download Docker Compose Files from the Release
 
 1. **Download the Docker Compose files:**
-   - Go to the [Releases page](https://github.com/openmina/openmina/releases) of
+   - Go to the [Releases page](https://github.com/o1-labs/mina-rust/releases) of
      this repository.
    - Download the latest `openmina-vX.Y.Z-docker-compose.zip` (or `.tar.gz`)
      file corresponding to the release version (available since v0.8.0).
@@ -32,7 +32,7 @@ operating system, follow these steps:
 1. **Clone this repository:**
 
    ```bash
-   git clone https://github.com/openmina/openmina.git
+   git clone https://github.com/o1-labs/mina-rust.git
    ```
 
 2. **Navigate to the repository:**
