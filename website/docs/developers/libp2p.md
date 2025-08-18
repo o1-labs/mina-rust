@@ -45,7 +45,7 @@ specific purpose, which lets us neatly organize the various functions of the P2P
 network. It allows us to separate concerns, making the network architecture
 easier to manage and debug.
 
-![LibP2P Stack Layers](https://github.com/openmina/openmina/assets/60480123/25bb08e8-d877-42b6-9c1f-b2ce29b14520)
+![LibP2P Stack Layers](https://github.com/o1-labs/mina-rust/assets/60480123/25bb08e8-d877-42b6-9c1f-b2ce29b14520)
 
 _Above: A simplified overview of the Rust node LibP2P networking stack. The
 abstraction is in ascending order, i.e. the layers at the top have more
@@ -117,7 +117,7 @@ efficient routing and data lookup.
 The term "XOR" stands for "exclusive or," which is a logical operation that
 outputs true only when the inputs differ (one is true, the other is false).
 
-![Kademlia Binary Tree](https://github.com/openmina/openmina/assets/60480123/4e57f9b9-9e68-4400-b0ad-ff17c14766a1)
+![Kademlia Binary Tree](https://github.com/o1-labs/mina-rust/assets/60480123/4e57f9b9-9e68-4400-b0ad-ff17c14766a1)
 
 _Above: A Kademlia binary tree organized into four distinct buckets (marked in
 orange) of varying sizes._
@@ -142,7 +142,7 @@ network consisting of devices with limited resources. To make the most of a
 single connection, we employ _multiplexing_, which means having multiple data
 streams transmitted over a single network connection concurrently.
 
-![Yamux Multiplexing](https://github.com/openmina/openmina/assets/60480123/5f6a48c7-bbae-4ca2-9189-badae2369f3d)
+![Yamux Multiplexing](https://github.com/o1-labs/mina-rust/assets/60480123/5f6a48c7-bbae-4ca2-9189-badae2369f3d)
 
 ### Yamux Implementation
 
@@ -184,11 +184,11 @@ The Noise protocol implemented by libp2p uses the
 [XX](http://www.noiseprotocol.org/noise.html#interactive-handshake-patterns-fundamental)
 handshake pattern, which happens in the following stages:
 
-![Noise Handshake Step 1](https://github.com/openmina/openmina/assets/60480123/a1b2b2bf-980e-459c-8375-9e8b6162b6d1)
+![Noise Handshake Step 1](https://github.com/o1-labs/mina-rust/assets/60480123/a1b2b2bf-980e-459c-8375-9e8b6162b6d1)
 
 **Step 1**: Alice sends Bob her ephemeral public key (32 bytes).
 
-![Noise Handshake Step 2](https://github.com/openmina/openmina/assets/60480123/721103dd-0bb9-4f0b-8998-97b0cc19f6fc)
+![Noise Handshake Step 2](https://github.com/o1-labs/mina-rust/assets/60480123/721103dd-0bb9-4f0b-8998-97b0cc19f6fc)
 
 **Step 2**: Bob responds to Alice with a message that contains:
 
@@ -199,7 +199,7 @@ handshake pattern, which happens in the following stages:
   `identity_sig`, Noise's static public key and the tag (MAC) of the payload (16
   bytes)
 
-![Noise Handshake Step 3](https://github.com/openmina/openmina/assets/60480123/b7ed062d-2204-4b94-87af-abc6eecd7013)
+![Noise Handshake Step 3](https://github.com/o1-labs/mina-rust/assets/60480123/b7ed062d-2204-4b94-87af-abc6eecd7013)
 
 **Step 3**: Alice responds to Bob with her own message that contains:
 

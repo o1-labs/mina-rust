@@ -1,5 +1,5 @@
-git clone https://github.com/o1-labs/openmina.git
-cd openmina
+git clone https://github.com/o1-labs/mina-rust.git
+cd mina-rust
 
 # Download required circuits
 echo "Downloading required circuits..."

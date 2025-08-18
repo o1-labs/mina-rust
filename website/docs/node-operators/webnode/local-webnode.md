@@ -27,7 +27,7 @@ nvm install 21
 Clone the repo
 
 ```sh
-git clone https://github.com/openmina/openmina.git
+git clone https://github.com/o1-labs/mina-rust.git
 cd openmina/
 ```
 

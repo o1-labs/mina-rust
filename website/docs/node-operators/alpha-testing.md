@@ -20,7 +20,7 @@ Ensure you have **Docker** installed:
 
 1. **Download the Latest Release**:
    - Visit the
-     [Open Mina Releases](https://github.com/openmina/openmina/releases).
+     [Open Mina Releases](https://github.com/o1-labs/mina-rust/releases).
    - Download the latest `openmina-vX.Y.Z-docker-compose.zip`.
 
 2. **Extract the Files**:

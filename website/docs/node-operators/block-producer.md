@@ -15,7 +15,7 @@ Ensure Docker and Docker Compose are installed on your system -
 
 1. **Download the Latest Release**
 
-- Visit the [Open Mina Releases](https://github.com/openmina/openmina/releases)
+- Visit the [Open Mina Releases](https://github.com/o1-labs/mina-rust/releases)
 - Download the latest `openmina-vX.Y.Z-docker-compose.zip`
 - Extract the Files:
 
@@ -27,7 +27,7 @@ Ensure Docker and Docker Compose are installed on your system -
 
 2. **Prepare Your Keys**
 
-   [Docker Compose](https://github.com/o1-labs/openmina/blob/develop/docker-compose.block-producer.yml)
+   [Docker Compose](https://github.com/o1-labs/mina-rust/blob/develop/docker-compose.block-producer.yml)
    references `openmina-workdir`. It stores a private key and logs for block
    production. Place your block producer's private key into the
    `openmina-workdir` directory and name it `producer-key`:

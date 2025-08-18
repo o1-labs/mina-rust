@@ -73,13 +73,13 @@ ICE dynamically selects the best path based on connectivity and performance.
 ## Mina Rust Node WebRTC Implementation
 
 The Mina Rust Node's WebRTC implementation is located in
-[`p2p/src/webrtc/`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/index.html)
+[`p2p/src/webrtc/`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/index.html)
 and provides a structured approach to peer-to-peer connections for blockchain
 communication.
 
 ### Key Components
 
-#### Host Resolution ([`host.rs`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/host/index.html))
+#### Host Resolution ([`host.rs`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/host/index.html))
 
 Handles different address types:
 
@@ -87,7 +87,7 @@ Handles different address types:
 - IPv4/IPv6 addresses
 - Multiaddr protocol integration
 
-#### Signaling Messages ([`signal.rs`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/index.html))
+#### Signaling Messages ([`signal.rs`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/index.html))
 
 Defines the core signaling data structures:
 
@@ -96,7 +96,7 @@ Defines the core signaling data structures:
 - **Answer**: Response containing SDP and identity information
 - **Connection Response**: Handles acceptance, rejection, and error states
 
-#### Signaling Methods ([`signaling_method/`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signaling_method/index.html))
+#### Signaling Methods ([`signaling_method/`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signaling_method/index.html))
 
 Supports multiple signaling transport methods:
 
@@ -104,7 +104,7 @@ Supports multiple signaling transport methods:
 - HTTPS proxy with cluster support
 - P2P relay through existing peers
 
-#### Connection Authentication ([`connection_auth.rs`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/connection_auth/index.html))
+#### Connection Authentication ([`connection_auth.rs`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/connection_auth/index.html))
 
 Provides cryptographic authentication:
 
@@ -127,32 +127,32 @@ The Mina Rust Node's WebRTC implementation includes several security measures:
 ### Connection Flow
 
 1. **Offer Creation**: Initiating peer creates an
-   [offer](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Offer.html)
+   [offer](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Offer.html)
    with SDP, identity, and target information using
-   [`Offer::new()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Offer.html#method.new)
+   [`Offer::new()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Offer.html#method.new)
 2. **Signaling**: Offer is transmitted through the configured
-   [signaling method](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signaling_method/enum.SignalingMethod.html)
+   [signaling method](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signaling_method/enum.SignalingMethod.html)
    using
-   [`SignalingMethod::http_url()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signaling_method/enum.SignalingMethod.html#method.http_url)
+   [`SignalingMethod::http_url()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signaling_method/enum.SignalingMethod.html#method.http_url)
    for HTTP-based methods
 3. **Offer Processing**: Receiving peer validates chain ID, identity, and
    capacity using
-   [`Offer::chain_id()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Offer.html#method.chain_id)
+   [`Offer::chain_id()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Offer.html#method.chain_id)
    and
-   [`Offer::identity()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Offer.html#method.identity)
+   [`Offer::identity()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Offer.html#method.identity)
 4. **Answer Generation**: If accepted, receiving peer creates an
-   [answer](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Answer.html)
+   [answer](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Answer.html)
    with SDP using
-   [`Answer::new()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/struct.Answer.html#method.new)
+   [`Answer::new()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/struct.Answer.html#method.new)
 5. **Connection Response**: Response is wrapped in
-   [`P2pConnectionResponse`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/signal/enum.P2pConnectionResponse.html)
+   [`P2pConnectionResponse`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/signal/enum.P2pConnectionResponse.html)
    indicating acceptance or rejection
 6. **Authentication**: Final handshake using encrypted
-   [connection authentication](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html)
+   [connection authentication](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html)
    created via
-   [`ConnectionAuth::new()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html#method.new)
+   [`ConnectionAuth::new()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html#method.new)
    and encrypted with
-   [`ConnectionAuth::encrypt()`](https://o1-labs.github.io/openmina/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html#method.encrypt)
+   [`ConnectionAuth::encrypt()`](https://o1-labs.github.io/mina-rust/api-docs/p2p/webrtc/connection_auth/struct.ConnectionAuth.html#method.encrypt)
 
 ### Integration with Mina Rust Node Architecture
 

@@ -16,9 +16,9 @@ contribute to improving the network's connectivity.
 
 The Mina Rust Node includes hardcoded default peers for both mainnet and devnet
 networks to ensure reliable initial connectivity. These peers are defined in the
-[`devnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/devnet/fn.default_peers.html)
+[`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/devnet/fn.default_peers.html)
 and
-[`mainnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
+[`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
 functions in `core/src/network.rs`.
 
 ### Mainnet Default Peers
@@ -55,13 +55,13 @@ criteria:
 
 For Rust node-specific peer additions:
 
-1. Fork the [Rust node repository](https://github.com/o1-labs/openmina)
+1. Fork the [Rust node repository](https://github.com/o1-labs/mina-rust)
 2. Edit the appropriate default peer list in `core/src/network.rs`:
    - For mainnet: Update the
-     [`mainnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
+     [`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
      function
    - For devnet: Update the
-     [`devnet::default_peers()`](https://o1-labs.github.io/openmina/api-docs/openmina_core/network/devnet/fn.default_peers.html)
+     [`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/devnet/fn.default_peers.html)
      function
 3. Add your peer's multiaddr in the format:
    ```rust
@@ -209,5 +209,5 @@ Monitor your node's network connectivity through:
 - **Network Segmentation**: Verify connectivity to multiple network regions
 
 For additional troubleshooting and support, visit our
-[GitHub repository](https://github.com/o1-labs/openmina) or reach out to the
+[GitHub repository](https://github.com/o1-labs/mina-rust) or reach out to the
 community for assistance.

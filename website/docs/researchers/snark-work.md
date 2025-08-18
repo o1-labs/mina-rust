@@ -18,14 +18,14 @@ expanding.
 **This is an overview of SNARK workflows. Click on the picture for a higher
 resolution:**
 
-[![image](https://github.com/openmina/openmina/assets/60480123/f32f8d6c-c20a-4984-9cab-0dbdc5eec5b1)](https://raw.githubusercontent.com/openmina/openmina/docs/cleanup/docs/OpenMina%20%2B%20ZK%20Diagrams.png)
+[![image](https://github.com/o1-labs/mina-rust/assets/60480123/f32f8d6c-c20a-4984-9cab-0dbdc5eec5b1)](https://raw.githubusercontent.com/o1-labs/mina-rust/docs/cleanup/docs/OpenMina%20%2B%20ZK%20Diagrams.png)
 
 ### Receiving a Block to Update Available Jobs
 
 Since blocks contain both transactions and SNARKs, each new block updates not
 only the staged ledger, but also the scan state (which contains SNARK proofs).
 
-![Image](https://github.com/openmina/openmina/assets/60480123/db3fc349-d267-49ba-862a-c2a2bb0996c5)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/db3fc349-d267-49ba-862a-c2a2bb0996c5)
 
 Via the GossipSub (P2P), a node receives a new block that contains transactions
 and SNARK proofs.
@@ -53,7 +53,7 @@ commitments to other SNARK jobs.
 Commitments are made through an extra P2P layer that was created for this
 purpose.
 
-![image](https://github.com/openmina/openmina/assets/60480123/8966f501-c989-47dc-93e3-3477fbbdf5a3)
+![image](https://github.com/o1-labs/mina-rust/assets/60480123/8966f501-c989-47dc-93e3-3477fbbdf5a3)
 
 Commitments are sent across WebRTC, which enables direct communication between
 peers via the P2P network.
@@ -69,7 +69,7 @@ For a commitment to be added here, it has to:
 2. Have no other prior commitment to that job. Alternatively, if there are other
    commitments, then only the one with the cheapest fee will be added.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/4a422932-30a4-4add-b3f5-4b70f159fd5e)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/4a422932-30a4-4add-b3f5-4b70f159fd5e)
 
 The work pool, which is a part of the modified SNARK pool, is updated with a
 commitment (including its fee) for a specific pending SNARK job.
@@ -79,18 +79,18 @@ commitment (including its fee) for a specific pending SNARK job.
 The commitments, once added to the commitment pool, are then broadcasted by the
 node other peers in the network through direct WebRTC P2P communication.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/c3620050-4082-4f2f-860c-94f292c01a2c)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/c3620050-4082-4f2f-860c-94f292c01a2c)
 
 ### Receiving a SNARK from an OCaml node
 
 The Mina Rust Node receives a SNARK proof from an OCaml node (an OCaml SNARK
 worker).
 
-![image](https://github.com/openmina/openmina/assets/60480123/fbde0660-df6d-4184-8d8c-b2f8832b711b)
+![image](https://github.com/o1-labs/mina-rust/assets/60480123/fbde0660-df6d-4184-8d8c-b2f8832b711b)
 
 The SNARK is verified.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/7e069f8d-3abe-40ca-a58d-0cd6c9e7ba2a)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/7e069f8d-3abe-40ca-a58d-0cd6c9e7ba2a)
 
 If it is the lowest fee SNARK for a specific pending SNARK job, then it is added
 to the SNARK pool, from where block producers can take SNARKs and add them into
@@ -98,7 +98,7 @@ blocks.
 
 If it is the lowest fee SNARK for that job, then it is added to the SNARK pool
 
-![Image](https://github.com/openmina/openmina/assets/60480123/8e54f113-a75a-4f25-a520-3850a312ef65)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/8e54f113-a75a-4f25-a520-3850a312ef65)
 
 After this, the updated SNARK pool with the completed (but not yet included in a
 block) SNARK is broadcast across the PubSub P2P network via the topic
@@ -107,17 +107,17 @@ WebRTC.
 
 ![image](https://github.com/JanSlobodnik/pre-publishing/assets/60480123/f02fc1f4-e30e-4296-9a20-b7b57e2cf4a1)
 
-![Image](https://github.com/openmina/openmina/assets/60480123/46ec6804-b767-4054-aaeb-0287ab9cda09)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/46ec6804-b767-4054-aaeb-0287ab9cda09)
 
 ### Receiving SNARK from Mina Rust Node
 
 The Mina Rust Node sends SNARK via P2P.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/067de8a5-246e-4b59-a85b-7f2393cc19c3)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/067de8a5-246e-4b59-a85b-7f2393cc19c3)
 
 SNARK is verified.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/91c85d8d-4a63-4ace-a21f-fad08e57da34)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/91c85d8d-4a63-4ace-a21f-fad08e57da34)
 
 If it is the lowest fee, it will be added to the SNARK pool.
 
@@ -125,7 +125,7 @@ If it is the lowest fee, it will be added to the SNARK pool.
 
 Once committed to a pending SNARK job, a SNARK worker will then produce a SNARK.
 
-![Image](https://github.com/openmina/openmina/assets/60480123/181fce0b-4c4b-485a-90b4-26323b4e9e9e)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/181fce0b-4c4b-485a-90b4-26323b4e9e9e)
 
 If a commitment is for a SNARK job that is marked as not yet completed in the
 scan state and there are no prior commitments to that job (Alternatively, if
@@ -134,7 +134,7 @@ the SNARK work), it is added to the SNARK pool.
 
 From the SNARK pool, it can be committed to one of the following:
 
-![Image](https://github.com/openmina/openmina/assets/60480123/889cb453-405f-4256-bc34-55964f0d5efd)
+![Image](https://github.com/o1-labs/mina-rust/assets/60480123/889cb453-405f-4256-bc34-55964f0d5efd)
 
 1. An available job that hasn’t been completed or included in a block
 2. A job that has been already performed, but the new commitment has a lower fee
@@ -143,7 +143,7 @@ If the commitment is for the lowest fee available, then the SNARK worker begins
 working on the SNARK proof, which is performed in OCaml. After it is done, the
 generated SNARK is sent back to the SNARK worker (Rust).
 
-![SNARK worker proof generation](https://github.com/openmina/openmina/assets/60480123/fc9e5003-ff05-47d9-b35e-945516cf0090)
+![SNARK worker proof generation](https://github.com/o1-labs/mina-rust/assets/60480123/fc9e5003-ff05-47d9-b35e-945516cf0090)
 
 A SNARK worker starts working on the committed job. The SNARK proof that is
 generated is then checked by a prover in OCaml, after which it is sent back to
@@ -151,7 +151,7 @@ the SNARK worker.
 
 The SNARK proof is then sent to the SNARK pool.
 
-![SNARK proof broadcast diagram](https://github.com/openmina/openmina/assets/60480123/7c937f0b-9e4c-491e-a785-86ecf68754ff)
+![SNARK proof broadcast diagram](https://github.com/o1-labs/mina-rust/assets/60480123/7c937f0b-9e4c-491e-a785-86ecf68754ff)
 
 From here, it is broadcast to Mina Rust Node instances directly via WebRTC P2P,
 and to OCaml nodes indirectly via the `mina/snark-work/1.0.0` (SNARK pool diff)
