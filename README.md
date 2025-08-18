@@ -22,21 +22,21 @@ at **[minaprotocol.com](https://minaprotocol.com)**.
 
 ## Quick Start
 
-**[View full system requirements and setup instructions →](https://o1-labs.github.io/openmina/docs/node-operators/getting-started)**
+**[View full system requirements and setup instructions →](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)**
 
 ## Getting Started
 
 For comprehensive installation and setup instructions, visit our documentation
 website:
 
-**[Complete Setup Guide →](https://o1-labs.github.io/openmina/docs/node-operators/getting-started)**
+**[Complete Setup Guide →](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)**
 
 ### Quick Links
 
-- **[Docker Installation](https://o1-labs.github.io/openmina/docs/node-operators/docker-installation)**
-- **[Building from Source](https://o1-labs.github.io/openmina/docs/node-operators/building-from-source)**
-- **[Block Producer Setup](https://o1-labs.github.io/openmina/docs/node-operators/block-producer)**
-- **[Archive Node](https://o1-labs.github.io/openmina/docs/node-operators/archive-node)**
+- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-installation)**
+- **[Building from Source](https://o1-labs.github.io/mina-rust/docs/node-operators/building-from-source)**
+- **[Block Producer Setup](https://o1-labs.github.io/mina-rust/docs/node-operators/block-producer)**
+- **[Archive Node](https://o1-labs.github.io/mina-rust/docs/node-operators/archive-node)**
 
 <img src="website/static/img/NodeUI.png" alt="Block production Node UI">
 
@@ -52,7 +52,7 @@ website:
 The Mina Rust Node implements the complete Mina protocol in Rust, including
 network connectivity, block production, SNARK generation, and debugging tools.
 
-**[Learn More About Architecture →](https://o1-labs.github.io/openmina/docs/developers/getting-started)**
+**[Learn More About Architecture →](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)**
 
 ## Repository Structure
 
@@ -65,11 +65,11 @@ This repository contains the complete Mina Rust Node implementation:
 - **[cli/](cli)** - Command-line interface
 - **[frontend/](frontend)** - Web-based node dashboard
 
-**[Learn more about the architecture →](https://o1-labs.github.io/openmina/docs/developers/getting-started)**
+**[Learn more about the architecture →](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)**
 
 ## Community & Support
 
-**[Visit our comprehensive documentation website →](https://o1-labs.github.io/openmina)**
+**[Visit our comprehensive documentation website →](https://o1-labs.github.io/mina-rust)**
 
 ### Get Help & Contribute
 
@@ -79,16 +79,16 @@ This repository contains the complete Mina Rust Node implementation:
   request features
 - **[Discord Community](https://discord.com/channels/484437221055922177/1290662938734231552)** -
   Real-time support and testing
-- **[Contributing Guide](https://o1-labs.github.io/openmina/docs/developers/getting-started)** -
+- **[Contributing Guide](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)** -
   How to contribute code
 
 ### Key Documentation Sections
 
-- **[Node Operators](https://o1-labs.github.io/openmina/docs/node-operators/getting-started)** -
+- **[Node Operators](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)** -
   Installation and operation guides
-- **[Developers](https://o1-labs.github.io/openmina/docs/developers/getting-started)** -
+- **[Developers](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)** -
   Architecture and contribution guides
-- **[API Documentation](https://o1-labs.github.io/openmina/api-docs/)** -
+- **[API Documentation](https://o1-labs.github.io/mina-rust/api-docs/)** -
   Comprehensive API reference
 
 [changelog]: ./CHANGELOG.md
