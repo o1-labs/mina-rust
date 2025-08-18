@@ -4,7 +4,7 @@ use node::BuildEnv;
 #[derive(Debug, clap::Args)]
 /// Replay node using initial state and input actions.
 pub struct ReplayStateWithInputActions {
-    #[arg(long, short, default_value = "~/.openmina/recorder")]
+    #[arg(long, short, default_value = "~/.mina/recorder")]
     pub dir: String,
 
     #[arg(long, default_value = "./target/release/libreplay_dynamic_effects.so")]

@@ -20,9 +20,9 @@ use node::{
 
 use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
 
-/// OpenMina node configuration and runtime options
+/// Mina node configuration and runtime options
 ///
-/// This struct defines all available command-line parameters for running an OpenMina node.
+/// This struct defines all available command-line parameters for running a Mina node.
 /// The node can operate in different modes (basic node, block producer, archive node)
 /// depending on the parameters provided.
 ///
@@ -30,32 +30,32 @@ use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuil
 ///
 /// ```bash
 /// # Run a basic node on devnet
-/// openmina node --network devnet
+/// mina node --network devnet
 ///
 /// # Run with custom ports and logging
-/// openmina node --network devnet --port 3001 --libp2p-port 8303 --verbosity debug
+/// mina node --network devnet --port 3001 --libp2p-port 8303 --verbosity debug
 /// ```
 ///
 /// # Block Producer Mode
 ///
 /// ```bash
 /// # Run as block producer
-/// openmina node --network devnet --producer-key /path/to/key --coinbase-receiver B62q...
+/// mina node --network devnet --producer-key /path/to/key --coinbase-receiver B62q...
 /// ```
 ///
 /// # Archive Node Mode
 ///
 /// ```bash
 /// # Run as archive node with local storage
-/// openmina node --network devnet --archive-local-storage
+/// mina node --network devnet --archive-local-storage
 /// ```
 #[derive(Debug, clap::Args)]
 pub struct Node {
     /// Working directory for node data, logs, and configuration files
     ///
     /// Can be set via MINA_HOME environment variable.
-    /// Defaults to ~/.openmina
-    #[arg(long, short = 'd', default_value = "~/.openmina", env = "MINA_HOME")]
+    /// Defaults to ~/.mina
+    #[arg(long, short = 'd', default_value = "~/.mina", env = "MINA_HOME")]
     pub work_dir: String,
 
     /// P2P networking secret key for node identity
@@ -139,7 +139,7 @@ pub struct Node {
     /// Where:
     /// - `ip4/ip6/dns4` specifies the address type
     /// - IP address or hostname
-    /// - `tcp` protocol with port number (typically 8302 for OpenMina)
+    /// - `tcp` protocol with port number (typically 8302 for Mina)
     /// - `p2p` protocol with the peer's public key identifier
     #[arg(long, short = 'P', alias = "peer")]
     pub peers: Vec<P2pConnectionOutgoingInitOpts>,

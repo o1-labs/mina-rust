@@ -1,4 +1,4 @@
-# OpenMina Makefile
+# Mina Makefile
 
 # Rust
 NIGHTLY_RUST_VERSION = "nightly"
@@ -275,8 +275,8 @@ nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
 	docker-build-frontend docker-build-fuzzing docker-build-heartbeats-processor \
-	docker-build-light docker-build-light-focal docker-build-openmina \
-	docker-build-openmina-testing docker-build-producer-dashboard \
+	docker-build-light docker-build-light-focal docker-build-mina \
+	docker-build-mina-testing docker-build-producer-dashboard \
 	docker-build-test ## Build all Docker images
 
 .PHONY: docker-build-bootstrap-sandbox
@@ -312,14 +312,14 @@ docker-build-light-focal: ## Build light focal Docker image
 	docker build -t $(DOCKER_ORG)/openmina-light-focal:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.light.focal node/testing/docker/
 
-.PHONY: docker-build-openmina
-docker-build-openmina: ## Build main OpenMina Docker image
+.PHONY: docker-build-mina
+docker-build-mina: ## Build main Mina Docker image
 	docker build -t $(DOCKER_ORG)/openmina:$(GIT_COMMIT) .
 
-.PHONY: docker-build-openmina-testing
-docker-build-openmina-testing: ## Build OpenMina testing Docker image
+.PHONY: docker-build-mina-testing
+docker-build-mina-testing: ## Build Mina testing Docker image
 	docker build -t $(DOCKER_ORG)/openmina-testing:$(GIT_COMMIT) \
-		-f node/testing/docker/Dockerfile.openmina node/testing/docker/
+		-f node/testing/docker/Dockerfile.mina node/testing/docker/
 
 .PHONY: docker-build-producer-dashboard
 docker-build-producer-dashboard: ## Build producer dashboard Docker image

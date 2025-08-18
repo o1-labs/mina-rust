@@ -77,17 +77,17 @@ impl MinaKeyPair {
 ///
 /// Generate a new encrypted key with password:
 /// ```bash
-/// openmina misc mina-encrypted-key --password mypassword --file producer-key
+/// mina misc mina-encrypted-key --password mypassword --file producer-key
 /// ```
 ///
 /// Generate a new encrypted key using environment variable for password:
 /// ```bash
-/// MINA_PRIVKEY_PASS=mypassword openmina misc mina-encrypted-key --file producer-key
+/// MINA_PRIVKEY_PASS=mypassword mina misc mina-encrypted-key --file producer-key
 /// ```
 ///
 /// Use an existing secret key:
 /// ```bash
-/// openmina misc mina-encrypted-key --secret-key EKE... --password mypassword
+/// mina misc mina-encrypted-key --secret-key EKE... --password mypassword
 /// ```
 #[derive(Debug, Clone, clap::Args)]
 pub struct MinaEncryptedKey {
