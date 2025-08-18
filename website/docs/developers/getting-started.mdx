@@ -279,6 +279,107 @@ make build-testing
 4. **Read CLAUDE.md**: Check the project-specific development guide in the root
    directory
 
+## Contributing to Mina
+
+We welcome contributions from external developers! Whether you're fixing bugs,
+adding features, or improving documentation, your contributions help make Mina
+better for everyone.
+
+### Finding Your First Issue
+
+If you're new to the project and looking for a good place to start, check out
+issues labeled as "good first issue":
+
+**[View First Good Issues →](https://github.com/o1-labs/openmina/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22)**
+
+These issues are specifically chosen to be:
+
+- Well-documented with clear requirements
+- Self-contained and focused in scope
+- Good introductions to the codebase
+- Suitable for developers new to the project
+
+Before starting work on any issue, please comment on it to let others know
+you're working on it and to coordinate with the maintainers.
+
+### Code Quality Standards
+
+We maintain high code quality standards to ensure the codebase remains
+maintainable and consistent. Please follow these guidelines when contributing:
+
+#### Required Checks Before Submitting
+
+**1. Formatting and Linting:**
+
+```bash
+# Format all code (Rust, TOML, and markdown files)
+make format
+make format-md
+
+# Check formatting is correct
+make check-format
+make check-md
+
+# Run linting
+make lint
+```
+
+**2. Remove Trailing Whitespaces:**
+
+```bash
+# Critical: Remove trailing whitespaces (mandatory before every commit)
+make fix-trailing-whitespace
+
+# Verify no trailing whitespaces remain
+make check-trailing-whitespace
+```
+
+**3. Compilation and Testing:**
+
+```bash
+# Ensure code compiles without errors
+make check
+
+# Run the test suite in debug mode
+make test
+
+# Or run the test suite in release mode
+make test-release
+```
+
+**4. Environment Setup for Tests:**
+
+Some tests require SQLite database setup:
+
+```bash
+# Create SQLite database for heartbeats processor
+sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
+export DATABASE_URL="sqlite:///tmp/heartbeats.db"
+```
+
+#### Pull Request Requirements
+
+- **All formatting commands must pass** (`make format`, `make format-md`,
+  `make fix-trailing-whitespace`)
+- **Code must compile** (`make check` succeeds)
+- **Tests must pass** (at minimum `make test`)
+- **No trailing whitespaces** in any files
+- **Follow existing code patterns** and conventions in the file you're editing
+- **Include clear commit messages** wrapped at 80 characters
+
+#### Development Workflow
+
+1. Make your changes following existing code patterns
+2. Run formatting: `make format && make format-md`
+3. Remove trailing whitespaces: `make fix-trailing-whitespace`
+4. Verify compilation: `make check`
+5. Run tests: `make test`
+6. Commit your changes with a clear message
+7. Submit your pull request
+
+Following these standards helps maintain code consistency and makes the review
+process smoother for everyone.
+
 ## Getting Help
 
 - **Documentation**:
