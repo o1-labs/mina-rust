@@ -294,7 +294,7 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: tests*-${{ github.sha }}
           merge-multiple: true
@@ -375,13 +375,13 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: tests*-${{ github.sha }}
           merge-multiple: true
 
       - name: Download tests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: tests-webrtc*-${{ github.sha }}
           merge-multiple: true
@@ -432,7 +432,7 @@ jobs:
               rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: tests*-${{ github.sha }}
           merge-multiple: true
@@ -467,12 +467,12 @@ jobs:
 
     steps:
       - name: Download binary
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           name: bin-${{ github.sha }}
 
       - name: Download test
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v5
         with:
           pattern: tests*-${{ github.sha }}
           merge-multiple: true
