@@ -69,6 +69,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website**: (temporary) new design, for a first release and rename OpenMina
   to "the Mina Russt node"
   ([#1312](https://github.com/o1-labs/openmina/pull/1312)).
+- **Codebase**: rename `openmina` to `mina`, the project being officially
+  called for now "the Mina Rust node"
+  ([#1314](https://github.com/o1-labs/openmina/pull/1312)).
 
 ### Fixed
 
