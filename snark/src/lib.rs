@@ -1,3 +1,81 @@
+//! # SNARK Verification Orchestration
+//!
+//! The SNARK crate provides zero-knowledge proof verification capabilities for
+//! the Mina Rust node, orchestrating the verification of blocks, transactions,
+//! and SNARK work through a Redux-style state machine architecture.
+//!
+//! ## Overview
+//!
+//! This crate handles three main types of proof verification:
+//! - **Block Verification**: Validates blockchain blocks and their proofs
+//! - **Transaction Verification**: Verifies user commands and zkApp
+//!   transactions
+//! - **Work Verification**: Validates SNARK work proofs from workers
+//!
+//! ## Architecture
+//!
+//! The crate follows the Mina node's Redux architecture pattern with:
+//! - **State**: [`SnarkState`] - Centralized verification state
+//! - **Actions**: [`SnarkAction`] - Events triggering verification operations
+//! - **Enabling Conditions**: [`redux::EnablingCondition`] - Guards preventing
+//!   invalid state transitions
+//! - **Reducers**: Pure functions managing state transitions
+//! - **Effects**: Service interactions for actual proof verification
+//!
+//! You can find more information regarding the Redux pattern in the
+//! documentation at
+//! <https://o1-labs.github.io/mina-rust/docs/developers/architecture>.
+//!
+//! ## Core Components
+//!
+//! ### Verification State Machine
+//!
+//! Each verification type maintains its own state machine:
+//! - [`block_verify`] - Block proof verification state machine
+//! - [`user_command_verify`] - User command verification state machine
+//! - [`work_verify`] - SNARK work verification state machine
+//!
+//! ### Effectful Operations
+//!
+//! Operations run in separate service threads:
+//! - [`block_verify_effectful`] - Block verification services
+//! - [`user_command_verify_effectful`] - Transaction verification services
+//! - [`work_verify_effectful`] - Work verification services
+//!
+//! ## Configuration
+//!
+//! The [`SnarkConfig`] contains verifier indices and SRS parameters required
+//! for proof verification. These are network-specific and loaded during
+//! initialization.
+//!
+//! ## Integration
+//!
+//! The SNARK crate integrates with:
+//! - **Ledger**: Uses cryptographic primitives from the ledger crate
+//! - **Kimchi**: Leverages the Kimchi proving system for verification, used
+//!   since Berkeley.
+//! - **Node**: Provides verification services to the main node
+//!
+//! ## Example Usage
+//!
+//! ```rust,no_run
+//! use snark::{SnarkConfig, SnarkState};
+//!
+//! // Initialize SNARK state with configuration
+//! let config = SnarkConfig { /* ... */ };
+//! let state = SnarkState::new(config);
+//!
+//! // The state machine handles verification requests through actions
+//! // dispatched by the main node's Redux store
+//! ```
+//!
+//! ## Performance Considerations
+//!
+//! - Verifier indices and SRS parameters are cached for reuse
+//! - Multiple verification operations can run concurrently
+//!
+//! For detailed API documentation, see the individual module documentation.
+
 use kimchi::mina_curves::pasta::Vesta;
 
 mod merkle_path;
