@@ -1,7 +1,7 @@
 # OpenMina Makefile
 
 # Rust
-NIGHTLY_RUST_VERSION = "nightly"
+NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
 
 # Docker
 DOCKER_ORG ?= openmina
@@ -86,7 +86,7 @@ build-vrf: ## Build the VRF package
 
 .PHONY: build-wasm
 build-wasm: ## Build WebAssembly node
-	@cd node/web && cargo +nightly build \
+	@cd node/web && cargo +${NIGHTLY_RUST_VERSION} build \
 		--release --target wasm32-unknown-unknown
 # Update ./.gitignore accordingly if the out-dir is changed
 	@wasm-bindgen --keep-debug --web \

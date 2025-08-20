@@ -4,7 +4,8 @@ inputs:
   toolchain:
     description: 'Rust toolchain version'
     required: false
-    default: 'nightly'
+    # FIXME: set to nightly when https://github.com/rust-lang/rust/issues/145652
+    default: 'nightly-2025-08-18'
   wasm-bindgen-version:
     description: 'wasm-bindgen-cli version'
     required: false
