@@ -4,7 +4,7 @@
 NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
 
 # Docker
-DOCKER_ORG ?= o1-labs
+DOCKER_ORG ?= o1labs
 
 # PostgreSQL configuration for archive node
 OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
