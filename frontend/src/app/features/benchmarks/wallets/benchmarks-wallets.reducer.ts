@@ -110,11 +110,12 @@ export function reducer(state: BenchmarksWalletsState = initialState, action: Be
           .map((wallet: BenchmarksWallet, i: number) => {
             const nonce = getNonceForWallet(wallet, state).toString();
             const counter = state.sentTxCount + i;
-            const memo = 'S.T.' + Date.now() + ',' + (counter + 1) + ',' + getLocalStorage()?.getItem('browserId');
+            const memo = 'MIP54';// 'S.T.' + Date.now() + ',' + (counter + 1) + ',' + getLocalStorage()?.getItem('browserId');
             const payment = {
               from: wallet.publicKey,
               nonce,
-              to: getRandomReceiver(wallet, state.wallets),
+              to: wallet.publicKey, // this is for the MIP testing
+              // to: getRandomReceiver(wallet, state.wallets),
               // to: 'B62qp6QqfMrDGULkuCTMhLYrG4iTxnjnyS3pv8bFppRsz488HCxExEY', // Teo's work Ledger address
               fee: (state.sendingFee * ONE_BILLION).toString(),
               amount: (state.sendingAmount * ONE_BILLION).toString(),

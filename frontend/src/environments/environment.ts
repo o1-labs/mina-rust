@@ -51,22 +51,22 @@ export const environment: Readonly<MinaEnv> = {
     //   name: 'Producer-2',
     //   url: 'https://staging-devnet-openmina-bp-2-dashboard.minaprotocol.network',
     // },
-    {
-      name: 'staging-devnet-bp-0',
-      url: 'https://staging-devnet-openmina-bp-0.minaprotocol.network',
-    },
-    {
-      name: 'staging-devnet-bp-1',
-      url: 'https://staging-devnet-openmina-bp-1.minaprotocol.network',
-    },
-    {
-      name: 'staging-devnet-bp-2',
-      url: 'https://staging-devnet-openmina-bp-2.minaprotocol.network',
-    },
-    {
-      name: 'staging-devnet-bp-3',
-      url: 'https://staging-devnet-openmina-bp-3.minaprotocol.network',
-    },
+    // {
+    //   name: 'staging-devnet-bp-0',
+    //   url: 'https://staging-devnet-openmina-bp-0.minaprotocol.network',
+    // },
+    // {
+    //   name: 'staging-devnet-bp-1',
+    //   url: 'https://staging-devnet-openmina-bp-1.minaprotocol.network',
+    // },
+    // {
+    //   name: 'staging-devnet-bp-2',
+    //   url: 'https://staging-devnet-openmina-bp-2.minaprotocol.network',
+    // },
+    // {
+    //   name: 'staging-devnet-bp-3',
+    //   url: 'https://staging-devnet-openmina-bp-3.minaprotocol.network',
+    // },
     // {
     //   name: 'Web Node 1',
     //   isWebNode: true,
@@ -77,8 +77,12 @@ export const environment: Readonly<MinaEnv> = {
     // },
     // {
     //   name: 'Local rust node',
-    //   url: 'http://127.0.0.1:3000',
+    //   url: 'http://localhost:3000',
     // },
+    {
+      name: 'Mina Rust Seed 1 GCP',
+      url: 'https://mina-rust-seed-1.gcp.o1test.net',
+    },
     // {
     //   name: 'feat/frontend-api-peers',
     //   url: 'http://176.9.147.28:3000',
