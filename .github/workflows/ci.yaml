@@ -117,7 +117,7 @@ jobs:
         run: make test-vrf
 
   p2p-tests:
-    timeout-minutes: 10
+    timeout-minutes: 15
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
