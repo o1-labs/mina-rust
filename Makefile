@@ -331,6 +331,16 @@ docker-build-test: ## Build test Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-test:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.test node/testing/docker/
 
+# Docker push targets
+
+.PHONY: docker-push-mina
+docker-push-mina: ## Push main Mina Docker image to DockerHub
+	@docker push $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT)
+
+.PHONY: docker-push-frontend
+docker-push-frontend: ## Push frontend Docker image to DockerHub
+	@docker push $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT)
+
 # Node running targets
 .PHONY: run-node
 run-node: build-release ## Run a basic node (NETWORK=devnet, VERBOSITY=info)
