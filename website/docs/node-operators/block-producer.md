@@ -9,7 +9,7 @@ complete.
 ## Prerequisites
 
 Ensure Docker and Docker Compose are installed on your system -
-[Docker Installation Guide](./docker-installation.md)
+[Docker Installation Guide](../appendix/docker-installation)
 
 ## Download & Start the Node
 

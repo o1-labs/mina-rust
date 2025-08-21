@@ -112,6 +112,12 @@ const config: Config = {
           label: 'Developers',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'appendixSidebar',
+          position: 'left',
+          label: 'Appendix',
+        },
+        {
           href: 'https://o1-labs.github.io/mina-rust/api-docs/',
           label: 'API Docs',
           position: 'left',
@@ -141,6 +147,10 @@ const config: Config = {
             {
               label: 'Developers',
               to: '/docs/developers/architecture',
+            },
+            {
+              label: 'Appendix',
+              to: '/docs/appendix/docker-installation',
             },
             {
               label: 'API Documentation',
