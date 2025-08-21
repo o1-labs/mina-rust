@@ -41,9 +41,9 @@ COPY --from=build /mina/release-bin/mina /usr/local/bin/
 COPY --from=build /mina/testing-release-bin/mina-node-testing \
     /usr/local/bin/
 
-RUN mkdir -p /usr/local/lib/openmina/circuit-blobs
-COPY --from=build /openmina/circuit-blobs/ \
-    /usr/local/lib/openmina/circuit-blobs/
+RUN mkdir -p /usr/local/lib/mina/circuit-blobs
+COPY --from=build /mina/circuit-blobs/ \
+    /usr/local/lib/mina/circuit-blobs/
 
 EXPOSE 3000
 EXPOSE 8302
