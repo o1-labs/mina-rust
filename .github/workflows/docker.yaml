@@ -2,9 +2,6 @@ name: Mina Docker Build
 on:
   workflow_dispatch: {}
   push:
-    paths-ignore:
-      - "*.md"
-      - "docs/**"
 
 env:
     REGISTRY_NODE_IMAGE: openmina/openmina
