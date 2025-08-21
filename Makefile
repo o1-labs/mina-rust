@@ -291,7 +291,7 @@ docker-build-debugger: ## Build debugger Docker image
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
+	@docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
@@ -314,7 +314,7 @@ docker-build-light-focal: ## Build light focal Docker image
 
 .PHONY: docker-build-mina
 docker-build-mina: ## Build main Mina Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
+	@docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
 
 .PHONY: docker-build-mina-testing
 docker-build-mina-testing: ## Build Mina testing Docker image
