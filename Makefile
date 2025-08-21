@@ -1,24 +1,24 @@
-# OpenMina Makefile
+# Mina Makefile
 
 # Rust
 NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
 
 # Docker
-DOCKER_ORG ?= openmina
+DOCKER_ORG ?= o1-labs
 
 # PostgreSQL configuration for archive node
 OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
-PG_USER ?= openmina
-PG_PW	?= openminaopenmina
-PG_DB	?= openmina_archive
+PG_USER ?= mina
+PG_PW	?= minamina
+PG_DB	?= mina_archive
 PG_HOST	?= localhost
 PG_PORT	?= 5432
 
 # Block producer configuration
-PRODUCER_KEY_FILENAME ?= ./openmina-workdir/producer-key
+PRODUCER_KEY_FILENAME ?= ./mina-workdir/producer-key
 COINBASE_RECEIVER ?=
-OPENMINA_LIBP2P_EXTERNAL_IP ?=
-OPENMINA_LIBP2P_PORT ?= 8302
+MINA_LIBP2P_EXTERNAL_IP ?=
+MINA_LIBP2P_PORT ?= 8302
 
 # Utilities
 NETWORK ?= devnet
@@ -39,20 +39,20 @@ build-ledger: download-circuits ## Build the ledger binary and library, requires
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
-	@cargo build --release --package=cli --bin openmina
+	@cargo build --release --package=cli --bin mina
 
 .PHONY: build-testing
 build-testing: ## Build the testing binary with scenario generators
-	cargo build --release --features scenario-generators --bin openmina-node-testing
+	cargo build --release --features scenario-generators --bin mina-node-testing
 
 .PHONY: build-tests
 build-tests: ## Build tests for scenario testing
 	@mkdir -p target/release/tests
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli \
 		--message-format=json > cargo-build-test.json
 	@jq -r '. | select(.executable != null and (.target.kind | (contains(["test"])))) | [.target.name, .executable ] | @tsv' \
@@ -65,12 +65,12 @@ build-tests: ## Build tests for scenario testing
 build-tests-webrtc: ## Build tests for WebRTC
 	@mkdir -p target/release/tests
 	@cargo build --release --tests \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--package=cli
 # Update ./.gitignore accordingly if cargo-build-test.json is changed
 	@cargo build --release \
 		--features=scenario-generators,p2p-webrtc \
-		--package=openmina-node-testing \
+		--package=mina-node-testing \
 		--tests \
 		--message-format=json \
 		> cargo-build-test.json
@@ -91,7 +91,7 @@ build-wasm: ## Build WebAssembly node
 # Update ./.gitignore accordingly if the out-dir is changed
 	@wasm-bindgen --keep-debug --web \
 		--out-dir pkg \
-		target/wasm32-unknown-unknown/release/openmina_node_web.wasm
+		target/wasm32-unknown-unknown/release/mina_node_web.wasm
 
 .PHONY: check
 check: ## Check code for compilation errors
@@ -275,72 +275,72 @@ nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
 	docker-build-frontend docker-build-fuzzing docker-build-heartbeats-processor \
-	docker-build-light docker-build-light-focal docker-build-openmina \
-	docker-build-openmina-testing docker-build-producer-dashboard \
+	docker-build-light docker-build-light-focal docker-build-mina \
+	docker-build-mina-testing docker-build-producer-dashboard \
 	docker-build-test ## Build all Docker images
 
 .PHONY: docker-build-bootstrap-sandbox
 docker-build-bootstrap-sandbox: ## Build bootstrap sandbox Docker image
-	docker build -t $(DOCKER_ORG)/openmina-bootstrap-sandbox:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-bootstrap-sandbox:$(GIT_COMMIT) \
 		tools/bootstrap-sandbox/
 
 .PHONY: docker-build-debugger
 docker-build-debugger: ## Build debugger Docker image
-	docker build -t $(DOCKER_ORG)/openmina-debugger:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-debugger:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.debugger node/testing/docker/
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
-	docker build -t $(DOCKER_ORG)/openmina-frontend:$(GIT_COMMIT) frontend/
+	docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
-	docker build -t $(DOCKER_ORG)/openmina-fuzzing:$(GIT_COMMIT) tools/fuzzing/
+	docker build -t $(DOCKER_ORG)/mina-rust-fuzzing:$(GIT_COMMIT) tools/fuzzing/
 
 .PHONY: docker-build-heartbeats-processor
 docker-build-heartbeats-processor: ## Build heartbeats processor Docker image
-	docker build -t $(DOCKER_ORG)/openmina-heartbeats-processor:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-heartbeats-processor:$(GIT_COMMIT) \
 		tools/heartbeats-processor/
 
 .PHONY: docker-build-light
 docker-build-light: ## Build light Docker image
-	docker build -t $(DOCKER_ORG)/openmina-light:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-light:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.light node/testing/docker/
 
 .PHONY: docker-build-light-focal
 docker-build-light-focal: ## Build light focal Docker image
-	docker build -t $(DOCKER_ORG)/openmina-light-focal:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-light-focal:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.light.focal node/testing/docker/
 
-.PHONY: docker-build-openmina
-docker-build-openmina: ## Build main OpenMina Docker image
-	docker build -t $(DOCKER_ORG)/openmina:$(GIT_COMMIT) .
+.PHONY: docker-build-mina
+docker-build-mina: ## Build main Mina Docker image
+	docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
 
-.PHONY: docker-build-openmina-testing
-docker-build-openmina-testing: ## Build OpenMina testing Docker image
-	docker build -t $(DOCKER_ORG)/openmina-testing:$(GIT_COMMIT) \
-		-f node/testing/docker/Dockerfile.openmina node/testing/docker/
+.PHONY: docker-build-mina-testing
+docker-build-mina-testing: ## Build Mina testing Docker image
+	docker build -t $(DOCKER_ORG)/mina-rust-testing:$(GIT_COMMIT) \
+		-f node/testing/docker/Dockerfile.mina node/testing/docker/
 
 .PHONY: docker-build-producer-dashboard
 docker-build-producer-dashboard: ## Build producer dashboard Docker image
-	docker build -t $(DOCKER_ORG)/openmina-producer-dashboard:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-producer-dashboard:$(GIT_COMMIT) \
 		-f docker/producer-dashboard/Dockerfile .
 
 .PHONY: docker-build-test
 docker-build-test: ## Build test Docker image
-	docker build -t $(DOCKER_ORG)/openmina-test:$(GIT_COMMIT) \
+	docker build -t $(DOCKER_ORG)/mina-rust-test:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.test node/testing/docker/
 
 # Node running targets
 .PHONY: run-node
 run-node: build-release ## Run a basic node (NETWORK=devnet, VERBOSITY=info)
-	@cargo run --release --package=cli --bin openmina -- node --network $(NETWORK) --verbosity $(VERBOSITY)
+	@cargo run --release --package=cli --bin mina -- node --network $(NETWORK) --verbosity $(VERBOSITY)
 
 # Postgres related targets + archive node
 .PHONY: run-archive
 run-archive: build-release ## Run an archive node with local storage
-	OPENMINA_ARCHIVE_ADDRESS=$(OPENMINA_ARCHIVE_ADDRESS) \
-		cargo run --bin openmina \
+	MINA_ARCHIVE_ADDRESS=$(MINA_ARCHIVE_ADDRESS) \
+		cargo run --bin mina \
 		--release -- \
 		node \
 		--archive-archiver-process \
@@ -355,14 +355,14 @@ run-block-producer: build-release ## Run a block producer node on $(NETWORK) net
 		exit 1; \
 	fi
 	cargo run \
-		--bin openmina \
+		--bin mina \
 		--package=cli \
 		--release -- \
 		node \
 		--producer-key $(PRODUCER_KEY_FILENAME) \
 		$(if $(COINBASE_RECEIVER),--coinbase-receiver $(COINBASE_RECEIVER)) \
-		$(if $(OPENMINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(OPENMINA_LIBP2P_EXTERNAL_IP)) \
-		$(if $(OPENMINA_LIBP2P_PORT),--libp2p-port $(OPENMINA_LIBP2P_PORT)) \
+		$(if $(MINA_LIBP2P_EXTERNAL_IP),--libp2p-external-ip $(MINA_LIBP2P_EXTERNAL_IP)) \
+		$(if $(MINA_LIBP2P_PORT),--libp2p-port $(MINA_LIBP2P_PORT)) \
 		--network $(NETWORK)
 
 
@@ -377,9 +377,9 @@ generate-block-producer-key: build-release ## Generate a new block producer key 
 		echo "Or remove the existing key first to regenerate it."; \
 		exit 1; \
 	fi
-	@mkdir -p openmina-workdir
+	@mkdir -p mina-workdir
 	@echo "Generating new encrypted block producer key..."
-	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin openmina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
+	@OUTPUT=$$($(if $(MINA_PRIVKEY_PASS),MINA_PRIVKEY_PASS="$(MINA_PRIVKEY_PASS)") cargo run --release --package=cli --bin mina -- misc mina-encrypted-key --file $(PRODUCER_KEY_FILENAME)); \
 	PUBLIC_KEY=$$(echo "$$OUTPUT" | grep "public key:" | cut -d' ' -f3); \
 	chmod 600 $(PRODUCER_KEY_FILENAME); \
 	echo ""; \

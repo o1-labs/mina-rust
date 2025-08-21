@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
+use mina_node_account::AccountSecretKey;
 use mina_p2p_messages::v2::EpochSeed;
-use openmina_node_account::AccountSecretKey;
 use tokio::{sync::mpsc::UnboundedReceiver, task::JoinHandle};
 use vrf::{VrfEvaluationInput, VrfEvaluationOutput};
 

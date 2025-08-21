@@ -1,4 +1,4 @@
-use openmina_core::log::system_time;
+use mina_core::log::system_time;
 use rand::prelude::*;
 
 use crate::{

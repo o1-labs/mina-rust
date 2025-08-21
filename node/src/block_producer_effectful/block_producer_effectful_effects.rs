@@ -3,11 +3,11 @@ use crate::{
     ledger::write::{LedgerWriteAction, LedgerWriteRequest},
     BlockProducerAction, Store,
 };
+use mina_node_account::AccountSecretKey;
 use mina_p2p_messages::v2::{
     BlockchainSnarkBlockchainStableV2, ConsensusStakeProofStableV2,
     MinaStateSnarkTransitionValueStableV2, ProverExtendBlockchainInputStableV2,
 };
-use openmina_node_account::AccountSecretKey;
 use redux::ActionWithMeta;
 
 use super::BlockProducerEffectfulAction;
@@ -119,7 +119,7 @@ pub fn block_producer_effects<S: crate::Service>(
                     let state_hash = block_hash.to_string();
                     let global_slot_since_genesis = cs.global_slot_since_genesis.as_u32();
                     let height = cs.blockchain_length.as_u32();
-                    openmina_core::info!(
+                    mina_core::info!(
                         meta.time();
                         message = "Unproven block built",
                         state_hash = state_hash,

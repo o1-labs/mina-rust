@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
+use mina_core::constants::ConstraintConstants;
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::MinaStateProtocolStateValueStableV2;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
 
 use crate::{
     decompress_pk,
@@ -6259,7 +6259,7 @@ mod tests {
 
         let mut staged_ledger = StagedLedger::of_scan_state_pending_coinbases_and_snarked_ledger(
             (),
-            openmina_core::constants::constraint_constants(),
+            mina_core::constants::constraint_constants(),
             Verifier,
             scan_state,
             ledger,

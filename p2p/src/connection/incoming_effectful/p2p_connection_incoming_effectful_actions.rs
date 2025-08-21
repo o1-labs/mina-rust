@@ -4,7 +4,7 @@ use crate::{
     webrtc::{ConnectionAuth, ConnectionAuthEncrypted},
     P2pState, PeerId,
 };
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

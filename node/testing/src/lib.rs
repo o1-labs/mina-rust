@@ -20,10 +20,10 @@ pub use server::server;
 use tokio::sync::{Mutex, MutexGuard};
 
 pub fn setup() -> tokio::runtime::Runtime {
-    openmina_node_native::tracing::initialize(openmina_node_native::tracing::Level::INFO);
+    mina_node_native::tracing::initialize(mina_node_native::tracing::Level::INFO);
     rayon::ThreadPoolBuilder::new()
         .num_threads(num_cpus::get().max(2) - 1)
-        .thread_name(|i| format!("openmina_rayon_{i}"))
+        .thread_name(|i| format!("mina_rayon_{i}"))
         .build_global()
         .unwrap();
 
@@ -36,7 +36,7 @@ pub fn setup() -> tokio::runtime::Runtime {
 pub fn setup_without_rt() {
     lazy_static::lazy_static! {
         static ref INIT: () = {
-            let level = std::env::var("OPENMINA_TRACING_LEVEL").ok().and_then(|level| {
+            let level = std::env::var("MINA_TRACING_LEVEL").ok().and_then(|level| {
                 match level.parse() {
                     Ok(v) => Some(v),
                     Err(e) => {
@@ -44,8 +44,8 @@ pub fn setup_without_rt() {
                         None
                     }
                 }
-            }).unwrap_or(openmina_node_native::tracing::Level::INFO);
-            openmina_node_native::tracing::initialize(level);
+            }).unwrap_or(mina_node_native::tracing::Level::INFO);
+            mina_node_native::tracing::initialize(level);
 
             if let Err(err) = tracing_log::LogTracer::init() {
                 eprintln!("cannot initialize log tracing bridge: {err}");
@@ -53,7 +53,7 @@ pub fn setup_without_rt() {
 
             rayon::ThreadPoolBuilder::new()
                 .num_threads(num_cpus::get().max(2) - 1)
-                .thread_name(|i| format!("openmina_rayon_{i}"))
+                .thread_name(|i| format!("mina_rayon_{i}"))
                 .build_global()
                 .unwrap();
         };

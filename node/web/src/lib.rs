@@ -1,7 +1,7 @@
 #![cfg(target_family = "wasm")]
 
 use ::node::transition_frontier::genesis::GenesisConfig;
-pub use openmina_node_common::*;
+pub use mina_node_common::*;
 
 mod rayon;
 pub use rayon::init_rayon;
@@ -17,7 +17,7 @@ use ::node::{
 use anyhow::Context;
 use gloo_utils::format::JsValueSerdeExt;
 use ledger::proofs::provers::BlockProver;
-use openmina_node_common::rpc::RpcSender;
+use mina_node_common::rpc::RpcSender;
 use wasm_bindgen::prelude::*;
 
 use crate::node::P2pTaskRemoteSpawner;
@@ -100,7 +100,7 @@ async fn setup_node(
     block_producer: Option<AccountSecretKey>,
     seed_nodes_url: Option<String>,
     genesis_config_url: Option<String>,
-) -> openmina_node_common::Node<NodeService> {
+) -> mina_node_common::Node<NodeService> {
     let block_verifier_index = BlockVerifier::make().await;
     let work_verifier_index = TransactionVerifier::make().await;
 

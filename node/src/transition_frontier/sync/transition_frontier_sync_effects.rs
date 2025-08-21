@@ -1,5 +1,5 @@
+use mina_core::block::{AppliedBlock, ArcBlockWithHash};
 use mina_p2p_messages::v2::LedgerHash;
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
 use p2p::{
     channels::rpc::{P2pChannelsRpcAction, P2pRpcId},
     P2pNetworkPubsubAction, PeerId,

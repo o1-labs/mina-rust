@@ -1,4 +1,4 @@
-pub use openmina_node_common::*;
+pub use mina_node_common::*;
 
 pub mod graphql;
 pub mod http_server;

@@ -1,7 +1,7 @@
 use std::time::Duration;
 
+use mina_core::constants::constraint_constants;
 use node::transition_frontier::sync::TransitionFrontierSyncState;
-use openmina_core::constants::constraint_constants;
 use redux::Instant;
 
 use crate::{

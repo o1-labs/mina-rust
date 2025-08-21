@@ -1,6 +1,6 @@
 use std::net::SocketAddr;
 
-use openmina_core::{bug_condition, warn, Substate};
+use mina_core::{bug_condition, warn, Substate};
 use redux::ActionWithMeta;
 
 use crate::{

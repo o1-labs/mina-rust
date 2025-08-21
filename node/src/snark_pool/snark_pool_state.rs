@@ -1,7 +1,7 @@
 use std::{fmt, ops::RangeBounds, time::Duration};
 
 use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
-use openmina_core::snark::{Snark, SnarkInfo, SnarkJobCommitment, SnarkJobId};
+use mina_core::snark::{Snark, SnarkInfo, SnarkJobCommitment, SnarkJobId};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 

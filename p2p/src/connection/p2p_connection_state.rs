@@ -1,4 +1,4 @@
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 use redux::Timestamp;
 
 use malloc_size_of_derive::MallocSizeOf;

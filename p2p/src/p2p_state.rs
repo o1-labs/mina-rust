@@ -4,7 +4,7 @@ use std::{
     time::Duration,
 };
 
-use openmina_core::{
+use mina_core::{
     block::{ArcBlockWithHash, BlockWithHash},
     impl_substate_access,
     requests::RpcId,
@@ -71,8 +71,8 @@ impl P2pState {
         {
             let peer_id_str = my_id.to_libp2p_string();
 
-            openmina_core::log::info!(
-                openmina_core::log::system_time();
+            mina_core::log::info!(
+                mina_core::log::system_time();
                 kind = "P2pState new",
                 summary = format!("Current node's id: {peer_id_str}"),
                 peer_id_str = peer_id_str,
@@ -387,13 +387,13 @@ impl P2pPeerState {
                         false
                     } else {
                         #[cfg(not(test))]
-                        openmina_core::bug_condition!(
+                        mina_core::bug_condition!(
                             "peer stuck in `P2pPeerStatus::Disconnecting` state?"
                         );
                         #[cfg(test)]
                         // in test, since time is virtual, timeout can pass before service finishes cleanup.
                         // Hence it shouldn't be a bug condition in such case.
-                        openmina_core::warn!(*time; "peer stuck in `P2pPeerStatus::Disconnecting` state?");
+                        mina_core::warn!(*time; "peer stuck in `P2pPeerStatus::Disconnecting` state?");
                         true
                     }
                 }
@@ -502,11 +502,11 @@ impl P2pPeerStatusReady {
 }
 
 impl SubstateAccess<P2pState> for P2pState {
-    fn substate(&self) -> openmina_core::SubstateResult<&P2pState> {
+    fn substate(&self) -> mina_core::SubstateResult<&P2pState> {
         Ok(self)
     }
 
-    fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut P2pState> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut P2pState> {
         Ok(self)
     }
 }
@@ -585,14 +585,14 @@ impl_substate_access!(P2pState, P2pNetworkSchedulerState, network.scheduler);
 impl_substate_access!(P2pState, P2pLimits, config.limits);
 
 impl SubstateAccess<P2pNetworkKadState> for P2pState {
-    fn substate(&self) -> openmina_core::SubstateResult<&P2pNetworkKadState> {
+    fn substate(&self) -> mina_core::SubstateResult<&P2pNetworkKadState> {
         self.network
             .scheduler
             .discovery_state()
             .ok_or_else(|| "kademlia state is unavailable".to_owned())
     }
 
-    fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut P2pNetworkKadState> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut P2pNetworkKadState> {
         self.network
             .scheduler
             .discovery_state
@@ -602,14 +602,14 @@ impl SubstateAccess<P2pNetworkKadState> for P2pState {
 }
 
 impl SubstateAccess<P2pNetworkKadBootstrapState> for P2pState {
-    fn substate(&self) -> openmina_core::SubstateResult<&P2pNetworkKadBootstrapState> {
+    fn substate(&self) -> mina_core::SubstateResult<&P2pNetworkKadBootstrapState> {
         let kad_state: &P2pNetworkKadState = self.substate()?;
         kad_state
             .bootstrap_state()
             .ok_or_else(|| "bootstrap state is unavailable".to_owned())
     }
 
-    fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut P2pNetworkKadBootstrapState> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut P2pNetworkKadBootstrapState> {
         let kad_state: &mut P2pNetworkKadState = self.substate_mut()?;
         kad_state
             .bootstrap_state_mut()

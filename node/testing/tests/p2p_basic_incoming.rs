@@ -1,4 +1,4 @@
-use openmina_node_testing::scenarios::p2p::basic_incoming_connections::{
+use mina_node_testing::scenarios::p2p::basic_incoming_connections::{
     AcceptIncomingConnection, AcceptMultipleIncomingConnections,
 };
 

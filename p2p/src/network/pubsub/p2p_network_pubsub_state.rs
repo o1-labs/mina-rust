@@ -2,12 +2,12 @@ use super::{pb, BroadcastMessageId};
 use crate::{token::BroadcastAlgorithm, ConnectionAddr, PeerId, StreamId};
 
 use libp2p_identity::ParseError;
-use mina_p2p_messages::gossip::GossipNetMessageV2;
-use openmina_core::{
+use mina_core::{
     p2p::P2pNetworkPubsubMessageCacheId,
     snark::{Snark, SnarkJobId},
     transaction::Transaction,
 };
+use mina_p2p_messages::gossip::GossipNetMessageV2;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 use std::{

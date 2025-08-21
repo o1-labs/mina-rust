@@ -5,14 +5,14 @@ use std::{
 
 use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
 use itertools::{FoldWhile, Itertools};
+use mina_core::constants::ConstraintConstants;
 use mina_hasher::{Fp, Hashable, ROInput};
+use mina_macros::SerdeYojsonEnum;
 use mina_p2p_messages::{
     binprot,
     v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2},
 };
 use mina_signer::{CompressedPubKey, NetworkId};
-use openmina_core::constants::ConstraintConstants;
-use openmina_macros::SerdeYojsonEnum;
 use poseidon::hash::{
     hash_noinputs, hash_with_kimchi,
     params::{CODA_RECEIPT_UC, MINA_ZKAPP_MEMO},
@@ -2838,7 +2838,7 @@ pub mod zkapp_command {
 
         /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/account_update.ml#L1327>
         pub fn digest(&self) -> Fp {
-            self.hash_with_param(openmina_core::NetworkConfig::global().account_update_hash_param)
+            self.hash_with_param(mina_core::NetworkConfig::global().account_update_hash_param)
         }
 
         pub fn timing(&self) -> SetOrKeep<Timing> {
@@ -4238,8 +4238,8 @@ pub mod zkapp_statement {
 
         fn domain_string(network_id: NetworkId) -> Option<String> {
             match network_id {
-                NetworkId::MAINNET => openmina_core::network::mainnet::SIGNATURE_PREFIX,
-                NetworkId::TESTNET => openmina_core::network::devnet::SIGNATURE_PREFIX,
+                NetworkId::MAINNET => mina_core::network::mainnet::SIGNATURE_PREFIX,
+                NetworkId::TESTNET => mina_core::network::devnet::SIGNATURE_PREFIX,
             }
             .to_string()
             .into()
@@ -7314,8 +7314,8 @@ pub mod transaction_union_payload {
         fn domain_string(network_id: NetworkId) -> Option<String> {
             // Domain strings must have length <= 20
             match network_id {
-                NetworkId::MAINNET => openmina_core::network::mainnet::SIGNATURE_PREFIX,
-                NetworkId::TESTNET => openmina_core::network::devnet::SIGNATURE_PREFIX,
+                NetworkId::MAINNET => mina_core::network::mainnet::SIGNATURE_PREFIX,
+                NetworkId::TESTNET => mina_core::network::devnet::SIGNATURE_PREFIX,
             }
             .to_string()
             .into()

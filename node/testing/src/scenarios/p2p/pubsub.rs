@@ -22,7 +22,7 @@ impl P2pReceiveMessage {
             .initial_peers(hosts::devnet())
             .initial_time(redux::Timestamp::global_now());
 
-        let retransmitter_openmina_node = runner.add_rust_node(config);
+        let retransmitter_mina_rust_node = runner.add_rust_node(config);
 
         let _ = runner
             .run(
@@ -36,9 +36,9 @@ impl P2pReceiveMessage {
         let config = RustNodeTestingConfig::devnet_default()
             // Make sure it doesn't connect to any more peers
             .with_no_peer_discovery()
-            .initial_peers(vec![retransmitter_openmina_node.into()]);
+            .initial_peers(vec![retransmitter_mina_rust_node.into()]);
 
-        let receiver_openmina_node = runner.add_rust_node(config);
+        let receiver_mina_rust_node = runner.add_rust_node(config);
 
         runner
             .run(
@@ -46,7 +46,7 @@ impl P2pReceiveMessage {
                     .timeout(Duration::from_secs(60 * 30))
                     .advance_time(RunCfgAdvanceTime::Real)
                     .action_handler(move |node, _state, _, action| {
-                        node == receiver_openmina_node
+                        node == receiver_mina_rust_node
                             && matches!(
                                 action.action().kind(),
                                 ActionKind::P2pNetworkPubsubValidateIncomingMessage

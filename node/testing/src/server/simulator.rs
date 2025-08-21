@@ -5,8 +5,8 @@ use axum::{
     http::StatusCode,
     routing::put,
 };
+use mina_core::channels::oneshot;
 use mina_p2p_messages::v2;
-use openmina_core::channels::oneshot;
 use serde::{Deserialize, Serialize};
 
 use crate::{

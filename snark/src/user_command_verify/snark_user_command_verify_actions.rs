@@ -2,7 +2,7 @@ use ledger::scan_state::transaction_logic::{valid, verifiable, WithStatus};
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::{transaction::TransactionPoolMessageSource, ActionEvent};
+use mina_core::{transaction::TransactionPoolMessageSource, ActionEvent};
 
 use super::{SnarkUserCommandVerifyError, SnarkUserCommandVerifyId};
 

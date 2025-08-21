@@ -174,7 +174,7 @@ Tests related to outgoing connections
 ### [Single Node](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/tests/single_node.rs):
 
 We want to test whether the Rust node is compatible with the OCaml node. We
-achieve this by attempting to connect the Openmina node to the existing OCaml
+achieve this by attempting to connect the Mina Rust node to the existing OCaml
 testnet.
 
 For that purpose, we are utilizing a _solo node_, which is a single Open Mina
@@ -182,11 +182,11 @@ node connected to a network of OCaml nodes. Currently, we are using the public
 testnet, but later on we want to use our own network of OCaml nodes on our
 cluster.
 
-- `SoloNodeBasicConnectivityAcceptIncoming`: Local test to ensure that the
-  Openmina node can accept a connection from an existing OCaml node.
+- `SoloNodeBasicConnectivityAcceptIncoming`: Local test to ensure that the Mina
+  Rust node can accept a connection from an existing OCaml node.
 
-- `SoloNodeBasicConnectivityInitialJoining`: Local test to ensure that the
-  Openmina node can connect to an existing OCaml testnet.
+- `SoloNodeBasicConnectivityInitialJoining`: Local test to ensure that the Mina
+  Rust node can connect to an existing OCaml testnet.
 
 - `SoloNodeSyncRootSnarkedLedger`: Set up single Rust node and sync up root
   snarked ledger.
@@ -196,12 +196,12 @@ cluster.
 
 ### [Multi Node](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/tests/multi_node.rs):
 
-We also want to test a scenario in which the network consists only of Openmina
-nodes. If the Openmina node is using a functionality that is implemented only in
-the OCaml node, and it does not perform it correctly, then we will not be able
-to see it with solo node test. For that purpose, we utilize a Multi node test,
-which involves a network of our nodes, without any third party, so that the
-testing is completely local and under our control.
+We also want to test a scenario in which the network consists only of Mina Rust
+nodes. If the Mina Rust node is using a functionality that is implemented only
+in the OCaml node, and it does not perform it correctly, then we will not be
+able to see it with solo node test. For that purpose, we utilize a Multi node
+test, which involves a network of our nodes, without any third party, so that
+the testing is completely local and under our control.
 
 - `MultiNodeBasicConnectivityPeerDiscovery`: Tests that our node is able to
   discovery Ocaml nodes through Ocaml seed node.

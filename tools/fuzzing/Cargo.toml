@@ -16,12 +16,12 @@ ledger = { path = "../../ledger", package = "mina-tree", features = [
   "fuzzing",
 ] }
 md5 = "0.7.0"
+mina-core = { path = "../../core" }
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
 object = "0.37.1"
-openmina-core = { path = "../../core" }
 poseidon = { workspace = true }
 rand = { version = "0.8.5", features = ["small_rng"] }
 ring_buffer = "2.0.2"

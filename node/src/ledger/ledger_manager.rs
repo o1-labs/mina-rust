@@ -11,9 +11,9 @@ use ledger::{
     staged_ledger::staged_ledger::{SkipVerification, StagedLedger},
     Account, AccountId, Mask,
 };
+use mina_core::{channels::mpsc, thread};
 use mina_p2p_messages::v2::{self, LedgerHash, MinaBaseAccountBinableArgStableV2};
 use mina_signer::CompressedPubKey;
-use openmina_core::{channels::mpsc, thread};
 use std::collections::BTreeMap;
 
 /// The type enumerating different requests that can be made to the
@@ -103,7 +103,7 @@ impl LedgerRequest {
                         if let Err(e) =
                             ledger_ctx.staged_ledger_reconstruct(snarked_ledger_hash, parts, cb)
                         {
-                            openmina_core::log::inner::error!(
+                            mina_core::log::inner::error!(
                                 "Failed to reconstruct staged ledger: {:?}",
                                 e
                             );

@@ -1,5 +1,5 @@
+use mina_core::{action_debug, action_trace, ActionEvent};
 use mina_p2p_messages::rpc_kernel::{QueryHeader, QueryID, ResponseHeader};
-use openmina_core::{action_debug, action_trace, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use super::{super::*, *};
@@ -169,7 +169,7 @@ fn log_message<T>(
     peer_id: &PeerId,
     stream_id: &u32,
 ) where
-    T: openmina_core::log::EventContext,
+    T: mina_core::log::EventContext,
 {
     match message {
         RpcMessage::Handshake => action_trace!(

@@ -1,7 +1,7 @@
 //! HTTP signaling transport configuration.
 //!
 //! This module defines the HTTP-specific signaling transport configuration
-//! for WebRTC connections in OpenMina's peer-to-peer network.
+//! for WebRTC connections in Mina Rust's peer-to-peer network.
 //!
 //! ## HTTP Signaling
 //!
@@ -59,8 +59,8 @@ use super::SignalingMethodParseError;
 /// # Examples
 ///
 /// ```
-/// use openmina::webrtc::Host;
-/// use openmina::signaling_method::HttpSignalingInfo;
+/// use mina::webrtc::Host;
+/// use mina::signaling_method::HttpSignalingInfo;
 ///
 /// // IPv4 signaling server
 /// let info = HttpSignalingInfo {
@@ -148,7 +148,7 @@ impl FromStr for HttpSignalingInfo {
     /// # Examples
     ///
     /// ```
-    /// use openmina::signaling_method::HttpSignalingInfo;
+    /// use mina::signaling_method::HttpSignalingInfo;
     ///
     /// // Domain and port
     /// let info: HttpSignalingInfo = "signal.example.com/443".parse()?;

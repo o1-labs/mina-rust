@@ -5,7 +5,7 @@ edition = "2021"
 license = "Apache-2.0"
 
 [[bin]]
-name = "openmina"
+name = "mina"
 path = "src/main.rs"
 
 [dependencies]
@@ -31,11 +31,11 @@ time = { version = "0.3", features = ["formatting", "macros", "parsing"] }
 backtrace = "0.3"
 bytes = "1.4.0"
 dialoguer = "0.10.4"
+mina-core = { path = "../core" }
+mina-node-account = { path = "../node/account" }
+mina-node-native = { path = "../node/native" }
 nix = { version = "0.26.2", features = ["signal"] }
 node = { path = "../node", features = ["replay"] }
-openmina-core = { path = "../core" }
-openmina-node-account = { path = "../node/account" }
-openmina-node-native = { path = "../node/native" }
 serde_json = "1.0.107"
 shellexpand = "3.1.0"
 tracing = "0.1.37"
@@ -50,6 +50,6 @@ tempfile = "3.8.0"
 [features]
 default = ["p2p-libp2p", "p2p-webrtc"]
 unsafe-signal-handlers = []
-p2p-libp2p = ["openmina-node-native/p2p-libp2p"]
-p2p-webrtc = ["openmina-node-native/p2p-webrtc"]
-fuzzing = ["node/fuzzing", "openmina-core/fuzzing"]
+p2p-libp2p = ["mina-node-native/p2p-libp2p"]
+p2p-webrtc = ["mina-node-native/p2p-webrtc"]
+fuzzing = ["node/fuzzing", "mina-core/fuzzing"]

@@ -1,6 +1,6 @@
 use ledger::dummy::dummy_blockchain_proof;
+use mina_core::{block::ArcBlockWithHash, constants::PROTOCOL_VERSION};
 use mina_p2p_messages::v2;
-use openmina_core::{block::ArcBlockWithHash, constants::PROTOCOL_VERSION};
 use serde::{Deserialize, Serialize};
 
 use super::{empty_block_body, GenesisConfigLoaded};

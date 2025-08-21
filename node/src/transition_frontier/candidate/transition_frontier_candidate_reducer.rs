@@ -1,4 +1,4 @@
-use openmina_core::{
+use mina_core::{
     block::{ArcBlockWithHash, BlockHash},
     bug_condition,
 };

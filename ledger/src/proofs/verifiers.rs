@@ -5,8 +5,8 @@ use std::{
 };
 
 use anyhow::Context;
+use mina_core::{info, log::system_time, warn};
 use once_cell::sync::OnceCell;
-use openmina_core::{info, log::system_time, warn};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
@@ -58,7 +58,7 @@ impl std::fmt::Display for Kind {
 }
 
 fn cache_filename(kind: Kind) -> PathBuf {
-    let circuits_config = openmina_core::NetworkConfig::global().circuits_config;
+    let circuits_config = mina_core::NetworkConfig::global().circuits_config;
     Path::new(circuits_config.directory_name).join(kind.filename())
 }
 
@@ -186,7 +186,7 @@ impl BlockVerifier {
     }
 
     fn src_json() -> &'static str {
-        let network_name = openmina_core::NetworkConfig::global().name;
+        let network_name = mina_core::NetworkConfig::global().name;
         match network_name {
             "mainnet" => include_str!("data/mainnet_blockchain_verifier_index.json"),
             "devnet" => include_str!("data/devnet_blockchain_verifier_index.json"),
@@ -201,7 +201,7 @@ impl TransactionVerifier {
     }
 
     fn src_json() -> &'static str {
-        let network_name = openmina_core::NetworkConfig::global().name;
+        let network_name = mina_core::NetworkConfig::global().name;
         match network_name {
             "mainnet" => include_str!("data/mainnet_transaction_verifier_index.json"),
             "devnet" => include_str!("data/devnet_transaction_verifier_index.json"),

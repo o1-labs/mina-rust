@@ -1,9 +1,9 @@
 use std::{collections::HashMap, path::Path, sync::Arc};
 
 use kimchi::circuits::gate::CircuitGate;
+use mina_core::network::CircuitsConfig;
 use mina_curves::pasta::{Fp, Fq};
 use once_cell::sync::OnceCell;
-use openmina_core::network::CircuitsConfig;
 
 use super::{
     circuit_blobs,
@@ -22,17 +22,17 @@ use mina_p2p_messages::binprot::{
 };
 
 pub fn devnet_circuit_directory() -> &'static str {
-    openmina_core::network::devnet::CIRCUITS_CONFIG.directory_name
+    mina_core::network::devnet::CIRCUITS_CONFIG.directory_name
 }
 
 // TODO(tizoc): right now all tests are for devnets, and the above
 // function is used for those tests.
 // pub fn mainnet_circuit_directory() -> &'static str {
-//     openmina_core::network::devnet::CIRCUITS_CONFIG.directory_name
+//     mina_core::network::devnet::CIRCUITS_CONFIG.directory_name
 // }
 //
 // pub fn circuit_directory() -> &'static str {
-//     openmina_core::NetworkConfig::global().circuits_config.directory_name
+//     mina_core::NetworkConfig::global().circuits_config.directory_name
 // }
 
 fn decode_gates_file<F: FieldWitness>(
@@ -63,7 +63,7 @@ fn make_gates<F: FieldWitness>(
     Vec<Vec<Option<V>>>,
     Vec<CircuitGate<F>>,
 ) {
-    let circuits_config = openmina_core::NetworkConfig::global().circuits_config;
+    let circuits_config = mina_core::NetworkConfig::global().circuits_config;
     let base_dir = Path::new(&circuits_config.directory_name);
 
     let internal_vars_path = base_dir.join(format!("{}_internal_vars.bin", filename));
@@ -109,7 +109,7 @@ static ZKAPP_STEP_OPT_SIGNED_PROVER: OnceCell<Arc<Prover<Fp>>> = OnceCell::new()
 static ZKAPP_STEP_PROOF_PROVER: OnceCell<Arc<Prover<Fp>>> = OnceCell::new();
 
 fn default_circuits_config() -> &'static CircuitsConfig {
-    openmina_core::NetworkConfig::global().circuits_config
+    mina_core::NetworkConfig::global().circuits_config
 }
 
 mod prover_makers {

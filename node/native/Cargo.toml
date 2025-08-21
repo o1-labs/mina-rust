@@ -1,5 +1,5 @@
 [package]
-name = "openmina-node-native"
+name = "mina-node-native"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
@@ -37,14 +37,14 @@ tracing-subscriber = { version = "0.3.17", features = ["json", "env-filter"] }
 vrf = { workspace = true }
 warp = "0.3"
 
+mina-core = { path = "../../core" }
+mina-node-common = { path = "../common" }
 node = { path = "../../node", features = ["replay"] }
-openmina-core = { path = "../../core" }
-openmina-node-common = { path = "../common" }
 
 [dev-dependencies]
-openmina-producer-dashboard = { workspace = true }
+mina-producer-dashboard = { workspace = true }
 
 [features]
 default = ["p2p-libp2p"]
-p2p-webrtc = ["openmina-node-common/p2p-webrtc"]
-p2p-libp2p = ["openmina-node-common/p2p-libp2p"]
+p2p-webrtc = ["mina-node-common/p2p-webrtc"]
+p2p-libp2p = ["mina-node-common/p2p-libp2p"]

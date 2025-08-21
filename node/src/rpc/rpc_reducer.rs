@@ -1,13 +1,13 @@
 use ledger::scan_state::transaction_logic::valid;
-use mina_p2p_messages::v2::{
-    MinaBaseSignedCommandStableV2, MinaBaseZkappCommandTStableV1WireStableV1, NonZeroCurvePoint,
-    TransactionSnarkWorkTStableV2,
-};
-use openmina_core::{
+use mina_core::{
     block::AppliedBlock,
     bug_condition,
     requests::{RequestId, RpcId, RpcIdType},
     transaction::{TransactionPoolMessageSource, TransactionWithHash},
+};
+use mina_p2p_messages::v2::{
+    MinaBaseSignedCommandStableV2, MinaBaseZkappCommandTStableV1WireStableV1, NonZeroCurvePoint,
+    TransactionSnarkWorkTStableV2,
 };
 use p2p::{
     connection::{incoming::P2pConnectionIncomingAction, outgoing::P2pConnectionOutgoingAction},
@@ -404,11 +404,11 @@ impl RpcState {
                 let (dispatcher, state) = state_context.into_dispatcher_and_state();
 
                 let has_peers = state.p2p.ready_peers_iter().map(|(peer_id, _peer)| {
-                    openmina_core::log::debug!(meta.time(); "found ready peer: {peer_id}")
+                    mina_core::log::debug!(meta.time(); "found ready peer: {peer_id}")
                 })
                 .next()
                 .ok_or_else(|| {
-                    openmina_core::log::warn!(meta.time(); "no ready peers");
+                    mina_core::log::warn!(meta.time(); "no ready peers");
                     String::from("no ready peers")
                 });
 

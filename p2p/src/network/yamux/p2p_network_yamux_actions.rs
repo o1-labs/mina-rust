@@ -1,4 +1,4 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use super::p2p_network_yamux_state::{StreamId, YamuxFlags, YamuxFrame, YamuxPing};

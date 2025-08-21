@@ -1,11 +1,11 @@
 use serde::{Deserialize, Serialize};
 use time::{format_description::well_known::Rfc3339, OffsetDateTime};
 
+use mina_core::constants::PROTOCOL_CONSTANTS;
 use mina_p2p_messages::v2::{
     BlockTimeTimeStableV1, MinaBaseProtocolConstantsCheckedValueStableV1,
     UnsignedExtendedUInt32StableV1,
 };
-use openmina_core::constants::PROTOCOL_CONSTANTS;
 
 #[serde_with::serde_as]
 #[derive(Debug, Clone, Serialize, Deserialize)]

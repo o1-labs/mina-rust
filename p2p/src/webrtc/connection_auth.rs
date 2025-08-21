@@ -88,7 +88,7 @@ use super::{Answer, Offer};
 /// ## Usage
 ///
 /// ```rust
-/// use openmina_p2p::webrtc::{ConnectionAuth, Offer, Answer};
+/// use mina_p2p::webrtc::{ConnectionAuth, Offer, Answer};
 ///
 /// let connection_auth = ConnectionAuth::new(&offer, &answer);
 /// let encrypted_auth = connection_auth.encrypt(&my_secret_key, &peer_public_key, rng)?;
@@ -158,7 +158,7 @@ impl ConnectionAuth {
     /// # Example
     ///
     /// ```rust
-    /// use openmina_p2p::webrtc::ConnectionAuth;
+    /// use mina_p2p::webrtc::ConnectionAuth;
     ///
     /// let auth = ConnectionAuth::new(&offer, &answer);
     /// // Use auth for connection verification

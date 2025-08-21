@@ -16,9 +16,9 @@ contribute to improving the network's connectivity.
 
 The Mina Rust Node includes hardcoded default peers for both mainnet and devnet
 networks to ensure reliable initial connectivity. These peers are defined in the
-[`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/devnet/fn.default_peers.html)
+[`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/mina_core/network/devnet/fn.default_peers.html)
 and
-[`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
+[`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/mina_core/network/mainnet/fn.default_peers.html)
 functions in `core/src/network.rs`.
 
 ### Mainnet Default Peers
@@ -58,10 +58,10 @@ For Rust node-specific peer additions:
 1. Fork the [Rust node repository](https://github.com/o1-labs/mina-rust)
 2. Edit the appropriate default peer list in `core/src/network.rs`:
    - For mainnet: Update the
-     [`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/mainnet/fn.default_peers.html)
+     [`mainnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/mina_core/network/mainnet/fn.default_peers.html)
      function
    - For devnet: Update the
-     [`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/openmina_core/network/devnet/fn.default_peers.html)
+     [`devnet::default_peers()`](https://o1-labs.github.io/mina-rust/api-docs/mina_core/network/devnet/fn.default_peers.html)
      function
 3. Add your peer's multiaddr in the format:
    ```rust
@@ -147,7 +147,7 @@ configure your node to use custom peer lists using command-line options:
 Use the `--peers` (or `-P`) argument to add individual peers:
 
 ```bash
-openmina node \
+mina node \
   --peers /ip4/192.168.1.100/tcp/8302/p2p/12D3KooW... \
   --peers /dns4/seed.example.com/tcp/8302/p2p/12D3KooW...
 ```
@@ -157,7 +157,7 @@ openmina node \
 Use the `--peer-list-file` argument to load peers from a local file:
 
 ```bash
-openmina node --peer-list-file /path/to/peers.txt
+mina node --peer-list-file /path/to/peers.txt
 ```
 
 The file should contain one multiaddr per line:
@@ -173,7 +173,7 @@ The file should contain one multiaddr per line:
 Use the `--peer-list-url` argument to load peers from a remote URL:
 
 ```bash
-openmina node --peer-list-url https://example.com/peers.txt
+mina node --peer-list-url https://example.com/peers.txt
 ```
 
 This is useful for loading community-maintained peer lists or using dynamic peer
@@ -185,7 +185,7 @@ Use the `--seed` flag to run your node as a seed node without connecting to
 default peers:
 
 ```bash
-openmina node --seed
+mina node --seed
 ```
 
 This is useful when running your own network or when you want to rely entirely

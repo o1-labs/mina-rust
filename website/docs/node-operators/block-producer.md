@@ -22,18 +22,18 @@ Ensure Docker and Docker Compose are installed on your system -
   ```bash
   unzip openmina-vX.Y.Z-docker-compose.zip
   cd openmina-vX.Y.Z-docker-compose
-  mkdir openmina-workdir
+  mkdir mina-workdir
   ```
 
 2. **Prepare Your Keys**
 
    [Docker Compose](https://github.com/o1-labs/mina-rust/blob/develop/docker-compose.block-producer.yml)
-   references `openmina-workdir`. It stores a private key and logs for block
-   production. Place your block producer's private key into the
-   `openmina-workdir` directory and name it `producer-key`:
+   references `mina-workdir`. It stores a private key and logs for block
+   production. Place your block producer's private key into the `mina-workdir`
+   directory and name it `producer-key`:
 
    ```bash
-   cp /path/to/your/private_key openmina-workdir/producer-key
+   cp /path/to/your/private_key mina-workdir/producer-key
    ```
 
    Replace `/path/to/your/private_key` with the actual path to your private key
@@ -51,10 +51,10 @@ Ensure Docker and Docker Compose are installed on your system -
 
    Optional parameters:
 
-   `OPENMINA_LIBP2P_EXTERNAL_IP` Sets your node’s external IP address to help
-   other nodes find it.
+   `MINA_LIBP2P_EXTERNAL_IP` Sets your node's external IP address to help other
+   nodes find it.
 
-   `OPENMINA_LIBP2P_PORT` Sets the port for Libp2p communication.
+   `MINA_LIBP2P_PORT` Sets the port for Libp2p communication.
 
 4. **Go to Dashboard**
 
@@ -85,9 +85,9 @@ using the Makefile target. This method requires building from source.
    ```
 
    This will create a new key pair and save the private key to
-   `openmina-workdir/producer-key` and the public key to
-   `openmina-workdir/producer-key.pub`. The command will fail if keys already
-   exist to prevent accidental overwriting.
+   `mina-workdir/producer-key` and the public key to
+   `mina-workdir/producer-key.pub`. The command will fail if keys already exist
+   to prevent accidental overwriting.
 
    To generate keys with a password:
 
@@ -115,8 +115,8 @@ using the Makefile target. This method requires building from source.
    **Option B: Use an existing key**
 
    ```bash
-   mkdir -p openmina-workdir
-   cp /path/to/your/private_key openmina-workdir/producer-key
+   mkdir -p mina-workdir
+   cp /path/to/your/private_key mina-workdir/producer-key
    ```
 
 2. **Run Block Producer**
@@ -140,10 +140,10 @@ using the Makefile target. This method requires building from source.
    ```
 
    Optional parameters:
-   - `OPENMINA_LIBP2P_EXTERNAL_IP` - Sets external IP address
-   - `OPENMINA_LIBP2P_PORT` - Sets libp2p communication port
+   - `MINA_LIBP2P_EXTERNAL_IP` - Sets external IP address
+   - `MINA_LIBP2P_PORT` - Sets libp2p communication port
    - `PRODUCER_KEY_FILENAME` - Path to producer key (default:
-     `./openmina-workdir/producer-key`)
+     `./mina-workdir/producer-key`)
 
    Example with all options:
 
@@ -152,8 +152,8 @@ using the Makefile target. This method requires building from source.
      NETWORK=devnet \
      COINBASE_RECEIVER="YourWalletAddress" \
      MINA_PRIVKEY_PASS="YourPassword" \
-     OPENMINA_LIBP2P_EXTERNAL_IP="1.2.3.4" \
-     OPENMINA_LIBP2P_PORT="8302"
+     MINA_LIBP2P_EXTERNAL_IP="1.2.3.4" \
+     MINA_LIBP2P_PORT="8302"
    ```
 
 3. **Monitor the Node**
@@ -163,11 +163,11 @@ using the Makefile target. This method requires building from source.
 
 ### Access Logs
 
-Logs are stored in `openmina-workdir` with filenames like
-`openmina.log.2024-10-14`, `openmina.log.2024-10-15`, etc.
+Logs are stored in `mina-workdir` with filenames like `mina.log.2024-10-14`,
+`mina.log.2024-10-15`, etc.
 
 ### Provide Feedback
 
-Collect logs from `openmina-workdir` and report issues on the
+Collect logs from `mina-workdir` and report issues on the
 [rust-node-testing](https://discord.com/channels/484437221055922177/1290662938734231552)
 discord channel. Include reproduction steps if possible.

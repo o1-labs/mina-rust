@@ -1,6 +1,6 @@
 use std::mem;
 
-use openmina_core::{bug_condition, Substate, SubstateAccess};
+use mina_core::{bug_condition, Substate, SubstateAccess};
 use redux::ActionWithMeta;
 
 use crate::{

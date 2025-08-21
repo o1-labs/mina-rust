@@ -1,5 +1,5 @@
 name: 'Setup Build Dependencies'
-description: 'Install system dependencies required for building OpenMina'
+description: 'Install system dependencies required for building Mina'
 inputs:
   include-sqlite:
     description: 'Include SQLite3 in the installation'

@@ -13,11 +13,12 @@ use crate::{
     scenarios::ClusterRunner,
 };
 
-/// Local test to ensure that the Openmina node can accept a connection from an existing OCaml node.
-/// Launch an Openmina node and connect it to seed nodes of the public (or private) OCaml testnet.
-/// Wait for the Openmina node to complete peer discovery.
-/// Run a new OCaml node, specifying the Openmina node under testing as the initial peer.
-/// Run the simulation until: OCaml node connects to Openmina node and Openmina node accepts the incoming connection.
+/// Local test to ensure that the Rust node can accept a connection from an existing OCaml node.
+/// Launch an Rust node and connect it to seed nodes of the public (or private) OCaml testnet.
+/// Wait for the Rust node to complete peer discovery.
+/// Run a new OCaml node, specifying the Rust node under testing as the initial peer.
+/// Run the simulation until: OCaml node connects to Rust node and Rust node accepts the incoming
+/// connection.
 /// Fail the test if the specified number of steps occur but the condition is not met.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct SoloNodeBasicConnectivityAcceptIncoming;
@@ -42,7 +43,7 @@ impl SoloNodeBasicConnectivityAcceptIncoming {
         let node_id = runner.add_rust_node(config);
         let node_addr = runner.node(node_id).unwrap().dial_addr();
 
-        eprintln!("launch Openmina node, id: {node_id}, addr: {node_addr}");
+        eprintln!("launch Rust node, id: {node_id}, addr: {node_addr}");
 
         let mut ocaml_node = None::<PeerId>;
 

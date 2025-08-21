@@ -1,5 +1,5 @@
 [package]
-name = "openmina-gossipsub-sandbox"
+name = "mina-gossipsub-sandbox"
 version = "0.16.0"
 edition = "2021"
 

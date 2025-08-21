@@ -1,6 +1,6 @@
 use node::BuildEnv;
 
-/// Displays openmina version, commit etc.
+/// Displays mina version, commit etc.
 #[derive(Debug, clap::Args)]
 pub struct Command;
 

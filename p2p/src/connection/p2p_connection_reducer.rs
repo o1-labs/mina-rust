@@ -1,4 +1,4 @@
-use openmina_core::Substate;
+use mina_core::Substate;
 use redux::ActionWithMeta;
 
 use super::{

@@ -11,12 +11,10 @@ pub(crate) struct ArchiveAWSClient {
 impl ArchiveAWSClient {
     pub async fn new() -> Result<Self, Error> {
         let config = aws_config::load_from_env().await;
-        let bucket_name = env::var("OPENMINA_AWS_BUCKET_NAME").map_err(|_| {
-            Error::EnvironmentVariableNotSet("OPENMINA_AWS_BUCKET_NAME".to_string())
-        })?;
-        let bucket_path = env::var("OPENMINA_AWS_BUCKET_PATH").map_err(|_| {
-            Error::EnvironmentVariableNotSet("OPENMINA_AWS_BUCKET_PATH".to_string())
-        })?;
+        let bucket_name = env::var("MINA_AWS_BUCKET_NAME")
+            .map_err(|_| Error::EnvironmentVariableNotSet("MINA_AWS_BUCKET_NAME".to_string()))?;
+        let bucket_path = env::var("MINA_AWS_BUCKET_PATH")
+            .map_err(|_| Error::EnvironmentVariableNotSet("MINA_AWS_BUCKET_PATH".to_string()))?;
         Ok(Self {
             client: aws_sdk_s3::Client::new(&config),
             bucket_name,

@@ -2,7 +2,7 @@ use malloc_size_of_derive::MallocSizeOf;
 use redux::{Callback, Timestamp};
 use serde::{Deserialize, Serialize};
 
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 
 use crate::{connection::RejectionReason, webrtc, P2pTimeouts, PeerId};
 

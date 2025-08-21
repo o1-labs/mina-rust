@@ -1,7 +1,7 @@
 //! # Encrypted Secret Key Implementation
 //!
 //! This module provides a unified interface for encrypting and decrypting
-//! cryptographic secret keys used throughout the OpenMina node. It implements
+//! cryptographic secret keys used throughout the Mina node. It implements
 //! password-based encryption compatible with the Mina Protocol's key format.
 //!
 //! ## Usage

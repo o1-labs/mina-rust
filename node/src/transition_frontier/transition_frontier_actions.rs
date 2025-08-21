@@ -1,7 +1,7 @@
 use std::{collections::BTreeSet, sync::Arc};
 
+use mina_core::{block::ArcBlockWithHash, ActionEvent};
 use mina_p2p_messages::v2::StateHash;
-use openmina_core::{block::ArcBlockWithHash, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use super::{

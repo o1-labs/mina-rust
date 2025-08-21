@@ -1,14 +1,14 @@
 use juniper::GraphQLObject;
+use mina_core::{
+    consensus::{ConsensusConstants, ConsensusTime},
+    constants::ConstraintConstants,
+};
 use node::{
     rpc::{
         ConsensusTimeQuery, PeerConnectionStatus, RpcConsensusTimeGetResponse,
         RpcNodeStatusNetworkInfo, RpcPeerInfo, RpcRequest,
     },
     BuildEnv,
-};
-use openmina_core::{
-    consensus::{ConsensusConstants, ConsensusTime},
-    constants::ConstraintConstants,
 };
 
 use super::{Context, ConversionError, Error};

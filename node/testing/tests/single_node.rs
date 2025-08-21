@@ -1,6 +1,6 @@
 #[cfg(not(feature = "p2p-webrtc"))]
-use openmina_node_testing::scenarios::solo_node::basic_connectivity_accept_incoming::SoloNodeBasicConnectivityAcceptIncoming;
-use openmina_node_testing::scenarios::solo_node::{
+use mina_node_testing::scenarios::solo_node::basic_connectivity_accept_incoming::SoloNodeBasicConnectivityAcceptIncoming;
+use mina_node_testing::scenarios::solo_node::{
     basic_connectivity_initial_joining::SoloNodeBasicConnectivityInitialJoining,
     bootstrap::SoloNodeBootstrap, sync_root_snarked_ledger::SoloNodeSyncRootSnarkedLedger,
 };

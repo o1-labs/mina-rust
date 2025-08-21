@@ -75,7 +75,7 @@ async fn main() {
         cmd,
     } = Args::from_args();
 
-    let sk = env::var("OPENMINA_P2P_SEC_KEY")
+    let sk = env::var("MINA_P2P_SEC_KEY")
         .map(|key| {
             let mut bytes = bs58::decode(key).with_check(Some(0x80)).into_vec().unwrap();
             SecretKey::try_from_bytes(&mut bytes[1..]).unwrap()

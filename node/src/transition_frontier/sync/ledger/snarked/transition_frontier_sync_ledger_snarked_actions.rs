@@ -1,5 +1,5 @@
+use mina_core::ActionEvent;
 use mina_p2p_messages::v2::{LedgerHash, MinaBaseAccountBinableArgStableV2};
-use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -458,7 +458,7 @@ impl redux::EnablingCondition<crate::State> for TransitionFrontierSyncLedgerSnar
 fn check_peer_available(
     peer: &p2p::P2pPeerStatusReady,
     target: &crate::transition_frontier::sync::ledger::SyncLedgerTarget,
-    target_best_tip: &openmina_core::block::BlockWithHash<
+    target_best_tip: &mina_core::block::BlockWithHash<
         std::sync::Arc<mina_p2p_messages::v2::MinaBlockBlockStableV2>,
     >,
 ) -> bool {

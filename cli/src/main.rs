@@ -127,11 +127,11 @@ fn main() -> anyhow::Result<()> {
 
     #[cfg(feature = "unsafe-signal-handlers")]
     unsafe_signal_handlers::setup();
-    let app = commands::OpenminaCli::parse();
+    let app = commands::MinaCli::parse();
 
     let network_init_result = match app.network {
-        commands::Network::Devnet => openmina_core::NetworkConfig::init("devnet"),
-        commands::Network::Mainnet => openmina_core::NetworkConfig::init("mainnet"),
+        commands::Network::Devnet => mina_core::NetworkConfig::init("devnet"),
+        commands::Network::Mainnet => mina_core::NetworkConfig::init("mainnet"),
     };
 
     network_init_result.expect("Failed to initialize network configuration");

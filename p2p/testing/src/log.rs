@@ -1,6 +1,6 @@
 use std::{env, sync::atomic::AtomicBool};
 
-use openmina_core::log::inner::Level;
+use mina_core::log::inner::Level;
 use tracing::Subscriber;
 use tracing_subscriber::{layer::SubscriberExt, Layer};
 
@@ -29,7 +29,7 @@ where
 }
 
 fn initialize_logging() {
-    let level = std::env::var("OPENMINA_TRACING_LEVEL")
+    let level = std::env::var("MINA_TRACING_LEVEL")
         .ok()
         .and_then(|level| match level.parse() {
             Ok(v) => Some(v),
@@ -54,7 +54,7 @@ fn initialize_logging() {
     tracing::subscriber::set_global_default(subscriber)
         .expect("global subscriber should be configurable");
 
-    if env::var("OPENMINA_LOG_TRACER")
+    if env::var("MINA_LOG_TRACER")
         .ok()
         .and_then(|var| var.parse::<bool>().ok())
         .unwrap_or_default()

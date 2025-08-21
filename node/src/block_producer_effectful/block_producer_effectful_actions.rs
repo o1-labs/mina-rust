@@ -1,6 +1,6 @@
 use super::vrf_evaluator_effectful::BlockProducerVrfEvaluatorEffectfulAction;
 use crate::block_producer::{BlockProducerWonSlot, BlockProducerWonSlotDiscardReason};
-use openmina_core::{block::ArcBlockWithHash, ActionEvent};
+use mina_core::{block::ArcBlockWithHash, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

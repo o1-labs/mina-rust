@@ -1,7 +1,7 @@
 use std::{str::FromStr, sync::Arc};
 
+use mina_core::consensus::ConsensusConstants;
 use mina_p2p_messages::v2::CurrencyFeeStableV1;
-use openmina_core::consensus::ConsensusConstants;
 use serde::{Deserialize, Serialize};
 
 use crate::{

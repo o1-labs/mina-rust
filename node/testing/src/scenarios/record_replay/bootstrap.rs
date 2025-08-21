@@ -1,7 +1,7 @@
 use std::time::Duration;
 
+use mina_node_native::replay_state_with_input_actions;
 use node::ActionKind;
-use openmina_node_native::replay_state_with_input_actions;
 
 use crate::{
     hosts,

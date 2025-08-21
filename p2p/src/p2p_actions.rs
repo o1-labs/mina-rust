@@ -1,4 +1,4 @@
-use openmina_macros::ActionEvent;
+use mina_macros::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 
@@ -38,7 +38,7 @@ pub enum P2pEffectfulAction {
 pub enum P2pInitializeAction {
     /// Initializes p2p layer.
     #[action_event(level = info)]
-    Initialize { chain_id: openmina_core::ChainId },
+    Initialize { chain_id: mina_core::ChainId },
 }
 
 impl EnablingCondition<P2pState> for P2pInitializeAction {

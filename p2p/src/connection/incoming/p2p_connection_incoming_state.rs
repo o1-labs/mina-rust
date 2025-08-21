@@ -4,7 +4,7 @@ use malloc_size_of_derive::MallocSizeOf;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 
 use crate::{webrtc, P2pTimeouts};
 

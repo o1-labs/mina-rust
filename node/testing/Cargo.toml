@@ -1,15 +1,15 @@
 [package]
-name = "openmina-node-testing"
+name = "mina-node-testing"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [lib]
-name = "openmina_node_testing"
+name = "mina_node_testing"
 path = "src/lib.rs"
 
 [[bin]]
-name = "openmina-node-testing"
+name = "mina-node-testing"
 path = "src/main.rs"
 
 [dependencies]
@@ -65,10 +65,10 @@ nix = { version = "0.27.1", features = ["process", "signal"] }
 reqwest = { version = "0.11.22", features = ["blocking", "json"] }
 temp-dir = "0.1.11"
 
+mina-core = { path = "../../core" }
+mina-node-invariants = { path = "../../node/invariants" }
+mina-node-native = { path = "../../node/native" }
 node = { path = "../../node" }
-openmina-core = { path = "../../core" }
-openmina-node-invariants = { path = "../../node/invariants" }
-openmina-node-native = { path = "../../node/native" }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }
@@ -81,5 +81,5 @@ libp2p-identity = { version = "=0.2.7", features = [
 [features]
 default = ["p2p-libp2p", "scenario-generators"]
 scenario-generators = ["documented"]
-p2p-webrtc = ["openmina-node-native/p2p-webrtc"]
-p2p-libp2p = ["openmina-node-native/p2p-libp2p"]
+p2p-webrtc = ["mina-node-native/p2p-webrtc"]
+p2p-libp2p = ["mina-node-native/p2p-libp2p"]

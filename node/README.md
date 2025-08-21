@@ -1,4 +1,4 @@
-## `openmina-node`
+## `mina-node`
 
 Combines all state machines of the node into one state machine, which has all
 the logic of the node, except services.

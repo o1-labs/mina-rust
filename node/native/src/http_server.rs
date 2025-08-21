@@ -11,7 +11,7 @@ use warp::{
 
 use node::{core::snark::SnarkJobId, rpc::*};
 
-use openmina_node_common::rpc::{
+use mina_node_common::rpc::{
     RpcActionStatsGetResponse, RpcSender, RpcSnarkPoolGetResponse, RpcSnarkerJobCommitResponse,
     RpcSnarkerJobSpecResponse, RpcStateGetResponse, RpcSyncStatsGetResponse,
 };
@@ -663,10 +663,10 @@ fn readiness(
 }
 
 mod discovery {
+    use mina_node_common::rpc::RpcSender;
     use node::rpc::{
         RpcDiscoveryBoostrapStatsResponse, RpcDiscoveryRoutingTableResponse, RpcRequest,
     };
-    use openmina_node_common::rpc::RpcSender;
     use warp::Filter;
 
     use super::{with_rpc_sender, DroppedChannel};

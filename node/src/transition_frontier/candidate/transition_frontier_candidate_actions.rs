@@ -1,10 +1,10 @@
-use mina_p2p_messages::v2::StateHash;
-use openmina_core::{
+use mina_core::{
     action_event,
     block::{prevalidate::BlockPrevalidationError, ArcBlockWithHash},
     consensus::consensus_take,
     ActionEvent,
 };
+use mina_p2p_messages::v2::StateHash;
 use serde::{Deserialize, Serialize};
 use snark::block_verify::SnarkBlockVerifyError;
 

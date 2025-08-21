@@ -13,11 +13,11 @@ hex = "0.4.3"
 ledger = { workspace = true }
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
+mina-node-account = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
 num = { version = "0.4", features = ["std"] }
 o1-utils = { workspace = true }
-openmina-node-account = { workspace = true }
 poseidon = { workspace = true }
 redux = { workspace = true }
 serde = "1.0.147"

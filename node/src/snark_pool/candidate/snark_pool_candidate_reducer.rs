@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
 use crate::{p2p_ready, SnarkPoolAction};
-use openmina_core::snark::{Snark, SnarkJobId};
+use mina_core::snark::{Snark, SnarkJobId};
 use p2p::{
     channels::rpc::{P2pChannelsRpcAction, P2pRpcId, P2pRpcRequest},
     disconnection::{P2pDisconnectionAction, P2pDisconnectionReason},

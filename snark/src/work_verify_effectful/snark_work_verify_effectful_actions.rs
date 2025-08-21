@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use openmina_core::snark::Snark;
+use mina_core::snark::Snark;
 use serde::{Deserialize, Serialize};
 
 use crate::{TransactionVerifier, VerifierSRS};

@@ -14,7 +14,7 @@ pub use crate::block_verify_effectful::{
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use openmina_core::block::{Block, BlockHash, BlockHeader, BlockHeaderWithHash, BlockWithHash};
+use mina_core::block::{Block, BlockHash, BlockHeader, BlockHeaderWithHash, BlockWithHash};
 
 #[derive(derive_more::From, Serialize, Deserialize, Debug, Clone)]
 pub enum VerifiableBlockWithHash {

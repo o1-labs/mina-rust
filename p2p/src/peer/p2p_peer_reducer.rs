@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, Substate};
+use mina_core::{bug_condition, Substate};
 use redux::{ActionWithMeta, Timestamp};
 
 use crate::{P2pPeerState, P2pPeerStatus, P2pPeerStatusReady, P2pState};

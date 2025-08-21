@@ -22,7 +22,7 @@ pub struct RustNodeAsSeed;
 
 impl RustNodeAsSeed {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         let rust_node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
         let rust_node_dial_addr = runner.node(rust_node_id).unwrap().dial_addr();
         let rust_peer_id = *rust_node_dial_addr.peer_id();
@@ -96,7 +96,7 @@ pub struct OCamlToRust;
 
 impl OCamlToRust {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         let rust_node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
         let rust_node_dial_addr = runner.node(rust_node_id).unwrap().dial_addr();
         let rust_peer_id = *rust_node_dial_addr.peer_id();
@@ -146,7 +146,7 @@ pub struct RustToOCaml;
 
 impl RustToOCaml {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         let rust_node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
         let rust_peer_id = runner.node(rust_node_id).expect("Node not found").peer_id();
         wait_for_node_ready(&mut runner, rust_node_id).await;
@@ -193,7 +193,7 @@ pub struct OCamlToRustViaSeed;
 
 impl OCamlToRustViaSeed {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         let rust_node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
         wait_for_node_ready(&mut runner, rust_node_id).await;
 
@@ -239,7 +239,7 @@ pub struct RustToOCamlViaSeed;
 
 impl RustToOCamlViaSeed {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         let rust_node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
         wait_for_node_ready(&mut runner, rust_node_id).await;
 

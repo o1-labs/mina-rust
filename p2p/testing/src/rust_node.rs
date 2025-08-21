@@ -5,7 +5,7 @@ use std::{
 };
 
 use futures::Stream;
-use openmina_core::channels::mpsc;
+use mina_core::channels::mpsc;
 use p2p::{P2pAction, P2pEvent, P2pLimits, P2pState, P2pTimeouts, PeerId};
 use redux::{Effects, EnablingCondition, Reducer, SubStore};
 

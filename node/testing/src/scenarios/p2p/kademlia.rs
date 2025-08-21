@@ -24,7 +24,7 @@ pub struct KademliaBootstrap;
 
 impl KademliaBootstrap {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
         const NUM: u8 = 16;
 
         let seed_node = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
@@ -35,7 +35,7 @@ impl KademliaBootstrap {
             initial_peers: vec![ListenerNode::Rust(seed_node)],
             ..RustNodeTestingConfig::devnet_default()
         };
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "true");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "true");
         for _ in 0..NUM {
             let node_id = runner.add_rust_node(config.clone());
             let peer_id = runner.node(node_id).expect("Node not found").peer_id();
@@ -43,7 +43,7 @@ impl KademliaBootstrap {
             nodes.push((node_id, peer_id));
 
             wait_for_bootstrap(&mut runner, node_id).await;
-            wait_for_identify(&mut runner, seed_node, peer_id, "openmina").await;
+            wait_for_identify(&mut runner, seed_node, peer_id, "mina").await;
         }
 
         let peer_ids = nodes.iter().map(|node| node.1);
@@ -54,12 +54,12 @@ impl KademliaBootstrap {
             "Seed doesn't have all peers in it's routing table"
         );
 
-        std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "true");
+        std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "true");
         let new_node = runner.add_rust_node(config);
         let new_node_peer_id = runner.node(new_node).expect("Not note found").peer_id();
 
         wait_for_bootstrap(&mut runner, new_node).await;
-        wait_for_identify(&mut runner, seed_node, new_node_peer_id, "openmina").await;
+        wait_for_identify(&mut runner, seed_node, new_node_peer_id, "mina").await;
         let new_has_peers =
             check_kademlia_entries(&mut runner, seed_node, peer_ids).unwrap_or_default();
         assert!(
