@@ -20,7 +20,6 @@ const sidebars: SidebarsConfig = {
       label: 'Introduction',
       items: [
         'node-operators/getting-started',
-        'node-operators/docker-installation',
         'node-operators/building-from-source',
       ],
     },
@@ -77,6 +76,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Docker',
+      items: [
+        'developers/docker-images',
+      ],
+    },
+    {
+      type: 'category',
       label: 'P2P Networking',
       items: [
         'developers/p2p-networking',
@@ -101,6 +107,17 @@ const sidebars: SidebarsConfig = {
       label: 'Cryptography',
       items: [
         'researchers/snark-work',
+      ],
+    },
+  ],
+
+  // Appendix sidebar - general reference material
+  appendixSidebar: [
+    {
+      type: 'category',
+      label: 'Installation References',
+      items: [
+        'appendix/docker-installation',
       ],
     },
   ],

@@ -58,7 +58,7 @@ multiple options running simultaneously.
 ## Prerequisites
 
 Ensure Docker and Docker Compose are installed on your system -
-[Docker Installation Guide](./docker-installation.md)
+[Docker Installation Guide](../appendix/docker-installation)
 
 ## Docker compose setup (with archiver process)
 

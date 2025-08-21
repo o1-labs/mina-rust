@@ -14,7 +14,7 @@ Docker. Follow these steps to set up the node and
 
 Ensure you have **Docker** installed:
 
-- [Docker Installation Guide for Linux, macOS, and Windows](./docker-installation.md)
+- [Docker Installation Guide for Linux, macOS, and Windows](../appendix/docker-installation)
 
 ## 2. Download & Start the Node
 
