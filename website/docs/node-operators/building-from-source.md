@@ -1,4 +1,4 @@
-# How to build and launch a node from source
+# Compile from source
 
 ## Building from Source
 
