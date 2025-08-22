@@ -57,7 +57,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [!1336](https://github.com/o1-labs/mina-rust/issues/1336),
   [!1192](https://github.com/o1-labs/mina-rust/issues/1192)
   ([#1337](https://github.com/o1-labs/mina-rust/pull/1337),
-  [#1335](https://github.com/o1-labs/mina-rust/pull/1335))
+  [#1335](https://github.com/o1-labs/mina-rust/pull/1335),
+  [#1344](https://github.com/o1-labs/mina-rust/pull/1344),
+  [#1340](https://github.com/o1-labs/mina-rust/pull/1340),
+  [#2981ecf](https://github.com/o1-labs/mina-rust/commit/2981ecf9519517f69947838407a09ea96f7ff293),
+  [#1e9f33f](https://github.com/o1-labs/mina-rust/commit/1e9f33f125dcaab36d9dd2dc17759e3476bc36e8))
 
 ### Changed
 
