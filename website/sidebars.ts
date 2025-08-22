@@ -70,7 +70,7 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Architecture',
       items: [
-        'developers/why-openmina',
+        'developers/why-rust',
         'developers/architecture',
       ],
     },
