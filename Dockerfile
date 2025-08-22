@@ -33,7 +33,13 @@ FROM debian:bullseye
 # hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-        libjemalloc2 libssl1.1 libpq5 curl jq procps && \
+        ca-certificates \
+        curl \
+        libjemalloc2 \
+        libssl1.1 \
+        libpq5 \
+        jq \
+        procps && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
