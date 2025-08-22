@@ -61,7 +61,7 @@ services:
       - "127.0.0.1:3086:3086"
 
   mina-rust-node:
-    image: openmina/openmina:latest
+    image: o1labs/mina-rust:${MINA_RUST_TAG:-latest}
     container_name: mina-rust-node
     environment:
       - MINA_ARCHIVE_ADDRESS=http://archive-mina-rust:3086
