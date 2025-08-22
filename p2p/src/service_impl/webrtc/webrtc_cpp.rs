@@ -5,7 +5,7 @@ use datachannel::{
     PeerConnectionHandler, Reliability, RtcConfig, RtcDataChannel, RtcPeerConnection, SdpType,
     SessionDescription,
 };
-use openmina_core::channels::{oneshot, watch};
+use mina_core::channels::{oneshot, watch};
 use tokio::task::spawn_local;
 
 use crate::{

@@ -1,4 +1,4 @@
-use openmina_core::bug_condition;
+use mina_core::bug_condition;
 use vrf::VrfEvaluationOutput;
 
 use crate::{
@@ -307,7 +307,7 @@ impl BlockProducerVrfEvaluatorState {
                     return;
                 };
 
-                openmina_core::log::warn!(
+                mina_core::log::warn!(
                     meta.time();
                     kind = "BlockProducerVrfEvaluatorAction::FinalizeDelegatorTableConstruction",
                     message = "Empty delegator table, account may not exist yet in the staking ledger"

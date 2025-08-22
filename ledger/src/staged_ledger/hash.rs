@@ -1,5 +1,5 @@
 use ark_ff::{PrimeField, ToBytes};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poseidon::hash::Inputs;
 use sha2::{Digest, Sha256};
 
@@ -97,7 +97,7 @@ pub fn from_ocaml_str<const N: usize>(s: &str) -> [u8; N] {
     bytes
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L27
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L27>
 #[derive(Clone, PartialEq, Eq)]
 pub struct AuxHash(pub [u8; 32]);
 
@@ -117,7 +117,7 @@ impl AuxHash {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L110
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L110>
 #[derive(Clone, PartialEq, Eq)]
 pub struct PendingCoinbaseAux(pub [u8; 32]);
 
@@ -137,7 +137,7 @@ impl PendingCoinbaseAux {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L152
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L152>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct NonStark {
     pub ledger_hash: Fp,
@@ -146,7 +146,7 @@ pub struct NonStark {
 }
 
 impl NonStark {
-    /// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L182
+    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L182>
     pub fn digest(&self) -> [u8; 32] {
         let Self {
             ledger_hash,
@@ -171,7 +171,7 @@ impl NonStark {
 }
 
 impl ToInputs for NonStark {
-    /// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L193
+    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L193>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let digest = self.digest();
         inputs.append_bytes(digest.as_slice());
@@ -186,7 +186,7 @@ impl ToInputs for NonStark {
 /// Only part 1 is required for blockchain snark computation and therefore the
 /// remaining fields of the staged ledger are grouped together as "Non_snark"
 ///
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L259
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L259>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct StagedLedgerHash<F: FieldWitness> {
     pub non_snark: NonStark,
@@ -194,7 +194,7 @@ pub struct StagedLedgerHash<F: FieldWitness> {
 }
 
 impl StagedLedgerHash<Fp> {
-    /// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L290
+    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/staged_ledger_hash.ml#L290>
     pub fn of_aux_ledger_and_coinbase_hash(
         aux_hash: AuxHash,
         ledger_hash: Fp,

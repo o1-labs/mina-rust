@@ -1,8 +1,8 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 
 use crate::{connection::P2pConnectionErrorResponse, webrtc, P2pState, PeerId};
 

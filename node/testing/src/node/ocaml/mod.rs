@@ -1,11 +1,11 @@
 mod config;
 pub use config::*;
+use mina_core::{thread, ChainId};
 use mina_p2p_messages::v2::StateHash;
 use node::p2p::{
     connection::outgoing::{P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts},
     PeerId,
 };
-use openmina_core::{thread, ChainId};
 
 use std::{
     path::{Path, PathBuf},
@@ -411,7 +411,7 @@ fn run_ocaml() {
         graphql_port: 3086,
         client_port: 8301,
         initial_peers: Vec::new(),
-        daemon_json: DaemonJson::Custom("/var/lib/coda/config_889607b9.json".to_owned()),
+        daemon_json: DaemonJson::Custom("/var/lib/coda/config_939b08d8.json".to_owned()),
         block_producer: None,
     })
     .unwrap();

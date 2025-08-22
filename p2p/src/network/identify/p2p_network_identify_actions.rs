@@ -5,7 +5,7 @@ use crate::{
     },
     P2pAction, P2pEffectfulAction, P2pNetworkAction, P2pNetworkEffectfulAction, P2pState,
 };
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 

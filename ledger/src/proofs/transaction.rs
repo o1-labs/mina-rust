@@ -7,8 +7,7 @@ use kimchi::{
     circuits::{gate::CircuitGate, wires::COLUMNS},
     proof::RecursionChallenge,
 };
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2::{
     self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
     ConsensusProofOfStakeDataEpochDataStakingValueVersionedValueStableV1, CurrencyAmountStableV1,
@@ -147,7 +146,7 @@ pub mod scalar_challenge {
     use super::*;
 
     // TODO: `scalar` might be a `F::Scalar` here
-    // https://github.com/MinaProtocol/mina/blob/357144819e7ce5f61109d23d33da627be28024c7/src/lib/pickles/scalar_challenge.ml#L12
+    // <https://github.com/MinaProtocol/mina/blob/357144819e7ce5f61109d23d33da627be28024c7/src/lib/pickles/scalar_challenge.ml#L12>
     pub fn to_field_checked_prime<F, const NBITS: usize>(scalar: F, w: &mut Witness<F>) -> (F, F, F)
     where
         F: FieldWitness,
@@ -170,7 +169,7 @@ pub mod scalar_challenge {
         let rows = NBITS / bits_per_row;
 
         // TODO: Use arrays when const feature allows it
-        // https://github.com/rust-lang/rust/issues/76560
+        // <https://github.com/rust-lang/rust/issues/76560>
         let nybbles_by_row: Vec<Vec<u64>> = (0..rows)
             .map(|i| {
                 (0..nybbles_per_row)
@@ -422,7 +421,7 @@ pub mod plonk_curve_ops {
     }
 
     // TODO: `scalar` is a `F::Scalar` here
-    // https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/pickles/plonk_curve_ops.ml#L140
+    // <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/pickles/plonk_curve_ops.ml#L140>
     pub fn scale_fast_unpack<F, F2, const NBITS: usize>(
         base: GroupAffine<F>,
         shifted: F2::Shifting,
@@ -1190,11 +1189,11 @@ impl Check<Fp> for super::block::ProtocolStateBody {
 }
 
 /// Rust calls:
-/// https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/crypto/kimchi_bindings/stubs/src/projective.rs
+/// <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/crypto/kimchi_bindings/stubs/src/projective.rs>
 /// Conversion to/from OCaml:
-/// https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/crypto/kimchi_bindings/stubs/src/arkworks/group_projective.rs
+/// <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/crypto/kimchi_bindings/stubs/src/arkworks/group_projective.rs>
 /// Typ:
-/// https://github.com/o1-labs/snarky/blob/7edf13628872081fd7cad154de257dad8b9ba621/snarky_curve/snarky_curve.ml#L219-L229
+/// <https://github.com/o1-labs/snarky/blob/7edf13628872081fd7cad154de257dad8b9ba621/snarky_curve/snarky_curve.ml#L219-L229>
 ///
 #[derive(
     Clone,
@@ -1215,7 +1214,7 @@ pub struct InnerCurve<F: FieldWitness> {
 impl<F: FieldWitness> std::fmt::Debug for InnerCurve<F> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         // OCaml uses `to_affine_exn` when those are printed using `sexp`
-        // https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snark_params/snark_params.ml#L149
+        // <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snark_params/snark_params.ml#L149>
         let GroupAffine::<F> { x, y, .. } = self.to_affine();
         f.debug_struct("InnerCurve")
             .field("x", &x)
@@ -1271,7 +1270,7 @@ impl<F: FieldWitness> InnerCurve<F> {
         let affine: F::Affine = self.inner.into_affine();
         let affine: GroupAffine<F> = affine.into();
         // OCaml panics on infinity
-        // https://github.com/MinaProtocol/mina/blob/3e58e92ea9aeddb41ad3b6e494279891c5f9aa09/src/lib/crypto/kimchi_backend/common/curve.ml#L180
+        // <https://github.com/MinaProtocol/mina/blob/3e58e92ea9aeddb41ad3b6e494279891c5f9aa09/src/lib/crypto/kimchi_backend/common/curve.ml#L180>
         assert!(!affine.infinity);
         affine
     }
@@ -1317,7 +1316,7 @@ impl InnerCurve<Fp> {
     }
 }
 
-/// https://github.com/openmina/mina/blob/45c195d72aa8308fcd9fc1c7bc5da36a0c3c3741/src/lib/snarky_curves/snarky_curves.ml#L267
+/// <https://github.com/openmina/mina/blob/45c195d72aa8308fcd9fc1c7bc5da36a0c3c3741/src/lib/snarky_curves/snarky_curves.ml#L267>
 pub fn create_shifted_inner_curve<F>(w: &mut Witness<F>) -> InnerCurve<F>
 where
     F: FieldWitness,
@@ -1326,14 +1325,14 @@ where
 }
 
 impl<F: FieldWitness> Check<F> for InnerCurve<F> {
-    // https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snarky_curves/snarky_curves.ml#L167
+    // <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snarky_curves/snarky_curves.ml#L167>
     fn check(&self, w: &mut Witness<F>) {
         self.to_affine().check(w);
     }
 }
 
 impl<F: FieldWitness> Check<F> for GroupAffine<F> {
-    // https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snarky_curves/snarky_curves.ml#L167
+    // <https://github.com/openmina/mina/blob/8f83199a92faa8ff592b7ae5ad5b3236160e8c20/src/lib/snarky_curves/snarky_curves.ml#L167>
     fn check(&self, w: &mut Witness<F>) {
         let GroupAffine::<F> { x, y: _, .. } = self;
         let x2 = field::square(*x, w);
@@ -1346,7 +1345,7 @@ impl<F: FieldWitness> Check<F> for transaction_union_payload::Tag {
     fn check(&self, _w: &mut Witness<F>) {
         // Does not modify the witness
         // Note: For constraints we need to convert to unpacked union
-        // https://github.com/openmina/mina/blob/45c195d72aa8308fcd9fc1c7bc5da36a0c3c3741/src/lib/mina_base/transaction_union_tag.ml#L177
+        // <https://github.com/openmina/mina/blob/45c195d72aa8308fcd9fc1c7bc5da36a0c3c3741/src/lib/mina_base/transaction_union_tag.ml#L177>
     }
 }
 
@@ -2265,8 +2264,8 @@ pub mod transaction_snark {
         transaction_logic::transaction_union_payload::{TransactionUnion, TransactionUnionPayload},
     };
     use ::poseidon::hash::legacy;
+    use mina_core::constants::constraint_constants;
     use mina_signer::Signature;
-    use openmina_core::constants::constraint_constants;
 
     use super::*;
 
@@ -2571,7 +2570,7 @@ pub mod transaction_snark {
         inputs.append_field(*px);
         inputs.append_field(*py);
         inputs.append_field(*rx);
-        let signature_prefix = openmina_core::NetworkConfig::global().legacy_signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().legacy_signature_prefix;
         let hash = checked_legacy_hash(signature_prefix, inputs, w);
 
         w.exists(field_to_bits::<_, 255>(hash))
@@ -2633,7 +2632,7 @@ pub mod transaction_snark {
         inputs.append_field(*px);
         inputs.append_field(*py);
         inputs.append_field(*rx);
-        let signature_prefix = openmina_core::NetworkConfig::global().signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().signature_prefix;
         let hash = checked_hash(signature_prefix, &inputs.to_fields(), w);
 
         w.exists(field_to_bits::<_, 255>(hash))
@@ -3742,7 +3741,7 @@ pub struct MessagesForNextStepProof<'a> {
 
 impl MessagesForNextStepProof<'_> {
     /// Implementation of `hash_messages_for_next_step_proof`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33>
     pub fn hash(&self) -> [u64; 4] {
         let fields: Vec<Fp> = self.to_fields();
         let field: Fp = ::poseidon::hash::hash_fields(&fields);
@@ -3752,7 +3751,7 @@ impl MessagesForNextStepProof<'_> {
     }
 
     /// Implementation of `to_field_elements`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493>
     pub fn to_fields(&self) -> Vec<Fp> {
         const NFIELDS: usize = 93; // TODO: This is bigger with transactions
 
@@ -3938,7 +3937,7 @@ pub(super) struct CreateProofParams<'a, F: FieldWitness> {
     pub(super) only_verify_constraints: bool,
 }
 
-/// https://github.com/o1-labs/proof-systems/blob/553795286d4561aa5d7e928ed1e3555e3a4a81be/kimchi/src/prover.rs#L1718
+/// <https://github.com/o1-labs/proof-systems/blob/553795286d4561aa5d7e928ed1e3555e3a4a81be/kimchi/src/prover.rs#L1718>
 ///
 /// Note: OCaml keeps the `public_evals`, but we already have it in our `proof`
 pub struct ProofWithPublic<F: FieldWitness> {

@@ -77,7 +77,7 @@ where
     F::try_from(bigint).unwrap() // Never fail with 2 limbs
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap_verifier.ml#L16
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap_verifier.ml#L16>
 pub fn challenge_polynomial<F: FieldWitness>(chals: &[F]) -> impl Fn(F) -> F + '_ {
     |pt: F| {
         let k = chals.len();
@@ -100,7 +100,7 @@ pub fn challenge_polynomial<F: FieldWitness>(chals: &[F]) -> impl Fn(F) -> F + '
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap_verifier.ml#L16
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/pickles/wrap_verifier.ml#L16>
 pub fn challenge_polynomial_checked<F: FieldWitness>(
     chals: &[F],
 ) -> impl Fn(F, &mut Witness<F>) -> F + '_ {
@@ -135,7 +135,7 @@ pub fn challenge_polynomial_checked<F: FieldWitness>(
 
 /// Note: Outdated URL
 /// Note: Different than `to_absorption_sequence`
-/// https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L611
+/// <https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L611>
 pub fn proof_evaluation_to_list<F: FieldWitness>(
     e: &ProofEvaluations<PointEvaluations<Vec<F>>>,
 ) -> Vec<&PointEvaluations<Vec<F>>> {
@@ -291,7 +291,7 @@ pub fn proof_evaluation_to_absorption_sequence<F: FieldWitness>(
     list.iter().cloned().collect()
 }
 
-/// https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L611
+/// <https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L611>
 pub fn proof_evaluation_to_list_opt<F: FieldWitness>(
     e: &ProofEvaluations<PointEvaluations<Vec<F>>>,
     hack_feature_flags: OptFlag,
@@ -387,7 +387,7 @@ pub fn proof_evaluation_to_list_opt<F: FieldWitness>(
     list
 }
 
-/// https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L674
+/// <https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/pickles_types/plonk_types.ml#L674>
 pub fn to_absorption_sequence_opt<F: FieldWitness>(
     evals: &ProofEvaluations<PointEvaluations<Vec<F>>>,
     hack_feature_flags: OptFlag,

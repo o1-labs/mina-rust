@@ -17,8 +17,7 @@ use self::common::CheckResult;
 #[derive(Debug, Clone)]
 pub struct Verifier;
 
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2::{
     PicklesProofProofsVerified2ReprStableV2, PicklesProofProofsVerifiedMaxStableV2,
 };
@@ -55,7 +54,7 @@ pub fn get_srs_mut<F: FieldWitness>() -> Arc<Mutex<SRS<F::OtherCurve>>> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/transaction_snark/transaction_snark.ml#L3492
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/transaction_snark/transaction_snark.ml#L3492>
 fn verify(ts: Vec<(LedgerProof, SokMessage)>) -> Result<(), String> {
     let srs = get_srs::<Fp>();
 
@@ -98,7 +97,7 @@ fn verify(ts: Vec<(LedgerProof, SokMessage)>) -> Result<(), String> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/dummy.ml#L59C1-L75C81
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/dummy.ml#L59C1-L75C81>
 #[cfg(test)]
 fn verify_digest_only(ts: Vec<(LedgerProof, SokMessage)>) -> Result<(), String> {
     use crate::scan_state::scan_state::transaction_snark::SokDigest;
@@ -113,7 +112,7 @@ fn verify_digest_only(ts: Vec<(LedgerProof, SokMessage)>) -> Result<(), String> 
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/verifier_intf.ml#L10C1-L36C29
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/verifier_intf.ml#L10C1-L36C29>
 pub type VerifyCommandsResult = Result<valid::UserCommand, VerifierError>;
 
 #[derive(Debug, thiserror::Error)]
@@ -150,12 +149,12 @@ impl Verifier {
     ) -> Result<Result<(), ()>, String> {
         // Implement verification later
         //
-        // https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/pickles/pickles.ml#L1122
-        // https://viable-systems.slack.com/archives/D01SVA87PQC/p1671715846448749
+        // <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/pickles/pickles.ml#L1122>
+        // <https://viable-systems.slack.com/archives/D01SVA87PQC/p1671715846448749>
         Ok(Ok(()))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/prod.ml#L138
+    /// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/verifier/prod.ml#L138>
     #[allow(unreachable_code)]
     pub fn verify_transaction_snarks(
         &self,
@@ -267,7 +266,7 @@ pub mod common {
         MismatchedAuthorizationKind(Vec<CompressedPubKey>),
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/verifier/common.ml#L29
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/verifier/common.ml#L29>
     pub fn check(cmd: WithStatus<verifiable::UserCommand>) -> CheckResult {
         use verifiable::UserCommand::{SignedCommand, ZkAppCommand};
 
@@ -386,7 +385,7 @@ pub mod common {
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;
 
-        let signature_prefix = openmina_core::NetworkConfig::global().signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().signature_prefix;
         let hash = hash_with_kimchi(signature_prefix, &[**msg, *x, *y, *rx]);
         let hash: Fq = Fq::try_from(hash.into_repr()).unwrap(); // Never fail, `Fq` is larger than `Fp`
 
@@ -416,7 +415,7 @@ pub mod common {
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;
 
-        let signature_prefix = openmina_core::NetworkConfig::global().legacy_signature_prefix;
+        let signature_prefix = mina_core::NetworkConfig::global().legacy_signature_prefix;
 
         let mut inputs = msg.to_input_legacy();
         inputs.append_field(*x);

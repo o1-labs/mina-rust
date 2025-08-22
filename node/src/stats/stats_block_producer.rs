@@ -1,8 +1,8 @@
 use std::collections::{BTreeMap, VecDeque};
 
 use ledger::AccountIndex;
+use mina_core::block::{AppliedBlock, ArcBlockWithHash};
 use mina_p2p_messages::v2;
-use openmina_core::block::{AppliedBlock, ArcBlockWithHash};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -169,7 +169,7 @@ impl BlockProducerStats {
     {
         match self.attempts.pop_back() {
             None => {
-                openmina_core::log::error!(openmina_core::log::system_time();
+                mina_core::log::error!(mina_core::log::system_time();
                     kind = "BlockProducerStatsAttemptsEmpty",
                     summary = "attempts are empty when they aren't expected to be",
                     update_kind = kind);
@@ -178,7 +178,7 @@ impl BlockProducerStats {
                 let was_correct_state = with(&mut attempt);
 
                 if !was_correct_state {
-                    openmina_core::log::error!(openmina_core::log::system_time();
+                    mina_core::log::error!(mina_core::log::system_time();
                         kind = "BlockProducerStatsAttemptUnexpectedState",
                         summary = format!("update kind `{kind}` is not applicable to state: {attempt:?}"));
                 }
@@ -395,7 +395,7 @@ impl From<(&BlockHash, &BlockWithoutProof)> for ProducedBlock {
             transactions: block.into(),
             completed_works_count: block.body.completed_works_count(),
             coinbase: if block.body.has_coinbase() {
-                openmina_core::constants::constraint_constants().coinbase_amount
+                mina_core::constants::constraint_constants().coinbase_amount
             } else {
                 0
             },

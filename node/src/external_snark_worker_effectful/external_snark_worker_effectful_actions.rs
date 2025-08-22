@@ -1,5 +1,5 @@
+use mina_core::ActionEvent;
 use mina_p2p_messages::v2::{CurrencyFeeStableV1, NonZeroCurvePoint};
-use openmina_core::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 

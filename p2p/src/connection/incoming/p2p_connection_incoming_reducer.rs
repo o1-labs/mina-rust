@@ -1,7 +1,7 @@
 #[cfg(feature = "p2p-libp2p")]
 use std::net::{IpAddr, SocketAddr};
 
-use openmina_core::{bug_condition, debug, warn, Substate};
+use mina_core::{bug_condition, debug, warn, Substate};
 use redux::{ActionWithMeta, Dispatcher, Timestamp};
 
 use crate::{

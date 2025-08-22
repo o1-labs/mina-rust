@@ -94,7 +94,7 @@ impl ToInputs for VrfMessage {
             Ok(epoch_seed) => epoch_seed,
             Err(_) => {
                 // TODO: Return an error somehow
-                mina_hasher::Fp::zero()
+                mina_curves::pasta::Fp::zero()
             }
         };
         inputs.append_field(epoch_seed);

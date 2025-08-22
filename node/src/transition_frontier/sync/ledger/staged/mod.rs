@@ -1,6 +1,6 @@
 mod transition_frontier_sync_ledger_staged_state;
 use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 pub use transition_frontier_sync_ledger_staged_state::*;
 
 mod transition_frontier_sync_ledger_staged_actions;

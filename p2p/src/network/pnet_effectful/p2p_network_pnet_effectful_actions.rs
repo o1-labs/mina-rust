@@ -1,5 +1,5 @@
 use crate::{ConnectionAddr, Data, P2pState};
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]

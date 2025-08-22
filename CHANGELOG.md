@@ -7,6 +7,109 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### OCaml node
+
+- Update the CI and code to compare with the latest release 3.2.0-alpha1-7f94ae0
+  ([#1236](https://github.com/o1-labs/openmina/pull/1236), fix
+  [#1158](https://github.com/o1-labs/openmina/issues/1158))
+- Update the CI and code to compare with the latest release 3.2.0-beta1-978866c
+  ([#1250](https://github.com/o1-labs/openmina/pull/1250))
+- Update the CI and code to compare with the latest release 3.2.0-beta2-939b08d
+  ([#1285](https://github.com/o1-labs/openmina/pull/1285))
+
+
+### Added
+
+- **Documentation**: Add instructions to update the OCaml node dependencies.
+  ([#1237](https://github.com/o1-labs/openmina/pull/1237))
+- **Development Tools**: Automation script for updating OCaml node references
+  with comprehensive documentation and CI testing to ensure reproducibility
+  ([#1252](https://github.com/o1-labs/openmina/pull/1252))
+- **Documentation**: Complete Docusaurus-based documentation website with
+  comprehensive guides for node runners, developers, and researchers
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234)). It migrates all the
+  documentation from `docs` to `website/docs`. It includes SEO metadata and
+  social media integration.
+- **Documentation**: Developer getting-started guide with automated setup
+  scripts for system dependencies, Rust toolchain, Node.js, Docker, and WASM
+  tools. This is run nightly and on-demand via PR labels to avoid blocking
+  development workflow. ([#1234](https://github.com/o1-labs/openmina/pull/1234)).
+- **Development Tools**: Enhanced formatting infrastructure with MDX file
+  support and trailing whitespace management
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Documentation**: add instructions for developers using MacOS based systems,
+  and test the installation commands in CI
+  ([#1247](https://github.com/o1-labs/openmina/pull/1234)).
+- **Development tools**: Add shellcheck to the CI
+  ([#1255](https://github.com/o1-labs/openmina/pull/1255))
+- **Makefile**: Add `run-block-producer` target with devnet/mainnet support and
+  `generate-block-producer-key` target for key generation
+  ([#1221](https://github.com/o1-labs/openmina/pull/1221)).
+- **Documentation**: add section regarding peers setup and seeds
+  ([#1295](https://github.com/o1-labs/openmina/pull/1295))
+- **Node**: add `openmina misc mina-encrypted-key` to generate a new encrypted
+  key with password, as the OCaml node provides
+  ([#1284](https://github.com/o1-labs/openmina/pull/1284/)).
+- **CI**: push images on tags and develop to
+  [o1labs/mina-rust-frontend](https://hub.docker.com/r/o1labs/mina-rust-frontend)
+  and [o1labs/mina-rust](https://hub.docker.com/r/o1labs/mina-rust), and support
+  ARM and AMD64, fixing
+  [!1336](https://github.com/o1-labs/mina-rust/issues/1336),
+  [!1192](https://github.com/o1-labs/mina-rust/issues/1192)
+  ([#1337](https://github.com/o1-labs/mina-rust/pull/1337),
+  [#1335](https://github.com/o1-labs/mina-rust/pull/1335),
+  [#1344](https://github.com/o1-labs/mina-rust/pull/1344),
+  [#1340](https://github.com/o1-labs/mina-rust/pull/1340),
+  [#2981ecf](https://github.com/o1-labs/mina-rust/commit/2981ecf9519517f69947838407a09ea96f7ff293),
+  [#1e9f33f](https://github.com/o1-labs/mina-rust/commit/1e9f33f125dcaab36d9dd2dc17759e3476bc36e8))
+
+### Changed
+
+- **CI**: Generalized build jobs to support multiple platforms (Ubuntu 22.04,
+  Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest), updated test execution to
+  ubuntu-latest, and fixed GLIBC compatibility for scenario tests by using
+  Ubuntu 22.04 for test binary artifacts to ensure compatibility with Debian
+  Bullseye container environment ([#1249](https://github.com/o1-labs/openmina/pull/1249))
+- **Build System**: Enhanced Makefile with documentation-related targets and
+  comprehensive formatting commands
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- Use consistent `use` statements for fields. Replace `mina_hasher::Fp` with
+  `mina_curves::pasta::Fp`.
+  ([#1269](https://github.com/o1-labs/openmina/pull/1269/)).
+- **CI**: set fail-fast to false to prevent cancellation of other jobs
+  ([#1305](https://github.com/o1-labs/openmina/pull/1305))
+- **Website**: (temporary) new design, for a first release and rename OpenMina
+  to "the Mina Russt node"
+  ([#1312](https://github.com/o1-labs/openmina/pull/1312)).
+- **Codebase**: rename `openmina` to `mina`, the project being officially
+  called for now "the Mina Rust node"
+  ([#1314](https://github.com/o1-labs/openmina/pull/1312)).
+
+### Fixed
+
+- **Documentation**: Resolved broken links and bare URL warnings in Rust
+  documentation ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Build System**: Fixed SQLx compilation errors in lint workflow
+  ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Formatting**: Standardized markdown and MDX files to 80-character line
+  wrapping ([#1234](https://github.com/o1-labs/openmina/pull/1234))
+- **Build warnings**: Fix the warnings generated by the missing lifetime
+  ([#1244](https://github.com/o1-labs/openmina/pull/1244))
+
+### Dependencies
+
+- bump proc-macro2 from 1.0.93 to 1.0.95
+  ([#1230](https://github.com/o1-labs/openmina/pull/1230))
+- bump itertools from 0.10.5 to 0.12.0 #1228
+  ([#1228](https://github.com/o1-labs/openmina/pull/1228))
+
+### Other
+
+- Added a `flake.nix` for building the project on nixos/using nix ([#1241](https://github.com/o1-labs/openmina/pull/1241)),
+  together with **documentation**: instructions for developers,
+  and test the installation commands in CI.
+
+
 ## [0.16.0] - 2025-04-04
 
 ### Added

@@ -19,7 +19,7 @@ impl MaybeCompressed<'_> {
 }
 
 #[cfg(feature = "compression")]
-pub fn compress(bytes: &[u8]) -> std::io::Result<MaybeCompressed> {
+pub fn compress(bytes: &[u8]) -> std::io::Result<MaybeCompressed<'_>> {
     let compressed = {
         let mut result = Vec::<u8>::with_capacity(bytes.len());
         zstd::stream::copy_encode(bytes, &mut result, zstd::DEFAULT_COMPRESSION_LEVEL)?;
@@ -34,7 +34,7 @@ pub fn compress(bytes: &[u8]) -> std::io::Result<MaybeCompressed> {
 }
 
 #[cfg(not(feature = "compression"))]
-pub fn compress(bytes: &[u8]) -> std::io::Result<MaybeCompressed> {
+pub fn compress(bytes: &[u8]) -> std::io::Result<MaybeCompressed<'_>> {
     Ok(MaybeCompressed::No(bytes))
 }
 

@@ -14,6 +14,6 @@ services:
     container_name: frontend
     image: openmina/frontend:0.16.0
     environment:
-      OPENMINA_FRONTEND_ENVIRONMENT: block-producers
+      MINA_FRONTEND_ENVIRONMENT: block-producers
     ports:
       - "8070:80"

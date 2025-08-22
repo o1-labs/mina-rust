@@ -1,6 +1,6 @@
 use super::{stream::P2pNetworkIdentifyStreamState, P2pNetworkIdentifyAction};
 use crate::P2pLimits;
-use openmina_core::Substate;
+use mina_core::Substate;
 use redux::ActionWithMeta;
 
 impl super::P2pNetworkIdentifyState {

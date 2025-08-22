@@ -1,13 +1,13 @@
 use std::sync::Arc;
 
 use ledger::proofs::provers::BlockProver;
+use mina_node_account::AccountSecretKey;
 use mina_p2p_messages::v2::{
     ConsensusBodyReferenceStableV1, LedgerProofProdStableV2, MinaBasePendingCoinbaseUpdateStableV1,
     MinaBasePendingCoinbaseWitnessStableV2, MinaBaseSparseLedgerBaseStableV2,
     MinaBaseStagedLedgerHashStableV1, ProverExtendBlockchainInputStableV2,
     StagedLedgerDiffDiffStableV2, StateHash,
 };
-use openmina_node_account::AccountSecretKey;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

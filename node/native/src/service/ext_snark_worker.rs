@@ -455,7 +455,7 @@ mod tests {
         event_source::Event,
         external_snark_worker::{ExternalSnarkWorkerEvent, SnarkWorkSpec},
     };
-    use openmina_node_common::tracing;
+    use mina_node_common::tracing;
 
     use super::ExternalSnarkWorkerFacade;
 

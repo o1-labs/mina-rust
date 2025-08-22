@@ -91,7 +91,7 @@ impl Hashable for SnappAccount {
         } else {
             roi = roi.append_field(
                 // Value of `dummy_vk_hash`:
-                // https://github.com/MinaProtocol/mina/blob/4f765c866b81fa6fed66be52707fd91fd915041d/src/lib/mina_base/snapp_account.ml#L116
+                // <https://github.com/MinaProtocol/mina/blob/4f765c866b81fa6fed66be52707fd91fd915041d/src/lib/mina_base/snapp_account.ml#L116>
                 Fp::from_hex("77a430a03efafd14d72e1a3c45a1fdca8267fcce9a729a1d25128bb5dec69d3f")
                     .unwrap(),
             );
@@ -111,7 +111,7 @@ impl Hashable for SnappAccount {
     }
 }
 
-// https://github.com/MinaProtocol/mina/blob/1765ba6bdfd7c454e5ae836c49979fa076de1bea/src/lib/mina_base/account.ml#L368
+// <https://github.com/MinaProtocol/mina/blob/1765ba6bdfd7c454e5ae836c49979fa076de1bea/src/lib/mina_base/account.ml#L368>
 #[derive(Clone, Debug)]
 pub struct AccountLegacy {
     pub public_key: CompressedPubKey,         // Public_key.Compressed.t
@@ -145,7 +145,7 @@ impl Hashable for AccountLegacy {
 
         // Self::token_symbol
 
-        // https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97
+        // <https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97>
         // assert!(self.token_symbol.len() <= 6);
 
         // if !self.token_symbol.is_empty() {
@@ -286,7 +286,7 @@ impl Hashable for AccountLegacy {
 
     //     // Self::token_symbol
 
-    //     // https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97
+    //     // <https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97>
     //     // assert!(self.token_symbol.len() <= 6);
 
     //     // if !self.token_symbol.is_empty() {

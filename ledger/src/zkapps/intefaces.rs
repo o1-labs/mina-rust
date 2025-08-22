@@ -1,6 +1,6 @@
 use std::marker::PhantomData;
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 
 use crate::proofs::{
@@ -39,7 +39,7 @@ where
 
     /// Here `b` might be a `CircuitVar::Constant`, in that case we don't call
     /// `Witness::exists_no_check` for the value.
-    /// https://github.com/openmina/snarky/blob/ff2631f47bb644f7a31fd30be16ee0e5ff5279fa/src/base/utils.ml#L155
+    /// <https://github.com/openmina/snarky/blob/ff2631f47bb644f7a31fd30be16ee0e5ff5279fa/src/base/utils.ml#L155>
     ///
     /// TODO: Ideally we should replace `exists_no_check` above with this `exists_no_check_on_bool`,
     /// but it's more parameters to type, and most of the time `b` is not a constant
@@ -459,7 +459,7 @@ where
     fn get(&self) -> &crate::Account;
     fn get_mut(&mut self) -> &mut crate::Account;
     fn set_delegate(&mut self, new: CompressedPubKey);
-    fn zkapp(&self) -> MyCow<ZkAppAccount>;
+    fn zkapp(&self) -> MyCow<'_, ZkAppAccount>;
     fn zkapp_mut(&mut self) -> &mut ZkAppAccount;
     fn verification_key_hash(&self) -> Self::VerificationKeyHash;
     fn set_token_id(&mut self, token_id: TokenId);

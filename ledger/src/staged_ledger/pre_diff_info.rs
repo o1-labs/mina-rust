@@ -1,8 +1,8 @@
 use std::collections::BTreeMap;
 
 use itertools::{Either, Itertools};
+use mina_core::constants::ConstraintConstants;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
 
 use crate::{
     scan_state::{
@@ -92,7 +92,7 @@ enum CoinbaseParts {
 /// example, when there are three slots and maximum number of provers), in which case,
 /// we simply add one coinbase as part of the second prediff.
 ///
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L95
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L95>
 fn create_coinbase(
     constraint_constants: &ConstraintConstants,
     coinbase_parts: CoinbaseParts,
@@ -159,8 +159,8 @@ fn create_coinbase(
     Ok(coinbases)
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L166
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#446
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L166>
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#446>
 pub fn sum_fees<'a, I, T: 'a, F>(fees: I, fun: F) -> Result<Fee, String>
 where
     I: IntoIterator<Item = &'a T>,
@@ -171,7 +171,7 @@ where
         .ok_or_else(|| "Fee overflow".to_string())
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L179
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L179>
 fn fee_remainder<'a, Cmd>(
     commands: &[Cmd],
     completed_works: impl IntoIterator<Item = &'a work::Unchecked>,
@@ -218,7 +218,7 @@ where
 
 /// TODO: This method is a mess, need to add tests
 ///
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L199
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L199>
 fn create_fee_transfers<'a>(
     completed_works: impl Iterator<Item = &'a work::Unchecked>,
     delta: Fee,
@@ -428,7 +428,7 @@ where
     Ok((p1, p2))
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L237
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L237>
 struct TransactionData<T> {
     commands: Vec<T>,
     coinbases: Vec<Coinbase>,
@@ -617,7 +617,7 @@ where
 }
 
 impl diff::Diff {
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L457
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L457>
     pub fn get<F>(
         self,
         check: F,
@@ -649,7 +649,7 @@ impl diff::Diff {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L481
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L481>
     pub fn get_transactions(
         self,
         constraint_constants: &ConstraintConstants,
@@ -671,7 +671,7 @@ impl diff::Diff {
 }
 
 impl with_valid_signatures_and_proofs::Diff {
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L472
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/pre_diff_info.ml#L472>
     pub fn get_unchecked(
         self,
         constraint_constants: &ConstraintConstants,

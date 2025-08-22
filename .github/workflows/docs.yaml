@@ -1,0 +1,174 @@
+name: Documentation
+
+on:
+  push:
+    branches:
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Test documentation build
+  build-docs:
+    if: github.ref != 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Setup build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y protobuf-compiler
+
+      - name: Install documentation dependencies
+        run: make docs-install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: nightly
+
+      - name: Build documentation
+        run: make docs-build
+
+      - name: Upload build artifacts for testing
+        uses: actions/upload-artifact@v4
+        with:
+          name: docs-build-test
+          path: website/build
+          retention-days: 1
+
+
+  # Deploy to GitHub Pages (only on develop branch)
+  deploy:
+    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # Full history for versioning
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Setup build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y protobuf-compiler
+
+      - name: Install documentation dependencies
+        run: make docs-install
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          toolchain: nightly
+
+      - name: Build documentation
+        run: make docs-build
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: website/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  # Create versioned documentation on tag creation
+  version-docs:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-docs]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: make docs-install
+
+      - name: Extract version from tag
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "Creating version $VERSION"
+
+      - name: Create versioned documentation
+        run: |
+          cd website
+          # Create a new version of the documentation
+          npm run docusaurus docs:version ${{ steps.version.outputs.version }}
+
+      - name: Setup build dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y protobuf-compiler
+
+      - name: Build versioned documentation
+        run: |
+          cd website
+          npm run build
+        env:
+          NODE_ENV: production
+
+      - name: Create versioned documentation archive
+        run: |
+          cd website/build
+          tar -czf "../../mina-docs-${{ steps.version.outputs.version }}.tar.gz" .
+          cd ../..
+          zip -r "mina-docs-${{ steps.version.outputs.version }}.zip" website/build
+
+      - name: Upload versioned documentation as release asset
+        uses: actions/upload-artifact@v4
+        with:
+          name: versioned-docs-${{ steps.version.outputs.version }}
+          path: |
+            mina-docs-${{ steps.version.outputs.version }}.tar.gz
+            mina-docs-${{ steps.version.outputs.version }}.zip

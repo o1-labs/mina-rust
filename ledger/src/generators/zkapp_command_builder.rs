@@ -21,10 +21,10 @@ pub fn get_transaction_commitments(
     (txn_commitment, full_txn_commitment)
 }
 
-/// replace dummy signatures, proofs with valid ones for fee payer, other zkapp_command
-/// [keymap] maps compressed public keys to private keys
+/// Replace dummy signatures, proofs with valid ones for fee payer, other zkapp_command
+/// `keymap` maps compressed public keys to private keys
 ///
-/// https://github.com/MinaProtocol/mina/blob/f7f6700332bdfca77d9f3303e9cf3bc25f997e09/src/lib/zkapp_command_builder/zkapp_command_builder.ml#L94
+/// <https://github.com/MinaProtocol/mina/blob/f7f6700332bdfca77d9f3303e9cf3bc25f997e09/src/lib/zkapp_command_builder/zkapp_command_builder.ml#L94>
 pub fn replace_authorizations(
     prover: Option<()>, // TODO: We don't support that yet
     keymap: &HashMap<HashableCompressedPubKey, Keypair>,

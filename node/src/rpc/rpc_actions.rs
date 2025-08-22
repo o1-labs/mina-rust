@@ -2,9 +2,9 @@ use ledger::{
     transaction_pool::{diff, ValidCommandWithHash},
     Account, AccountId,
 };
+use mina_core::{block::AppliedBlock, snark::SnarkJobId, ActionEvent};
+use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::v2::{LedgerHash, MinaBaseUserCommandStableV2, TokenIdKeyHash};
-use openmina_core::{block::AppliedBlock, snark::SnarkJobId, ActionEvent};
-use openmina_node_account::AccountPublicKey;
 use p2p::PeerId;
 use serde::{Deserialize, Serialize};
 

@@ -1,12 +1,12 @@
 use std::{collections::btree_map::Entry, time::Duration};
 
 use binprot::BinProtRead;
+use mina_core::{
+    block::BlockWithHash, bug_condition, fuzz_maybe, fuzzed_maybe, snark::Snark, Substate,
+};
 use mina_p2p_messages::{
     gossip::{self, GossipNetMessageV2},
     v2::NetworkPoolSnarkPoolDiffVersionedStableV2,
-};
-use openmina_core::{
-    block::BlockWithHash, bug_condition, fuzz_maybe, fuzzed_maybe, snark::Snark, Substate,
 };
 use redux::{Dispatcher, Timestamp};
 

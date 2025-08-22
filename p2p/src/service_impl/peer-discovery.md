@@ -2,7 +2,7 @@
 
 ## Objectives
 
-The Openmina node must maintain connections with peers. The list of peers must
+The Mina Rust node must maintain connections with peers. The list of peers must
 meet the requirements:
 
 - The number of peers must not exceed an upper limit and should not fall below a

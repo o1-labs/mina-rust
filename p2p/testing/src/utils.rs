@@ -224,7 +224,7 @@ where
 ///
 /// Function `f` extract peer_id from a Rust event.
 ///
-/// See [`super::predicates::all_nodes_with_items`].
+/// See [`super::predicates::all_nodes_with_value`].
 pub async fn try_wait_for_all_node_peer<I, F>(
     cluster: &mut Cluster,
     nodes_peers: I,
@@ -246,7 +246,7 @@ where
 ///
 /// Function `f` extract value `v` from a Rust event.
 ///
-/// See [`super::predicates::all_nodes_with_items`].
+/// See [`super::predicates::all_nodes_with_value`].
 pub async fn try_wait_for_all_nodes_with_value<T, I, F>(
     cluster: &mut Cluster,
     nodes_values: I,

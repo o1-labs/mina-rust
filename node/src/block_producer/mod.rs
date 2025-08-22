@@ -17,8 +17,8 @@ pub use block_producer_actions::*;
 mod block_producer_reducer;
 
 use ledger::AccountIndex;
+use mina_core::{block::ArcBlockWithHash, constants::constraint_constants};
 use mina_p2p_messages::{list::List, v2};
-use openmina_core::{block::ArcBlockWithHash, constants::constraint_constants};
 use poseidon::hash::params::MINA_EPOCH_SEED;
 use serde::{Deserialize, Serialize};
 use vrf::output::VrfOutput;
@@ -209,7 +209,7 @@ impl BlockWithoutProof {
 
 pub fn calc_epoch_seed(
     prev_epoch_seed: &v2::EpochSeed,
-    vrf_hash: mina_hasher::Fp,
+    vrf_hash: mina_curves::pasta::Fp,
 ) -> v2::EpochSeed {
     // TODO(adonagy): fix this unwrap
     let old_seed = prev_epoch_seed.to_field().unwrap();

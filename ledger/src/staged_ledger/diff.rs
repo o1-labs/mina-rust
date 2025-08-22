@@ -1,4 +1,4 @@
-use openmina_core::constants::ConstraintConstants;
+use mina_core::constants::ConstraintConstants;
 
 use crate::{
     scan_state::{
@@ -14,7 +14,7 @@ use crate::{
 
 use super::{pre_diff_info::PreDiffError, staged_ledger::StagedLedger};
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L5
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L5>
 #[derive(Clone, PartialEq)]
 pub enum AtMostTwo<T> {
     Zero,
@@ -32,7 +32,7 @@ impl<T> std::fmt::Debug for AtMostTwo<T> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L20
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L20>
 #[derive(Clone, PartialEq)]
 pub enum AtMostOne<T> {
     Zero,
@@ -48,7 +48,7 @@ impl<T> std::fmt::Debug for AtMostOne<T> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L37
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L37>
 #[derive(Clone, PartialEq)]
 pub struct PreDiffTwo<A, B> {
     pub completed_works: Vec<A>,
@@ -75,7 +75,7 @@ impl<A, B> std::fmt::Debug for PreDiffTwo<A, B> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L54
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L54>
 #[derive(Clone, PartialEq)]
 pub struct PreDiffOne<A, B> {
     pub completed_works: Vec<A>,
@@ -102,13 +102,13 @@ impl<A, B> std::fmt::Debug for PreDiffOne<A, B> {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L68
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L68>
 pub type PreDiffWithAtMostTwoCoinbase = PreDiffTwo<work::Work, WithStatus<UserCommand>>;
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L82
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L82>
 pub type PreDiffWithAtMostOneCoinbase = PreDiffOne<work::Work, WithStatus<UserCommand>>;
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L107
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L107>
 #[derive(Debug, Clone, PartialEq)]
 pub struct Diff {
     pub diff: (
@@ -118,7 +118,7 @@ pub struct Diff {
 }
 
 impl Diff {
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L429
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L429>
     pub fn completed_works(&self) -> Vec<work::Work> {
         let first = self.diff.0.completed_works.as_slice();
 
@@ -130,7 +130,7 @@ impl Diff {
         first.iter().chain(second).cloned().collect()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L425
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L425>
     pub fn commands(&self) -> Vec<WithStatus<UserCommand>> {
         let first = self.diff.0.commands.as_slice();
 
@@ -142,7 +142,7 @@ impl Diff {
         first.iter().chain(second).cloned().collect()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L333
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L333>
     pub fn validate_commands<F>(self, check: F) -> Result<with_valid_signatures::Diff, PreDiffError>
     where
         F: Fn(Vec<WithStatus<UserCommand>>) -> Result<Vec<valid::UserCommand>, VerifierError>,
@@ -197,15 +197,15 @@ impl Diff {
 pub mod with_valid_signatures_and_proofs {
     use super::*;
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L123
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L123>
     pub type PreDiffWithAtMostTwoCoinbase =
         PreDiffTwo<work::Checked, WithStatus<valid::UserCommand>>;
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L129
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L129>
     pub type PreDiffWithAtMostOneCoinbase =
         PreDiffOne<work::Checked, WithStatus<valid::UserCommand>>;
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L140
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff_intf.ml#L140>
     #[derive(Clone, Debug)]
     pub struct Diff {
         pub diff: (
@@ -214,7 +214,7 @@ pub mod with_valid_signatures_and_proofs {
         ),
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L268
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L268>
     fn forget_cw(list: Vec<work::Checked>) -> Vec<work::Unchecked> {
         list.into_iter().map(work::Checked::forget).collect()
     }
@@ -231,7 +231,7 @@ pub mod with_valid_signatures_and_proofs {
             first.iter().chain(second).cloned().collect()
         }
 
-        /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L373
+        /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L373>
         pub fn forget_proof_checks(self) -> super::with_valid_signatures::Diff {
             let d1 = self.diff.0;
 
@@ -255,7 +255,7 @@ pub mod with_valid_signatures_and_proofs {
             super::with_valid_signatures::Diff { diff: (p1, p2) }
         }
 
-        /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L419
+        /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L419>
         pub fn forget(self) -> super::Diff {
             let d1 = self.diff.0;
             let p1 = super::PreDiffWithAtMostTwoCoinbase {
@@ -331,7 +331,7 @@ pub mod with_valid_signatures {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L278
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger_diff/diff.ml#L278>
 pub fn coinbase<A, B>(
     diff: &(PreDiffTwo<A, B>, Option<PreDiffOne<A, B>>),
     constraint_constants: &ConstraintConstants,

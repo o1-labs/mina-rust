@@ -1,22 +1,25 @@
 [package]
-name = "openmina-node-invariants"
+name = "mina-node-invariants"
 version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [lib]
-name = "openmina_node_invariants"
+name = "mina_node_invariants"
 path = "src/lib.rs"
 
 [dependencies]
-lazy_static = "1.4.0"
 documented = { version = "0.6" }
+lazy_static = "1.4.0"
+node = { path = "../" }
+redux = { workspace = true }
+serde = "1.0.147"
+serde_json = { version = "1.0.82", features = [
+  "unbounded_depth",
+  "arbitrary_precision",
+] }
 strum = "0.26"
 strum_macros = "0.26"
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = ["unbounded_depth", "arbitrary_precision"] }
-redux = { workspace = true }
-node = { path = "../" }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
-redux = { workspace = true, features=["serializable_callbacks"] }
+redux = { workspace = true, features = ["serializable_callbacks"] }

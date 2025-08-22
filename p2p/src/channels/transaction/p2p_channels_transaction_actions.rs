@@ -1,4 +1,4 @@
-use openmina_core::{p2p::P2pNetworkPubsubMessageCacheId, transaction::Transaction, ActionEvent};
+use mina_core::{p2p::P2pNetworkPubsubMessageCacheId, transaction::Transaction, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use crate::{channels::P2pChannelsAction, P2pState, PeerId};

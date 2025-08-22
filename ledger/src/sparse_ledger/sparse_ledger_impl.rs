@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, HashMap, VecDeque};
 
 use ark_ff::Zero;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use poseidon::hash::params::get_merkle_param_for_height;
 
@@ -337,7 +337,7 @@ impl SparseLedgerImpl<AccountId, Account> {
 impl LedgerIntf for SparseLedgerImpl<AccountId, Account> {
     type Location = Address;
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L58
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L58>
     fn get(&self, addr: &Self::Location) -> Option<Box<Account>> {
         let account = self.get(addr)?;
 
@@ -348,7 +348,7 @@ impl LedgerIntf for SparseLedgerImpl<AccountId, Account> {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L66
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L66>
     fn location_of_account(&self, account_id: &AccountId) -> Option<Self::Location> {
         let addr = self.get_index(account_id)?;
         let account = self.get(addr)?;
@@ -360,12 +360,12 @@ impl LedgerIntf for SparseLedgerImpl<AccountId, Account> {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L75
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L75>
     fn set(&mut self, addr: &Self::Location, account: Box<Account>) {
         self.set_exn(addr.clone(), account);
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L96
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L96>
     fn get_or_create(
         &mut self,
         account_id: &AccountId,
@@ -391,7 +391,7 @@ impl LedgerIntf for SparseLedgerImpl<AccountId, Account> {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L109
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L109>
     fn create_new_account(&mut self, account_id: AccountId, to_set: Account) -> Result<(), ()> {
         let addr = self.get_index(&account_id).ok_or(())?;
         let account = self.get(addr).ok_or(())?;
@@ -404,17 +404,17 @@ impl LedgerIntf for SparseLedgerImpl<AccountId, Account> {
         Ok(())
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L112
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L112>
     fn remove_accounts_exn(&mut self, _account_ids: &[AccountId]) {
         unimplemented!("remove_accounts_exn: not implemented")
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L115
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L115>
     fn merkle_root(&mut self) -> Fp {
         self.merkle_root()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L142
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/sparse_ledger_base.ml#L142>
     fn empty(depth: usize) -> Self {
         Self::create(depth, Fp::zero())
     }

@@ -5,8 +5,8 @@ use libp2p::{
     swarm::{NetworkBehaviour, SwarmEvent, THandlerErr},
     Transport,
 };
+use mina_core::ChainId;
 use mina_p2p_messages::rpc_kernel::RpcTag;
-use openmina_core::ChainId;
 use p2p::PeerId;
 
 use libp2p_rpc_behaviour::StreamId;

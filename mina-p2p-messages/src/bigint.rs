@@ -432,9 +432,9 @@ mod tests {
         println!("rx: {:?}", deser_rx);
         println!("s: {:?}", deser_s);
 
-        let _ = deser_rx.to_field::<mina_hasher::Fp>().unwrap();
+        let _ = deser_rx.to_field::<mina_curves::pasta::Fp>().unwrap();
         println!("rx OK");
-        let _ = deser_s.to_field::<mina_hasher::Fp>().unwrap();
+        let _ = deser_s.to_field::<mina_curves::pasta::Fp>().unwrap();
         println!("s OK");
     }
 

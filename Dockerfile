@@ -4,7 +4,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends protobuf-compiler && \
     apt-get clean
 
-WORKDIR /openmina
+WORKDIR /mina
 
 COPY rust-toolchain.toml .
 
@@ -17,13 +17,13 @@ RUN RUST_VERSION=$(grep 'channel = ' rust-toolchain.toml | \
 COPY . .
 
 RUN make build-release && \
-    mkdir -p /openmina/release-bin && \
-    cp /openmina/target/release/openmina /openmina/release-bin/openmina
+    mkdir -p /mina/release-bin && \
+    cp /mina/target/release/mina /mina/release-bin/mina
 
 RUN make build-testing && \
-    mkdir -p /openmina/testing-release-bin && \
-    cp /openmina/target/release/openmina-node-testing \
-        /openmina/testing-release-bin/openmina-node-testing
+    mkdir -p /mina/testing-release-bin && \
+    cp /mina/target/release/mina-node-testing \
+        /mina/testing-release-bin/mina-node-testing
 
 # necessary for proof generation when running a block producer.
 RUN make download-circuits && \
@@ -37,15 +37,15 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /openmina/release-bin/openmina /usr/local/bin/
-COPY --from=build /openmina/testing-release-bin/openmina-node-testing \
+COPY --from=build /mina/release-bin/mina /usr/local/bin/
+COPY --from=build /mina/testing-release-bin/mina-node-testing \
     /usr/local/bin/
 
-RUN mkdir -p /usr/local/lib/openmina/circuit-blobs
-COPY --from=build /openmina/circuit-blobs/ \
-    /usr/local/lib/openmina/circuit-blobs/
+RUN mkdir -p /usr/local/lib/mina/circuit-blobs
+COPY --from=build /mina/circuit-blobs/ \
+    /usr/local/lib/mina/circuit-blobs/
 
 EXPOSE 3000
 EXPOSE 8302
 
-ENTRYPOINT [ "openmina" ]
+ENTRYPOINT [ "mina" ]

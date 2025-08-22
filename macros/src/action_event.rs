@@ -64,7 +64,7 @@ pub fn expand(input: DeriveInput) -> Result<TokenStream> {
         return Err(Error::new_spanned(input, "should be enum"));
     };
     let type_name = &input.ident;
-    let trait_name = quote!(openmina_core::ActionEvent); // TODO
+    let trait_name = quote!(mina_core::ActionEvent); // TODO
     let input_attrs = action_event_attrs(&input.attrs)?;
     let variants = enum_data
         .variants
@@ -103,7 +103,7 @@ pub fn expand(input: DeriveInput) -> Result<TokenStream> {
                     args.extend(fields(&variant_attrs.fields, &input_attrs.fields, fields_named)?);
                     let level = level(&variant_attrs.level, &v.ident, &input_attrs.level);
                     Ok(quote! {
-                        #type_name :: #variant_name { #(#field_names),* } => openmina_core::#level!(#(#args),*),
+                        #type_name :: #variant_name { #(#field_names),* } => mina_core::#level!(#(#args),*),
                     })
                 }
                 Fields::Unit => {
@@ -116,7 +116,7 @@ pub fn expand(input: DeriveInput) -> Result<TokenStream> {
                     args.extend(summary_field(&v.attrs)?);
                     let level = level(&variant_attrs.level, &v.ident, &input_attrs.level);
                     Ok(quote! {
-                        #type_name :: #variant_name => openmina_core::#level!(#(#args),*),
+                        #type_name :: #variant_name => mina_core::#level!(#(#args),*),
                     })
                 }
             }
@@ -126,7 +126,7 @@ pub fn expand(input: DeriveInput) -> Result<TokenStream> {
     Ok(quote! {
         impl #trait_name for #type_name {
             fn action_event<T>(&self, context: &T)
-            where T: openmina_core::log::EventContext,
+            where T: mina_core::log::EventContext,
             {
                 #[allow(unused_variables)]
                 match self {
@@ -305,17 +305,17 @@ mod tests {
     #[test]
     fn test_delegate() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 pub enum SuperAction {
     Sub1(SubAction1),
     Sub2(SubAction2),
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for SuperAction {
+impl mina_core::ActionEvent for SuperAction {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {
@@ -331,7 +331,7 @@ impl openmina_core::ActionEvent for SuperAction {
     #[test]
     fn test_unit() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 pub enum Action {
     Unit,
     /// documentation
@@ -344,16 +344,16 @@ pub enum Action {
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for Action {
+impl mina_core::ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {
-            Action::Unit => openmina_core::action_debug!(context),
-            Action::UnitWithDoc => openmina_core::action_debug!(context, summary = "documentation"),
-            Action::UnitWithMultilineDoc => openmina_core::action_debug!(context, summary = "Multiline documentation"),
+            Action::Unit => mina_core::action_debug!(context),
+            Action::UnitWithDoc => mina_core::action_debug!(context, summary = "documentation"),
+            Action::UnitWithMultilineDoc => mina_core::action_debug!(context, summary = "Multiline documentation"),
         }
     }
 }
@@ -364,7 +364,7 @@ impl openmina_core::ActionEvent for Action {
     #[test]
     fn test_level() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 #[action_event(level = trace)]
 pub enum Action {
     ActionDefaultLevel,
@@ -375,17 +375,17 @@ pub enum Action {
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for Action {
+impl mina_core::ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {
-            Action::ActionDefaultLevel => openmina_core::action_trace!(context),
-            Action::ActionOverrideLevel => openmina_core::action_warn!(context),
-            Action::ActionWithError => openmina_core::action_warn!(context),
-            Action::ActionWithWarn => openmina_core::action_warn!(context),
+            Action::ActionDefaultLevel => mina_core::action_trace!(context),
+            Action::ActionOverrideLevel => mina_core::action_warn!(context),
+            Action::ActionWithError => mina_core::action_warn!(context),
+            Action::ActionWithWarn => mina_core::action_warn!(context),
         }
     }
 }
@@ -396,7 +396,7 @@ impl openmina_core::ActionEvent for Action {
     #[test]
     fn test_fields() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 pub enum Action {
     NoFields { f1: bool },
     #[action_event(fields(f1))]
@@ -414,20 +414,20 @@ pub enum Action {
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for Action {
+impl mina_core::ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {
-            Action::NoFields { f1 } => openmina_core::action_debug!(context),
-            Action::Field { f1 } => openmina_core::action_debug!(context, f1 = f1),
-            Action::FieldWithName { f1 } => openmina_core::action_debug!(context, f = f1),
-            Action::FieldExpr { f } => openmina_core::action_debug!(context, f = f.subfield),
-            Action::FieldDisplayExpr { f } => openmina_core::action_debug!(context, f = display(f.subfield)),
-            Action::DebugField { f1 } => openmina_core::action_debug!(context, f1 = debug(f1)),
-            Action::DisplayField { f1 } => openmina_core::action_debug!(context, f1 = display(f1)),
+            Action::NoFields { f1 } => mina_core::action_debug!(context),
+            Action::Field { f1 } => mina_core::action_debug!(context, f1 = f1),
+            Action::FieldWithName { f1 } => mina_core::action_debug!(context, f = f1),
+            Action::FieldExpr { f } => mina_core::action_debug!(context, f = f.subfield),
+            Action::FieldDisplayExpr { f } => mina_core::action_debug!(context, f = display(f.subfield)),
+            Action::DebugField { f1 } => mina_core::action_debug!(context, f1 = debug(f1)),
+            Action::DisplayField { f1 } => mina_core::action_debug!(context, f1 = display(f1)),
         }
     }
 }
@@ -438,7 +438,7 @@ impl openmina_core::ActionEvent for Action {
     #[test]
     fn test_filtered_fields() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 #[action_event(fields(f1, f2 = f2.sub, f3 = display(f3.sub), f4 = foo()))]
 pub enum Action {
     Unit,
@@ -448,17 +448,17 @@ pub enum Action {
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for Action {
+impl mina_core::ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {
-            Action::Unit => openmina_core::action_debug!(context),
-            Action::AllFields { f1, f2, f3 } => openmina_core::action_debug!(context, f1 = f1, f2 = f2.sub, f3 = display(f3.sub), f4 = foo()),
-            Action::OnlyF1 { f1 } => openmina_core::action_debug!(context, f1 = f1, f4 = foo()),
-            Action::WithF3 { f1, f3 } => openmina_core::action_debug!(context, f1 = f1, f3 = display(f3.sub), f4 = foo()),
+            Action::Unit => mina_core::action_debug!(context),
+            Action::AllFields { f1, f2, f3 } => mina_core::action_debug!(context, f1 = f1, f2 = f2.sub, f3 = display(f3.sub), f4 = foo()),
+            Action::OnlyF1 { f1 } => mina_core::action_debug!(context, f1 = f1, f4 = foo()),
+            Action::WithF3 { f1, f3 } => mina_core::action_debug!(context, f1 = f1, f3 = display(f3.sub), f4 = foo()),
         }
     }
 }
@@ -469,7 +469,7 @@ impl openmina_core::ActionEvent for Action {
     #[test]
     fn test_call() -> anyhow::Result<()> {
         let input = r#"
-#[derive(openmina_core::ActionEvent)]
+#[derive(mina_core::ActionEvent)]
 pub enum Action {
     #[action_event(expr(foo(context)))]
     Unit,
@@ -478,10 +478,10 @@ pub enum Action {
 }
 "#;
         let expected = r#"
-impl openmina_core::ActionEvent for Action {
+impl mina_core::ActionEvent for Action {
     fn action_event<T>(&self, context: &T)
     where
-        T: openmina_core::log::EventContext,
+        T: mina_core::log::EventContext,
     {
         #[allow(unused_variables)]
         match self {

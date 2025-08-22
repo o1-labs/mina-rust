@@ -20,7 +20,7 @@ impl Default for OcamlNodeTestingConfig {
     fn default() -> Self {
         Self {
             initial_peers: vec![],
-            daemon_json: DaemonJson::Custom("/var/lib/coda/config_889607b9.json".to_owned()),
+            daemon_json: DaemonJson::Custom("/var/lib/coda/config_939b08d8.json".to_owned()),
             block_producer: None,
         }
     }
@@ -131,12 +131,12 @@ impl OcamlNodeConfig {
 impl OcamlNodeExecutable {
     // pub const DEFAULT_DOCKER_IMAGE: &'static str = "vladsimplestakingcom/mina-light:2.0.0rampup4";
     pub const DEFAULT_DOCKER_IMAGE: &'static str =
-        "gcr.io/o1labs-192920/mina-daemon:3.0.4-alpha1-889607b-bullseye-devnet";
+        "gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet";
     pub const DEFAULT_MINA_EXECUTABLE: &'static str = "mina";
 
     fn docker_container_name(tmp_dir: &temp_dir::TempDir) -> String {
         let path = tmp_dir.path().file_name().unwrap().to_str().unwrap();
-        format!("openmina_testing_ocaml_{}", &path[1..])
+        format!("mina_testing_ocaml_{}", &path[1..])
     }
 
     /// Additional logic for killing the node.

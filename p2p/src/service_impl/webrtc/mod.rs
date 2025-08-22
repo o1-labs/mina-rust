@@ -7,7 +7,7 @@ mod webrtc_rs;
 
 use std::{collections::BTreeMap, future::Future, pin::Pin, sync::Arc, time::Duration};
 
-use openmina_core::bug_condition;
+use mina_core::bug_condition;
 use serde::Serialize;
 use tokio::sync::Semaphore;
 
@@ -16,7 +16,7 @@ use tokio::task::spawn_local;
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen_futures::spawn_local;
 
-use openmina_core::channels::{mpsc, oneshot, Aborted, Aborter};
+use mina_core::channels::{mpsc, oneshot, Aborted, Aborter};
 
 use crate::{
     channels::{ChannelId, ChannelMsg, MsgId},
@@ -161,7 +161,7 @@ impl Default for RTCConfigIceServers {
         Self(vec![
             RTCConfigIceServer {
                 urls: vec!["stun:65.109.110.75:3478".to_owned()],
-                username: Some("openmina".to_owned()),
+                username: Some("mina".to_owned()),
                 credential: Some("webrtc".to_owned()),
             },
             RTCConfigIceServer {
@@ -868,7 +868,7 @@ pub trait P2pServiceWebrtc: redux::Service {
             //     return false;
             // }
         } else {
-            openmina_core::error!(openmina_core::log::system_time(); "`disconnect` shouldn't be used for libp2p peers");
+            mina_core::error!(mina_core::log::system_time(); "`disconnect` shouldn't be used for libp2p peers");
         }
         true
     }

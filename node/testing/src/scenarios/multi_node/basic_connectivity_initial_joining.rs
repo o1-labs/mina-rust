@@ -33,7 +33,7 @@ impl MultiNodeBasicConnectivityInitialJoining {
         let seed_node =
             runner.add_rust_node(RustNodeTestingConfig::devnet_default().max_peers(TOTAL_PEERS));
 
-        eprintln!("launch Openmina seed node, id: {seed_node}");
+        eprintln!("launch Mina seed node, id: {seed_node}");
 
         let mut nodes = vec![seed_node];
 
@@ -46,7 +46,7 @@ impl MultiNodeBasicConnectivityInitialJoining {
                         .max_peers(MAX_PEERS_PER_NODE)
                         .initial_peers(vec![seed_node.into()]),
                 );
-                eprintln!("launch Openmina node, id: {node}, connects to {seed_node}");
+                eprintln!("launch Mina node, id: {node}, connects to {seed_node}");
 
                 nodes.push(node);
             }

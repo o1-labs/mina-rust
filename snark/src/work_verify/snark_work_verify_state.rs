@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use serde::{Deserialize, Serialize};
 
-use openmina_core::{
+use mina_core::{
     requests::PendingRequests,
     snark::{Snark, SnarkJobId},
 };

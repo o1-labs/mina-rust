@@ -1,7 +1,7 @@
 use std::{cell::Cell, marker::PhantomData};
 
 use ark_ff::Zero;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use poseidon::hash::{
     params::{
@@ -286,7 +286,7 @@ impl CallForestInterface for SnarkCallForest {
         let account_update = w.exists(&account_update.body);
         let account_update = {
             let account_update_hash_param =
-                openmina_core::NetworkConfig::global().account_update_hash_param;
+                mina_core::NetworkConfig::global().account_update_hash_param;
             let hash = account_update.checked_hash_with_param(account_update_hash_param, w);
             WithHash {
                 data: account_update.clone(),
@@ -902,7 +902,7 @@ impl AccountInterface for SnarkAccount {
             Some(new)
         };
     }
-    fn zkapp(&self) -> MyCow<ZkAppAccount> {
+    fn zkapp(&self) -> MyCow<'_, ZkAppAccount> {
         match &self.zkapp {
             Some(zkapp) => MyCow::Borrow(zkapp),
             None => MyCow::Own(ZkAppAccount::default()),

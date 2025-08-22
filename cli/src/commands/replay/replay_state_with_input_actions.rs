@@ -1,10 +1,10 @@
+use mina_node_native::replay_state_with_input_actions;
 use node::BuildEnv;
-use openmina_node_native::replay_state_with_input_actions;
 
 #[derive(Debug, clap::Args)]
 /// Replay node using initial state and input actions.
 pub struct ReplayStateWithInputActions {
-    #[arg(long, short, default_value = "~/.openmina/recorder")]
+    #[arg(long, short, default_value = "~/.mina/recorder")]
     pub dir: String,
 
     #[arg(long, default_value = "./target/release/libreplay_dynamic_effects.so")]
@@ -20,7 +20,7 @@ pub struct ReplayStateWithInputActions {
 
 impl ReplayStateWithInputActions {
     pub fn run(self) -> anyhow::Result<()> {
-        openmina_node_native::tracing::initialize(self.verbosity);
+        mina_node_native::tracing::initialize(self.verbosity);
 
         let dir = shellexpand::full(&self.dir)?.into_owned();
         let dynamic_effects_lib = shellexpand::full(&self.dynamic_effects_lib)?.into_owned();

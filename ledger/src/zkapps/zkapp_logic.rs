@@ -1,6 +1,6 @@
-use mina_hasher::Fp;
+use mina_core::constants::constraint_constants;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::constraint_constants;
 
 use crate::{
     scan_state::{
@@ -41,7 +41,7 @@ pub enum ZkAppCommandElt {
 
 fn assert_<Z: ZkappApplication>(b: Z::Bool, s: &str) -> Result<(), String> {
     // Used only for circuit generation (add constraints)
-    // https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929
+    // <https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929>
 
     if let Boolean::False = b.as_boolean() {
         return Err(s.to_string());

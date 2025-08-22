@@ -10,8 +10,8 @@ pub use transition_frontier_genesis_actions::*;
 mod transition_frontier_genesis_reducer;
 
 use ledger::scan_state::pending_coinbase::PendingCoinbase;
+use mina_core::constants::constraint_constants;
 use mina_p2p_messages::v2;
-use openmina_core::constants::constraint_constants;
 
 pub(super) fn empty_block_body() -> v2::StagedLedgerDiffDiffStableV2 {
     use ledger::staged_ledger::diff::with_valid_signatures_and_proofs::Diff;

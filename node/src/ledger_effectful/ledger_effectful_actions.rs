@@ -2,7 +2,7 @@ use crate::ledger::{
     read::{LedgerReadIdType, LedgerReadInitCallback, LedgerReadRequest},
     write::LedgerWriteRequest,
 };
-use openmina_core::requests::RequestId;
+use mina_core::requests::RequestId;
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 

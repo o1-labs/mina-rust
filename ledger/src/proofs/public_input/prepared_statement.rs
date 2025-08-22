@@ -1,6 +1,5 @@
 use ark_ff::{BigInteger256, Zero};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::v2::{
     CompositionTypesBranchDataStableV1, PicklesBaseProofsVerifiedStableV1,
 };
@@ -50,7 +49,7 @@ pub struct PreparedStatement {
 
 impl PreparedStatement {
     /// Implementation of `tock_unpadded_public_input_of_statement`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L202
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L202>
     pub fn to_public_input(&self, npublic_input: usize) -> anyhow::Result<Vec<Fq>> {
         let PreparedStatement {
             proof_state:
@@ -86,7 +85,7 @@ impl PreparedStatement {
         } = &self;
 
         // We sort the fields in the same order as here:
-        // https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/composition_types.ml#L739
+        // <https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/composition_types.ml#L739>
 
         let mut fields: Vec<Fq> = Vec::with_capacity(npublic_input);
 
@@ -128,13 +127,13 @@ impl PreparedStatement {
 
         // Index
         {
-            // https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58
+            // <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58>
             let proofs_verified = match proofs_verified {
                 PicklesBaseProofsVerifiedStableV1::N0 => 0b00,
                 PicklesBaseProofsVerifiedStableV1::N1 => 0b10,
                 PicklesBaseProofsVerifiedStableV1::N2 => 0b11,
             };
-            // https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/branch_data.ml#L63
+            // <https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/branch_data.ml#L63>
             let domain_log2: u8 = domain_log2.0.into();
             let domain_log2: u64 = domain_log2 as u64;
             let branch_data: u64 = (domain_log2 << 2) | proofs_verified;
@@ -157,7 +156,7 @@ impl PreparedStatement {
             runtime_tables: _,
         } = feature_flags;
 
-        // https://github.com/MinaProtocol/mina/blob/dc6bf78b8ddbbca3a1a248971b76af1514bf05aa/src/lib/pickles/composition_types/composition_types.ml#L146
+        // <https://github.com/MinaProtocol/mina/blob/dc6bf78b8ddbbca3a1a248971b76af1514bf05aa/src/lib/pickles/composition_types/composition_types.ml#L146>
         let uses_lookup = [
             range_check0,
             range_check1,
@@ -221,7 +220,7 @@ impl PreparedStatement {
         } = &self;
 
         // We sort the fields in the same order as here:
-        // https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/composition_types.ml#L739
+        // <https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/composition_types.ml#L739>
 
         let mut fields: Vec<Packed> = Vec::with_capacity(npublic_input);
 
@@ -274,13 +273,13 @@ impl PreparedStatement {
 
         // Index
         {
-            // https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58
+            // <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles_base/proofs_verified.ml#L58>
             let proofs_verified = match proofs_verified {
                 PicklesBaseProofsVerifiedStableV1::N0 => 0b00,
                 PicklesBaseProofsVerifiedStableV1::N1 => 0b10,
                 PicklesBaseProofsVerifiedStableV1::N2 => 0b11,
             };
-            // https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/branch_data.ml#L63
+            // <https://github.com/MinaProtocol/mina/blob/c824be7d80db1d290e0d48cbc920182d07de0330/src/lib/pickles/composition_types/branch_data.ml#L63>
             let domain_log2: u8 = domain_log2.0.into();
             let domain_log2: u64 = domain_log2 as u64;
             let branch_data: u64 = (domain_log2 << 2) | proofs_verified;

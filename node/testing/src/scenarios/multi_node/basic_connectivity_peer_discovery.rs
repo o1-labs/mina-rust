@@ -14,13 +14,13 @@ use crate::{
 /// Global test with OCaml nodes.
 /// Run an OCaml node as a seed node. Run three normal OCaml nodes connecting only to the seed node.
 /// Wait 3 minutes for the OCaml nodes to start.
-/// Run the Openmina node (application under test).
-/// Wait for the Openmina node to complete peer discovery and connect to all OCaml nodes.
-/// (This step ensures that the Openmina node can discover OCaml nodes).
+/// Run the Rust node (application under test).
+/// Wait for the Rust node to complete peer discovery and connect to all OCaml nodes.
+/// (This step ensures that the Rust node can discover OCaml nodes).
 /// Run another OCaml node that connects only to the seed node.
 /// So this additional OCaml node only knows the address of the seed node.
-/// Wait for the additional OCaml node to initiate a connection to the Openmina node.
-/// (This step ensures that the OCaml node can discover the Openmina node).
+/// Wait for the additional OCaml node to initiate a connection to the Rust node.
+/// (This step ensures that the OCaml node can discover the Rust node).
 /// Fail the test on the timeout.
 #[derive(documented::Documented, Default, Clone, Copy)]
 pub struct MultiNodeBasicConnectivityPeerDiscovery;
@@ -34,7 +34,7 @@ impl MultiNodeBasicConnectivityPeerDiscovery {
 
         let ocaml_seed_config = OcamlNodeTestingConfig {
             initial_peers: Vec::new(),
-            daemon_json: DaemonJson::Custom("/var/lib/coda/config_889607b9.json".to_owned()),
+            daemon_json: DaemonJson::Custom("/var/lib/coda/config_939b08d8.json".to_owned()),
             block_producer: None,
         };
 
@@ -79,7 +79,7 @@ impl MultiNodeBasicConnectivityPeerDiscovery {
                     .collect(),
             );
         let node_id = runner.add_rust_node(config);
-        eprintln!("launching Openmina node {node_id}");
+        eprintln!("launching Rust node {node_id}");
 
         let mut additional_ocaml_node = None::<(ClusterOcamlNodeId, PeerId)>;
 
@@ -132,7 +132,7 @@ impl MultiNodeBasicConnectivityPeerDiscovery {
                 // the node must find all already running OCaml nodes
                 // assert_eq!(this.state().p2p.peers.len(), TOTAL_OCAML_NODES as usize);
                 if additional_ocaml_node.is_none() {
-                    eprintln!("the Openmina node finished peer discovery",);
+                    eprintln!("the Rust node finished peer discovery",);
                     eprintln!(
                         "connected peers: {:?}",
                         this.state().p2p.unwrap().peers.keys().collect::<Vec<_>>()
@@ -163,7 +163,7 @@ impl MultiNodeBasicConnectivityPeerDiscovery {
                     })
                     .is_some()
                 {
-                    eprintln!("the additional OCaml node connected to Openmina node");
+                    eprintln!("the additional OCaml node connected to Rust node");
                     eprintln!("success");
 
                     break;

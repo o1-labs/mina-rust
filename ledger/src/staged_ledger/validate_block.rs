@@ -78,7 +78,7 @@ fn blake2(data: &[u8]) -> Link {
     hasher.finalize_boxed().try_into().unwrap()
 }
 
-/// https://github.com/MinaProtocol/mina/blob/850309dad6293c3b7b15ef682d38e1e26c1d2e13/src/lib/staged_ledger_diff/bitswap_block.ml#L78
+/// <https://github.com/MinaProtocol/mina/blob/850309dad6293c3b7b15ef682d38e1e26c1d2e13/src/lib/staged_ledger_diff/bitswap_block.ml#L78>
 fn blocks_of_data(
     max_block_size: usize,
     data: &[u8],

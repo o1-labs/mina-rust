@@ -1,14 +1,14 @@
 use std::{io::Cursor, str::FromStr, sync::Arc};
 
 use ark_ff::{BigInteger256, One, UniformRand, Zero};
-use mina_hasher::Fp;
+use mina_core::constants::PROTOCOL_VERSION;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot::{BinProtRead, BinProtWrite},
     v2,
 };
 use mina_signer::CompressedPubKey;
 use once_cell::sync::{Lazy, OnceCell};
-use openmina_core::constants::PROTOCOL_VERSION;
 use rand::{prelude::ThreadRng, seq::SliceRandom, Rng};
 use serde::{Deserialize, Serialize};
 
@@ -76,7 +76,7 @@ impl TokenId {
     }
 }
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/account.ml#L93
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/account.ml#L93>
 #[derive(Clone, PartialEq, Eq, derive_more::From)]
 pub struct TokenSymbol(pub Vec<u8>);
 
@@ -135,7 +135,7 @@ impl TokenSymbol {
 impl Default for TokenSymbol {
     fn default() -> Self {
         // empty string
-        // https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/account.ml#L133
+        // <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/account.ml#L133>
         Self(Vec::new())
     }
 }
@@ -154,7 +154,7 @@ impl From<&TokenSymbol> for mina_p2p_messages::string::TokenSymbol {
 
 impl ToInputs for TokenSymbol {
     fn to_inputs(&self, inputs: &mut Inputs) {
-        // https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97
+        // <https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97>
         //assert!(self.len() <= 6);
 
         let mut s = <[u8; 6]>::default();
@@ -169,7 +169,7 @@ pub struct SetVerificationKey<Controller> {
     pub txn_version: TxnVersion,
 }
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/permissions.mli#L49
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/permissions.mli#L49>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Permissions<Controller> {
     pub edit_state: Controller,
@@ -333,7 +333,7 @@ impl Permissions<AuthRequired> {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L385
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L385>
     pub fn gen(auth_tag: ControlTag) -> Self {
         let mut rng = rand::thread_rng();
 
@@ -376,7 +376,7 @@ pub enum ProofVerified {
 }
 
 impl ProofVerified {
-    /// https://github.com/MinaProtocol/mina/blob/47a269c2e917775b34a83775b8a55fcc44830831/src/lib/pickles_base/proofs_verified.ml#L17
+    /// <https://github.com/MinaProtocol/mina/blob/47a269c2e917775b34a83775b8a55fcc44830831/src/lib/pickles_base/proofs_verified.ml#L17>
     pub fn to_int(&self) -> usize {
         match self {
             ProofVerified::N0 => 0,
@@ -387,7 +387,7 @@ impl ProofVerified {
 }
 
 impl ToInputs for ProofVerified {
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/pickles_base/proofs_verified.ml#L125
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/pickles_base/proofs_verified.ml#L125>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let bits = match self {
             ProofVerified::N0 => [true, false, false],
@@ -517,7 +517,7 @@ impl ToInputs for VerificationKey {
 }
 
 impl VerificationKey {
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/pickles/side_loaded_verification_key.ml#L310
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/pickles/side_loaded_verification_key.ml#L310>
     pub fn dummy() -> Arc<Self> {
         static VK: OnceCell<Arc<VerificationKey>> = OnceCell::new();
 
@@ -648,7 +648,7 @@ impl ToFieldElements<Fp> for Option<&ZkAppUri> {
 }
 
 impl ToInputs for Option<&ZkAppUri> {
-    /// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_account.ml#L313
+    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_account.ml#L313>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let field_zkapp_uri = ZkAppUri::opt_to_field(*self);
         inputs.append(&field_zkapp_uri);
@@ -787,7 +787,7 @@ impl VerificationKeyWire {
     }
 }
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/zkapp_account.ml#L148-L170
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/zkapp_account.ml#L148-L170>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct ZkAppAccount {
     pub app_state: [Fp; 8],
@@ -1265,7 +1265,7 @@ pub struct PermsConst {
     pub or_const: bool,
 }
 
-// https://github.com/MinaProtocol/mina/blob/1765ba6bdfd7c454e5ae836c49979fa076de1bea/src/lib/mina_base/account.ml#L368
+// <https://github.com/MinaProtocol/mina/blob/1765ba6bdfd7c454e5ae836c49979fa076de1bea/src/lib/mina_base/account.ml#L368>
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(into = "v2::MinaBaseAccountBinableArgStableV2")]
 #[serde(try_from = "v2::MinaBaseAccountBinableArgStableV2")]
@@ -1331,11 +1331,11 @@ impl Account {
         }
     }
 
-    pub fn delegate_or_empty(&self) -> MyCow<CompressedPubKey> {
+    pub fn delegate_or_empty(&self) -> MyCow<'_, CompressedPubKey> {
         MyCow::borrow_or_else(&self.delegate, CompressedPubKey::empty)
     }
 
-    pub fn zkapp_or_empty(&self) -> MyCow<Box<ZkAppAccount>> {
+    pub fn zkapp_or_empty(&self) -> MyCow<'_, Box<ZkAppAccount>> {
         MyCow::borrow_or_else(&self.zkapp, Box::<ZkAppAccount>::default)
     }
 
@@ -1487,7 +1487,7 @@ impl Account {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/account.ml#L794
+    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/account.ml#L794>
     pub fn has_permission_to(&self, control: ControlTag, to: PermissionTo) -> bool {
         match to {
             PermissionTo::Access => check_permission(self.permissions.access, control),
@@ -1741,7 +1741,7 @@ impl ToInputs for Account {
         // Self::balance
         inputs.append_u64(balance.as_u64());
         // Self::token_symbol
-        // https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97
+        // <https://github.com/MinaProtocol/mina/blob/2fac5d806a06af215dbab02f7b154b4f032538b7/src/lib/mina_base/account.ml#L97>
         assert!(token_symbol.len() <= 6);
         inputs.append(token_symbol);
         // Self::token_id

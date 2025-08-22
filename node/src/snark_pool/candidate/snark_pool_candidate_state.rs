@@ -1,6 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
-use openmina_core::snark::{Snark, SnarkInfo, SnarkJobId};
+use mina_core::snark::{Snark, SnarkInfo, SnarkJobId};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
@@ -382,7 +382,7 @@ impl SnarkPoolCandidateState {
     }
 }
 
-impl<'a> From<&'a SnarkPoolCandidateState> for openmina_core::snark::SnarkCmp<'a> {
+impl<'a> From<&'a SnarkPoolCandidateState> for mina_core::snark::SnarkCmp<'a> {
     fn from(value: &'a SnarkPoolCandidateState) -> Self {
         match value {
             SnarkPoolCandidateState::InfoReceived { info, .. } => info.into(),

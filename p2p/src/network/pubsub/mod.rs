@@ -1,7 +1,7 @@
 pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/gossipsub.rs"));
 }
-pub use openmina_core::p2p::P2pNetworkPubsubMessageCacheId;
+pub use mina_core::p2p::P2pNetworkPubsubMessageCacheId;
 mod p2p_network_pubsub_actions;
 pub use self::p2p_network_pubsub_actions::P2pNetworkPubsubAction;
 
@@ -17,12 +17,12 @@ mod p2p_network_pubsub_reducer;
 const TOPIC: &str = "coda/consensus-messages/0.0.1";
 
 pub mod pubsub_effectful;
-use openmina_core::snark::SnarkJobId;
+use mina_core::snark::SnarkJobId;
 pub use pubsub_effectful::P2pNetworkPubsubEffectfulAction;
 
 use binprot::BinProtWrite;
+use mina_core::bug_condition;
 use mina_p2p_messages::gossip::GossipNetMessageV2;
-use openmina_core::bug_condition;
 use sha2::{Digest, Sha256};
 
 use crate::identity::SecretKey;

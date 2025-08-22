@@ -22,6 +22,7 @@ use axum::{
     routing::{get, get_service, post, put},
     Json, Router,
 };
+use mina_node_native::p2p::webrtc::webrtc_signal_send;
 use node::{
     account::AccountPublicKey,
     p2p::{
@@ -30,7 +31,6 @@ use node::{
     },
     transition_frontier::genesis::{GenesisConfig, PrebuiltGenesisConfig},
 };
-use openmina_node_native::p2p::webrtc::webrtc_signal_send;
 use rand::{rngs::StdRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 use tokio::{

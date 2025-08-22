@@ -1,4 +1,4 @@
-use openmina_core::Substate;
+use mina_core::Substate;
 use p2p::{
     identity::SecretKey, P2pAction, P2pNetworkAction, P2pNetworkKadAction, P2pNetworkKadBucket,
     P2pNetworkKademliaAction, P2pNetworkKademliaRpcReply, P2pNetworkKademliaStreamAction, P2pState,
@@ -23,7 +23,7 @@ use std::{future::ready, net::Ipv4Addr, time::Duration};
 
 #[tokio::test]
 async fn kademlia_routing_table() {
-    std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+    std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
 
     let mut cluster = ClusterBuilder::new()
         .ports_with_len(10)
@@ -111,7 +111,7 @@ async fn kademlia_routing_table() {
 
 #[tokio::test]
 async fn kademlia_incoming_routing_table() {
-    std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+    std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
 
     let mut cluster = ClusterBuilder::new()
         .ports_with_len(10)
@@ -230,7 +230,7 @@ async fn bootstrap_no_peers() -> anyhow::Result<()> {
 /// A node should be able to discover and connect a node connected to the seed node.
 #[tokio::test]
 async fn discovery_seed_single_peer() -> anyhow::Result<()> {
-    std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", false.to_string());
+    std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", false.to_string());
     let mut cluster = ClusterBuilder::new()
         .ports_with_len(6)
         .idle_duration(Duration::from_millis(100))
@@ -265,7 +265,7 @@ async fn discovery_seed_single_peer() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn discovery_seed_multiple_peers() -> anyhow::Result<()> {
-    std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", false.to_string());
+    std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", false.to_string());
     const PEERS: usize = 15;
     let mut cluster = ClusterBuilder::new()
         .ports_with_len(PEERS as u16 * 2 + 4)
@@ -313,7 +313,7 @@ async fn discovery_seed_multiple_peers() -> anyhow::Result<()> {
 
 #[tokio::test]
 async fn test_bad_node() -> anyhow::Result<()> {
-    std::env::set_var("OPENMINA_DISCOVERY_FILTER_ADDR", "false");
+    std::env::set_var("MINA_DISCOVERY_FILTER_ADDR", "false");
 
     let mut cluster = ClusterBuilder::new()
         .ports_with_len(100)
@@ -398,7 +398,7 @@ fn bad_node_reducer(
                     Substate::new(state, dispatcher),
                     meta.with_action(action.clone()),
                 ) {
-                    openmina_core::warn!(time; "error = {error}");
+                    mina_core::warn!(time; "error = {error}");
                 }
             }
             Action::Idle(_) | Action::P2pEffectful(_) => {}

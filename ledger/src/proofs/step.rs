@@ -23,8 +23,7 @@ use ark_poly::{
     univariate::DensePolynomial, EvaluationDomain, Radix2EvaluationDomain, UVPolynomial,
 };
 use kimchi::proof::{PointEvaluations, ProverCommitments, RecursionChallenge};
-use mina_curves::pasta::{Fq, Pallas};
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq, Pallas};
 use mina_p2p_messages::v2;
 use poly_commitment::{commitment::b_poly_coefficients, evaluation_proof::OpeningProof};
 
@@ -586,7 +585,7 @@ pub mod step_verifier {
                 OptFlag::Maybe => {
                     // TODO: Hack
                     // This assumes that `plonk.lookup` (just above) is [0, 0]
-                    // https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles/composition_types/composition_types.ml#L131
+                    // <https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles/composition_types/composition_types.ml#L131>
                     Some(scalar(&[0, 0], w))
                 }
                 OptFlag::Yes => todo!(),

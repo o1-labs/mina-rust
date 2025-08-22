@@ -16,23 +16,23 @@
 //! excesses can be represented by excesses in (at most) 2 tokens.
 //! Consider, for example, any consecutive subsequence of the transactions
 //!
-//! ..[txn@2][ft@2][txn@3][txn@3][ft@3][txn@4][ft@4][txn@5][txn@5][ft@5][txn@6][ft@6]..
+//! `..[txn@2][ft@2][txn@3][txn@3][ft@3][txn@4][ft@4][txn@5][txn@5][ft@5][txn@6][ft@6]..`
 //!
-//! where [txn@i] and [ft@i] are transactions and fee transfers respectively
+//! where `[txn@i]` and `[ft@i]` are transactions and fee transfers respectively
 //! paid in token i.
 //! The only groups which may have non-zero fee excesses are those which
 //! contain the start and end of the subsequence.
 //!
-//! The code below also defines a canonical representation where fewer than 2
-//! tokens have non-zero excesses. See [rebalance] below for details and the
-//! implementation.
+//! The code below also defines a canonical representation where fewer
+//! than 2 tokens have non-zero excesses. See the internal function
+//! `FeeExcess::rebalance` below for details and the implementation.
 //!
 //!
 //! Port of the implementation from:
-//! https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L1
+//! <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L1>
 
 use ark_ff::{BigInteger, BigInteger256, Zero};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poseidon::hash::Inputs;
 
 use crate::{
@@ -66,7 +66,7 @@ pub struct CheckedFeeExcess<F: FieldWitness> {
 }
 
 impl ToInputs for FeeExcess {
-    /// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/fee_excess.ml#L162
+    /// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/fee_excess.ml#L162>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let Self {
             fee_token_l,
@@ -106,7 +106,7 @@ impl FeeExcess {
             && fee_excess_r.is_zero()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/mina_base/fee_excess.ml#L536
+    /// <https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/mina_base/fee_excess.ml#L536>
     pub fn of_one_or_two(excesses: OneOrTwo<(TokenId, Signed<Fee>)>) -> Result<Self, String> {
         match excesses {
             OneOrTwo::One((fee_token_l, fee_excess_l)) => Self {
@@ -125,7 +125,7 @@ impl FeeExcess {
         .rebalance()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/mina_base/fee_excess.ml#L526
+    /// <https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/mina_base/fee_excess.ml#L526>
     pub fn of_single((fee_token_l, fee_excess_l): (TokenId, Signed<Fee>)) -> Self {
         Self {
             fee_token_l,
@@ -140,7 +140,7 @@ impl FeeExcess {
     /// - any zero fee excess has the default token
     /// - if the fee tokens are the same, the excesses are combined
     ///
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L301
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L301>
     fn rebalance(&self) -> Result<Self, String> {
         let Self {
             fee_token_l,
@@ -235,7 +235,7 @@ impl FeeExcess {
 
     /// Combine the fee excesses from two transitions.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L380
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L380>
     pub fn combine(
         Self {
             fee_token_l: fee_token1_l,
@@ -336,7 +336,7 @@ impl FeeExcess {
 /// Eliminate a fee excess, either by combining it with one to the left/right,
 /// or by checking that it is zero.
 ///
-/// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L200
+/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_excess.ml#L200>
 fn eliminate_fee_excess<'a>(
     (fee_token_l, fee_excess_l): (&'a TokenId, &'a Signed<Fee>),
     (fee_token_m, fee_excess_m): (&'a TokenId, &'a Signed<Fee>),

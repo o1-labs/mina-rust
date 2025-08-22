@@ -10,7 +10,7 @@ mod transition_frontier_sync_reducer;
 
 mod transition_frontier_sync_effects;
 
-use openmina_core::block::ArcBlockWithHash;
+use mina_core::block::ArcBlockWithHash;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]

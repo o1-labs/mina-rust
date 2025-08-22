@@ -1,18 +1,12 @@
 <div align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/OpenMinaGH_Light.svg">
-    <source media="(prefers-color-scheme: light)" srcset="docs/assets/OpenMinaGH_Dark.svg">
-    <img alt="The Open Mina Node is a fast and secure implementation of the Mina protocol in Rust."
-         src="docs/assets/OpenMinaGH_Light.svg"
-         width="152px">
-  </picture>
+  <img src="website/static/img/rust-node-social-card.svg" alt="Mina Rust Node - Fast and secure implementation of the Mina protocol in Rust" width="600px">
 
 ![Beta][beta-badge] [![release-badge]][release-link]
+![GitHub Repo stars](https://img.shields.io/github/stars/openmina/openmina?style=social)
 [![Changelog][changelog-badge]][changelog] [![Apache licensed]][Apache link]
 
-_The **Open Mina Node** is a fast and secure implementation of the Mina protocol
-in **Rust**._  
-_Currently in **public beta**, join our
+_The **Mina Rust Node** is a fast and secure implementation of the Mina protocol
+in **Rust**._ _Currently in **public beta**, join our
 [Discord community](https://discord.com/channels/484437221055922177/1290662938734231552)
 to help test future releases._
 
@@ -20,26 +14,31 @@ to help test future releases._
 
 ---
 
+## What is Mina Protocol?
+
+Mina is a lightweight blockchain using zero-knowledge proofs to maintain a
+constant blockchain size, making it the world's lightest blockchain. Learn more
+at **[minaprotocol.com](https://minaprotocol.com)**.
+
+## Quick Start
+
+**[View full system requirements and setup instructions →](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)**
+
 ## Getting Started
 
-### Building from Source
+For comprehensive installation and setup instructions, visit our documentation
+website:
 
-- [Rust Node](/docs/building-from-source-guide.md#how-to-build-and-launch-a-node-from-source)
-  and [Dashboards](./docs/building-from-source-guide.md#how-to-launch-the-ui)
-- [Web Node](/docs/local-webnode.md)
+**[Complete Setup Guide →](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)**
 
-### Run Node on Devnet via Docker
+### Quick Links
 
-- [Non-Block Producing Node](/docs/alpha-testing-guide.md) Connect to peers and
-  sync a node on the devnet; no devnet stake needed.
-- [Block Producing Node](/docs/block-producer-guide.md) Produce blocks on the
-  devnet; sufficient devnet stake needed.
-- [Local Block Production Demo](/docs/local-demo-guide.md) Produce blocks on a
-  custom local chain without devnet stake.
-- [Devnet Archive Node](/docs/archive-node-guide.md) Run an archive node on
-  devnet.
+- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-installation)**
+- **[Building from Source](https://o1-labs.github.io/mina-rust/docs/node-operators/building-from-source)**
+- **[Block Producer Setup](https://o1-labs.github.io/mina-rust/docs/node-operators/block-producer)**
+- **[Archive Node](https://o1-labs.github.io/mina-rust/docs/node-operators/archive-node)**
 
-<img src="docs/assets/NodeUI.png" alt="Block production Node UI">
+<img src="website/static/img/NodeUI.png" alt="Block production Node UI">
 
 ---
 
@@ -50,52 +49,52 @@ to help test future releases._
 
 ## Core Features
 
-- **Mina Network**: Connect to peers, sync up, broadcast messages
-- **Block Production**: Produces, validates, and applies blocks according to
-  Mina's consensus.
-- **SNARK Generation**: Produce SNARK proofs for transactions
-- **Debugging**: A block replayer that uses data from the archive nodes
+The Mina Rust Node implements the complete Mina protocol in Rust, including
+network connectivity, block production, SNARK generation, and debugging tools.
+
+**[Learn More About Architecture →](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)**
 
 ## Repository Structure
+
+This repository contains the complete Mina Rust Node implementation:
 
 - [core/](core) - Provides basic types needed to be shared across different
   components of the node.
 - [ledger/](ledger) - Mina ledger implementation in Rust.
 - [snark/](snark) - Snark/Proof verification.
-- [p2p/](p2p) - P2p implementation for OpenMina node.
+- [p2p/](p2p) - P2p implementation for Mina node.
 - [node/](node) - Combines all the business logic of the node.
   - [native/](node/native) - OS specific pieces of the node, which is used to
     run the node natively (Linux/Mac/Windows).
-  - [testing/](node/testing) - Testing framework for OpenMina node.
-- [cli/](cli) - OpenMina cli.
+  - [testing/](node/testing) - Testing framework for Mina node.
+- [cli/](cli) - Mina CLI.
 - [frontend/](frontend) - OpenMina frontend.
 
-## The Open Mina Documentation
+**[Learn more about the architecture →](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)**
 
-### What is Open Mina?
+## Community & Support
 
-- [Why we are developing Open Mina](docs/why-openmina.md)
+**[Visit our comprehensive documentation website →](https://o1-labs.github.io/mina-rust)**
 
-### Core components
+### Get Help & Contribute
 
-- [P2P communication](https://github.com/openmina/openmina/blob/documentation/docs/p2p_service.md)
-  - [GossipSub](https://github.com/openmina/mina-wiki/blob/3ea9041e52fb2e606918f6c60bd3a32b8652f016/p2p/mina-gossip.md)
-- [Scan state](docs/scan-state.md)
-- [SNARKs](docs/snark-work.md)
+- **[GitHub Discussions](https://github.com/openmina/openmina/discussions)** -
+  Ask questions and share ideas
+- **[Issues](https://github.com/openmina/openmina/issues)** - Report bugs or
+  request features
+- **[Discord Community](https://discord.com/channels/484437221055922177/1290662938734231552)** -
+  Real-time support and testing
+- **[Contributing Guide](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)** -
+  How to contribute code
 
-### Developer tools
+### Key Documentation Sections
 
-- [Front End](./docs/building-from-source-guide.md#how-to-launch-the-ui)
-
-### Testing Framework for Mina
-
-- [Full Testing Documentation](docs/testing/testing.md)
-
-### How to run
-
-- [Non-Block Producing Node](./docs/alpha-testing-guide.md)
-- [Block Producing Node](./docs/block-producer-guide.md)
-- [Local Block Production Demo](./docs/local-demo-guide.md)
+- **[Node Operators](https://o1-labs.github.io/mina-rust/docs/node-operators/getting-started)** -
+  Installation and operation guides
+- **[Developers](https://o1-labs.github.io/mina-rust/docs/developers/getting-started)** -
+  Architecture and contribution guides
+- **[API Documentation](https://o1-labs.github.io/mina-rust/api-docs/)** -
+  Comprehensive API reference
 
 [changelog]: ./CHANGELOG.md
 [beta-badge]: https://img.shields.io/badge/status-beta-yellow

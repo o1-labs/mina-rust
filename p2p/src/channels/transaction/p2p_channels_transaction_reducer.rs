@@ -6,8 +6,8 @@ use crate::{
     channels::{ChannelId, MsgId, P2pChannelsEffectfulAction},
     P2pNetworkPubsubAction, P2pState,
 };
+use mina_core::{bug_condition, transaction::TransactionWithHash, Substate};
 use mina_p2p_messages::{gossip::GossipNetMessageV2, v2};
-use openmina_core::{bug_condition, transaction::TransactionWithHash, Substate};
 use redux::ActionWithMeta;
 
 impl P2pChannelsTransactionState {

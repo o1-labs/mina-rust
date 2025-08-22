@@ -1,4 +1,4 @@
-use openmina_core::{
+use mina_core::{
     transaction::{
         TransactionHash, TransactionInfo, TransactionPoolMessageSource, TransactionWithHash,
     },

@@ -1,4 +1,4 @@
-use openmina_node_testing::scenarios::p2p::pubsub::P2pReceiveMessage;
+use mina_node_testing::scenarios::p2p::pubsub::P2pReceiveMessage;
 
 mod common;
 

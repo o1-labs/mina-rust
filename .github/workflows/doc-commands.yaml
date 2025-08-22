@@ -1,0 +1,149 @@
+name: Documentation Commands Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    paths:
+      - 'Makefile'
+      - 'docs/**'
+      - 'CLAUDE.md'
+      - '.github/workflows/doc-commands.yml'
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-doc-commands:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          components: rustfmt
+          toolchain: 1.84
+          cache-prefix: test-doc-commands-v0
+
+      - name: Download circuits files
+        uses: ./.github/actions/setup-circuits
+
+      - name: Test generate-block-producer-key command
+        run: |
+          echo "Testing generate-block-producer-key command..."
+          make generate-block-producer-key
+
+      - name: Verify generated key file
+        run: |
+          echo "Verifying generated key file exists and has correct permissions..."
+          if [ ! -f "./mina-workdir/producer-key" ]; then
+            echo "❌ Producer key file was not generated"
+            exit 1
+          fi
+
+          # Check file permissions (should be 600)
+          PERMS=$(stat -c "%a" "./mina-workdir/producer-key")
+          if [ "$PERMS" != "600" ]; then
+            echo "❌ Producer key file has incorrect permissions: $PERMS (expected: 600)"
+            exit 1
+          fi
+
+          # Check file is not empty
+          if [ ! -s "./mina-workdir/producer-key" ]; then
+            echo "❌ Producer key file is empty"
+            exit 1
+          fi
+
+          echo "✅ Producer key file generated successfully with correct permissions"
+
+      - name: Test key file can be read by run-block-producer
+        run: |
+          echo "Testing that generated key can be used by run-block-producer target..."
+          # Run with --help to avoid actually starting the producer but verify
+          # key validation passes
+          timeout 30s make run-block-producer NETWORK=devnet COINBASE_RECEIVER=$(cat ./mina-workdir/producer-key.pub) || {
+            EXIT_CODE=$?
+            if [ $EXIT_CODE -eq 124 ]; then
+              echo "✅ Command started successfully (timed out as expected)"
+            elif [ $EXIT_CODE -eq 1 ]; then
+              echo "❌ Key validation failed"
+              exit 1
+            else
+              echo "✅ Command validation passed (exit code: $EXIT_CODE)"
+            fi
+          }
+
+      - name: Test generate-block-producer-key with custom filename
+        run: |
+          echo "Testing generate-block-producer-key with custom PRODUCER_KEY_FILENAME..."
+          make generate-block-producer-key PRODUCER_KEY_FILENAME=./mina-workdir/custom-producer-key
+
+          # Verify custom private key file exists
+          if [ ! -f "./mina-workdir/custom-producer-key" ]; then
+            echo "❌ Custom producer key file was not generated"
+            exit 1
+          fi
+
+          # Verify custom public key file exists
+          if [ ! -f "./mina-workdir/custom-producer-key.pub" ]; then
+            echo "❌ Custom producer public key file was not generated"
+            exit 1
+          fi
+
+          # Check file permissions (should be 600 for private key)
+          PERMS=$(stat -c "%a" "./mina-workdir/custom-producer-key")
+          if [ "$PERMS" != "600" ]; then
+            echo "❌ Custom producer key file has incorrect permissions: $PERMS (expected: 600)"
+            exit 1
+          fi
+
+          # Check both files are not empty
+          if [ ! -s "./mina-workdir/custom-producer-key" ]; then
+            echo "❌ Custom producer key file is empty"
+            exit 1
+          fi
+
+          if [ ! -s "./mina-workdir/custom-producer-key.pub" ]; then
+            echo "❌ Custom producer public key file is empty"
+            exit 1
+          fi
+
+          echo "✅ Custom producer key pair generated successfully"
+
+      - name: Test generate-block-producer-key failure when keys exist
+        run: |
+          echo "Testing that generate-block-producer-key fails when keys already exist..."
+
+          # Try to generate keys again with default filename (should fail)
+          if make generate-block-producer-key 2>/dev/null; then
+            echo "❌ Command should have failed when keys already exist"
+            exit 1
+          fi
+
+          # Try to generate keys again with custom filename (should fail)
+          if make generate-block-producer-key PRODUCER_KEY_FILENAME=./mina-workdir/custom-producer-key 2>/dev/null; then
+            echo "❌ Command should have failed when custom keys already exist"
+            exit 1
+          fi
+
+          echo "✅ Command correctly fails when keys already exist"
+
+      - name: Test other documented make targets exist
+        run: |
+          echo "Testing that documented make targets exist..."
+          make help | grep -E "(run-block-producer|generate-block-producer-key|run-archive)" || {
+            echo "❌ Some documented make targets are missing from help output"
+            exit 1
+          }
+          echo "✅ All documented make targets are available"

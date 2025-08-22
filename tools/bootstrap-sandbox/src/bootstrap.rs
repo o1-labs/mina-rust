@@ -7,6 +7,7 @@ use ledger::{
     staged_ledger::{diff::Diff, staged_ledger::StagedLedger},
     verifier::Verifier,
 };
+use mina_core::constants::constraint_constants;
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     rpc::{GetBestTipV2, GetStagedLedgerAuxAndPendingCoinbasesAtHashV2Response},
@@ -14,7 +15,6 @@ use mina_p2p_messages::{
     v2,
 };
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::constraint_constants;
 
 use super::snarked_ledger::SnarkedLedger;
 

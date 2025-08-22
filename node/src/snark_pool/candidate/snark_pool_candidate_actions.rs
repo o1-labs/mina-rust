@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-use openmina_core::{
+use mina_core::{
     snark::{Snark, SnarkInfo, SnarkJobId},
     ActionEvent,
 };

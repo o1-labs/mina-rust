@@ -1,6 +1,6 @@
 use std::net::{IpAddr, SocketAddr};
 
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use crate::{ConnectionAddr, P2pNetworkConnectionCloseReason, P2pState};

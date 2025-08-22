@@ -1,4 +1,4 @@
-use openmina_core::bug_condition;
+use mina_core::bug_condition;
 use redux::ActionMeta;
 
 use crate::webrtc::{Offer, P2pConnectionResponse};
@@ -63,7 +63,7 @@ impl P2pChannelsEffectfulAction {
             } => match store.service().encrypt(&pub_key, offer.as_ref()) {
                 Err(_) => {
                     // TODO: handle
-                    openmina_core::error!(
+                    mina_core::error!(
                         meta.time();
                         summary = "Failed to encrypt webrtc offer",
                         peer_id = peer_id.to_string()

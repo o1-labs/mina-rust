@@ -38,7 +38,7 @@ spec:
               containerPort: 8302
               protocol: TCP
           env:
-            - name: OPENMINA_P2P_SEC_KEY
+            - name: MINA_P2P_SEC_KEY
               value: 5JFVvWbmfPeZXkjzSfUfKVG1Ve5rXF4jnSiiFBS51gRSS9Wd4wS
           resources:
             requests:

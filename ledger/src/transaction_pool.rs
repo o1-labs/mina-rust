@@ -6,9 +6,9 @@ use std::{
 };
 
 use itertools::Itertools;
-use mina_hasher::Fp;
+use mina_core::{bug_condition, consensus::ConsensusConstants};
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{bigint::BigInt, v2};
-use openmina_core::{bug_condition, consensus::ConsensusConstants};
 
 use crate::{
     scan_state::{
@@ -1440,8 +1440,8 @@ impl IndexedPool {
                     }
                 }
             } else {
-                openmina_core::warn!(
-                    openmina_core::log::system_time();
+                mina_core::warn!(
+                    mina_core::log::system_time();
                     kind = "transaction pool", message = "Sender queue is malformed");
                 all_by_sender.remove(&sender);
             }
@@ -1504,8 +1504,8 @@ impl IndexedPool {
                     }
                 }
             } else {
-                openmina_core::warn!(
-                    openmina_core::log::system_time();
+                mina_core::warn!(
+                    mina_core::log::system_time();
                     kind = "transaction pool", message = "Sender queue is malformed");
                 self.all_by_sender.remove(&sender);
             }
@@ -1667,8 +1667,8 @@ impl TransactionPool {
             .collect::<Vec<_>>();
 
         if !dropped_locally_generated.is_empty() {
-            openmina_core::info!(
-                openmina_core::log::system_time();
+            mina_core::info!(
+                mina_core::log::system_time();
                 kind = "transaction pool",
                 message = "Dropped locally generated commands $cmds from pool when transition frontier was recreated.",
                 dropped = format!("{dropped_locally_generated:?}")

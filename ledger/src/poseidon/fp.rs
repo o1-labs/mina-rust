@@ -519,7 +519,7 @@ mod tests {
             .collect::<Vec<_>>();
         let mina_fps = CONSTANTS
             .iter()
-            .map(|s| mina_hasher::Fp::from_str(s).unwrap())
+            .map(|s| mina_curves::pasta::Fp::from_str(s).unwrap())
             .collect::<Vec<_>>();
 
         let mut fp = fps[0].clone();
@@ -545,7 +545,7 @@ mod tests {
         assert_eq!(fp.0, mina_fp.0 .0);
 
         // let fp = Fp::from_str(CONSTANTS[0]).unwrap();
-        // let mina_fp = mina_hasher::Fp::from_str(CONSTANTS[0]).unwrap();
+        // let mina_fp = mina_curves::pasta::Fp::from_str(CONSTANTS[0]).unwrap();
 
         // for s in CONSTANTS {
         //     fp.mul_assign(s);
@@ -554,12 +554,12 @@ mod tests {
 
     #[test]
     fn test_fp() {
-        assert_eq!(Fp::zero().0, mina_hasher::Fp::zero().0 .0);
-        assert_eq!(Fp::from(10).0, mina_hasher::Fp::from(10).0 .0);
+        assert_eq!(Fp::zero().0, mina_curves::pasta::Fp::zero().0 .0);
+        assert_eq!(Fp::from(10).0, mina_curves::pasta::Fp::from(10).0 .0);
 
         for s in CONSTANTS {
             let fp = Fp::from_str(s).unwrap();
-            let mina_fp = mina_hasher::Fp::from_str(s).unwrap();
+            let mina_fp = mina_curves::pasta::Fp::from_str(s).unwrap();
             assert_eq!(fp.0, mina_fp.0 .0);
 
             assert_eq!(fp.into_repr(), mina_fp.into_repr().0)
@@ -571,8 +571,8 @@ mod tests {
 
             let mut fp1 = Fp::from_str(s1).unwrap();
             let fp2 = Fp::from_str(s2).unwrap();
-            let mut mina_fp1 = mina_hasher::Fp::from_str(s1).unwrap();
-            let mina_fp2 = mina_hasher::Fp::from_str(s2).unwrap();
+            let mut mina_fp1 = mina_curves::pasta::Fp::from_str(s1).unwrap();
+            let mina_fp2 = mina_curves::pasta::Fp::from_str(s2).unwrap();
 
             fp1.mul_assign(&fp2);
             mina_fp1.mul_assign(mina_fp2);

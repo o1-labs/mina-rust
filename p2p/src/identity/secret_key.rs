@@ -4,7 +4,7 @@ use base64::Engine;
 use ed25519_dalek::{
     ed25519::signature::SignerMut, pkcs8::EncodePrivateKey as _, SigningKey as Ed25519SecretKey,
 };
-use openmina_core::{EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError};
+use mina_core::{EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError};
 use rand::{CryptoRng, Rng};
 use serde::{Deserialize, Serialize};
 use zeroize::Zeroizing;
@@ -295,7 +295,7 @@ mod tests {
         let expected_peer_id = "12D3KooWDxyuJKSsVEwNR13UVwf4PEfs4yHkk3ecZipBPv3Y3Sac";
 
         let decrypted = SecretKey::from_encrypted_file(key_path, password)
-            .expect("Failed to decrypt secret key file");
+            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", key_path));
 
         let peer_id = decrypted.public_key().peer_id().to_libp2p_string();
         assert_eq!(expected_peer_id, peer_id);

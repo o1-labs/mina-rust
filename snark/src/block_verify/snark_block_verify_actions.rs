@@ -1,4 +1,4 @@
-use openmina_core::{block::BlockHash, ActionEvent, SubstateAccess};
+use mina_core::{block::BlockHash, ActionEvent, SubstateAccess};
 use serde::{Deserialize, Serialize};
 
 use super::{SnarkBlockVerifyError, SnarkBlockVerifyId, VerifiableBlockWithHash};

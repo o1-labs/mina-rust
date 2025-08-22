@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, error, Substate};
+use mina_core::{bug_condition, error, Substate};
 use p2p::{P2pAction, P2pEffectfulAction, P2pInitializeAction, P2pState};
 
 use crate::{

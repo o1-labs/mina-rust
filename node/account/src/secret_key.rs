@@ -1,10 +1,10 @@
 use std::{fmt, fs, io, path::Path, str::FromStr};
 
-use mina_p2p_messages::{bigint::BigInt, v2::SignatureLibPrivateKeyStableV1};
-use mina_signer::{keypair::KeypairError, seckey::SecKeyError, CompressedPubKey, Keypair};
-use openmina_core::{
+use mina_core::{
     constants::GENESIS_PRODUCER_SK, EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError,
 };
+use mina_p2p_messages::{bigint::BigInt, v2::SignatureLibPrivateKeyStableV1};
+use mina_signer::{keypair::KeypairError, seckey::SecKeyError, CompressedPubKey, Keypair};
 use rand::{rngs::StdRng, CryptoRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
 
@@ -237,7 +237,7 @@ mod tests {
 
         // load and decrypt
         let decrypted = AccountSecretKey::from_encrypted_file(&tmp_path, password)
-            .expect("Failed to decrypt secret key file");
+            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", tmp_path));
 
         assert_eq!(
             new_key.public_key(),
@@ -252,7 +252,7 @@ mod tests {
         let key_path = "../tests/files/accounts/test-key-1";
         let expected_public_key = "B62qmg7n4XqU3SFwx9KD9B7gxsKwxJP5GmxtBpHp1uxyN3grujii9a1";
         let decrypted = AccountSecretKey::from_encrypted_file(key_path, password)
-            .expect("Failed to decrypt secret key file");
+            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", key_path));
 
         assert_eq!(
             expected_public_key.to_string(),

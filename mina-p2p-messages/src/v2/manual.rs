@@ -586,14 +586,14 @@ impl MinaBaseStagedLedgerHashNonSnarkStableV1 {
     }
 }
 
-impl From<mina_hasher::Fp> for LedgerHash {
-    fn from(value: mina_hasher::Fp) -> Self {
+impl From<mina_curves::pasta::Fp> for LedgerHash {
+    fn from(value: mina_curves::pasta::Fp) -> Self {
         MinaBaseLedgerHash0StableV1(value.into()).into()
     }
 }
 
-impl From<&mina_hasher::Fp> for LedgerHash {
-    fn from(value: &mina_hasher::Fp) -> Self {
+impl From<&mina_curves::pasta::Fp> for LedgerHash {
+    fn from(value: &mina_curves::pasta::Fp) -> Self {
         MinaBaseLedgerHash0StableV1(value.into()).into()
     }
 }
@@ -1087,7 +1087,7 @@ impl Serialize for ConsensusVrfOutputTruncatedStableV1 {
         S: serde::Serializer,
     {
         if serializer.is_human_readable() {
-            // https://github.com/MinaProtocol/mina/blob/6de36cf8851de28b667e4c1041badf62507c235d/src/lib/consensus/vrf/consensus_vrf.ml#L172
+            // <https://github.com/MinaProtocol/mina/blob/6de36cf8851de28b667e4c1041badf62507c235d/src/lib/consensus/vrf/consensus_vrf.ml#L172>
             use base64::{engine::general_purpose::URL_SAFE, Engine as _};
             let base64_data = URL_SAFE.encode(&self.0 .0);
             serializer.serialize_str(&base64_data)
@@ -1103,7 +1103,7 @@ impl<'de> Deserialize<'de> for ConsensusVrfOutputTruncatedStableV1 {
         D: serde::Deserializer<'de>,
     {
         if deserializer.is_human_readable() {
-            // https://github.com/MinaProtocol/mina/blob/6de36cf8851de28b667e4c1041badf62507c235d/src/lib/consensus/vrf/consensus_vrf.ml#L172
+            // <https://github.com/MinaProtocol/mina/blob/6de36cf8851de28b667e4c1041badf62507c235d/src/lib/consensus/vrf/consensus_vrf.ml#L172>
             use base64::{engine::general_purpose::URL_SAFE, Engine as _};
             let base64_data = String::deserialize(deserializer)?;
             URL_SAFE

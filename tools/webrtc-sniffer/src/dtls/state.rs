@@ -23,7 +23,7 @@ enum Inner {
     BothHello(HelloMsgs),
     ServerKey {
         hello: HelloMsgs,
-        // https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8
+        // <https://www.iana.org/assignments/tls-parameters/tls-parameters.xhtml#tls-parameters-8>
         curve_name: u16,
         server_pk: Vec<u8>,
     },

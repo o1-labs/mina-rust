@@ -31,11 +31,11 @@ use disconnection::P2pDisconnectionAction;
 use disconnection_effectful::P2pDisconnectionEffectfulAction;
 use identify::P2pIdentifyAction;
 pub use identity::PeerId;
+use mina_core::SubstateAccess;
 use network::identify::{
     stream_effectful::P2pNetworkIdentifyStreamEffectfulAction, P2pNetworkIdentifyState,
     P2pNetworkIdentifyStreamAction,
 };
-use openmina_core::SubstateAccess;
 
 pub mod webrtc;
 

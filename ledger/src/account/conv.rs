@@ -2,7 +2,7 @@
 
 use ark_ec::short_weierstrass_jacobian::GroupAffine;
 use ark_ff::{fields::arithmetic::InvalidBigInt, Field, PrimeField};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     bigint::BigInt,
     binprot,
@@ -148,7 +148,7 @@ where
 }
 
 /// Note: Refactor when `core::array::try_map` is stable
-/// https://github.com/rust-lang/rust/issues/79711
+/// <https://github.com/rust-lang/rust/issues/79711>
 pub fn try_array_into_with<'a, T, E, U, F, const N: usize>(
     value: &'a [T; N],
     fun: F,

@@ -15,10 +15,8 @@ use ledger::{
     scan_state::transaction_logic::{valid::UserCommand, zkapp_command::WithHash},
     Account,
 };
+use mina_core::{consensus::ConsensusConstants, requests::RpcId, snark::SnarkJobId, ActionEvent};
 use mina_p2p_messages::v2::{self, MinaBaseUserCommandStableV2};
-use openmina_core::{
-    consensus::ConsensusConstants, requests::RpcId, snark::SnarkJobId, ActionEvent,
-};
 use p2p::bootstrap::P2pNetworkKadBootstrapStats;
 use serde::{Deserialize, Serialize};
 

@@ -1,7 +1,7 @@
 use std::str::FromStr;
 
 use ark_ff::{UniformRand, Zero};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use o1_utils::{field_helpers::FieldHelpersError, FieldHelpers};
 use serde::{Deserialize, Serialize};
 
@@ -140,7 +140,7 @@ impl Default for ReceiptChainHash {
 /// point minimum balance drops to 0, and after that the account behaves
 /// like an untimed one. *)
 ///
-/// https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/account_timing.ml#L22
+/// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/account_timing.ml#L22>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Timing {
     Untimed,
@@ -227,10 +227,10 @@ pub struct TimingAsRecordChecked<F: FieldWitness> {
     pub vesting_increment: CheckedAmount<F>,
 }
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_numbers/intf.ml#L155
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_numbers/intf.ml#L155>
 // pub type Nonce = u32;
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/token_permissions.ml#L9
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/token_permissions.ml#L9>
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum TokenPermissions {
     TokenOwned { disable_new_accounts: bool },
@@ -245,7 +245,7 @@ impl Default for TokenPermissions {
     }
 }
 
-// https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/permissions.mli#L10
+// <https://github.com/MinaProtocol/mina/blob/develop/src/lib/mina_base/permissions.mli#L10>
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Serialize, Deserialize, strum_macros::Display)]
 #[serde(rename_all = "lowercase")]
 pub enum AuthRequired {
@@ -264,7 +264,7 @@ impl Default for AuthRequired {
 }
 
 impl From<ControlTag> for AuthRequired {
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L68
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L68>
     fn from(value: ControlTag) -> Self {
         match value {
             ControlTag::Proof => Self::Proof,
@@ -301,7 +301,7 @@ impl AuthRequired {
 
     /// permissions such that [check permission (Proof _)] is true
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L78
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L78>
     pub fn gen_for_proof_authorization(rng: &mut rand::rngs::ThreadRng) -> Self {
         use rand::seq::SliceRandom;
 
@@ -313,7 +313,7 @@ impl AuthRequired {
 
     /// permissions such that [check permission (Signature _)] is true
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L82
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L82>
     pub fn gen_for_signature_authorization(rng: &mut rand::rngs::ThreadRng) -> Self {
         use rand::seq::SliceRandom;
 
@@ -325,7 +325,7 @@ impl AuthRequired {
 
     /// permissions such that [check permission None_given] is true
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L86
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/permissions.ml#L86>
     pub fn gen_for_none_given_authorization(_rng: &mut rand::rngs::ThreadRng) -> Self {
         Self::None
     }

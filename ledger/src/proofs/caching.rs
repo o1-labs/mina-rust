@@ -421,7 +421,7 @@ impl From<&VerifierIndexCached> for VerifierIndex<Fq> {
                 // Initializing an `Alphas` is cheap anyway (for block verification).
 
                 // Initialize it like here:
-                // https://github.com/o1-labs/proof-systems/blob/a36c088b3e81d17f5720abfff82a49cf9cb1ad5b/kimchi/src/linearization.rs#L31
+                // <https://github.com/o1-labs/proof-systems/blob/a36c088b3e81d17f5720abfff82a49cf9cb1ad5b/kimchi/src/linearization.rs#L31>
                 let mut powers_of_alpha = Alphas::<Fq>::default();
                 powers_of_alpha.register(
                     ArgumentType::Gate(GateType::Zero),
@@ -482,8 +482,8 @@ where
     (&srs).into()
 }
 
-pub fn openmina_cache_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
-    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/openmina").join(path))
+pub fn mina_cache_path<P: AsRef<Path>>(path: P) -> Option<PathBuf> {
+    std::env::var_os("HOME").map(|home| PathBuf::from(home).join(".cache/mina").join(path))
 }
 
 pub fn ensure_path_exists<P: AsRef<Path> + Clone>(path: P) -> Result<(), std::io::Error> {

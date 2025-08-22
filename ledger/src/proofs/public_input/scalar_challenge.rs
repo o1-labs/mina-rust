@@ -68,7 +68,7 @@ impl ScalarChallenge {
     }
 
     /// Implemention of `to_field_constant`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139>
     pub fn to_field<F>(&self, endo: &F) -> F
     where
         F: Field + From<i32>,
@@ -111,8 +111,7 @@ mod tests {
 
     use super::*;
 
-    use mina_curves::pasta::Fq;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::{Fp, Fq};
 
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;

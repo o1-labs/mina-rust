@@ -1,6 +1,6 @@
 use std::time::Duration;
 
-use openmina_core::{snark::SnarkJobId, ActionEvent};
+use mina_core::{snark::SnarkJobId, ActionEvent};
 use redux::{EnablingCondition, Timestamp};
 use serde::{Deserialize, Serialize};
 

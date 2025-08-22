@@ -60,7 +60,7 @@ fn setup_var_from_single_and_only_thread() {
 }
 
 /// Mimic default hook:
-/// https://github.com/rust-lang/rust/blob/5986ff05d8480da038dd161b3a6aa79ff364a851/library/std/src/panicking.rs#L246
+/// <https://github.com/rust-lang/rust/blob/5986ff05d8480da038dd161b3a6aa79ff364a851/library/std/src/panicking.rs#L246>
 ///
 /// Unlike the default hook, this one allocates.
 /// We store (+ display) panics in non-main threads, and display them all when the main thread panics.
@@ -127,11 +127,11 @@ fn main() -> anyhow::Result<()> {
 
     #[cfg(feature = "unsafe-signal-handlers")]
     unsafe_signal_handlers::setup();
-    let app = commands::OpenminaCli::parse();
+    let app = commands::MinaCli::parse();
 
     let network_init_result = match app.network {
-        commands::Network::Devnet => openmina_core::NetworkConfig::init("devnet"),
-        commands::Network::Mainnet => openmina_core::NetworkConfig::init("mainnet"),
+        commands::Network::Devnet => mina_core::NetworkConfig::init("devnet"),
+        commands::Network::Mainnet => mina_core::NetworkConfig::init("mainnet"),
     };
 
     network_init_result.expect("Failed to initialize network configuration");

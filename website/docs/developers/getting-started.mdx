@@ -1,0 +1,293 @@
+---
+sidebar_position: 1
+---
+
+# Getting Started for Developers
+
+import CodeBlock from "@theme/CodeBlock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import InstallRustSh from "!!raw-loader!./scripts/setup/install-rust.sh";
+import InstallSystemDepsSh from "!!raw-loader!./scripts/setup/install-system-deps.sh";
+import InstallSystemDepsMacOSSh from "!!raw-loader!./scripts/setup/install-system-deps-macos.sh";
+import InstallNodejsSh from "!!raw-loader!./scripts/setup/install-nodejs.sh";
+import InstallNodejsMacOSSh from "!!raw-loader!./scripts/setup/install-nodejs-macos.sh";
+import InstallDockerSh from "!!raw-loader!./scripts/setup/install-docker.sh";
+import InstallDockerMacOSSh from "!!raw-loader!./scripts/setup/install-docker-macos.sh";
+import InstallWasmToolsSh from "!!raw-loader!./scripts/setup/install-wasm-tools.sh";
+import CloneAndBuildSh from "!!raw-loader!./scripts/setup/clone-and-build.sh";
+import BuildSpecializedSh from "!!raw-loader!./scripts/setup/build-specialized.sh";
+import FormatAndLintSh from "!!raw-loader!./scripts/setup/format-and-lint.sh";
+import NixDevelop from "!!raw-loader!./scripts/setup/nix-develop.sh";
+
+Welcome to Mina Rust Node development! This guide will help you set up your
+development environment and build the Mina Rust Node from source.
+
+## Prerequisites
+
+### System Requirements
+
+- **Operating System**: Officially supported platforms (build tested in CI):
+  - Ubuntu 22.04 LTS
+  - Ubuntu 24.04 LTS (x86_64 and ARM64)
+  - macOS (latest)
+  - Other Linux distributions may work but are not officially supported
+  - Note: While we test compilation on all platforms, the full test suite is
+    only run on ubuntu-22.04 (for GLIBC compatibility with container tests)
+- **Memory**: At least 8GB RAM (16GB recommended)
+- **Storage**: At least 20GB free space
+- **Network**: Stable internet connection for downloading dependencies
+
+### Required Tools
+
+#### 1. System Dependencies
+
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
+<CodeBlock language="bash">{InstallSystemDepsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallSystemDepsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+#### 2. Rust Toolchain
+
+The Mina Rust Node requires both stable and nightly Rust toolchains, plus
+additional tools for development:
+
+<CodeBlock language="bash">{InstallRustSh}</CodeBlock>
+
+This installs:
+
+- Rust 1.84 (stable) and nightly toolchains
+- Required components: `rustfmt`, `clippy`, `rust-src`
+- `taplo-cli`: TOML formatter required for `make format`
+
+#### 3. Additional Development Tools
+
+**Node.js (for documentation and frontend):**
+
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
+<CodeBlock language="bash">{InstallNodejsSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallNodejsMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+**Docker (optional, for containerized builds):**
+
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux (Ubuntu/Debian)">
+
+<CodeBlock language="bash">{InstallDockerSh}</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash">{InstallDockerMacOSSh}</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+#### 4. WASM Tools (for web node development)
+
+<CodeBlock language="bash">{InstallWasmToolsSh}</CodeBlock>
+
+#### 5. Using Nix to install dependencies automatically (alternative)
+
+If you're on NixOS or using nix, you can use the nix-flake provided in the repo
+to install the dependencies automatically and enter the shell:
+
+<CodeBlock language="bash">{NixDevelop}</CodeBlock>
+
+## Clone and Build the Mina Rust Node
+
+### 1. Clone the Repository and Build
+
+<CodeBlock language="bash">{CloneAndBuildSh}</CodeBlock>
+
+### 2. Specialized Builds
+
+For more advanced builds including release mode, WebAssembly, and specialized
+components:
+
+<CodeBlock language="bash">{BuildSpecializedSh}</CodeBlock>
+
+### 3. Run Tests
+
+You can run a different set of tests. The command `make help` will give you the
+whole set of targets. You can also visit the file
+[ci.yaml](https://github.com/o1-labs/mina-rust/blob/develop/.github/workflows/ci.yaml)
+to explore the targets used for testing in our continuous integration
+environment.
+
+## Development Workflow
+
+### Code Quality and Formatting
+
+The Mina Rust Node maintains strict code quality standards:
+
+<CodeBlock language="bash">{FormatAndLintSh}</CodeBlock>
+
+### Working with Makefiles
+
+The project's Makefile provides many helpful commands. View all available
+targets:
+
+```bash
+make help
+```
+
+Common development targets include:
+
+```bash
+# Basic builds
+make build          # Debug build for development
+make build-release  # Optimized build for production
+make check          # Check code without building
+
+# Testing
+make test           # Run test suite
+make test-release   # Run tests in release mode
+
+# Code quality
+make format         # Format all code
+make lint           # Run static analysis
+make clean          # Clean build artifacts
+```
+
+### Environment Configuration
+
+Some components require environment variables and database setup:
+
+#### SQLite Database (Required for `make check`)
+
+The heartbeats processor requires an SQLite database to be initialized before
+running `make check`:
+
+```bash
+# Create the SQLite database with required schema
+sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
+
+# Set the database URL environment variable
+export DATABASE_URL="sqlite:///tmp/heartbeats.db"
+```
+
+#### Additional Environment Variables
+
+```bash
+# For archive node development
+export MINA_ARCHIVE_ADDRESS="http://localhost:3007"
+export PG_USER="mina"
+export PG_PW="minamina"
+export PG_DB="mina_archive"
+```
+
+## Architecture Overview
+
+For detailed information about the Mina Rust Node's architecture, Redux-style
+state machine pattern, and component organization, please see the
+[Architecture Documentation](./architecture.md).
+
+## Running the Mina Rust Node
+
+### Basic Node
+
+```bash
+# Run a basic node (after building)
+./target/release/mina node --network devnet
+```
+
+### Archive Node
+
+```bash
+# Set up PostgreSQL database
+make postgres-setup
+
+# Run archive node
+make run-archive
+```
+
+### Development Server
+
+For web development with the frontend:
+
+```bash
+# Build and serve documentation
+make docs-serve
+
+# The documentation will be available at http://localhost:3000
+```
+
+## Debugging and Development Tools
+
+### Logging
+
+The Mina Rust Node uses structured logging with different levels:
+
+```bash
+# Set log level
+export RUST_LOG=debug
+
+# Run with verbose logging
+RUST_LOG=trace ./target/release/mina node --network devnet
+```
+
+### Frontend Development
+
+The project includes a web-based dashboard:
+
+```bash
+# Build and run frontend (see frontend/README.md for details)
+cd frontend
+npm install
+npm start
+```
+
+### Testing Framework
+
+The Mina Rust Node includes a comprehensive testing framework:
+
+```bash
+# Build testing binary
+make build-testing
+
+# Run specific test scenarios
+./target/release/mina-node-testing --help
+```
+
+## Next Steps
+
+1. **Explore the Codebase**: Start with
+   [Architecture Documentation](./architecture.md)
+2. **Run Tests**: Ensure your setup works by running `make test`
+3. **Join the Community**: Connect with other developers on
+   [Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
+   and participate in discussions on the
+   [Mina Protocol Forums](https://forums.minaprotocol.com/)
+4. **Read CLAUDE.md**: Check the project-specific development guide in the root
+   directory
+
+## Getting Help
+
+- **Documentation**:
+  [https://o1-labs.github.io/mina-rust/](https://o1-labs.github.io/mina-rust/)
+- **Discord**:
+  [Mina Rust Community](https://discord.com/channels/484437221055922177/1290662938734231552)
+- **Forums**: [Mina Protocol Forums](https://forums.minaprotocol.com/)
+- **Issues**: [GitHub Issues](https://github.com/o1-labs/mina-rust/issues)
+- **API Docs**:
+  [Rust Documentation](https://o1-labs.github.io/mina-rust/api-docs/)
+
+Welcome to the Mina Rust Node development community! 🎉

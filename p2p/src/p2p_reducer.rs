@@ -12,7 +12,7 @@ use crate::{
     P2pNetworkPubsubAction, P2pNetworkRpcAction, P2pNetworkSelectAction, P2pNetworkState,
     P2pPeerState, P2pState, PeerId,
 };
-use openmina_core::{bug_condition, Substate};
+use mina_core::{bug_condition, Substate};
 use redux::{ActionMeta, ActionWithMeta, Dispatcher, Timestamp};
 
 impl P2pState {

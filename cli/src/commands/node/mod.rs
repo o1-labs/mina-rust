@@ -8,7 +8,7 @@ use node::{
     transition_frontier::genesis::GenesisConfig,
 };
 
-use openmina_node_account::AccountPublicKey;
+use mina_node_account::AccountPublicKey;
 use reqwest::Url;
 
 use node::{
@@ -18,29 +18,59 @@ use node::{
     SnarkerStrategy,
 };
 
-use openmina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
+use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
 
-/// Openmina node
+/// Mina node configuration and runtime options
+///
+/// This struct defines all available command-line parameters for running a Mina node.
+/// The node can operate in different modes (basic node, block producer, archive node)
+/// depending on the parameters provided.
+///
+/// # Basic Usage
+///
+/// ```bash
+/// # Run a basic node on devnet
+/// mina node --network devnet
+///
+/// # Run with custom ports and logging
+/// mina node --network devnet --port 3001 --libp2p-port 8303 --verbosity debug
+/// ```
+///
+/// # Block Producer Mode
+///
+/// ```bash
+/// # Run as block producer
+/// mina node --network devnet --producer-key /path/to/key --coinbase-receiver B62q...
+/// ```
+///
+/// # Archive Node Mode
+///
+/// ```bash
+/// # Run as archive node with local storage
+/// mina node --network devnet --archive-local-storage
+/// ```
 #[derive(Debug, clap::Args)]
 pub struct Node {
-    #[arg(
-        long,
-        short = 'd',
-        default_value = "~/.openmina",
-        env = "OPENMINA_HOME"
-    )]
+    /// Working directory for node data, logs, and configuration files
+    ///
+    /// Can be set via MINA_HOME environment variable.
+    /// Defaults to ~/.mina
+    #[arg(long, short = 'd', default_value = "~/.mina", env = "MINA_HOME")]
     pub work_dir: String,
 
-    /// Peer secret key
-    #[arg(long, short = 's', env = "OPENMINA_P2P_SEC_KEY")]
+    /// P2P networking secret key for node identity
+    ///
+    /// If not provided, a new key will be generated automatically.
+    /// Can be set via MINA_P2P_SEC_KEY environment variable.
+    #[arg(long, short = 's', env = "MINA_P2P_SEC_KEY")]
     pub p2p_secret_key: Option<SecretKey>,
 
-    // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+    // warning, this overrides `MINA_P2P_SEC_KEY`
     /// Compatibility with OCaml Mina node
     #[arg(long)]
     pub libp2p_keypair: Option<String>,
 
-    // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+    // warning, this overrides `MINA_P2P_SEC_KEY`
     /// Compatibility with OCaml Mina node
     #[arg(env = "MINA_LIBP2P_PASS")]
     pub libp2p_password: Option<String>,
@@ -49,45 +79,104 @@ pub struct Node {
     #[arg(long)]
     pub libp2p_external_ip: Vec<String>,
 
-    /// Http port to listen on
+    /// HTTP server port for RPC API and web interface
+    ///
+    /// The node will serve its HTTP API and dashboard on this port.
+    /// Default: 3000
     #[arg(long, short, env, default_value = "3000")]
     pub port: u16,
 
-    /// LibP2P port to listen on
+    /// LibP2P networking port for peer-to-peer communication
+    ///
+    /// This port is used for connecting to other nodes in the network.
+    /// Default: 8302
     #[arg(long, env, default_value = "8302")]
     pub libp2p_port: u16,
 
-    /// Verbosity level (options: trace, debug, info, warn, error)
+    /// Logging verbosity level
+    ///
+    /// Controls the amount of logging output. Options in order of verbosity:
+    /// - error: Only show errors
+    /// - warn: Show warnings and errors
+    /// - info: Show informational messages, warnings, and errors (default)
+    /// - debug: Show debug information and all above
+    /// - trace: Show all possible logging output
     #[arg(long, short, env, default_value = "info")]
     pub verbosity: Level,
 
     /// Disable filesystem logging
-    #[arg(
-        long,
-        env = "OPENMINA_DISABLE_FILESYSTEM_LOGGING",
-        default_value_t = false
-    )]
+    #[arg(long, env = "MINA_DISABLE_FILESYSTEM_LOGGING", default_value_t = false)]
     pub disable_filesystem_logging: bool,
 
     /// Specify custom path for log files
-    #[arg(long, env = "OPENMINA_LOG_PATH", default_value = "$OPENMINA_HOME")]
+    #[arg(long, env = "MINA_LOG_PATH", default_value = "$MINA_HOME")]
     pub log_path: String,
 
+    /// Initial peers to connect to on startup
+    ///
+    /// Specify peer multiaddresses to connect to when the node starts.
+    /// Can be used multiple times to add multiple peers.
+    ///
+    /// # Multiaddr Format
+    ///
+    /// Multiaddresses follow the format: `/protocol/address/protocol/port/protocol/peer_id`
+    ///
+    /// **IPv4 Example:**
+    /// ```
+    /// /ip4/192.168.1.100/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
+    /// ```
+    ///
+    /// **IPv6 Example:**
+    /// ```
+    /// /ip6/2001:db8::1/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
+    /// ```
+    ///
+    /// **DNS Example:**
+    /// ```
+    /// /dns4/node.example.com/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
+    /// ```
+    ///
+    /// Where:
+    /// - `ip4/ip6/dns4` specifies the address type
+    /// - IP address or hostname
+    /// - `tcp` protocol with port number (typically 8302 for Mina)
+    /// - `p2p` protocol with the peer's public key identifier
     #[arg(long, short = 'P', alias = "peer")]
     pub peers: Vec<P2pConnectionOutgoingInitOpts>,
 
-    /// File containing initial peers.
+    /// File containing initial peers to connect to
     ///
-    /// Each line should contain peer's multiaddr.
+    /// Each line should contain a peer's multiaddr following the format described above.
+    ///
+    /// **Example file content:**
+    /// ```
+    /// /ip4/192.168.1.100/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
+    /// /ip4/10.0.0.50/tcp/8302/p2p/12D3KooWXYZ9876543210fedcba...
+    /// /dns4/bootstrap.example.com/tcp/8302/p2p/12D3KooW123ABC...
+    /// ```
+    ///
+    /// Empty lines and lines starting with `#` are ignored.
     #[arg(long, env)]
     pub peer_list_file: Option<PathBuf>,
 
-    /// File containing initial peers.
+    /// URL to fetch initial peers list from
     ///
-    /// Each line should contain peer's multiaddr.
+    /// The URL should return a text file with one peer multiaddr per line,
+    /// using the same format as described in `peer_list_file`.
+    /// Useful for dynamic peer discovery from a central bootstrap service.
+    ///
+    /// **Example URL response:**
+    /// ```
+    /// /ip4/bootstrap1.example.com/tcp/8302/p2p/12D3KooW...
+    /// /ip4/bootstrap2.example.com/tcp/8302/p2p/12D3KooX...
+    /// ```
     #[arg(long, env)]
     pub peer_list_url: Option<Url>,
 
+    /// Maximum number of peer connections to maintain
+    ///
+    /// The node will attempt to maintain up to this many connections
+    /// to other peers in the network. Default: 100
     #[arg(long, default_value = "100")]
     pub max_peers: usize,
 
@@ -142,14 +231,14 @@ pub struct Node {
     /// Enable local precomputed storage.
     ///
     /// This option requires the following environment variables to be set:
-    /// - OPENMINA_ARCHIVE_LOCAL_STORAGE_PATH (otherwise the path to the working directory will be used)
+    /// - MINA_ARCHIVE_LOCAL_STORAGE_PATH (otherwise the path to the working directory will be used)
     #[arg(long, env)]
     pub archive_local_storage: bool,
 
     /// Enable archiver process.
     ///
     /// This requires the following environment variables to be set:
-    /// - OPENMINA_ARCHIVE_ADDRESS
+    /// - MINA_ARCHIVE_ADDRESS
     #[arg(long, env)]
     pub archive_archiver_process: bool,
 
@@ -169,7 +258,7 @@ pub struct Node {
     /// - AWS_SECRET_ACCESS_KEY
     /// - AWS_SESSION_TOKEN
     /// - AWS_DEFAULT_REGION
-    /// - OPENMINA_AWS_BUCKET_NAME
+    /// - MINA_AWS_BUCKET_NAME
     #[arg(long, env)]
     pub archive_aws_storage: bool,
 
@@ -182,7 +271,7 @@ impl Node {
         let work_dir = shellexpand::full(&self.work_dir).unwrap().into_owned();
 
         let _guard = if !self.disable_filesystem_logging {
-            let log_output_dir = if self.log_path == "$OPENMINA_HOME" {
+            let log_output_dir = if self.log_path == "$MINA_HOME" {
                 work_dir.clone()
             } else {
                 self.log_path.clone()
@@ -198,7 +287,7 @@ impl Node {
 
         rayon::ThreadPoolBuilder::new()
             .num_threads(num_cpus::get().max(2) - 1)
-            .thread_name(|i| format!("openmina_rayon_{i}"))
+            .thread_name(|i| format!("mina_rayon_{i}"))
             .build_global()
             .context("failed to initialize threadpool")?;
 
@@ -252,7 +341,7 @@ impl Node {
             node_builder.p2p_sec_key(sec_key);
         }
 
-        // warning, this overrides `OPENMINA_P2P_SEC_KEY`
+        // warning, this overrides `MINA_P2P_SEC_KEY`
         if let (Some(key_file), Some(password)) = (&self.libp2p_keypair, &self.libp2p_password) {
             match SecretKey::from_encrypted_file(key_file, password) {
                 Ok(sk) => {
@@ -312,7 +401,7 @@ impl Node {
 
         if let Some(producer_key_path) = self.producer_key {
             let password = &self.producer_key_password;
-            openmina_core::thread::spawn(|| {
+            mina_core::thread::spawn(|| {
                 node::core::info!(node::core::log::system_time(); summary = "loading provers index");
                 BlockProver::make(Some(block_verifier_index), Some(work_verifier_index));
                 node::core::info!(node::core::log::system_time(); summary = "loaded provers index");
@@ -370,7 +459,7 @@ impl Node {
             node_builder.snarker(sec_key, self.snarker_fee, self.snarker_strategy);
         }
 
-        openmina_core::set_work_dir(work_dir.clone().into());
+        mina_core::set_work_dir(work_dir.clone().into());
 
         node_builder
             .http_server(self.port)

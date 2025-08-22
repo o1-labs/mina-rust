@@ -10,7 +10,7 @@ macro_rules! cache {
         // The destructor won't be run, but we don't care.
         //
         // See
-        // https://github.com/rust-lang/rust/blob/635c4a5e612b0ee8af6615635599702d3dce9906/library/std/src/sys/common/thread_local/fast_local.rs#
+        // <https://github.com/rust-lang/rust/blob/635c4a5e612b0ee8af6615635599702d3dce9906/library/std/src/sys/common/thread_local/fast_local.rs#>
 
         use std::mem::ManuallyDrop;
         use std::cell::RefCell;
@@ -78,8 +78,7 @@ mod tests {
 
     #[test]
     fn test_cache() {
-        use mina_curves::pasta::Fq;
-        use mina_hasher::Fp;
+        use mina_curves::pasta::{Fp, Fq};
 
         static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
