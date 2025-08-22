@@ -200,9 +200,9 @@ pub fn create_oracle_with_public_input<F: FieldWitness>(
     use poly_commitment::commitment::shift_scalar;
 
     // TODO: Don't clone the SRS here
-    let mut srs = (*verifier_index.srs).clone();
+    let srs = (*verifier_index.srs).clone();
     let log_size_of_group = verifier_index.domain.log_size_of_group;
-    let lgr_comm = make_lagrange::<F>(&mut srs, log_size_of_group);
+    let lgr_comm = make_lagrange::<F>(&srs, log_size_of_group);
 
     let lgr_comm: Vec<PolyComm<F::OtherCurve>> =
         lgr_comm.into_iter().take(public_input.len()).collect();
@@ -266,7 +266,6 @@ fn make_lagrange<F: FieldWitness>(
 
     let x_domain = EvaluationDomain::<F>::new(domain_size).expect("invalid argument");
 
-    // TODO_NOT_SURE
     // srs.with_lagrange_basis(x_domain);
 
     let lagrange_bases = srs.get_lagrange_basis(x_domain)[..domain_size].to_vec();
@@ -501,20 +500,21 @@ fn make_public_input(
         unfinalized_proofs.to_field_elements(&mut fields);
     }
 
-    let to_fp = |v: [u64; 4]| Fp::try_from(BigInteger256::new(v)).unwrap(); // Never fail, `messages_for_next_step_proof_hash` was a `Fp`
+    let to_fp = |v: [u64; 4]| Fp::from(BigInteger256::new(v)); // Never fail, `messages_for_next_step_proof_hash` was a `Fp`
     to_fp(messages_for_next_step_proof_hash).to_field_elements(&mut fields);
 
     // `messages_for_next_wrap_proof_hash` were `Fq` previously, so we have to
     // build a `Fp` from them with care: they can overflow
     let to_fp = |v: [u64; 4]| {
-        match Fp::try_from(BigInteger256::new(v)) {
-            Ok(fp) => fp, // fast-path: we get the `Fp` without modulo/reducing
-            Err(_) => {
-                // slow path: we build the `Fp` bit by bit, so it will reduce it
-                let bits = crate::proofs::transaction::bigint_to_bits::<255>(BigInteger256::new(v));
-                super::util::field_of_bits(&bits)
-            }
-        }
+        // match Fp::try_from(BigInteger256::new(v)) {
+        //     Ok(fp) => fp, // fast-path: we get the `Fp` without modulo/reducing
+        //     Err(_) => {
+        //         // slow path: we build the `Fp` bit by bit, so it will reduce it
+        //         let bits = crate::proofs::transaction::bigint_to_bits::<255>(BigInteger256::new(v));
+        //         super::util::field_of_bits(&bits)
+        //     }
+        // }
+        Fp::from(BigInteger256::new(v))
     };
     for msg in messages_for_next_wrap_proof_hash.iter().copied().map(to_fp) {
         msg.to_field_elements(&mut fields);
@@ -687,7 +687,7 @@ pub fn wrap<C: ProofConstants + ForWrapData>(
         prover_index: step_prover_index,
     });
 
-    let to_fq = |[a, b]: [u64; 2]| Fq::try_from(BigInteger256::new([a, b, 0, 0])).unwrap(); // Never fail with 2 limbs
+    let to_fq = |[a, b]: [u64; 2]| Fq::from(BigInteger256::new([a, b, 0, 0])); // Never fail with 2 limbs
     let to_fqs = |v: &[[u64; 2]]| v.iter().copied().map(to_fq).collect::<Vec<_>>();
 
     let messages_for_next_wrap_proof = MessagesForNextWrapProof {
@@ -845,7 +845,7 @@ impl Check<Fq> for ShiftedValue<Fp> {
             let shifted: Fq = {
                 let ShiftedValue { shifted } = self.clone();
                 let f: BigInteger256 = shifted.into();
-                f.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+                f.into() // Never fail, `Fq` is larger than `Fp`
             };
             field::equal(shifted, forbidden, w)
         });
@@ -1826,7 +1826,6 @@ pub mod wrap_verifier {
             EvaluationDomain::<<F as crate::proofs::field::FieldWitness>::Scalar>::new(d)
                 .expect("invalid argument");
 
-        // TODO_NOT_SURE
         // srs.with_lagrange_basis(x_domain);
 
         let lagrange_bases = &srs.get_lagrange_basis(x_domain);
@@ -2178,7 +2177,7 @@ pub mod wrap_verifier {
 
         let combined_inner_product: Fq = {
             let bigint: BigInteger256 = advice.combined_inner_product.shifted.into();
-            bigint.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+            bigint.into() // Never fail, `Fq` is larger than `Fp`
         };
         sponge.absorb(&[combined_inner_product], w);
 

@@ -113,8 +113,6 @@ fn sqrt_exn<F: FieldWitness>(x: F, w: &mut Witness<F>) -> F {
 }
 
 fn is_square<F: FieldWitness>(x: F) -> bool {
-    // use ark_ff::BigInteger;
-
     let modulus_minus_one_div_two =
         mina_curves::pasta::fields::FpParameters::MODULUS_MINUS_ONE_DIV_TWO.0;
 

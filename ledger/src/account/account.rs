@@ -128,7 +128,7 @@ impl TokenSymbol {
 
         let value = FromBytes::read(&s[..]).expect("Shoudn't fail");
         let bigint = BigInteger256::new(value);
-        F::try_from(bigint).unwrap() // Never fail, `self` contain 6 bytes at most
+        F::from(bigint) // Never fail, `self` contain 6 bytes at most
     }
 }
 

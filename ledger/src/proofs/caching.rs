@@ -107,7 +107,7 @@ pub struct GroupAffineCached {
     infinity: bool,
 }
 
-impl<'a, T> From<&'a ark_ec::models::short_weierstrass::Affine<T>> for GroupAffineCached
+impl<'a, T> From<&'a Affine<T>> for GroupAffineCached
 where
     T: ark_ec::short_weierstrass::SWCurveConfig,
     BigInt: From<&'a <T as CurveConfig>::BaseField>,
@@ -127,7 +127,6 @@ where
     <T as CurveConfig>::BaseField: From<ark_ff::BigInteger256>,
     <T as CurveConfig>::BaseField: From<ark_ff::BigInt<4>>,
 {
-    // TODO_NOT_SURE
     // This is copy of old `GroupAffine::new` function
     fn from(pallas: &GroupAffineCached) -> Self {
         let point = Self {
@@ -181,7 +180,7 @@ struct SRSCached {
 impl<'a, G> From<&'a SRS<G>> for SRSCached
 where
     G: CommitmentCurve,
-    GroupAffineCached: for<'y> From<&'y G>,
+    GroupAffineCached: for<'b> From<&'b G>,
     PolyCommCached: for<'x> From<&'x PolyComm<G>>,
     BigInt: From<&'a <G as AffineRepr>::ScalarField>,
     BigInt: From<&'a <G as AffineRepr>::BaseField>,
@@ -221,12 +220,7 @@ where
                 let lagrange_bases = srs
                     .lagrange_bases
                     .iter()
-                    .map(|(key, value)| {
-                        (
-                            *key,
-                            value.iter().map(|poly| PolyComm::from(poly)).collect(),
-                        )
-                    })
+                    .map(|(key, value)| (*key, value.iter().map(PolyComm::from).collect()))
                     .collect();
 
                 HashMapCache::new_from_hashmap(lagrange_bases)
@@ -452,7 +446,6 @@ impl From<&VerifierIndexCached> for VerifierIndex<Fq> {
             domain: domain.into(),
             max_poly_size: *max_poly_size,
             srs: {
-                let srs = srs;
                 let s: SRS<_> = SRS::from(srs);
                 Arc::new(s)
             },

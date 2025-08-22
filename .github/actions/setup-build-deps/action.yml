@@ -27,7 +27,7 @@ runs:
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install protobuf
+        brew install protobuf ocaml opam
 
     - name: Install cargo-nextest
       if: inputs.install-nextest == 'true'

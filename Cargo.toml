@@ -50,18 +50,16 @@ ledger = { path = "ledger", package = "mina-tree" }
 mina-p2p-messages = { path = "mina-p2p-messages" }
 poseidon = { path = "poseidon" }
 
-# UNCOMMENTED_IN_CI mina-curves = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina", features = [ "32x9" ] }
-kimchi = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-kimchi-stubs = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-curves = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-hasher = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-poseidon = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-mina-signer = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-o1-utils = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
-poly-commitment = { git = "https://github.com/openmina/proof-systems", branch = "rebase-openmina" }
+# UNCOMMENTED_IN_CI mina-curves = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203", features = [ "32x9" ] }
+kimchi = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+mina-curves = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+mina-hasher = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+mina-poseidon = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+mina-signer = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+o1-utils = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
+poly-commitment = { git = "https://github.com/openmina/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203" }
 
 # kimchi.path = "../deps/proof-systems/kimchi"
-# kimchi-stubs.path = "../deps/proof-systems/kimchi-stubs"
 # mina-curves.path = "../deps/proof-systems/curves"
 # mina-hasher.path = "../deps/proof-systems/hasher"
 # mina-poseidon.path = "../deps/proof-systems/poseidon"

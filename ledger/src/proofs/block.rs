@@ -501,7 +501,7 @@ mod floating_point {
 
         pub fn constant(value: &BigInteger256, precision: usize) -> anyhow::Result<Self> {
             Ok(Self {
-                value: (*value).try_into()?,
+                value: (*value).into(),
                 precision,
             })
         }
@@ -1881,10 +1881,10 @@ pub(super) fn generate_block_proof(
     };
 
     let dlog_plonk_index = super::merge::dlog_plonk_index(block_wrap_prover);
-    let verifier_index = &*block_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let verifier_index = block_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let tx_dlog_plonk_index = super::merge::dlog_plonk_index(tx_wrap_prover);
-    let tx_verifier_index = &*tx_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let tx_verifier_index = tx_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let dlog_plonk_index_cvar = dlog_plonk_index.to_cvar(CircuitVar::Var);
     let tx_dlog_plonk_index_cvar = tx_dlog_plonk_index.to_cvar(CircuitVar::Constant);

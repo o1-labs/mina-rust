@@ -390,11 +390,11 @@ pub mod common {
 
         let signature_prefix = mina_core::NetworkConfig::global().signature_prefix;
         let hash = hash_with_kimchi(signature_prefix, &[**msg, *x, *y, *rx]);
-        let hash: Fq = Fq::try_from(hash.into_bigint()).unwrap(); // Never fail, `Fq` is larger than `Fp`
+        let hash: Fq = Fq::from(hash.into_bigint()); // Never fail, `Fq` is larger than `Fp`
 
         let sv: CurvePoint = CurvePoint::generator().mul(*s).into_affine();
         // Perform addition and infinity check in projective coordinates for performance
-        let rv = pubkey.point().mul(hash).neg() + &sv;
+        let rv = pubkey.point().mul(hash).neg() + sv;
         if rv.is_zero() {
             return false;
         }
@@ -425,11 +425,11 @@ pub mod common {
         inputs.append_field(*rx);
 
         let hash = legacy::hash_with_kimchi(signature_prefix, &inputs.to_fields());
-        let hash: Fq = Fq::try_from(hash.into_bigint()).unwrap(); // Never fail, `Fq` is larger than `Fp`
+        let hash: Fq = Fq::from(hash.into_bigint()); // Never fail, `Fq` is larger than `Fp`
 
         let sv: CurvePoint = CurvePoint::generator().mul(*s).into_affine();
         // Perform addition and infinity check in projective coordinates for performance
-        let rv = pubkey.point().mul(hash).neg() + &sv;
+        let rv = pubkey.point().mul(hash).neg() + sv;
         if rv.is_zero() {
             return false;
         }

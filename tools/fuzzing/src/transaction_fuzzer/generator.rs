@@ -1,4 +1,4 @@
-use ark_ec::{AffineCurve, ProjectiveCurve};
+use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::{Field, UniformRand};
 use ledger::{
     generators::zkapp_command_builder::get_transaction_commitments,
@@ -69,7 +69,11 @@ use mina_signer::{
     CompressedPubKey, CurvePoint, Keypair, NetworkId, ScalarField, SecKey, Signature, Signer,
 };
 use rand::{seq::SliceRandom, Rng};
-use std::{array, iter, ops::RangeInclusive, sync::Arc};
+use std::{
+    array, iter,
+    ops::{Mul, RangeInclusive},
+    sync::Arc,
+};
 use tuple_map::TupleMap2;
 
 use super::context::{FuzzerCtx, PermissionModel};
@@ -155,9 +159,7 @@ impl Generator<Keypair> for FuzzerCtx {
     fn gen(&mut self) -> Keypair {
         let sec_key: SecKey = self.gen();
         let scalar = sec_key.into_scalar();
-        let public: CurvePoint = CurvePoint::prime_subgroup_generator()
-            .mul(scalar)
-            .into_affine();
+        let public: CurvePoint = CurvePoint::generator().mul(scalar).into_affine();
 
         let keypair = Keypair::from_parts_unsafe(scalar, public);
 
@@ -223,10 +225,14 @@ impl<F: Field + From<i32>> Generator<CurvePointGenerator<F>> for FuzzerCtx {
 impl Generator<(Fp, Fp)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fp, Fp) {
+        use std::ops::Mul;
         if let Some((x, y)) = self.state.cache_curve_point_fp {
-            let p = GroupAffine::<Fp>::new(x, y, false);
-            let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fp> = p.mul(rand_scalar).into();
+            let p = GroupAffine::<Fp>::new(x, y);
+            let rand_scalar: u64 = self.r#gen.rng.gen();
+            let scalar_field_elem =
+                <Fp as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+
+            let new_p: GroupAffine<Fp> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fp> = self.gen();
@@ -240,9 +246,11 @@ impl Generator<(Fq, Fq)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fq, Fq) {
         if let Some((x, y)) = self.state.cache_curve_point_fq {
-            let p = GroupAffine::<Fq>::new(x, y, false);
+            let p = GroupAffine::<Fq>::new(x, y);
             let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fq> = p.mul(rand_scalar).into();
+            let scalar_field_elem =
+                <Fq as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+            let new_p: GroupAffine<Fq> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fq> = self.gen();

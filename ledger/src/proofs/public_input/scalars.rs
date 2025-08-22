@@ -50,7 +50,7 @@ where
 
     let value = FromBytes::read(&bytes[..]).expect("Should not fail");
     let bigint = BigInteger256::new(value);
-    bigint.try_into().unwrap() // Never fail, we hardcode them with string literals
+    F::from(bigint) // Never fail, we hardcode them with string literals
 }
 
 fn field<F: FieldWitness>(s: &str) -> F {

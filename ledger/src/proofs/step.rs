@@ -1067,7 +1067,7 @@ pub mod step_verifier {
             let v = if s_odd { s - F2::one() } else { s };
             // TODO: Remove this ugly hack
             let v: BigInteger256 = (v / F2::from(2u64)).into();
-            (F::try_from(v).unwrap(), s_odd.to_boolean()) // `unwrap` never fail
+            (F::from(v), s_odd.to_boolean()) // `unwrap` never fail
         });
 
         scale_fast2(g, s_parts, num_bits, w)

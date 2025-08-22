@@ -162,16 +162,14 @@ impl Inputs {
                 // `current` are zero (we just shift-left them)
                 current[0] |= item;
             } else {
-                self.fields
-                    .push(BigInteger256::new(current).try_into().unwrap()); // Never fail
+                self.fields.push(BigInteger256::new(current).into()); // Never fail
                 current = [item, 0, 0, 0];
                 nbits = item_nbits;
             }
         }
 
         if nbits > 0 {
-            self.fields
-                .push(BigInteger256::new(current).into()); // Never fail
+            self.fields.push(BigInteger256::new(current).into()); // Never fail
         }
 
         self.fields

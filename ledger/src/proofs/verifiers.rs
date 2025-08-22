@@ -22,7 +22,7 @@ use kimchi::{
     mina_curves::pasta::Pallas,
 };
 use mina_curves::pasta::{Fp, Fq};
-use poly_commitment::{ipa::SRS, SRS as _};
+use poly_commitment::{ipa::SRS, lagrange_basis::WithLagrangeBasis, SRS as _};
 
 use crate::{proofs::BACKEND_TOCK_ROUNDS_N, VerificationKey};
 

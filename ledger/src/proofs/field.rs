@@ -143,7 +143,7 @@ impl FromFpFq for Fq {
     fn from_fp(fp: Fp) -> Self {
         // `Fp` is smaller than `Fq`, so the conversion is fine
         let bigint: BigInteger256 = fp.into();
-        bigint.try_into().unwrap()
+        Self::from(bigint)
     }
     fn from_fq(fq: Fq) -> Self {
         fq

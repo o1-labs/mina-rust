@@ -91,7 +91,7 @@ impl PreparedStatement {
 
         let to_fq = |fp: Fp| -> Fq {
             let bigint: BigInteger256 = fp.into();
-            bigint.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+            Fq::from(bigint) // Never fail, `Fq` is larger than `Fp`
         };
 
         // Fp
@@ -226,7 +226,7 @@ impl PreparedStatement {
 
         let to_fq = |fp: Fp| -> Fq {
             let bigint: BigInteger256 = fp.into();
-            bigint.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+            Fq::from(bigint) // Never fail, `Fq` is larger than `Fp`
         };
 
         let var = |x| Packed::Field(CircuitVar::Var(x));

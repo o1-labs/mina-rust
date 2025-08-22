@@ -144,7 +144,11 @@ pub fn make_group<F>(x: F, y: F) -> GroupAffine<F>
 where
     F: FieldWitness,
 {
-    GroupAffine::<F>::new(x, y)
+    if x == F::ZERO && y == F::ZERO {
+        GroupAffine::<F>::zero()
+    } else {
+        GroupAffine::<F>::new(x, y)
+    }
 }
 
 pub mod scalar_challenge {
@@ -3686,7 +3690,7 @@ pub fn messages_for_next_wrap_proof_padding() -> Fp {
             old_bulletproof_challenges: vec![], // Filled with padding, in `hash()` below
         };
         let hash: [u64; 4] = msg.hash();
-        Fp::try_from(BigInteger256::new(hash)).unwrap() // Never fail
+        Fp::from(BigInteger256::new(hash)) // Never fail
     })
 }
 
@@ -3898,7 +3902,6 @@ pub fn make_prover_index<C: ProofConstants, F: FieldWitness>(
     let srs: poly_commitment::ipa::SRS<F::OtherCurve> = {
         let srs = get_srs_mut::<F>();
         let srs = srs.lock().unwrap().clone();
-        // TODO_NOT_SURE
         // srs.add_lagrange_basis(cs.domain.d1);
         // srs.with_lagrange_basis(cs.domain.d1);
         srs
@@ -4247,7 +4250,7 @@ pub(super) fn generate_tx_proof(
     let statement_with_sok = statement.with_digest(sok_digest);
 
     let dlog_plonk_index =
-        PlonkVerificationKeyEvals::from(&*tx_wrap_prover.index.verifier_index.as_ref().unwrap());
+        PlonkVerificationKeyEvals::from(tx_wrap_prover.index.verifier_index.as_ref().unwrap());
 
     let statement_with_sok = Rc::new(w.exists(statement_with_sok));
     transaction_snark::main(&statement_with_sok, tx_witness, w)?;

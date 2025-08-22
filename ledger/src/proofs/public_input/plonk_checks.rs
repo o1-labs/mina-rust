@@ -612,12 +612,10 @@ mod scalars {
 
     // TODO: Use cvar instead
     fn is_const<F: FieldWitness>(e: &Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>) -> bool {
-        // use ConstantExpr::*;
         match e {
             Expr::Atom(ExprInner::Constant(Operations::Atom(ConstantExprInner::Constant(_)))) => {
                 true
             }
-            // Expr::BinOp(_, x, y) => is_const(x) && is_const(y),
             Expr::Pow(x, _) => is_const(x),
             _ => false,
         }
@@ -706,11 +704,10 @@ mod scalars {
         }
     }
 
-    /// TODO_NOT_SURE
     /// This function use to look like following
     /// but `x.value` has changed to accept list of challenges
     ///
-    ///  let v = x.value(ctx.constants);
+    /// let v = x.value(ctx.constants);
     /// if let ConstantExpr::Mul(_, _) = x {
     ///    ctx.w.exists_no_check(v);
     /// };
@@ -780,7 +777,6 @@ mod scalars {
         cache: &mut Cached<F>,
     ) {
         match e {
-            // TODO_NOT_SURE
             Operations::Atom(_) => {}
             Operations::Pow(x, _) => extract_caches(x, cache),
             Operations::Add(x, y) | Operations::Mul(x, y) | Operations::Sub(x, y) => {
@@ -880,10 +876,6 @@ mod scalars {
 
         // Moved internally
         let constants = kimchi::circuits::expr::Constants::<F> {
-            // alpha: minimal.alpha,
-            // beta: minimal.beta,
-            // gamma: minimal.gamma,
-            // joint_combiner: minimal.lookup,
             endo_coefficient: {
                 let (base, _) = endos::<F>();
                 base
