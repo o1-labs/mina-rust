@@ -57,6 +57,33 @@ docker pull o1labs/mina-rust:2b9e87b2
 docker pull o1labs/mina-rust-frontend:2b9e87b2
 ```
 
+### For Development and Testing
+
+For accessing the latest development features, use the `develop` tag:
+
+<!-- prettier-ignore-start -->
+
+:::warning Unstable Development Version
+
+The `develop` tag points to the latest code from the development branch and may
+be unstable. Only use this for development, testing, or accessing the newest
+features. For production use, always use version tags.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+```bash
+# Latest development version (unstable)
+docker pull o1labs/mina-rust:develop
+docker pull o1labs/mina-rust-frontend:develop
+```
+
+### Latest Tag
+
+The `latest` tag always corresponds to the latest commit on the main branch,
+which represents the current stable release state.
+
 ### Finding Available Tags
 
 You can find available tags at:
@@ -94,74 +121,78 @@ docker pull o1labs/mina-rust:latest
   emulation
 - **Faster startup**: Native images start faster than emulated ones
 
-## Running Nodes
+## Quick Start Examples
 
-### Basic Node
+### Basic Node (Testing/Development)
 
 ```bash
-# Pull and run the main node
+# Pull and run a basic node for testing
 docker pull o1labs/mina-rust:latest
 docker run -p 8302:8302 o1labs/mina-rust:latest
 ```
 
-### Running a Block Producer
+### Node with Frontend Dashboard
 
 ```bash
-# Generate producer key (one-time setup)
-docker run --rm -v $(pwd)/keys:/keys o1labs/mina-rust:latest \
-  misc mina-encrypted-key --file /keys/producer-key
-
-# Run block producer node (CHANGE THE COINBASE RECEIVER!)
-docker run -d --name mina-block-producer \
-  -p 8302:8302 \
-  -v $(pwd)/keys:/keys:ro \
-  -e MINA_PRIVKEY_PASS=your-password \
-  o1labs/mina-rust:latest \
-  node --network mainnet \
-  --block-producer /keys/producer-key \
-  --coinbase-receiver YOUR_MINA_ADDRESS_HERE
-```
-
-### Running an Archive Node
-
-```bash
-# Run archive node with local storage
-docker run -d --name mina-archive \
-  -p 8302:8302 -p 3007:3007 \
-  -v $(pwd)/archive-data:/archive \
-  o1labs/mina-rust:latest \
-  node --network mainnet \
-  --archive /archive
-
-# Run archive node with PostgreSQL (requires external DB)
-docker run -d --name mina-archive \
-  -p 8302:8302 \
-  -e PG_HOST=localhost \
-  -e PG_PORT=5432 \
-  -e PG_USER=mina \
-  -e PG_PASSWORD=minamina \
-  -e PG_DB=mina_archive \
-  o1labs/mina-rust:latest \
-  node --network mainnet \
-  --archive-address http://localhost:3007
-```
-
-### Running with Frontend Dashboard
-
-```bash
-# Using Docker Compose (recommended)
-# Download the latest release and use the provided docker-compose files
-
-# Or run containers separately
+# Run node and web dashboard together
 docker run -d --name mina-node -p 8302:8302 o1labs/mina-rust:latest \
-  node --network mainnet
+  node --network devnet
 docker run -d --name mina-frontend -p 8070:8070 o1labs/mina-rust-frontend:latest
 ```
+
+### Using Docker Compose (Recommended)
+
+Docker Compose provides the easiest way to run both the Mina node and frontend
+dashboard together:
+
+```bash
+# Clone the repository to get the docker-compose.yml file
+git clone https://github.com/o1-labs/mina-rust.git
+cd mina-rust
+
+# Start both node and frontend using docker-compose
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+```
+
+#### Configuration Options
+
+The docker-compose setup supports several environment variables:
+
+```bash
+# Use specific versions (recommended for production)
+MINA_RUST_TAG=v1.4.2 MINA_FRONTEND_TAG=v1.4.2 docker-compose up -d
+
+# Use development version (latest features, unstable)
+MINA_RUST_TAG=develop MINA_FRONTEND_TAG=develop docker-compose up -d
+
+# Configure custom libp2p settings
+MINA_LIBP2P_PORT=9302 MINA_LIBP2P_EXTERNAL_IP=203.0.113.1 docker-compose up -d
+```
+
+#### What's Included
+
+- **mina-node**: The core Mina Rust node running on devnet
+- **frontend**: Web dashboard accessible at http://localhost:8070
+- **Persistent storage**: Node data stored in `./mina-workdir` directory
+- **Automatic networking**: Services can communicate with each other
+
+#### Benefits
+
+- **Easy setup**: Single command to start both services
+- **Configuration management**: Environment variables for customization
+- **Service orchestration**: Automatic startup order and networking
+- **Data persistence**: Blockchain data survives container restarts
 
 ### Advanced Configuration
 
 ```bash
-# Run with custom network and verbosity
+# Run with custom verbosity
 docker run -d --name mina-node \
   -p 8302:8302 \
   o1labs/mina-rust:latest \
@@ -174,7 +205,7 @@ docker run -d --name mina-node \
   -p 9302:9302 \
   -e MINA_LIBP2P_EXTERNAL_IP=$EXTERNAL_IP \
   o1labs/mina-rust:latest \
-  node --network mainnet --libp2p-port 9302
+  node --network devnet --libp2p-port 9302
 ```
 
 ## Next Steps

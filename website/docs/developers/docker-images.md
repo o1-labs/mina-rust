@@ -46,12 +46,40 @@ docker pull o1labs/mina-rust:2b9e87b2
 docker pull o1labs/mina-rust-frontend:2b9e87b2
 ```
 
+### For Development and Testing
+
+For accessing the latest development features, use the `develop` tag:
+
+<!-- prettier-ignore-start -->
+
+:::warning Unstable Development Version
+
+The `develop` tag points to the latest code from the development branch and may
+be unstable. Only use this for development, testing, or accessing the newest
+features. For production use, always use version tags.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+```bash
+# Latest development version (unstable)
+docker pull o1labs/mina-rust:develop
+docker pull o1labs/mina-rust-frontend:develop
+```
+
+### Latest Tag
+
+The `latest` tag always corresponds to the latest commit on the main branch,
+which represents the current stable release state.
+
 ### Automatic Publishing
 
 Images are automatically built and pushed to Docker Hub:
 
 - **On develop branch**: When commits are pushed to `develop`, images are tagged
-  with the commit hash (8 characters)
+  with the commit hash (8 characters) and also tagged as `develop` for easy
+  access to the latest development version
 - **On release branches**: When commits are pushed to branches starting with
   `release/`, images are tagged with the branch name (e.g., `release/v1.5.0`) -
   useful for testing release candidates
@@ -64,6 +92,22 @@ You can find available tags at:
 
 - [o1labs/mina-rust on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust/tags)
 - [o1labs/mina-rust-frontend on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
+
+## Quick Start with Docker Compose
+
+The easiest way to get started is using the provided docker-compose
+configuration:
+
+```bash
+# Clone the repository
+git clone https://github.com/o1-labs/mina-rust.git
+cd mina-rust
+
+# Start node and frontend
+docker-compose up -d
+
+# Access the frontend at http://localhost:8070
+```
 
 ## Local Development
 
