@@ -2,7 +2,7 @@
   <img src="website/static/img/rust-node-social-card.svg" alt="Mina Rust Node - Fast and secure implementation of the Mina protocol in Rust" width="600px">
 
 ![Beta][beta-badge] [![release-badge]][release-link]
-![GitHub Repo stars](https://img.shields.io/github/stars/openmina/openmina?style=social)
+![GitHub Repo stars](https://img.shields.io/github/stars/o1-labs/mina-rust?style=social)
 [![Changelog][changelog-badge]][changelog] [![Apache licensed]][Apache link]
 
 _The **Mina Rust Node** is a fast and secure implementation of the Mina protocol
@@ -45,7 +45,7 @@ website:
 ## Release Process
 
 **This project is in beta**. We maintain a monthly release cycle, providing
-[updates every month](https://github.com/openmina/openmina/releases).
+[updates every month](https://github.com/o1-labs/mina-rust/releases).
 
 ## Core Features
 
@@ -78,9 +78,9 @@ This repository contains the complete Mina Rust Node implementation:
 
 ### Get Help & Contribute
 
-- **[GitHub Discussions](https://github.com/openmina/openmina/discussions)** -
+- **[GitHub Discussions](https://github.com/o1-labs/mina-rust/discussions)** -
   Ask questions and share ideas
-- **[Issues](https://github.com/openmina/openmina/issues)** - Report bugs or
+- **[Issues](https://github.com/o1-labs/mina-rust/issues)** - Report bugs or
   request features
 - **[Discord Community](https://discord.com/channels/484437221055922177/1290662938734231552)** -
   Real-time support and testing
@@ -99,7 +99,7 @@ This repository contains the complete Mina Rust Node implementation:
 [changelog]: ./CHANGELOG.md
 [beta-badge]: https://img.shields.io/badge/status-beta-yellow
 [changelog-badge]: https://img.shields.io/badge/changelog-Changelog-%23E05735
-[release-badge]: https://img.shields.io/github/v/release/openmina/openmina
-[release-link]: https://github.com/openmina/openmina/releases/latest
+[release-badge]: https://img.shields.io/github/v/release/o1-labs/mina-rust
+[release-link]: https://github.com/o1-labs/mina-rust/releases/latest
 [Apache licensed]: https://img.shields.io/badge/license-Apache_2.0-blue.svg
-[Apache link]: https://github.com/openmina/openmina/blob/master/LICENSE
+[Apache link]: https://github.com/o1-labs/mina-rust/blob/master/LICENSE

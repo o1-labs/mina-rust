@@ -108,8 +108,11 @@ git checkout -b release/v1.5.0
 git push -u origin release/v1.5.0
 ```
 
-:::info Docker Images for Release Branches After pushing the release branch, CI
-will automatically build and push Docker images tagged with the branch name.
+<!-- prettier-ignore-start -->
+
+:::info Docker Images for Release Branches After pushing the release branch
+
+CI will automatically build and push Docker images tagged with the branch name.
 These images are available for local testing while the release PR is being
 reviewed.
 
@@ -129,6 +132,8 @@ docker run -p 8302:8302 o1labs/mina-rust:release/v1.5.0
 ```
 
 :::
+
+<!-- prettier-ignore-stop -->
 
 ### 2. Update Version Numbers
 
