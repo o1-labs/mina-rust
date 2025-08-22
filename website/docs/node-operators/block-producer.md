@@ -15,13 +15,13 @@ Ensure Docker and Docker Compose are installed on your system -
 
 1. **Download the Latest Release**
 
-- Visit the [Open Mina Releases](https://github.com/o1-labs/mina-rust/releases)
-- Download the latest `openmina-vX.Y.Z-docker-compose.zip`
+- Visit the [Mina Rust Releases](https://github.com/o1-labs/mina-rust/releases)
+- Download the latest `mina-rust-vX.Y.Z-docker-compose.zip`
 - Extract the Files:
 
   ```bash
-  unzip openmina-vX.Y.Z-docker-compose.zip
-  cd openmina-vX.Y.Z-docker-compose
+  unzip mina-rust-vX.Y.Z-docker-compose.zip
+  cd mina-rust-vX.Y.Z-docker-compose
   mkdir mina-workdir
   ```
 
