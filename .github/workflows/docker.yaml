@@ -131,6 +131,9 @@ jobs:
     needs:
       - build-mina-frontend-image
     steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
       - name: Set up environment variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
@@ -158,6 +161,9 @@ jobs:
     needs:
       - build-mina-node-image
     steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
       - name: Set up environment variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
