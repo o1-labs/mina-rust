@@ -1,4 +1,4 @@
-# Run Archive Node on Devnet
+# Run Archive Node
 
 This guide is intended for setting up archive nodes on **Mina Devnet** only. Do
 not use this guide for Mina Mainnet
