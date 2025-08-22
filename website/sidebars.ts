@@ -120,6 +120,13 @@ const sidebars: SidebarsConfig = {
         'appendix/docker-installation',
       ],
     },
+    {
+      type: 'category',
+      label: 'Development Processes',
+      items: [
+        'appendix/release-process',
+      ],
+    },
   ],
 };
 

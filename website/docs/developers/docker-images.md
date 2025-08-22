@@ -46,6 +46,9 @@ Images are automatically built and pushed to Docker Hub:
 
 - **On develop branch**: When commits are pushed to `develop`, images are tagged
   with the commit hash (8 characters)
+- **On release branches**: When commits are pushed to branches starting with
+  `release/`, images are tagged with the branch name (e.g., `release/v1.5.0`) -
+  useful for testing release candidates
 - **On tags**: When version tags are created, images are tagged with the tag
   name
 

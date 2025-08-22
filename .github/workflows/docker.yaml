@@ -122,7 +122,7 @@ jobs:
           - platform: linux/arm64
             runs-on: ubuntu-24.04-arm
     runs-on: ${{ matrix.arch.runs-on }}
-    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/')
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -144,6 +144,9 @@ jobs:
             echo "GIT_COMMIT=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
             echo "GIT_COMMIT=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
           fi
 
       - name: Build and push mina-rust image
