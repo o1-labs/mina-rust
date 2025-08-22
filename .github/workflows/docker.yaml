@@ -110,20 +110,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-  # Create and push multi-arch manifests for production releases
-  push-multi-arch-images:
+  # Push frontend multi-arch manifest
+  push-frontend-image:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
     needs:
-      - build-mina-node-image
       - build-mina-frontend-image
     steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Set up environment variables
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
@@ -135,35 +128,38 @@ jobs:
             echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
           fi
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # Create mina-rust multi-arch manifest
-      - name: Download mina-rust digests
-        uses: actions/download-artifact@v4
+      - name: Push frontend multi-arch manifest
+        uses: ./.github/actions/push-docker-manifest
         with:
-          path: /tmp/mina-digests
-          pattern: node-digests-*
-          merge-multiple: true
+          registry_image: ${{ env.REGISTRY_FRONTEND_IMAGE }}
+          git_commit: ${{ env.GIT_COMMIT }}
+          digest_pattern: 'frontend-*-digests-*'
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Create mina-rust manifest list and push
-        working-directory: /tmp/mina-digests
+  # Push node multi-arch manifest (after node build completes)
+  push-node-image:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
+    needs:
+      - build-mina-node-image
+    steps:
+      - name: Set up environment variables
         run: |
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY_NODE_IMAGE }}:${{ env.GIT_COMMIT }} \
-            $(printf '${{ env.REGISTRY_NODE_IMAGE }}@sha256:%s ' *)
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "GIT_COMMIT=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            echo "GIT_COMMIT=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
+          fi
 
-      # Create mina-rust-frontend multi-arch manifest
-      - name: Download mina-rust-frontend digests
-        uses: actions/download-artifact@v4
+      - name: Push node multi-arch manifest
+        uses: ./.github/actions/push-docker-manifest
         with:
-          path: /tmp/frontend-digests
-          pattern: frontend-*-digests-*
-          merge-multiple: true
-
-      - name: Create mina-rust-frontend manifest list and push
-        working-directory: /tmp/frontend-digests
-        run: |
-          docker buildx imagetools create \
-            --tag ${{ env.REGISTRY_FRONTEND_IMAGE }}:${{ env.GIT_COMMIT }} \
-            $(printf '${{ env.REGISTRY_FRONTEND_IMAGE }}@sha256:%s ' *)
+          registry_image: ${{ env.REGISTRY_NODE_IMAGE }}
+          git_commit: ${{ env.GIT_COMMIT }}
+          digest_pattern: 'node-digests-*'
+          dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
