@@ -218,6 +218,22 @@ referencing Claude.
 6. **Verify commit message contains no emojis and follows 80-character wrap**
 7. Proceed with testing or committing changes
 
+### Documentation Script Display
+
+When adding scripts to documentation, always use Docusaurus CodeBlock imports:
+
+```mdx
+import CodeBlock from "@theme/CodeBlock";
+import ScriptName from "!!raw-loader!./path/to/script.sh";
+
+<CodeBlock language="bash" title="path/to/script.sh">
+  {ScriptName}
+</CodeBlock>
+```
+
+This ensures scripts are displayed accurately and stay in sync with the actual
+files.
+
 ### Documentation Script Testing
 
 When modifying developer setup scripts in `website/docs/developers/scripts/`,

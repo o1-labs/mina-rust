@@ -496,3 +496,56 @@ docs-clean: ## Clean documentation build artifacts
 	@echo "Cleaning documentation build artifacts..."
 	@rm -rf website/build website/.docusaurus website/static/api-docs target/doc
 	@echo "Documentation artifacts cleaned!"
+
+# Release management targets
+
+.PHONY: release-validate
+release-validate: ## Validate codebase is ready for release
+	@website/docs/developers/scripts/release/validate.sh
+
+.PHONY: release-update-version
+release-update-version: ## Update version in Cargo.toml files (requires VERSION=x.y.z)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is required. Usage: make release-update-version VERSION=1.2.3"; \
+		exit 1; \
+	fi
+	@website/docs/developers/scripts/release/update-version.sh "$(VERSION)"
+
+.PHONY: release-docker-verify
+release-docker-verify: ## Verify multi-arch Docker images are available (requires TAG=version)
+	@if [ -z "$(TAG)" ]; then \
+		echo "Error: TAG is required. Usage: make release-docker-verify TAG=v1.2.3"; \
+		exit 1; \
+	fi
+	@DOCKER_ORG=$(DOCKER_ORG) website/docs/developers/scripts/release/verify-docker.sh "$(TAG)"
+
+.PHONY: release-create-tag
+release-create-tag: ## Create and push git tag (requires TAG=version MESSAGE="description")
+	@if [ -z "$(TAG)" ] || [ -z "$(MESSAGE)" ]; then \
+		echo "Error: TAG and MESSAGE are required."; \
+		echo "Usage: make release-create-tag TAG=v1.2.3 MESSAGE='Release v1.2.3'"; \
+		exit 1; \
+	fi
+	@website/docs/developers/scripts/release/create-tag.sh "$(TAG)" "$(MESSAGE)"
+
+.PHONY: release-merge-back
+release-merge-back: ## Merge main back to develop after release
+	@website/docs/developers/scripts/release/merge-back.sh
+
+.PHONY: release-help
+release-help: ## Show release management commands
+	@echo "Release Management Commands:"
+	@echo ""
+	@echo "  release-validate          - Validate codebase (tests, format, etc.)"
+	@echo "  release-update-version    - Update Cargo.toml versions (requires VERSION=x.y.z)"
+	@echo "  release-create-tag        - Create and push git tag (requires TAG=vx.y.z MESSAGE='...')"
+	@echo "  release-docker-verify     - Verify Docker images (requires TAG=vx.y.z)"
+	@echo "  release-merge-back        - Merge main back to develop"
+	@echo ""
+	@echo "Example workflow:"
+	@echo "  make release-validate"
+	@echo "  make release-update-version VERSION=1.2.3"
+	@echo "  # Create PR, get approval, merge to main"
+	@echo "  make release-create-tag TAG=v1.2.3 MESSAGE='Release v1.2.3'"
+	@echo "  make release-docker-verify TAG=v1.2.3"
+	@echo "  make release-merge-back"

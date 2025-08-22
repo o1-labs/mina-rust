@@ -1,0 +1,425 @@
+---
+title: Release Process
+description: Step-by-step guide for creating and publishing Mina Rust releases
+sidebar_position: 1
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import ValidateScript from "!!raw-loader!../developers/scripts/release/validate.sh";
+import UpdateVersionScript from "!!raw-loader!../developers/scripts/release/update-version.sh";
+import CreateTagScript from "!!raw-loader!../developers/scripts/release/create-tag.sh";
+import VerifyDockerScript from "!!raw-loader!../developers/scripts/release/verify-docker.sh";
+import MergeBackScript from "!!raw-loader!../developers/scripts/release/merge-back.sh";
+
+# Mina Rust Release Process
+
+<!-- prettier-ignore-start -->
+
+:::warning Work in Progress
+
+This release process documentation is currently being validated and may change.
+Please coordinate with the release manager before following these procedures for
+production releases.
+
+:::
+
+This document outlines the complete process for creating and publishing Mina
+Rust releases.
+
+:::info Release Branch Strategy All releases are made from the `main` branch.
+The release process involves creating a release branch from `develop`, merging
+it to `main`, and then tagging from `main`.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Prerequisites
+
+- Push access to the main repository
+- Docker Hub credentials configured for CI
+- GitHub CLI (`gh`) installed and authenticated
+- Write access to create GitHub releases
+
+## Release Types
+
+### Major Release (v2.0.0)
+
+- Breaking changes to APIs or protocols
+- Significant architectural changes
+- Requires careful coordination and migration guides
+
+### Minor Release (v1.5.0)
+
+- New features and enhancements
+- Backward compatible changes
+- Performance improvements
+
+### Patch Release (v1.4.3)
+
+- Bug fixes and security patches
+- Documentation updates
+- No new features
+
+## Pre-Release Checklist
+
+1. **Verify develop branch stability**
+
+   ```bash
+   # Run complete validation suite (could be skipped as it is supposed to be
+   # tested by the CI)
+   make release-validate
+   ```
+
+  <!-- prettier-ignore-start -->
+
+  <details>
+    <summary>Script contents (click to expand)</summary>
+
+    <CodeBlock
+      language="bash"
+      title="website/docs/developers/scripts/release/validate.sh"
+    >
+     {ValidateScript}
+    </CodeBlock>
+
+  </details>
+  <!-- prettier-ignore-stop -->
+
+2. **Update CHANGELOG.md**
+   - Move items from `[Unreleased]` to new version section
+   - Follow [Keep a Changelog](https://keepachangelog.com/) format
+   - Include all significant changes since last release
+
+3. **Version compatibility check**
+   - Ensure compatibility with OCaml node if applicable
+   - Test against expected network configurations
+   - Verify Docker images build successfully
+
+## Release Steps
+
+### 1. Create Release Branch (for major/minor releases)
+
+```bash
+# Create release branch from develop
+git checkout develop
+git pull origin develop
+git checkout -b release/v1.5.0
+git push -u origin release/v1.5.0
+```
+
+:::info Docker Images for Release Branches After pushing the release branch, CI
+will automatically build and push Docker images tagged with the branch name.
+These images are available for local testing while the release PR is being
+reviewed.
+
+**Images will be available as:**
+
+- `o1labs/mina-rust:release/v1.5.0`
+- `o1labs/mina-rust-frontend:release/v1.5.0`
+
+**To test locally:** See
+[Docker Images documentation](../developers/docker-images) for complete usage
+instructions.
+
+```bash
+# Example usage
+docker pull o1labs/mina-rust:release/v1.5.0
+docker run -p 8302:8302 o1labs/mina-rust:release/v1.5.0
+```
+
+:::
+
+### 2. Update Version Numbers
+
+```bash
+# Update all Cargo.toml version fields
+make release-update-version VERSION=1.5.0
+```
+
+<!-- prettier-ignore-start -->
+
+<details>
+<summary>Script contents (click to expand)</summary>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/release/update-version.sh"
+>
+  {UpdateVersionScript}
+</CodeBlock>
+
+</details>
+<!-- prettier-ignore-stop -->
+
+This automatically updates version references in:
+
+- All `Cargo.toml` files in the workspace
+- Excludes target directory files
+
+You may also need to manually update:
+
+- Documentation examples
+- Any hardcoded version references in other files
+
+### 3. Create Release PR
+
+```bash
+# Create PR from release branch to main
+gh pr create --base main --title "Release v1.5.0" --body "$(cat <<'EOF'
+## Release v1.5.0
+
+### Summary
+Brief description of the release highlights.
+
+### Changes
+- Reference the CHANGELOG.md entries
+- Highlight breaking changes if any
+- Note any special upgrade instructions
+
+### Checklist
+- [ ] CHANGELOG.md updated
+- [ ] Version numbers updated
+- [ ] Tests passing
+- [ ] Documentation updated
+EOF
+)"
+```
+
+### 4. Review and Merge
+
+- Wait for CI to pass
+- Get required approvals
+- Merge the release PR to `main`
+
+### 5. Create and Push Git Tag
+
+```bash
+# After merge, switch to main and pull
+git checkout main
+git pull origin main
+
+# Create and push annotated tag
+make release-create-tag TAG=v1.5.0 MESSAGE="Release v1.5.0
+
+## Highlights
+- Feature 1: Description
+- Feature 2: Description
+- Bug fix: Description
+
+See CHANGELOG.md for complete details."
+```
+
+<!-- prettier-ignore-start -->
+
+<details>
+<summary>Script contents (click to expand)</summary>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/release/create-tag.sh"
+>
+  {CreateTagScript}
+</CodeBlock>
+
+</details>
+<!-- prettier-ignore-stop -->
+
+This automatically:
+
+- Creates an annotated tag with the provided message
+- Pushes the tag to origin (which triggers Docker image builds)
+
+### 6. Create GitHub Release
+
+```bash
+# Create GitHub release from tag
+gh release create v1.5.0 \
+  --title "Mina Rust v1.5.0" \
+  --notes-file RELEASE_NOTES.md \
+  --draft
+
+# Or create with auto-generated notes
+gh release create v1.5.0 \
+  --title "Mina Rust v1.5.0" \
+  --generate-notes \
+  --draft
+```
+
+### 7. Verify Automated Processes
+
+After pushing the tag, verify:
+
+1. **Docker images are built and pushed**
+
+   ```bash
+   # Verify multi-arch images are available
+   make release-docker-verify TAG=v1.5.0
+   ```
+
+   <!-- prettier-ignore-start -->
+
+  <details>
+   <summary>Script contents (click to expand)</summary>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/release/verify-docker.sh"
+>
+  {VerifyDockerScript}
+</CodeBlock>
+
+   </details>
+   <!-- prettier-ignore-stop -->
+
+2. **CI pipeline completes successfully**
+   - Check GitHub Actions status
+   - Verify all build matrices pass
+
+3. **Docker Hub shows new tags**
+   - Visit
+     [Docker Hub - mina-rust](https://hub.docker.com/r/o1labs/mina-rust/tags)
+   - Visit
+     [Docker Hub - mina-rust-frontend](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
+
+### 8. Publish GitHub Release
+
+Once verification is complete:
+
+```bash
+# Remove draft status
+gh release edit v1.5.0 --draft=false
+```
+
+### 9. Update Documentation
+
+- Update any documentation that references version numbers
+- Announce release in relevant channels
+- Update getting started guides if needed
+
+## Post-Release Tasks
+
+### Merge Back to Develop
+
+```bash
+# Merge main back to develop to sync version updates
+make release-merge-back
+```
+
+<details>
+<summary>Script contents (click to expand)</summary>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/release/merge-back.sh"
+>
+  {MergeBackScript}
+</CodeBlock>
+
+</details>
+
+This target includes safety confirmations since it pushes directly to develop.
+
+### Tag Docker Images as Latest (for major releases)
+
+For major releases, you may want to tag as `latest`:
+
+```bash
+# This would typically be done via additional CI job or manually
+docker pull o1labs/mina-rust:v2.0.0
+docker tag o1labs/mina-rust:v2.0.0 o1labs/mina-rust:latest
+docker push o1labs/mina-rust:latest
+```
+
+## Hotfix Process
+
+For urgent patches to released versions:
+
+1. **Create hotfix branch from the release tag**
+
+   ```bash
+   git checkout v1.5.0
+   git checkout -b hotfix/v1.5.1
+   ```
+
+2. **Apply minimal fix**
+   - Make only essential changes
+   - Update CHANGELOG.md with patch entry
+
+3. **Follow standard release process**
+   - Create PR to main
+   - Create new patch tag (v1.5.1)
+   - Verify Docker builds
+   - Create GitHub release
+
+## Rollback Procedure
+
+If issues are discovered after release:
+
+1. **Immediate mitigation**
+   - Remove problematic Docker tags if possible
+   - Update release notes with known issues
+
+2. **Create hotfix release**
+   - Follow hotfix process above
+   - Clearly document the fix in release notes
+
+## Release Automation
+
+The project uses GitHub Actions for automated building and publishing:
+
+- **Trigger**: Git tag push
+- **Process**: Native multi-arch builds, Docker Hub push
+- **Artifacts**: Docker images for `linux/amd64` and `linux/arm64`
+
+See `.github/workflows/docker.yaml` for implementation details.
+
+## Makefile Release Targets
+
+The project includes dedicated Makefile targets to streamline the release
+process:
+
+```bash
+# Show all release management commands
+make release-help
+
+# Common workflow
+make release-validate                                    # Validate codebase
+make release-update-version VERSION=1.2.3              # Update versions
+# Create PR, get approval, merge to main
+make release-create-tag TAG=v1.2.3 MESSAGE="Release"   # Create and push tag
+make release-docker-verify TAG=v1.2.3                  # Verify Docker images
+make release-merge-back                                 # Merge back to develop
+```
+
+### Available Targets
+
+- **`release-validate`** - Run complete validation suite (tests, format, etc.)
+- **`release-update-version`** - Update version in all Cargo.toml files
+- **`release-create-tag`** - Create annotated tag and push to origin
+- **`release-docker-verify`** - Verify multi-arch Docker images are available
+- **`release-merge-back`** - Merge main back to develop (with confirmation)
+- **`release-help`** - Show detailed help for all release targets
+
+## Troubleshooting
+
+### Docker Build Failures
+
+- Check runner availability (ubuntu-latest, ubuntu-24.04-arm)
+- Verify Docker Hub credentials in repository secrets
+- Check for dependency or build issues in CI logs
+
+### Tag Already Exists
+
+```bash
+# Delete and recreate tag if needed (use with caution)
+git tag -d v1.5.0
+git push origin :refs/tags/v1.5.0
+# Then recreate tag
+```
+
+### CI Pipeline Issues
+
+- Check GitHub Actions status page
+- Verify repository secrets are correctly configured
+- Review workflow file changes that might affect release process
