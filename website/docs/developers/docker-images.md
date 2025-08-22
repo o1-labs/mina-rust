@@ -13,11 +13,19 @@ The Mina Rust project provides Docker images for easy deployment and testing.
 
 Docker images are available at Docker Hub under the `o1labs` organization:
 
-:::warning Deprecated Repository Docker images from the
+<!-- prettier-ignore-start -->
+
+:::warning Deprecated Repository
+
+Docker images from the
 [openmina/openmina](https://hub.docker.com/r/openmina/openmina) repository are
 deprecated. Please use the
 [o1labs/mina-rust](https://hub.docker.com/r/o1labs/mina-rust) images instead for
-the latest updates and support. :::
+the latest updates and support.
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 - **Main Node**: `o1labs/mina-rust` - The core Mina Rust node
 - **Frontend**: `o1labs/mina-rust-frontend` - Web dashboard and monitoring
