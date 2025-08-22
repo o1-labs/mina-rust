@@ -1,7 +1,7 @@
 # Run Block Producers on local network
 
-Once you have completed the [pre-requisites](./docker-installation.md) for your
-operating system, follow these steps:
+Once you have completed the [pre-requisites](../appendix/docker-installation)
+for your operating system, follow these steps:
 
 ## Setup Option 1: Download Docker Compose Files from the Release
 

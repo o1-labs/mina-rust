@@ -4,7 +4,7 @@
 NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
 
 # Docker
-DOCKER_ORG ?= o1-labs
+DOCKER_ORG ?= o1labs
 
 # PostgreSQL configuration for archive node
 OPEN_ARCHIVE_ADDRESS ?= http://localhost:3007
@@ -291,7 +291,7 @@ docker-build-debugger: ## Build debugger Docker image
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
+	@docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
@@ -314,7 +314,7 @@ docker-build-light-focal: ## Build light focal Docker image
 
 .PHONY: docker-build-mina
 docker-build-mina: ## Build main Mina Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
+	@docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
 
 .PHONY: docker-build-mina-testing
 docker-build-mina-testing: ## Build Mina testing Docker image
@@ -330,6 +330,16 @@ docker-build-producer-dashboard: ## Build producer dashboard Docker image
 docker-build-test: ## Build test Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-test:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.test node/testing/docker/
+
+# Docker push targets
+
+.PHONY: docker-push-mina
+docker-push-mina: ## Push main Mina Docker image to DockerHub
+	@docker push $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT)
+
+.PHONY: docker-push-frontend
+docker-push-frontend: ## Push frontend Docker image to DockerHub
+	@docker push $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT)
 
 # Node running targets
 .PHONY: run-node
