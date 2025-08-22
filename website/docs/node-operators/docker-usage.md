@@ -146,33 +146,33 @@ Docker Compose provides the easiest way to run both the Mina node and frontend
 dashboard together:
 
 ```bash
-# Clone the repository to get the docker-compose.yml file
+# Clone the repository to get the docker compose configuration
 git clone https://github.com/o1-labs/mina-rust.git
 cd mina-rust
 
-# Start both node and frontend using docker-compose
-docker-compose up -d
+# Start both node and frontend using docker compose
+docker compose up -d
 
 # View logs
-docker-compose logs -f
+docker compose logs -f
 
 # Stop services
-docker-compose down
+docker compose down
 ```
 
 #### Configuration Options
 
-The docker-compose setup supports several environment variables:
+The docker compose setup supports several environment variables:
 
 ```bash
 # Use specific versions (recommended for production)
-MINA_RUST_TAG=v1.4.2 MINA_FRONTEND_TAG=v1.4.2 docker-compose up -d
+MINA_RUST_TAG=v1.4.2 MINA_FRONTEND_TAG=v1.4.2 docker compose up -d
 
 # Use development version (latest features, unstable)
-MINA_RUST_TAG=develop MINA_FRONTEND_TAG=develop docker-compose up -d
+MINA_RUST_TAG=develop MINA_FRONTEND_TAG=develop docker compose up -d
 
 # Configure custom libp2p settings
-MINA_LIBP2P_PORT=9302 MINA_LIBP2P_EXTERNAL_IP=203.0.113.1 docker-compose up -d
+MINA_LIBP2P_PORT=9302 MINA_LIBP2P_EXTERNAL_IP=203.0.113.1 docker compose up -d
 ```
 
 #### What's Included

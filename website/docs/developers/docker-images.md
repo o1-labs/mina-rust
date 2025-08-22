@@ -103,7 +103,7 @@ You can find available tags at:
 
 ## Quick Start with Docker Compose
 
-The easiest way to get started is using the provided docker-compose
+The easiest way to get started is using the provided docker compose
 configuration:
 
 ```bash
@@ -112,7 +112,7 @@ git clone https://github.com/o1-labs/mina-rust.git
 cd mina-rust
 
 # Start node and frontend
-docker-compose up -d
+docker compose up -d
 
 # Access the frontend at http://localhost:8070
 ```
