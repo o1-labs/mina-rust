@@ -291,7 +291,17 @@ docker-build-debugger: ## Build debugger Docker image
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
-	@docker build -t $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) frontend/
+	@ARCH=$$(uname -m); \
+	case $$ARCH in \
+		x86_64) PLATFORM="linux/amd64" ;; \
+		aarch64|arm64) PLATFORM="linux/arm64" ;; \
+		*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
+	esac; \
+	echo "Building for platform: $$PLATFORM"; \
+	docker buildx build \
+		--platform $$PLATFORM \
+		--tag $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) \
+		frontend/
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
@@ -314,7 +324,17 @@ docker-build-light-focal: ## Build light focal Docker image
 
 .PHONY: docker-build-mina
 docker-build-mina: ## Build main Mina Docker image
-	@docker build -t $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) .
+	@ARCH=$$(uname -m); \
+	case $$ARCH in \
+		x86_64) PLATFORM="linux/amd64" ;; \
+		aarch64|arm64) PLATFORM="linux/arm64" ;; \
+		*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
+	esac; \
+	echo "Building for platform: $$PLATFORM"; \
+	docker buildx build \
+		--platform $$PLATFORM \
+		--tag $(DOCKER_ORG)/mina-rust:$(GIT_COMMIT) \
+		.
 
 .PHONY: docker-build-mina-testing
 docker-build-mina-testing: ## Build Mina testing Docker image
