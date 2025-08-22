@@ -72,10 +72,43 @@ make docker-push-frontend
 
 ## Architecture Support
 
-Images are built for multiple architectures:
+All Docker images are built natively for multiple architectures to ensure
+optimal performance:
 
-- `linux/amd64` (x86_64)
-- `linux/arm64` (ARM64)
+- **`linux/amd64`** (x86_64) - For Intel/AMD processors
+- **`linux/arm64`** (ARM64) - For ARM processors (Apple Silicon, AWS Graviton,
+  etc.)
+
+### Automatic Architecture Selection
+
+Docker automatically pulls the correct architecture for your system:
+
+```bash
+# This automatically pulls the right architecture
+docker pull o1labs/mina-rust:latest
+
+# On Intel/AMD systems: gets linux/amd64
+# On Apple Silicon: gets linux/arm64
+# On ARM servers: gets linux/arm64
+```
+
+### Performance Benefits
+
+- **Native builds**: Each architecture is compiled natively for optimal
+  performance
+- **No emulation overhead**: ARM users get native performance instead of x86
+  emulation
+- **Faster startup**: Native images start faster than emulated ones
+
+### Verifying Architecture
+
+You can verify which architecture you're running:
+
+```bash
+docker run --rm o1labs/mina-rust:latest uname -m
+# x86_64 on Intel/AMD systems
+# aarch64 on ARM systems
+```
 
 ## Using Docker Images
 
@@ -83,8 +116,8 @@ Images are built for multiple architectures:
 
 ```bash
 # Pull and run the main node
-docker pull o1labs/mina-rust:v1.4.2
-docker run -p 8302:8302 o1labs/mina-rust:v1.4.2
+docker pull o1labs/mina-rust:latest
+docker run -p 8302:8302 o1labs/mina-rust:latest
 ```
 
 ### Running with Frontend Dashboard
@@ -94,8 +127,8 @@ docker run -p 8302:8302 o1labs/mina-rust:v1.4.2
 # Download the latest release and use the provided docker-compose files
 
 # Or run containers separately
-docker run -d --name mina-node -p 8302:8302 o1labs/mina-rust:v1.4.2
-docker run -d --name mina-frontend -p 8070:8070 o1labs/mina-rust-frontend:v1.4.2
+docker run -d --name mina-node -p 8302:8302 o1labs/mina-rust:latest
+docker run -d --name mina-frontend -p 8070:8070 o1labs/mina-rust-frontend:latest
 ```
 
 For complete setup guides, see the

@@ -50,6 +50,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Node**: add `openmina misc mina-encrypted-key` to generate a new encrypted
   key with password, as the OCaml node provides
   ([#1284](https://github.com/o1-labs/openmina/pull/1284/)).
+- **CI**: push images on tags and develop to
+  [o1labs/mina-rust-frontend](https://hub.docker.com/r/o1labs/mina-rust-frontend)
+  and [o1labs/mina-rust](https://hub.docker.com/r/o1labs/mina-rust), and support
+  ARM and AMD64, fixing
+  [!1336](https://github.com/o1-labs/mina-rust/issues/1336),
+  [!1192](https://github.com/o1-labs/mina-rust/issues/1192)
+  ([#1337](https://github.com/o1-labs/mina-rust/pull/1337),
+  [#1335](https://github.com/o1-labs/mina-rust/pull/1335))
 
 ### Changed
 
