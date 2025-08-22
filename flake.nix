@@ -1,5 +1,5 @@
 {
-  description = "openmina prerequisites";
+  description = "Mina Rust prerequisites";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
