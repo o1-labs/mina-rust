@@ -20,6 +20,7 @@ const sidebars: SidebarsConfig = {
       label: 'Introduction',
       items: [
         'node-operators/getting-started',
+        'node-operators/docker-usage',
         'node-operators/building-from-source',
       ],
     },

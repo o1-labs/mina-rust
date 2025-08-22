@@ -37,31 +37,7 @@ Choose your preferred installation method:
 Docker provides the easiest way to get started with the Mina Rust Node.
 
 [→ Docker Installation Guide](../appendix/docker-installation)
-
-#### Docker Image Usage
-
-Pre-built Docker images are available on Docker Hub:
-
-- **Main Node**: `o1labs/mina-rust`
-- **Frontend Dashboard**: `o1labs/mina-rust-frontend`
-
-**Recommended**: Use version tags for stability:
-
-```bash
-# Use version tags (recommended for stability)
-docker pull o1labs/mina-rust:v1.4.2
-```
-
-**For Development**: Commit hashes are available for accessing specific features
-during development, but are not recommended for general use.
-
-For detailed Docker usage and versioning information, see
-[Docker Images](../developers/docker-images).
-
-Find available tags at:
-
-- [o1labs/mina-rust on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust/tags)
-- [o1labs/mina-rust-frontend on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
+[→ Complete Docker Usage Guide](docker-usage)
 
 ### 2. Build from Source
 

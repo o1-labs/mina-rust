@@ -13,6 +13,12 @@ The Mina Rust project provides Docker images for easy deployment and testing.
 
 Docker images are available at Docker Hub under the `o1labs` organization:
 
+:::warning Deprecated Repository Docker images from the
+[openmina/openmina](https://hub.docker.com/r/openmina/openmina) repository are
+deprecated. Please use the
+[o1labs/mina-rust](https://hub.docker.com/r/o1labs/mina-rust) images instead for
+the latest updates and support. :::
+
 - **Main Node**: `o1labs/mina-rust` - The core Mina Rust node
 - **Frontend**: `o1labs/mina-rust-frontend` - Web dashboard and monitoring
   interface
@@ -103,36 +109,9 @@ docker pull o1labs/mina-rust:latest
   emulation
 - **Faster startup**: Native images start faster than emulated ones
 
-### Verifying Architecture
+## For Node Operators
 
-You can verify which architecture you're running:
+For detailed usage instructions including running block producers, archive
+nodes, and configuration examples, see:
 
-```bash
-docker run --rm o1labs/mina-rust:latest uname -m
-# x86_64 on Intel/AMD systems
-# aarch64 on ARM systems
-```
-
-## Using Docker Images
-
-### Running a Basic Node
-
-```bash
-# Pull and run the main node
-docker pull o1labs/mina-rust:latest
-docker run -p 8302:8302 o1labs/mina-rust:latest
-```
-
-### Running with Frontend Dashboard
-
-```bash
-# Using Docker Compose (recommended)
-# Download the latest release and use the provided docker-compose files
-
-# Or run containers separately
-docker run -d --name mina-node -p 8302:8302 o1labs/mina-rust:latest
-docker run -d --name mina-frontend -p 8070:8070 o1labs/mina-rust-frontend:latest
-```
-
-For complete setup guides, see the
-[Node Operators](../node-operators/getting-started) section.
+[→ Node Operators Docker Usage Guide](../node-operators/docker-usage)
