@@ -13,8 +13,8 @@ use crate::{
     scenarios::ClusterRunner,
 };
 
-/// Local test to ensure that the Openmina node can connect to an existing OCaml testnet.
-/// Launch an Openmina node and connect it to seed nodes of the public (or private) OCaml testnet.
+/// Local test to ensure that the Rust node can connect to an existing OCaml testnet.
+/// Launch a Rust node and connect it to seed nodes of the public (or private) OCaml testnet.
 /// Run the simulation until:
 /// * Number of known peers is greater than or equal to the maximum number of peers.
 /// * Number of connected peers is greater than or equal to some threshold.
@@ -48,7 +48,7 @@ impl SoloNodeBasicConnectivityInitialJoining {
                 .my_id(),
         )
         .unwrap();
-        eprintln!("launch Openmina node, id: {node_id}, peer_id: {peer_id}");
+        eprintln!("launch Mina Rust node, id: {node_id}, peer_id: {peer_id}");
 
         for step in 0..STEPS {
             tokio::time::sleep(STEP_DELAY).await;

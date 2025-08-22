@@ -146,14 +146,14 @@ async fn compare_chains(ocaml_endpoint: &str, mina_rust_endpoint: &str) -> Resul
         );
 
         let ocaml_chain = get_best_chain(ocaml_endpoint).await?;
-        let openmina_chain = get_best_chain(mina_rust_endpoint).await?;
+        let mina_rust_chain = get_best_chain(mina_rust_endpoint).await?;
 
         println!("Chain comparison:");
         println!("OCaml chain length: {}", ocaml_chain.len());
-        println!("Mina Rust chain length: {}", openmina_chain.len());
+        println!("Mina Rust chain length: {}", mina_rust_chain.len());
 
         // Try to compare chains
-        if let Err(e) = compare_chain_data(&ocaml_chain, &openmina_chain) {
+        if let Err(e) = compare_chain_data(&ocaml_chain, &mina_rust_chain) {
             if attempt == MAX_RETRIES {
                 return Err(e);
             }
@@ -169,24 +169,24 @@ async fn compare_chains(ocaml_endpoint: &str, mina_rust_endpoint: &str) -> Resul
     unreachable!()
 }
 
-fn compare_chain_data(ocaml_chain: &[String], openmina_chain: &[String]) -> Result<()> {
-    if ocaml_chain.len() != openmina_chain.len() {
+fn compare_chain_data(ocaml_chain: &[String], mina_rust_chain: &[String]) -> Result<()> {
+    if ocaml_chain.len() != mina_rust_chain.len() {
         anyhow::bail!(
             "Chain lengths don't match! OCaml: {}, Mina Rust: {}",
             ocaml_chain.len(),
-            openmina_chain.len()
+            mina_rust_chain.len()
         );
     }
 
-    for (i, (ocaml_hash, openmina_hash)) in
-        ocaml_chain.iter().zip(openmina_chain.iter()).enumerate()
+    for (i, (ocaml_hash, mina_rust_hash)) in
+        ocaml_chain.iter().zip(mina_rust_chain.iter()).enumerate()
     {
-        if ocaml_hash != openmina_hash {
+        if ocaml_hash != mina_rust_hash {
             anyhow::bail!(
                 "Chain mismatch at position {}: \nOCaml: {}\nMina Rust: {}",
                 i,
                 ocaml_hash,
-                openmina_hash
+                mina_rust_hash
             );
         }
     }
@@ -202,20 +202,20 @@ struct DiffMismatch {
 
 async fn compare_binary_diffs(
     ocaml_dir: PathBuf,
-    openmina_dir: PathBuf,
+    mina_rust_dir: PathBuf,
     state_hashes: &[String],
 ) -> Result<Vec<DiffMismatch>> {
     let mut mismatches = Vec::new();
 
     if state_hashes.is_empty() {
         println!("No state hashes provided, comparing all diffs");
-        let files = openmina_dir.read_dir()?;
+        let files = mina_rust_dir.read_dir()?;
         files.for_each(|file| {
             let file = file.unwrap();
             let file_name = file.file_name();
             let file_name_str = file_name.to_str().unwrap();
             let ocaml_path = ocaml_dir.join(file_name_str);
-            let openmina_path = openmina_dir.join(file_name_str);
+            let mina_rust_path = mina_rust_dir.join(file_name_str);
 
             // Load and deserialize both files
             let ocaml_diff = match load_and_deserialize(&ocaml_path) {
@@ -229,7 +229,7 @@ async fn compare_binary_diffs(
                 }
             };
 
-            let openmina_diff = match load_and_deserialize(&openmina_path) {
+            let mina_rust_diff = match load_and_deserialize(&mina_rust_path) {
                 Ok(diff) => diff,
                 Err(e) => {
                     mismatches.push(DiffMismatch {
@@ -241,7 +241,7 @@ async fn compare_binary_diffs(
             };
 
             // Compare the diffs
-            if let Some(reason) = compare_diffs(&ocaml_diff, &openmina_diff) {
+            if let Some(reason) = compare_diffs(&ocaml_diff, &mina_rust_diff) {
                 mismatches.push(DiffMismatch {
                     state_hash: file_name_str.to_string(),
                     reason,
@@ -252,7 +252,7 @@ async fn compare_binary_diffs(
     } else {
         for state_hash in state_hashes {
             let ocaml_path = ocaml_dir.join(format!("{}.bin", state_hash));
-            let openmina_path = openmina_dir.join(format!("{}.bin", state_hash));
+            let mina_rust_path = mina_rust_dir.join(format!("{}.bin", state_hash));
 
             // Load and deserialize both files
             let ocaml_diff = match load_and_deserialize(&ocaml_path) {
@@ -266,7 +266,7 @@ async fn compare_binary_diffs(
                 }
             };
 
-            let openmina_diff = match load_and_deserialize(&openmina_path) {
+            let mina_rust_diff = match load_and_deserialize(&mina_rust_path) {
                 Ok(diff) => diff,
                 Err(e) => {
                     mismatches.push(DiffMismatch {
@@ -278,7 +278,7 @@ async fn compare_binary_diffs(
             };
 
             // Compare the diffs
-            if let Some(reason) = compare_diffs(&ocaml_diff, &openmina_diff) {
+            if let Some(reason) = compare_diffs(&ocaml_diff, &mina_rust_diff) {
                 mismatches.push(DiffMismatch {
                     state_hash: state_hash.clone(),
                     reason,
@@ -297,9 +297,9 @@ fn load_and_deserialize(path: &PathBuf) -> Result<ArchiveTransitionFrontierDiff>
 
 fn compare_diffs(
     ocaml: &ArchiveTransitionFrontierDiff,
-    openmina: &ArchiveTransitionFrontierDiff,
+    mina_rust: &ArchiveTransitionFrontierDiff,
 ) -> Option<String> {
-    match (ocaml, openmina) {
+    match (ocaml, mina_rust) {
         (
             ArchiveTransitionFrontierDiff::BreadcrumbAdded {
                 block: (b1, (body_hash1, state_hash1)),
@@ -341,77 +341,77 @@ fn compare_diffs(
                 if &b1_with_b2_proof != b2 {
                     let ocaml_json =
                         serde_json::to_string_pretty(&serde_json::to_value(b1).unwrap()).unwrap();
-                    let openmina_json =
+                    let mina_rust_json =
                         serde_json::to_string_pretty(&serde_json::to_value(b2).unwrap()).unwrap();
                     mismatches.push(format!(
                         "Block data mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                        ocaml_json, openmina_json
+                        ocaml_json, mina_rust_json
                     ));
                 }
             } else if b1 != b2 {
                 let ocaml_json =
                     serde_json::to_string_pretty(&serde_json::to_value(b1).unwrap()).unwrap();
-                let openmina_json =
+                let mina_rust_json =
                     serde_json::to_string_pretty(&serde_json::to_value(b2).unwrap()).unwrap();
                 mismatches.push(format!(
                     "Block data mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                    ocaml_json, openmina_json
+                    ocaml_json, mina_rust_json
                 ));
             }
 
             if a1 != a2 {
                 let ids_ocaml = a1.iter().map(|(id, _)| id.as_u64()).collect::<HashSet<_>>();
-                let ids_openmina = a2.iter().map(|(id, _)| id.as_u64()).collect::<HashSet<_>>();
+                let ids_mina_rust = a2.iter().map(|(id, _)| id.as_u64()).collect::<HashSet<_>>();
 
-                // Find missing IDs in openmina (present in ocaml but not in openmina)
-                let missing_in_openmina: Vec<_> = ids_ocaml.difference(&ids_openmina).collect();
-                // Find extra IDs in openmina (present in openmina but not in ocaml)
-                let extra_in_openmina: Vec<_> = ids_openmina.difference(&ids_ocaml).collect();
+                // Find missing IDs in Rust (present in ocaml but not in Rust)
+                let missing_in_mina_rust: Vec<_> = ids_ocaml.difference(&ids_mina_rust).collect();
+                // Find extra IDs in Rust (present in Rust but not in ocaml)
+                let extra_in_mina_rust: Vec<_> = ids_mina_rust.difference(&ids_ocaml).collect();
 
-                if !missing_in_openmina.is_empty() {
-                    println!("Missing in Mina Rust: {:?}", missing_in_openmina);
+                if !missing_in_mina_rust.is_empty() {
+                    println!("Missing in Mina Rust: {:?}", missing_in_mina_rust);
                 }
-                if !extra_in_openmina.is_empty() {
-                    println!("Extra in Mina Rust: {:?}", extra_in_openmina);
+                if !extra_in_mina_rust.is_empty() {
+                    println!("Extra in Mina Rust: {:?}", extra_in_mina_rust);
                 }
 
                 let ocaml_json =
                     serde_json::to_string_pretty(&serde_json::to_value(a1).unwrap()).unwrap();
-                let openmina_json =
+                let mina_rust_json =
                     serde_json::to_string_pretty(&serde_json::to_value(a2).unwrap()).unwrap();
                 mismatches.push(format!(
                     "Accounts accessed mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                    ocaml_json, openmina_json
+                    ocaml_json, mina_rust_json
                 ));
             }
             if c1 != c2 {
                 let ocaml_json =
                     serde_json::to_string_pretty(&serde_json::to_value(c1).unwrap()).unwrap();
-                let openmina_json =
+                let mina_rust_json =
                     serde_json::to_string_pretty(&serde_json::to_value(c2).unwrap()).unwrap();
                 mismatches.push(format!(
                     "Accounts created mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                    ocaml_json, openmina_json
+                    ocaml_json, mina_rust_json
                 ));
             }
             if t1 != t2 {
                 let ocaml_json =
                     serde_json::to_string_pretty(&serde_json::to_value(t1).unwrap()).unwrap();
-                let openmina_json =
+                let mina_rust_json =
                     serde_json::to_string_pretty(&serde_json::to_value(t2).unwrap()).unwrap();
                 mismatches.push(format!(
                     "Tokens used mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                    ocaml_json, openmina_json
+                    ocaml_json, mina_rust_json
                 ));
             }
             if s1 != s2 {
                 let ocaml_json =
                     serde_json::to_string_pretty(&serde_json::to_value(s1).unwrap()).unwrap();
-                let openmina_json =
+                let mina_rust_json =
                     serde_json::to_string_pretty(&serde_json::to_value(s2).unwrap()).unwrap();
                 mismatches.push(format!(
                     "Sender receipt chains mismatch:\nOCaml:\n{}\nMina Rust:\n{}",
-                    ocaml_json, openmina_json
+                    ocaml_json, mina_rust_json
                 ));
             }
 
@@ -424,11 +424,11 @@ fn compare_diffs(
         _ => {
             let ocaml_json =
                 serde_json::to_string_pretty(&serde_json::to_value(ocaml).unwrap()).unwrap();
-            let openmina_json =
-                serde_json::to_string_pretty(&serde_json::to_value(openmina).unwrap()).unwrap();
+            let mina_rust_json =
+                serde_json::to_string_pretty(&serde_json::to_value(mina_rust).unwrap()).unwrap();
             Some(format!(
                 "Different diff types:\nOCaml:\n{}\nMina Rust:\n{}",
-                ocaml_json, openmina_json
+                ocaml_json, mina_rust_json
             ))
         }
     }
