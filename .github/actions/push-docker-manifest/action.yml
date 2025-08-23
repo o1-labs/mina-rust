@@ -16,6 +16,9 @@ inputs:
   dockerhub_token:
     description: 'Docker Hub token'
     required: true
+  additional_tags:
+    description: 'Additional tags to create (comma-separated, optional)'
+    required: false
 
 runs:
   using: 'composite'
@@ -40,6 +43,20 @@ runs:
       shell: bash
       working-directory: /tmp/digests
       run: |
+        # Build primary tag
+        TAGS="--tag ${{ inputs.registry_image }}:${{ inputs.git_commit }}"
+
+        # Add additional tags if provided
+        if [[ -n "${{ inputs.additional_tags }}" ]]; then
+          IFS=',' read -ra ADDITIONAL_TAGS <<< "${{ inputs.additional_tags }}"
+          for tag in "${ADDITIONAL_TAGS[@]}"; do
+            tag=$(echo "$tag" | xargs)  # trim whitespace
+            if [[ -n "$tag" ]]; then
+              TAGS="$TAGS --tag ${{ inputs.registry_image }}:$tag"
+            fi
+          done
+        fi
+
         docker buildx imagetools create \
-          --tag ${{ inputs.registry_image }}:${{ inputs.git_commit }} \
+          $TAGS \
           $(printf '${{ inputs.registry_image }}@sha256:%s ' *)

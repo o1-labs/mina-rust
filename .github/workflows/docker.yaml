@@ -33,7 +33,6 @@ jobs:
           git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
       - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -89,7 +88,6 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Login to Docker Hub
-        if: github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -138,11 +136,14 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo "GIT_COMMIT=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=develop" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
             echo "GIT_COMMIT=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
             echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           fi
 
       - name: Push frontend multi-arch manifest
@@ -153,6 +154,7 @@ jobs:
           digest_pattern: 'frontend-*-digests-*'
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          additional_tags: ${{ env.ADDITIONAL_TAGS }}
 
   # Push node multi-arch manifest (after node build completes)
   push-node-image:
@@ -168,11 +170,14 @@ jobs:
         run: |
           if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
             echo "GIT_COMMIT=${GITHUB_SHA:0:8}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=develop" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
             echo "GIT_COMMIT=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
             echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
+            echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           fi
 
       - name: Push node multi-arch manifest
@@ -183,3 +188,4 @@ jobs:
           digest_pattern: 'node-digests-*'
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
+          additional_tags: ${{ env.ADDITIONAL_TAGS }}

@@ -17,40 +17,35 @@ const sidebars: SidebarsConfig = {
   nodeRunnersSidebar: [
     {
       type: 'category',
-      label: 'Introduction',
+      label: 'Getting Started',
       items: [
         'node-operators/getting-started',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Installation',
+      items: [
+        'node-operators/docker-usage',
         'node-operators/building-from-source',
       ],
     },
     {
       type: 'category',
-      label: 'Node Types',
+      label: 'Node Operations',
       items: [
         'node-operators/block-producer',
         'node-operators/archive-node',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Operations',
-      items: [
-        'node-operators/local-demo',
-        'node-operators/alpha-testing',
         'node-operators/network-configuration',
       ],
     },
     {
       type: 'category',
-      label: 'Web Node',
+      label: 'Advanced Topics',
       items: [
+        'node-operators/local-demo',
+        'node-operators/alpha-testing',
         'node-operators/webnode/local-webnode',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Testing',
-      items: [
         'node-operators/testing/overview',
       ],
     },
