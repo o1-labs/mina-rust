@@ -4,6 +4,9 @@ version = "0.16.0"
 edition = "2021"
 license = "Apache-2.0"
 
+[lints]
+workspace = true
+
 [dependencies]
 argon2 = { version = "0.5.3", features = ["std"] }
 base64 = "0.22"
