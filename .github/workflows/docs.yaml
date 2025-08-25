@@ -44,7 +44,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-          toolchain: nightly
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+          toolchain: nightly-2025-08-18
 
       - name: Build documentation
         run: make docs-build
@@ -98,7 +103,12 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
         with:
           components: rustfmt
-          toolchain: nightly
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+          toolchain: nightly-2025-08-18
 
       - name: Build documentation
         run: make docs-build

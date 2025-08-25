@@ -14,7 +14,12 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+          toolchain: nightly-2025-08-18
           components: rustfmt
           cache-prefix: format-nightly-v0
       - uses: taiki-e/install-action@v2
