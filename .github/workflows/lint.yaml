@@ -45,7 +45,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-24.04]
-        toolchain: [nightly]
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+        toolchain: [nightly-2025-08-18]
     steps:
       - uses: actions/checkout@v5
       - name: Setup build dependencies

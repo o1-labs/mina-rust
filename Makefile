@@ -1,6 +1,11 @@
 # Mina Makefile
 
 # Rust
+# This should be in line with the verison in:
+# - Makefile
+# - ./github/workflows/docs.yaml
+# - ./github/workflows/fmt.yaml
+# - ./github/workflows/lint.yaml
 NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
 
 # Docker
@@ -35,7 +40,7 @@ build: ## Build the project in debug mode
 
 .PHONY: build-ledger
 build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
-	@cd ledger && cargo +nightly build --release --tests
+	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
@@ -82,7 +87,7 @@ build-tests-webrtc: ## Build tests for WebRTC
 
 .PHONY: build-vrf
 build-vrf: ## Build the VRF package
-	@cd vrf && cargo +nightly build --release --tests
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
 
 .PHONY: build-wasm
 build-wasm: ## Build WebAssembly node
@@ -99,11 +104,11 @@ check: ## Check code for compilation errors
 
 .PHONY: check-tx-fuzzing
 check-tx-fuzzing: ## Check the transaction fuzzing tools, requires nightly Rust
-	@cd tools/fuzzing && cargo +nightly check
+	@cd tools/fuzzing && cargo +$(NIGHTLY_RUST_VERSION) check
 
 .PHONY: check-format
 check-format: ## Check code formatting
-	cargo +nightly fmt -- --check
+	cargo +$(NIGHTLY_RUST_VERSION) fmt -- --check
 	taplo format --check
 
 .PHONY: check-md
@@ -172,7 +177,7 @@ download-circuits: ## Download the circuits used by Mina from GitHub
 
 .PHONY: format
 format: ## Format code using rustfmt and taplo
-	cargo +nightly fmt
+	cargo +$(NIGHTLY_RUST_VERSION) fmt
 	taplo format
 
 .PHONY: format-md
@@ -236,7 +241,7 @@ test: ## Run tests
 
 .PHONY: test-ledger
 test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly Rust
-	@cd ledger && cargo +nightly test --release -- -Z unstable-options --report-time
+	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
 
 .PHONY: test-p2p
 test-p2p: ## Run P2P tests
@@ -248,7 +253,7 @@ test-release: ## Run tests in release mode
 
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
-	@cd vrf && cargo +nightly test --release -- -Z unstable-options --report-time
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
 
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
@@ -264,11 +269,11 @@ nextest-p2p: ## Run P2P tests with cargo-nextest
 
 .PHONY: nextest-ledger
 nextest-ledger: build-ledger ## Run ledger tests with cargo-nextest, requires nightly Rust
-	@cd ledger && cargo +nightly nextest run --release
+	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) nextest run --release
 
 .PHONY: nextest-vrf
 nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
-	@cd vrf && cargo +nightly nextest run --release
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) nextest run --release
 
 # Docker build targets
 
@@ -478,7 +483,7 @@ docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +nightly doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 
