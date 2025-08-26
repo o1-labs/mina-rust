@@ -62,7 +62,7 @@ mina-macros = { path = "../macros" }
 quick-protobuf = "0.8.1"
 salsa-simple = { path = "../tools/salsa-simple" }
 
-prost = { version = "0.12.4" }
+prost = { version = "0.14.1" }
 
 mina-fuzzer = { path = "../fuzzer", optional = true }
 
