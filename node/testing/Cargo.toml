@@ -14,7 +14,7 @@ path = "src/main.rs"
 
 [dependencies]
 anyhow = "1.0.70"
-axum = "0.7"
+axum = "0.8"
 base64 = "0.22"
 bs58 = { version = "0.4" }
 derive_more = "0.99.17"
