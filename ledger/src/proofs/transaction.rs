@@ -1310,6 +1310,7 @@ impl<F: FieldWitness> InnerCurve<F> {
     }
 }
 
+use poly_commitment::SRS;
 use std::cell::RefCell;
 
 thread_local! {
@@ -3902,8 +3903,7 @@ pub fn make_prover_index<C: ProofConstants, F: FieldWitness>(
     let srs: poly_commitment::ipa::SRS<F::OtherCurve> = {
         let srs = get_srs_mut::<F>();
         let srs = srs.lock().unwrap().clone();
-        // srs.add_lagrange_basis(cs.domain.d1);
-        // srs.with_lagrange_basis(cs.domain.d1);
+        srs.get_lagrange_basis(cs.domain.d1);
         srs
     };
 

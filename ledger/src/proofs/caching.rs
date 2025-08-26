@@ -125,7 +125,6 @@ impl<T> From<&GroupAffineCached> for ark_ec::models::short_weierstrass::Affine<T
 where
     T: ark_ec::short_weierstrass::SWCurveConfig,
     <T as CurveConfig>::BaseField: From<ark_ff::BigInteger256>,
-    <T as CurveConfig>::BaseField: From<ark_ff::BigInt<4>>,
 {
     // This is copy of old `GroupAffine::new` function
     fn from(pallas: &GroupAffineCached) -> Self {

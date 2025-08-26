@@ -751,11 +751,37 @@ mod scalars {
                 let x = sub_eval(x, ctx);
                 field::mul(x, y, ctx.w)
             }
-            Operations::Sub(_, _) => todo!(),
-            Operations::Double(_) => todo!(),
-            Operations::Square(_) => todo!(),
-            Operations::Cache(_, _) => todo!(),
-            Operations::IfFeature(_, _, _) => todo!(),
+            Operations::Sub(x, y) => {
+                let x = sub_eval(x, ctx);
+                let y = sub_eval(y, ctx);
+                x - y
+            }
+            Operations::Double(x) => {
+                let x = sub_eval(x, ctx);
+                x.double()
+            }
+            Operations::Square(x) => {
+                let x = sub_eval(x, ctx);
+                field::mul(x, x, ctx.w)
+            }
+            Operations::Cache(id, _e) => ctx.cache.get(id).copied().unwrap(),
+            Operations::IfFeature(feature, e1, e2) => match ctx.env.feature_flags.as_ref() {
+                None => sub_eval(e2, ctx),
+                Some(feature_flags) => {
+                    let is_feature_enabled = match get_feature_flag(feature_flags, feature, ctx.w) {
+                        None => return sub_eval(e2, ctx),
+                        Some(enabled) => enabled,
+                    };
+
+                    let on_false = sub_eval(e2, ctx);
+                    let on_true = sub_eval(e1, ctx);
+
+                    ctx.w.exists_no_check(match is_feature_enabled {
+                        Boolean::True => on_true,
+                        Boolean::False => on_false,
+                    })
+                }
+            },
         }
     }
 

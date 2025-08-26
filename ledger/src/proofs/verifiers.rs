@@ -22,7 +22,7 @@ use kimchi::{
     mina_curves::pasta::Pallas,
 };
 use mina_curves::pasta::{Fp, Fq};
-use poly_commitment::{ipa::SRS, lagrange_basis::WithLagrangeBasis, SRS as _};
+use poly_commitment::{ipa::SRS, SRS as _};
 
 use crate::{proofs::BACKEND_TOCK_ROUNDS_N, VerificationKey};
 
@@ -338,7 +338,7 @@ fn make_verifier_index(index: VerifierIndex<Fq>) -> VerifierIndex<Fq> {
     // <https://github.com/o1-labs/proof-systems/blob/2702b09063c7a48131173d78b6cf9408674fd67e/kimchi/src/verifier_index.rs#L310-L314>
     let srs = {
         let srs = SRS::create(max_poly_size);
-        srs.with_lagrange_basis(domain);
+        srs.get_lagrange_basis(domain);
         Arc::new(srs)
     };
 
@@ -397,7 +397,7 @@ pub fn make_zkapp_verifier_index(vk: &VerificationKey) -> VerifierIndex<Fq> {
     let srs = {
         let degree = 1 << BACKEND_TOCK_ROUNDS_N;
         let srs = SRS::<Pallas>::create(degree);
-        srs.with_lagrange_basis(domain);
+        srs.get_lagrange_basis(domain);
         srs
     };
 

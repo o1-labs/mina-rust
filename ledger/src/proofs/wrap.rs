@@ -266,8 +266,6 @@ fn make_lagrange<F: FieldWitness>(
 
     let x_domain = EvaluationDomain::<F>::new(domain_size).expect("invalid argument");
 
-    // srs.with_lagrange_basis(x_domain);
-
     let lagrange_bases = srs.get_lagrange_basis(x_domain)[..domain_size].to_vec();
     // lagrange_bases[..domain_size].to_vec()
     lagrange_bases.clone()
@@ -1453,7 +1451,7 @@ pub mod pcs_batch {
 pub mod wrap_verifier {
     use std::sync::Arc;
 
-    use ark_ec::short_weierstrass::Affine;
+    use ark_ec::short_weierstrass::{Affine, Projective};
     use itertools::Itertools;
     use poly_commitment::{ipa::SRS, SRS as _};
 
@@ -1826,8 +1824,6 @@ pub mod wrap_verifier {
             EvaluationDomain::<<F as crate::proofs::field::FieldWitness>::Scalar>::new(d)
                 .expect("invalid argument");
 
-        // srs.with_lagrange_basis(x_domain);
-
         let lagrange_bases = &srs.get_lagrange_basis(x_domain);
         lagrange_bases[i].clone()
     }
@@ -1910,17 +1906,22 @@ pub mod wrap_verifier {
                     };
                     (x, y)
                 })
-                .reduce(|mut acc, v| {
-                    acc.0 = Affine::from(acc.0 + v.0);
-                    acc.1 = Affine::from(acc.1 + v.1);
-                    acc
-                })
-                .unwrap();
+                .fold(
+                    (Projective::default(), Projective::default()),
+                    |mut acc, v| {
+                        acc.0 += v.0;
+                        acc.1 += v.1;
+                        acc
+                    },
+                );
 
             w.exists([y.y, y.x]);
             w.exists([x.y, x.x]);
 
-            (InnerCurve::of_affine(x), InnerCurve::of_affine(y))
+            (
+                InnerCurve::of_affine(Affine::from(x)),
+                InnerCurve::of_affine(Affine::from(y)),
+            )
         };
 
         // TODO: Hack until we have proper cvar :(
