@@ -68,6 +68,7 @@ const sidebars: SidebarsConfig = {
         'developers/why-rust',
         'developers/architecture',
         'developers/circuits',
+        'developers/ledger-crate',
       ],
     },
     {
