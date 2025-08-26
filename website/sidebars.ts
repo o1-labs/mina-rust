@@ -103,6 +103,7 @@ const sidebars: SidebarsConfig = {
       label: 'Future Work',
       items: [
         'developers/future-work',
+        'developers/mainnet-readiness',
         'developers/p2p-evolution',
         'developers/persistence-design',
       ],

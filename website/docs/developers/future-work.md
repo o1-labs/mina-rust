@@ -21,6 +21,15 @@ deployment at scale.
 
 ## Key Areas
 
+### Mainnet Readiness
+
+The [Mainnet Readiness](mainnet-readiness) document provides a comprehensive
+overview of all requirements for production deployment. This includes critical
+blockers, performance requirements, and operational considerations for running
+the Mina Rust node on mainnet. See
+[Issue #1354](https://github.com/o1-labs/mina-rust/issues/1354) for tracking
+progress.
+
 ### P2P Networking Evolution
 
 The [P2P Evolution Plan](p2p-evolution) builds on the successful pull-based
