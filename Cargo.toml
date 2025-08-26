@@ -63,7 +63,7 @@ juniper = { version = "0.16" }
 libp2p = { git = "https://github.com/openmina/rust-libp2p", rev = "5c44c7d9", default-features = false }
 linkme = "0.3.22"
 mina-node-account = { path = "node/account" }
-redux = { git = "https://github.com/openmina/redux-rs.git", rev = "ab14890c", features = [
+redux = { git = "https://github.com/o1-labs/redux-rs.git", rev = "06c8366", features = [
   "serde",
 ] }
 serde = "1.0.190"

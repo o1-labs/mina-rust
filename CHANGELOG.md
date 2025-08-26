@@ -84,6 +84,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Codebase**: rename `openmina` to `mina`, the project being officially
   called for now "the Mina Rust node"
   ([#1314](https://github.com/o1-labs/openmina/pull/1312)).
+- **Dependencies**: update redux-rs to o1-labs fork, after we moved from
+  openmina to o1-labs organization
+  ([#1356](https://github.com/o1-labs/mina-rust/pull/1356)).
 
 ### Fixed
 
