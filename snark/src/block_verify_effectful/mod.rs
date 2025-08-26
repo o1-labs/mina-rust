@@ -1,3 +1,8 @@
+//! # Block Verification Service Layer
+//!
+//! This module provides the effectful (side-effect) operations for block
+//! verification, separating the computations from the main state machine logic.
+
 mod snark_block_verify_effectful_actions;
 pub use snark_block_verify_effectful_actions::*;
 
