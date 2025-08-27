@@ -26,7 +26,22 @@
 //!
 //! ## Test Categories
 //!
-//! Basic connectivity tests:
+//! ### Directory Structure and CI Integration
+//!
+//! The directory structure in this module maps to specific test execution contexts:
+//!
+//! - **`solo_node/`** - Single node scenarios, often testing OCaml interoperability
+//! - **`multi_node/`** - Multi-node Rust network scenarios
+//! - **`p2p/`** - Low-level P2P networking and protocol tests
+//! - **`record_replay/`** - Scenario recording and replay functionality
+//! - **`simulation/`** - Large-scale network simulations
+//!
+//! In CI environments, these directories determine which specialized test binaries
+//! are used for execution, while locally all scenarios are accessible through the
+//! unified `mina-node-testing` CLI using scenario names.
+//!
+//! ### Basic Connectivity Tests
+//!
 //! * Ensure new nodes can discover peers and establish initial connections.
 //! * Test how nodes handle scenarios when they are overwhelmed with too many
 //! connections or data requests.
