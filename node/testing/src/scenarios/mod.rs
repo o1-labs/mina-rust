@@ -44,17 +44,17 @@
 //!
 //! * Ensure new nodes can discover peers and establish initial connections.
 //! * Test how nodes handle scenarios when they are overwhelmed with too many
-//! connections or data requests.
+//!   connections or data requests.
 //!
 //! TODO(vlad9486):
 //! - Reconnection: Validate that nodes can reconnect after both intentional and
-//! unintentional disconnections.
+//!   unintentional disconnections.
 //! - Handling Latency: Nodes should remain connected and synchronize even under
-//! high latency conditions.
+//!   high latency conditions.
 //! - Intermittent Connections: Nodes should be resilient to sporadic network
-//! dropouts and still maintain synchronization.
+//!   dropouts and still maintain synchronization.
 //! - Dynamic IP Handling: Nodes with frequently changing IP addresses should
-//! maintain stable connections.
+//!   maintain stable connections.
 
 pub mod multi_node;
 pub mod record_replay;
