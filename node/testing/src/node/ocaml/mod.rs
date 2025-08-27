@@ -2,9 +2,14 @@ mod config;
 pub use config::*;
 use mina_core::{thread, ChainId};
 use mina_p2p_messages::v2::StateHash;
-use node::p2p::{
-    connection::outgoing::{P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts},
-    PeerId,
+use node::{
+    core::log::{info, system_time},
+    p2p::{
+        connection::outgoing::{
+            P2pConnectionOutgoingInitLibp2pOpts, P2pConnectionOutgoingInitOpts,
+        },
+        PeerId,
+    },
 };
 
 use std::{
@@ -126,7 +131,9 @@ impl OcamlNode {
         cmd.stdout(std::process::Stdio::piped())
             .stderr(std::process::Stdio::piped());
 
+        info!(system_time(); "Spawning OCaml daemon process");
         let mut child = cmd.spawn()?;
+        info!(system_time(); "OCaml daemon process started with PID: {:?}", child.id());
 
         let stdout = child
             .stdout
