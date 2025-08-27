@@ -94,6 +94,7 @@ const sidebars: SidebarsConfig = {
         'developers/testing/scenario-tests',
         'developers/testing/ledger-tests',
         'developers/testing/p2p-tests',
+        'developers/testing/network-connectivity',
         'developers/testing/ocaml-node-tests',
       ],
     },
