@@ -321,6 +321,75 @@ cargo run --release --features scenario-generators,p2p-webrtc \
   --bin mina-node-testing -- scenarios-list
 ```
 
+## CI vs Local Test Execution
+
+There are important differences between how tests run in CI versus locally:
+
+### CI Environment (with Sidecar Container)
+
+In CI, tests run with a
+**[network debugger sidecar container](https://github.com/openmina/mina-network-debugger)**
+that provides deep network inspection capabilities:
+
+- **Network monitoring**: A `bpf-recorder` sidecar container runs alongside test
+  nodes
+- **Binary execution**: CI builds and uses specific scenario binaries based on
+  directory structure:
+  - Built using `make build-tests` and `make build-tests-webrtc`
+  - `solo_node/` directory scenarios → dedicated solo node test binaries
+  - `multi_node/` directory scenarios → multi-node test binaries
+  - `p2p/` directory scenarios → P2P networking test binaries
+- **Debugger integration**: Automatic network traffic capture and analysis
+- **Port configuration**: Debugger runs on port 8000 (configured for CI
+  environment)
+- **Enhanced observability**: Full message tracing, connection monitoring, and
+  protocol analysis
+
+The sidecar container provides:
+
+- Real-time network connection tracking
+- Message-level protocol inspection
+- Connection lifecycle monitoring
+- Stream-level debugging capabilities
+- HTTP API for accessing captured network data
+
+### Local Environment (Scenario-run)
+
+Locally, tests run through the scenario-run interface with simplified execution:
+
+- **Scenario names**: Tests are referenced by name (e.g., `p2p-signaling`,
+  `solo-node-bootstrap`)
+- **Direct execution**: Single binary (`mina-node-testing`) handles all scenario
+  types
+- **Optional debugger**: Network debugger can be enabled with `--use-debugger`
+  flag
+- **Simplified setup**: No external container dependencies
+- **Development focus**: Optimized for rapid iteration and debugging
+
+### Key Differences
+
+| Aspect            | CI (Sidecar)             | Local (Scenario-run)        |
+| ----------------- | ------------------------ | --------------------------- |
+| **Execution**     | Directory-based binaries | Name-based scenarios        |
+| **Network Debug** | Always enabled (sidecar) | Optional (`--use-debugger`) |
+| **Observability** | Full network inspection  | Basic logging               |
+| **Setup**         | Container orchestration  | Single binary               |
+| **Use Case**      | Comprehensive testing    | Development iteration       |
+
+### Running with Network Debugger Locally
+
+To enable similar debugging capabilities locally:
+
+```bash
+# Enable network debugger for detailed inspection
+cargo run --release --bin mina-node-testing -- \
+  scenarios-generate --use-debugger --name scenario-name
+```
+
+The local debugger spawns a `bpf-recorder` process that provides similar network
+monitoring capabilities as the CI sidecar, though without the container
+isolation.
+
 ### Scenario generation and replay
 
 The `mina-node-testing` framework supports both scenario generation and replay:
