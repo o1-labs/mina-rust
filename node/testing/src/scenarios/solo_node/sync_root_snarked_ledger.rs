@@ -34,7 +34,7 @@ pub struct SoloNodeSyncRootSnarkedLedger;
 impl SoloNodeSyncRootSnarkedLedger {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
         let node_id = runner.add_rust_node(RustNodeTestingConfig::devnet_default());
-        eprintln!("launch Openmina node with default configuration, id: {node_id}");
+        eprintln!("launch Rust node with default configuration, id: {node_id}");
 
         const REPLAYER_1: &str =
             "/dns4/web-node-1/tcp/18302/p2p/12D3KooWD8jSyPFXNdAcMBHyHjRBcK1AW9t3xvnpfCFSRKMweVKi";
