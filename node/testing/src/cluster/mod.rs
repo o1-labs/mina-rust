@@ -1,3 +1,35 @@
+//! Cluster Management for Multi-Node Testing
+//!
+//! This module provides the core infrastructure for managing clusters of
+//! Mina nodes during testing scenarios. It supports both Rust and OCaml
+//! node implementations, enabling cross-implementation testing and complex
+//! multi-node scenarios.
+//!
+//! # Key Components
+//!
+//! - [`Cluster`] - Main cluster coordinator managing node lifecycle
+//! - Node addition methods for different node types
+//! - Port allocation and resource management
+//! - Scenario execution and state tracking
+//! - Network debugger integration
+//!
+//! # Node Addition Methods
+//!
+//! - [`Cluster::add_rust_node`] - Add Rust implementation nodes
+//! - [`Cluster::add_ocaml_node`] - Add OCaml implementation nodes
+//!
+//! # Example
+//!
+//! ```rust,no_run
+//! let mut cluster = Cluster::new(ClusterConfig::default());
+//!
+//! // Add Rust node with custom configuration
+//! let rust_node = cluster.add_rust_node(RustNodeTestingConfig::default());
+//!
+//! // Add OCaml node for cross-implementation testing
+//! let ocaml_node = cluster.add_ocaml_node(OcamlNodeTestingConfig::default());
+//! ```
+
 mod config;
 pub use config::{ClusterConfig, ProofKind};
 
@@ -25,8 +57,12 @@ use mina_node_native::{http_server, NodeServiceBuilder};
 use node::{
     account::{AccountPublicKey, AccountSecretKey},
     core::{
-        consensus::ConsensusConstants, constants::constraint_constants,
-        invariants::InvariantsState, log::system_time, requests::RpcId, thread, warn,
+        consensus::ConsensusConstants,
+        constants::constraint_constants,
+        invariants::InvariantsState,
+        log::{info, system_time, warn},
+        requests::RpcId,
+        thread,
     },
     event_source::Event,
     p2p::{
@@ -117,30 +153,72 @@ lazy_static::lazy_static! {
     static ref VERIFIER_SRS: Arc<VerifierSRS> = get_srs();
 }
 
+/// Manages a cluster of Mina nodes for testing scenarios.
+///
+/// The `Cluster` struct coordinates multiple node instances, handling
+/// resource allocation, configuration, and lifecycle management. It supports
+/// both Rust and OCaml node implementations for comprehensive testing.
+///
+/// # Default Behaviors
+///
+/// - **Port allocation**: Automatically assigns available ports from the
+///   configured range, testing availability before assignment
+/// - **Keypair management**: Uses deterministic keypairs for Rust nodes and
+///   rotates through predefined keypairs for OCaml nodes
+/// - **Resource isolation**: Each node gets isolated temporary directories
+/// - **Verifier indices**: Shared verifier SRS and indices across all nodes
+/// - **Network debugging**: Optional debugger integration for CI environments
+///
+/// # Node Addition
+///
+/// The cluster provides specialized methods for adding different node types:
+/// - Rust nodes via [`add_rust_node`](Self::add_rust_node)
+/// - OCaml nodes via [`add_ocaml_node`](Self::add_ocaml_node)
 pub struct Cluster {
+    /// Cluster-wide configuration settings
     pub config: ClusterConfig,
+    /// Current scenario execution state
     scenario: ClusterScenarioRun,
+    /// Iterator over available ports for node allocation
     available_ports: Box<dyn Iterator<Item = u16> + Send>,
+    /// Registry of account secret keys for deterministic testing
     account_sec_keys: BTreeMap<AccountPublicKey, AccountSecretKey>,
+    /// Collection of active Rust nodes
     nodes: Vec<Node>,
+    /// Collection of active OCaml nodes (Option for lifecycle management)
     ocaml_nodes: Vec<Option<OcamlNode>>,
+    /// Genesis timestamp for deterministic time progression
     initial_time: Option<redux::Timestamp>,
 
+    /// Counter for generating unique RPC request IDs
     rpc_counter: usize,
+    /// Index for rotating OCaml LibP2P keypairs
     ocaml_libp2p_keypair_i: usize,
 
+    /// Shared verifier SRS for proof verification
     verifier_srs: Arc<VerifierSRS>,
+    /// Block verifier index for consensus validation
     block_verifier_index: BlockVerifier,
+    /// Transaction verifier index for transaction validation
     work_verifier_index: TransactionVerifier,
 
+    /// Optional network traffic debugger
     debugger: Option<Debugger>,
+    /// Shared state for invariant checking across nodes
     invariants_state: Arc<StdMutex<InvariantsState>>,
 }
 
+/// Tracks the execution state of scenario chains within a cluster.
+///
+/// Manages the progression through scenario steps and maintains history
+/// of completed scenarios for debugging and analysis.
 #[derive(Serialize)]
 pub struct ClusterScenarioRun {
+    /// Queue of scenarios to be executed (supports scenario inheritance)
     chain: VecDeque<Scenario>,
+    /// History of completed scenarios
     finished: Vec<Scenario>,
+    /// Current step index within the active scenario
     cur_step: usize,
 }
 
@@ -201,16 +279,70 @@ impl Cluster {
         self.initial_time
     }
 
+    /// Add a new Rust implementation node to the cluster.
+    ///
+    /// Creates and configures a Rust Mina node with the specified testing
+    /// configuration. This method handles all aspects of node initialization
+    /// including port allocation, key generation, service setup, and state
+    /// initialization.
+    ///
+    /// # Default Behaviors
+    ///
+    /// - **Port allocation**: HTTP and LibP2P ports automatically assigned
+    ///   from available port range
+    /// - **Peer identity**: Deterministic LibP2P keypair based on node index
+    /// - **Work directory**: Isolated temporary directory per node
+    /// - **Invariants**: Automatic invariant checking enabled
+    /// - **HTTP server**: Spawned on separate thread for API access
+    /// - **Proof verification**: Shared verifier indices and SRS
+    ///
+    /// # Configuration Options
+    ///
+    /// - `peer_id`: Deterministic or custom LibP2P identity
+    /// - `libp2p_port`: Custom P2P port (auto-assigned if None)
+    /// - `initial_peers`: Peer connection targets (supports node references)
+    /// - `block_producer`: Optional block production configuration
+    /// - `genesis`: Genesis ledger and protocol constants
+    /// - `snark_worker`: SNARK work generation settings
+    ///
+    /// # Returns
+    ///
+    /// Returns a [`ClusterNodeId`] that can be used to reference this node
+    /// in scenarios and for inter-node connections.
+    ///
+    /// # Panics
+    ///
+    /// Panics if:
+    /// - No available ports in the configured range
+    /// - Node service initialization fails
+    /// - Invalid genesis configuration
     pub fn add_rust_node(&mut self, testing_config: RustNodeTestingConfig) -> ClusterNodeId {
         let rng_seed = [0; 32];
         let node_config = testing_config.clone();
         let node_id = ClusterNodeId::new_unchecked(self.nodes.len());
+
+        info!(
+            system_time();
+            "Adding Rust node {} with config: max_peers={}, snark_worker={:?}, \
+             block_producer={}",
+            node_id.index(),
+            testing_config.max_peers,
+            testing_config.snark_worker,
+            testing_config.block_producer.is_some()
+        );
+
         let work_dir = TempDir::new().unwrap();
         let shutdown_initiator = Aborter::default();
         let shutdown_listener = shutdown_initiator.aborted();
         let p2p_sec_key = match testing_config.peer_id {
-            TestPeerId::Derived => P2pSecretKey::deterministic(node_id.index()),
-            TestPeerId::Bytes(bytes) => P2pSecretKey::from_bytes(bytes),
+            TestPeerId::Derived => {
+                info!(system_time(); "Using deterministic peer ID for node {}", node_id.index());
+                P2pSecretKey::deterministic(node_id.index())
+            }
+            TestPeerId::Bytes(bytes) => {
+                info!(system_time(); "Using custom peer ID for node {}", node_id.index());
+                P2pSecretKey::from_bytes(bytes)
+            }
         };
 
         let http_port = self
@@ -235,20 +367,59 @@ impl Cluster {
                 .unwrap()
         });
 
+        info!(
+            system_time();
+            "Assigned ports for Rust node {}: HTTP={}, LibP2P={}",
+            node_id.index(),
+            http_port,
+            libp2p_port
+        );
+
         let (block_producer_sec_key, block_producer_config) = testing_config
             .block_producer
-            .map(|v| (v.sec_key, v.config))
+            .map(|v| {
+                info!(
+                    system_time();
+                    "Configuring block producer for Rust node {} with public key: {}",
+                    node_id.index(),
+                    v.sec_key.public_key()
+                );
+                (v.sec_key, v.config)
+            })
             .unzip();
 
-        let initial_peers = testing_config
+        let initial_peers: Vec<_> = testing_config
             .initial_peers
             .into_iter()
-            .map(|node| match node {
-                ListenerNode::Rust(id) => self.node(id).unwrap().dial_addr(),
-                ListenerNode::Ocaml(id) => self.ocaml_node(id).unwrap().dial_addr(),
-                ListenerNode::Custom(addr) => addr,
+            .map(|node| {
+                let addr = match &node {
+                    ListenerNode::Rust(id) => {
+                        info!(system_time(); "Adding Rust peer {} as initial peer", id.index());
+                        self.node(*id).unwrap().dial_addr()
+                    }
+                    ListenerNode::Ocaml(id) => {
+                        info!(system_time(); "Adding OCaml peer {} as initial peer", id.index());
+                        self.ocaml_node(*id).unwrap().dial_addr()
+                    }
+                    ListenerNode::Custom(addr) => {
+                        info!(system_time(); "Adding custom peer: {:?}", addr);
+                        addr.clone()
+                    }
+                };
+                addr
             })
             .collect();
+
+        if !initial_peers.is_empty() {
+            info!(
+                system_time();
+                "Rust node {} configured with {} initial peers",
+                node_id.index(),
+                initial_peers.len()
+            );
+        } else {
+            info!(system_time(); "Rust node {} configured as seed node (no initial peers)", node_id.index());
+        }
 
         let protocol_constants = testing_config
             .genesis
@@ -317,6 +488,7 @@ impl Cluster {
             });
 
         if let Some(keypair) = block_producer_sec_key {
+            info!(system_time(); "Initializing block producer for Rust node {}", node_id.index());
             let provers = BlockProver::make(None, None);
             service_builder.block_producer_init(keypair, Some(provers));
         }
@@ -405,12 +577,71 @@ impl Cluster {
 
         let node = Node::new(work_dir, node_config, store);
 
+        info!(
+            system_time();
+            "Successfully created Rust node {} at ports HTTP={}, LibP2P={}",
+            node_id.index(),
+            http_port,
+            libp2p_port
+        );
+
         self.nodes.push(node);
         node_id
     }
 
+    /// Add a new OCaml implementation node to the cluster.
+    ///
+    /// Creates and spawns an OCaml Mina daemon process with the specified
+    /// configuration. This method handles process spawning, port allocation,
+    /// directory setup, and daemon configuration.
+    ///
+    /// # Default Behaviors
+    ///
+    /// - **Executable selection**: Automatically detects local binary or
+    ///   falls back to default Docker image
+    /// - **Port allocation**: LibP2P, GraphQL, and client ports automatically
+    ///   assigned from available range
+    /// - **Keypair rotation**: Uses predefined LibP2P keypairs, rotating
+    ///   through the set for each new node
+    /// - **Process management**: Spawns daemon with proper environment
+    ///   variables and argument configuration
+    /// - **Logging**: Stdout/stderr forwarded with port-based prefixes
+    /// - **Docker support**: Automatic container management when using Docker
+    ///
+    /// # Configuration Options
+    ///
+    /// - `initial_peers`: List of peer connection targets
+    /// - `daemon_json`: Genesis configuration (file path or in-memory JSON)
+    /// - `block_producer`: Optional block production key
+    ///
+    /// # Docker vs Local Execution
+    ///
+    /// The method automatically determines execution mode:
+    /// 1. Attempts to use locally installed `mina` binary
+    /// 2. Falls back to Docker with default image if binary not found
+    /// 3. Custom Docker images supported via configuration
+    ///
+    /// # Returns
+    ///
+    /// Returns a [`ClusterOcamlNodeId`] for referencing this OCaml node
+    /// in scenarios and peer connections.
+    ///
+    /// # Panics
+    ///
+    /// Panics if:
+    /// - No available ports in the configured range
+    /// - Temporary directory creation fails
+    /// - OCaml daemon process spawn fails
     pub fn add_ocaml_node(&mut self, testing_config: OcamlNodeTestingConfig) -> ClusterOcamlNodeId {
         let node_i = self.ocaml_nodes.len();
+
+        info!(
+            system_time();
+            "Adding OCaml node {} with {} initial peers, block_producer={}",
+            node_i,
+            testing_config.initial_peers.len(),
+            testing_config.block_producer.is_some()
+        );
 
         let executable = self.config.ocaml_node_executable();
         let mut next_port = || {
@@ -423,18 +654,38 @@ impl Cluster {
         };
 
         let temp_dir = temp_dir::TempDir::new().expect("failed to create tempdir");
+        let libp2p_port = next_port().unwrap();
+        let graphql_port = next_port().unwrap();
+        let client_port = next_port().unwrap();
+
+        info!(
+            system_time();
+            "Assigned ports for OCaml node {}: LibP2P={}, GraphQL={}, Client={}",
+            node_i,
+            libp2p_port,
+            graphql_port,
+            client_port
+        );
+
         let node = OcamlNode::start(OcamlNodeConfig {
             executable,
             dir: temp_dir,
             libp2p_keypair_i: self.ocaml_libp2p_keypair_i,
-            libp2p_port: next_port().unwrap(),
-            graphql_port: next_port().unwrap(),
-            client_port: next_port().unwrap(),
+            libp2p_port,
+            graphql_port,
+            client_port,
             initial_peers: testing_config.initial_peers,
             daemon_json: testing_config.daemon_json,
             block_producer: testing_config.block_producer,
         })
         .expect("failed to start ocaml node");
+
+        info!(
+            system_time();
+            "Successfully started OCaml node {} with keypair index {}",
+            node_i,
+            self.ocaml_libp2p_keypair_i
+        );
 
         self.ocaml_libp2p_keypair_i += 1;
 
