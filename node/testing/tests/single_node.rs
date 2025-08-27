@@ -15,14 +15,14 @@ scenario_test!(
 );
 
 scenario_test!(
-    #[ignore = "investigate falure"]
+    #[ignore = "investigate failure"]
     initial_joining,
     SoloNodeBasicConnectivityInitialJoining,
     SoloNodeBasicConnectivityInitialJoining
 );
 
 scenario_test!(
-    #[ignore = "investigate falure"]
+    #[ignore = "investigate failure"]
     sync_root_snarked_ledger,
     SoloNodeSyncRootSnarkedLedger,
     SoloNodeSyncRootSnarkedLedger
