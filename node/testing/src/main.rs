@@ -70,6 +70,14 @@ pub struct CommandScenariosGenerate {
     pub use_debugger: bool,
     #[arg(long, short)]
     pub webrtc: bool,
+    #[arg(long, short = 'o', default_value = "stdout", value_enum)]
+    pub output: OutputFormat,
+}
+
+#[derive(Debug, Clone, clap::ValueEnum)]
+pub enum OutputFormat {
+    Stdout,
+    Json,
 }
 
 /// Run scenario located at `res/scenarios`.
@@ -111,6 +119,7 @@ impl Command {
             Self::ScenariosGenerate(cmd) => {
                 #[cfg(feature = "scenario-generators")]
                 {
+                    let output_format = cmd.output.clone();
                     let run_scenario = |scenario: Scenarios| -> Result<_, anyhow::Error> {
                         let mut config = scenario.default_cluster_config()?;
                         if cmd.use_debugger {
@@ -119,18 +128,34 @@ impl Command {
                         if cmd.webrtc {
                             config.set_all_rust_to_rust_use_webrtc();
                         }
-                        Ok(scenario.run_only_from_scratch(config))
+                        Ok((scenario, config))
                     };
                     let fut = async move {
                         if let Some(name) = cmd.name {
                             if let Some(scenario) = Scenarios::find_by_name(&name) {
-                                run_scenario(scenario)?.await;
+                                let (scenario, config) = run_scenario(scenario)?;
+                                match output_format {
+                                    OutputFormat::Json => {
+                                        scenario.run_and_save_from_scratch(config).await
+                                    }
+                                    OutputFormat::Stdout => {
+                                        scenario.run_only_from_scratch(config).await
+                                    }
+                                }
                             } else {
                                 anyhow::bail!("no such scenario: \"{name}\"");
                             }
                         } else {
                             for scenario in Scenarios::iter() {
-                                run_scenario(scenario)?.await;
+                                let (scenario, config) = run_scenario(scenario)?;
+                                match output_format {
+                                    OutputFormat::Json => {
+                                        scenario.run_and_save_from_scratch(config).await
+                                    }
+                                    OutputFormat::Stdout => {
+                                        scenario.run_only_from_scratch(config).await
+                                    }
+                                }
                             }
                         }
                         Ok(())

@@ -390,24 +390,46 @@ The local debugger spawns a `bpf-recorder` process that provides similar network
 monitoring capabilities as the CI sidecar, though without the container
 isolation.
 
+## Troubleshooting
+
+### Workflow Requirements
+
+- **scenarios-run**: Expects pre-existing scenario files in
+  `node/testing/res/scenarios/`
+- **scenarios-generate**:
+  - Default (`--output=stdout`): Runs scenarios and outputs to stdout, no JSON
+    files created
+  - With `--output=json`: Runs scenarios and saves them as JSON files in
+    `node/testing/res/scenarios/`
+
+#### Understanding Scenario Load/Save Implementation
+
+For detailed technical information about how scenarios are loaded and saved, see
+the
+[scenario module source code](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenario/mod.rs).
+
 ### Scenario generation and replay
 
 The `mina-node-testing` framework supports both scenario generation and replay:
 
 ```bash
-# Generate specific scenarios (requires scenario-generators feature)
+# Generate and run scenarios (default: output to stdout, no JSON file saved)
 cargo run --release --features scenario-generators --bin mina-node-testing -- \
   scenarios-generate --name record-replay-block-production
 
+# Generate and save scenarios to JSON files
+cargo run --release --features scenario-generators --bin mina-node-testing -- \
+  scenarios-generate --name record-replay-block-production --output=json
+
 # Generate WebRTC scenarios (requires additional p2p-webrtc feature)
 cargo run --release --features scenario-generators,p2p-webrtc \
-  --bin mina-node-testing -- scenarios-generate --name p2p-signaling
+  --bin mina-node-testing -- scenarios-generate --name p2p-signaling --output=json
 
-# Generate multi-node scenarios
+# Generate all scenarios and save to JSON
 cargo run --release --features scenario-generators --bin mina-node-testing -- \
-  scenarios-generate --name multi-node-pubsub-propagate-block
+  scenarios-generate --output=json
 
-# Replay existing scenarios (use actual scenario names from list)
+# Replay existing scenarios (requires JSON files from scenarios-generate --output=json)
 cargo run --release --bin mina-node-testing -- scenarios-run --name p2p-signaling
 ```
 
@@ -415,8 +437,11 @@ cargo run --release --bin mina-node-testing -- scenarios-run --name p2p-signalin
 
 - **Feature-based compilation**: Use `--features` to enable specific test
   capabilities
-- **Scenario generation**: Create new test scenarios from templates
-- **Scenario replay**: Execute previously generated or recorded scenarios
+- **Scenario generation**:
+  - Run scenarios directly with `--output=stdout` (default)
+  - Generate JSON files with `--output=json` for later replay
+- **Scenario replay**: Execute previously generated JSON scenarios using
+  `scenarios-run`
 - **Named scenarios**: Reference scenarios by name for consistent execution
 
 ### Environment configuration
