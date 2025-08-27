@@ -1,13 +1,45 @@
-//! Basic connectivity tests.
-//! Initial Joining:
+//! # Mina Testing Scenarios
+//!
+//! This module contains scenario-based tests for the Mina Rust node implementation.
+//! Scenarios are deterministic, ordered sequences of steps that test complex
+//! multi-node blockchain interactions.
+//!
+//! ## Documentation
+//!
+//! For comprehensive documentation on the testing framework and available
+//! scenarios, see:
+//! - **[Scenario Tests](https://o1-labs.github.io/mina-rust/developers/testing/scenario-tests)** - Main scenario testing documentation
+//! - **[Testing Framework](https://o1-labs.github.io/mina-rust/developers/testing/testing-framework)** - Overall testing architecture
+//! - **[Network Connectivity](https://o1-labs.github.io/mina-rust/developers/testing/network-connectivity)** - Network connectivity testing details
+//!
+//! ## Usage
+//!
+//! List available scenarios:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-list
+//! ```
+//!
+//! Run a specific scenario:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-run --name scenario-name
+//! ```
+//!
+//! ## Test Categories
+//!
+//! Basic connectivity tests:
 //! * Ensure new nodes can discover peers and establish initial connections.
-//! * Test how nodes handle scenarios when they are overwhelmed with too many connections or data requests.
+//! * Test how nodes handle scenarios when they are overwhelmed with too many
+//! connections or data requests.
 //!
 //! TODO(vlad9486):
-//! Reconnection: Validate that nodes can reconnect after both intentional and unintentional disconnections.
-//! Handling Latency: Nodes should remain connected and synchronize even under high latency conditions.
-//! Intermittent Connections: Nodes should be resilient to sporadic network dropouts and still maintain synchronization.
-//! Dynamic IP Handling: Nodes with frequently changing IP addresses should maintain stable connections.
+//! - Reconnection: Validate that nodes can reconnect after both intentional and
+//! unintentional disconnections.
+//! - Handling Latency: Nodes should remain connected and synchronize even under
+//! high latency conditions.
+//! - Intermittent Connections: Nodes should be resilient to sporadic network
+//! dropouts and still maintain synchronization.
+//! - Dynamic IP Handling: Nodes with frequently changing IP addresses should
+//! maintain stable connections.
 
 pub mod multi_node;
 pub mod record_replay;

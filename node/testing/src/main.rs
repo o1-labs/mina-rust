@@ -1,3 +1,27 @@
+//! # Mina Node Testing CLI
+//!
+//! Command-line interface for running Mina node scenario tests.
+//! Provides tools for generating, running, and managing deterministic
+//! blockchain testing scenarios.
+//!
+//! ## Documentation
+//!
+//! For detailed documentation and usage examples, see:
+//! - [Scenario Tests](https://o1-labs.github.io/mina-rust/developers/testing/scenario-tests) - Complete testing guide
+//! - [Testing Framework](https://o1-labs.github.io/mina-rust/developers/testing/testing-framework) - Testing architecture
+//!
+//! ## Quick Start
+//!
+//! List all available scenarios:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-list
+//! ```
+//!
+//! Run a specific scenario:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-run --name p2p-signaling
+//! ```
+
 use clap::Parser;
 
 use mina_node_testing::{
