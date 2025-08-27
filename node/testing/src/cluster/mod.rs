@@ -872,7 +872,7 @@ impl Cluster {
         let mut i = 0;
         let total = self.scenario.cur_scenario().steps.len();
         loop {
-            eprintln!("[step]: {i}/{total}");
+            info!(system_time(); "Executing step {}/{}", i + 1, total);
             if !self.exec_next().await? {
                 break Ok(());
             }
