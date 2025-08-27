@@ -24,6 +24,7 @@ pub enum Command {
 
     ScenariosGenerate(CommandScenariosGenerate),
     ScenariosRun(CommandScenariosRun),
+    ScenariosList(CommandScenariosList),
 }
 
 #[derive(Debug, clap::Args)]
@@ -56,6 +57,9 @@ pub struct CommandScenariosRun {
     #[arg(long, short)]
     pub name: String,
 }
+
+#[derive(Debug, clap::Args)]
+pub struct CommandScenariosList {}
 
 impl Command {
     pub fn run(self) -> Result<(), crate::CommandError> {
@@ -154,6 +158,13 @@ impl Command {
                         }
                     }
                 })
+            }
+            Self::ScenariosList(_) => {
+                println!("Available scenarios:");
+                for scenario in Scenarios::iter() {
+                    println!("  {}", scenario.to_str())
+                }
+                Ok(())
             }
         }
     }
