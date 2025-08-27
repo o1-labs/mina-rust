@@ -129,7 +129,6 @@ impl OcamlNodeConfig {
 }
 
 impl OcamlNodeExecutable {
-    // pub const DEFAULT_DOCKER_IMAGE: &'static str = "vladsimplestakingcom/mina-light:2.0.0rampup4";
     pub const DEFAULT_DOCKER_IMAGE: &'static str =
         "gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet";
     pub const DEFAULT_MINA_EXECUTABLE: &'static str = "mina";
