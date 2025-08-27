@@ -87,6 +87,18 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Testing',
+      items: [
+        'developers/testing/testing-framework',
+        'developers/testing/unit-tests',
+        'developers/testing/scenario-tests',
+        'developers/testing/ledger-tests',
+        'developers/testing/p2p-tests',
+        'developers/testing/ocaml-node-tests',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Future Work',
       items: [
         'developers/future-work',

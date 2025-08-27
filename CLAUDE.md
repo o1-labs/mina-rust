@@ -234,6 +234,17 @@ import ScriptName from "!!raw-loader!./path/to/script.sh";
 This ensures scripts are displayed accurately and stay in sync with the actual
 files.
 
+### Documentation Style Guidelines
+
+**Capitalization in headings and bullet points:**
+
+- Use lowercase for section headings (e.g., "Test design", "Resource
+  management")
+- Use lowercase for bullet point labels (e.g., "**Connection policies**",
+  "**State inspection**")
+- Maintain proper capitalization for proper nouns and technical terms
+- Apply this style consistently across all documentation files
+
 ### Documentation Script Testing
 
 When modifying developer setup scripts in `website/docs/developers/scripts/`,
