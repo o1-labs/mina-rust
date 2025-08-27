@@ -1,3 +1,23 @@
+//! OCaml Node Configuration Module
+//!
+//! This module provides configuration structures and executable management
+//! for OCaml Mina nodes in the testing framework. It supports multiple
+//! execution modes including local binaries and Docker containers.
+//!
+//! # Key Components
+//!
+//! - [`OcamlNodeExecutable`] - Execution method selection (local/Docker)
+//! - [`OcamlNodeTestingConfig`] - High-level node configuration
+//! - [`OcamlNodeConfig`] - Low-level process configuration
+//! - [`DaemonJson`] - Genesis configuration management
+//!
+//! # Executable Auto-Detection
+//!
+//! The module automatically detects the best available execution method:
+//! 1. Local `mina` binary (preferred)
+//! 2. Docker with default image (fallback)
+//! 3. Custom Docker images (configurable)
+
 use std::{
     ffi::{OsStr, OsString},
     fs,
@@ -6,13 +26,25 @@ use std::{
     str::FromStr,
 };
 
-use node::{account::AccountSecretKey, p2p::connection::outgoing::P2pConnectionOutgoingInitOpts};
+use node::{
+    account::AccountSecretKey,
+    core::log::{info, system_time, warn},
+    p2p::connection::outgoing::P2pConnectionOutgoingInitOpts,
+};
 use serde::{Deserialize, Serialize};
 
+/// High-level configuration for OCaml node testing scenarios.
+///
+/// This struct provides the main configuration interface for creating
+/// OCaml nodes in test scenarios, abstracting away low-level details
+/// like port allocation and process management.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct OcamlNodeTestingConfig {
+    /// List of initial peer connection targets
     pub initial_peers: Vec<P2pConnectionOutgoingInitOpts>,
+    /// Genesis ledger configuration (file path or in-memory)
     pub daemon_json: DaemonJson,
+    /// Optional block producer secret key
     pub block_producer: Option<AccountSecretKey>,
 }
 
@@ -53,10 +85,40 @@ pub struct OcamlNodeConfig {
     pub block_producer: Option<AccountSecretKey>,
 }
 
+/// OCaml node execution methods.
+///
+/// Supports multiple ways of running the OCaml Mina daemon,
+/// from local binaries to Docker containers with automatic
+/// detection and fallback behavior.
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum OcamlNodeExecutable {
+    /// Use locally installed Mina binary
+    ///
+    /// # Arguments
+    /// * `String` - Path to the mina executable
+    ///
+    /// # Example
+    /// ```
+    /// OcamlNodeExecutable::Installed("/usr/local/bin/mina".to_string())
+    /// ```
     Installed(String),
+
+    /// Use specific Docker image
+    ///
+    /// # Arguments
+    /// * `String` - Docker image tag
+    ///
+    /// # Example
+    /// ```
+    /// OcamlNodeExecutable::Docker("minaprotocol/mina-daemon:3.0.0".to_string())
+    /// ```
     Docker(String),
+
+    /// Use default Docker image
+    ///
+    /// Falls back to the predefined default image when no local
+    /// binary is available. See [`OcamlNodeExecutable::DEFAULT_DOCKER_IMAGE`] for the
+    /// current default.
     DockerDefault,
 }
 
@@ -81,17 +143,40 @@ impl OcamlNodeConfig {
     {
         match &self.executable {
             OcamlNodeExecutable::Installed(program) => {
+                info!(system_time(); "Using local Mina binary: {}", program);
                 let mut cmd = Command::new(program);
                 cmd.envs(envs);
                 cmd
             }
-            OcamlNodeExecutable::Docker(tag) => self.docker_run_cmd(tag, envs),
+            OcamlNodeExecutable::Docker(tag) => {
+                info!(system_time(); "Using custom Docker image: {}", tag);
+                self.docker_run_cmd(tag, envs)
+            }
             OcamlNodeExecutable::DockerDefault => {
+                info!(
+                    system_time();
+                    "Using default Docker image: {}",
+                    OcamlNodeExecutable::DEFAULT_DOCKER_IMAGE
+                );
                 self.docker_run_cmd(OcamlNodeExecutable::DEFAULT_DOCKER_IMAGE, envs)
             }
         }
     }
 
+    /// Create a Docker run command with proper configuration.
+    ///
+    /// Sets up a Docker container with appropriate networking, user mapping,
+    /// volume mounts, and environment variables for running OCaml Mina daemon.
+    ///
+    /// # Arguments
+    /// * `tag` - Docker image tag to use
+    /// * `envs` - Environment variables to pass to the container
+    ///
+    /// # Docker Configuration
+    /// - Uses host networking for P2P connectivity
+    /// - Maps host user ID to avoid permission issues
+    /// - Mounts node directory for persistent data
+    /// - Sets working directory to `/tmp` for key generation
     fn docker_run_cmd<I, K, V>(&self, tag: &str, envs: I) -> Command
     where
         I: IntoIterator<Item = (K, V)>,
@@ -104,9 +189,18 @@ impl OcamlNodeConfig {
         let uid = std::env::var("$UID").unwrap_or_else(|_| "1000".to_owned());
         let container_name = OcamlNodeExecutable::docker_container_name(&self.dir);
 
+        info!(
+            system_time();
+            "Configuring Docker container: name={}, image={}, uid={}, mount={}",
+            container_name,
+            tag,
+            uid,
+            dir_path
+        );
+
         // set docker opts
         cmd.arg("run")
-            .args(["--name".to_owned(), container_name])
+            .args(["--name".to_owned(), container_name.clone()])
             .args(["--network", "host"])
             .args(["--user".to_owned(), format!("{uid}:{uid}")])
             .args(["-v".to_owned(), format!("{dir_path}:{dir_path}")])
@@ -116,14 +210,19 @@ impl OcamlNodeConfig {
             .args(["-w", "/tmp"]);
 
         // set docker container envs
+        let mut env_count = 0;
         for (key, value) in envs {
             let arg: OsString = [key.as_ref(), value.as_ref()].join(OsStr::new("="));
             cmd.args(["-e".as_ref(), arg.as_os_str()]);
+            env_count += 1;
         }
+
+        info!(system_time(); "Added {} environment variables to Docker container", env_count);
 
         // set docker image
         cmd.arg(tag);
 
+        info!(system_time(); "Docker command configured for container: {}", container_name);
         cmd
     }
 }
@@ -138,40 +237,119 @@ impl OcamlNodeExecutable {
         format!("mina_testing_ocaml_{}", &path[1..])
     }
 
-    /// Additional logic for killing the node.
+    /// Clean up resources when terminating an OCaml node.
+    ///
+    /// Handles cleanup logic specific to the execution method:
+    /// - Local binaries: No additional cleanup needed
+    /// - Docker containers: Stop and remove the container
+    ///
+    /// # Arguments
+    /// * `tmp_dir` - Temporary directory used by the node
     pub fn kill(&self, tmp_dir: &temp_dir::TempDir) {
         match self {
-            OcamlNodeExecutable::Installed(_) => {}
+            OcamlNodeExecutable::Installed(program) => {
+                info!(system_time(); "No additional cleanup needed for local binary: {}", program);
+            }
             OcamlNodeExecutable::Docker(_) | OcamlNodeExecutable::DockerDefault => {
-                // stop container.
-                let mut cmd = Command::new("docker");
                 let name = Self::docker_container_name(tmp_dir);
-                cmd.args(["stop".to_owned(), name]);
-                let _ = cmd.status();
+                let image_info = match self {
+                    OcamlNodeExecutable::Docker(img) => img.clone(),
+                    OcamlNodeExecutable::DockerDefault => Self::DEFAULT_DOCKER_IMAGE.to_string(),
+                    _ => unreachable!(),
+                };
+
+                info!(
+                    system_time();
+                    "Cleaning up Docker container: {} (image: {})",
+                    name,
+                    image_info
+                );
+
+                // stop container.
+                info!(system_time(); "Stopping Docker container: {}", name);
+                let mut cmd = Command::new("docker");
+                cmd.args(["stop".to_owned(), name.clone()]);
+                match cmd.status() {
+                    Ok(status) if status.success() => {
+                        info!(system_time(); "Successfully stopped Docker container: {}", name);
+                    }
+                    Ok(status) => {
+                        warn!(
+                            system_time();
+                            "Docker stop command failed for container {}: exit code {:?}",
+                            name,
+                            status.code()
+                        );
+                    }
+                    Err(e) => {
+                        warn!(system_time(); "Failed to stop Docker container {}: {}", name, e);
+                    }
+                }
 
                 // remove container.
+                info!(system_time(); "Removing Docker container: {}", name);
                 let mut cmd = Command::new("docker");
-                let name = Self::docker_container_name(tmp_dir);
-                cmd.args(["rm".to_owned(), name]);
-                let _ = cmd.status();
+                cmd.args(["rm".to_owned(), name.clone()]);
+                match cmd.status() {
+                    Ok(status) if status.success() => {
+                        info!(system_time(); "Successfully removed Docker container: {}", name);
+                    }
+                    Ok(status) => {
+                        warn!(
+                            system_time();
+                            "Docker rm command failed for container {}: exit code {:?}",
+                            name,
+                            status.code()
+                        );
+                    }
+                    Err(e) => {
+                        warn!(system_time(); "Failed to remove Docker container {}: {}", name, e);
+                    }
+                }
             }
         }
     }
 
+    /// Automatically detect and return the best available OCaml executable.
+    ///
+    /// This method implements the auto-detection strategy:
+    /// 1. First, attempt to use locally installed `mina` binary
+    /// 2. If not found, fall back to Docker with default image
+    /// 3. Automatically pull the Docker image if needed
+    ///
+    /// # Returns
+    /// * `Ok(OcamlNodeExecutable)` - Best available execution method
+    /// * `Err(anyhow::Error)` - No usable execution method found
+    ///
+    /// # Docker Fallback
+    /// When falling back to Docker, this method will automatically
+    /// pull the default image if not already present locally.
     pub fn find_working() -> anyhow::Result<Self> {
         let program_name = Self::DEFAULT_MINA_EXECUTABLE;
+        info!(system_time(); "Attempting to find local Mina binary: {}", program_name);
+
         match Command::new(program_name)
             .stdout(Stdio::null())
             .stderr(Stdio::null())
             .spawn()
         {
-            Ok(_) => return Ok(Self::Installed(program_name.to_owned())),
+            Ok(_) => {
+                info!(system_time(); "Found working local Mina binary: {}", program_name);
+                return Ok(Self::Installed(program_name.to_owned()));
+            }
             Err(err) => match err.kind() {
-                std::io::ErrorKind::NotFound => {}
+                std::io::ErrorKind::NotFound => {
+                    info!(system_time(); "Local Mina binary not found, falling back to Docker");
+                }
                 _ => anyhow::bail!("'{program_name}' returned an error: {err}"),
             },
         };
 
+        info!(
+            system_time();
+            "Pulling default Docker image: {}",
+            Self::DEFAULT_DOCKER_IMAGE
+        );
         let mut cmd = Command::new("docker");
 
         let status = cmd
@@ -184,6 +362,7 @@ impl OcamlNodeExecutable {
             anyhow::bail!("error status pulling ocaml node: {status:?}");
         }
 
+        info!(system_time(); "Successfully pulled Docker image, using DockerDefault");
         Ok(Self::DockerDefault)
     }
 }
