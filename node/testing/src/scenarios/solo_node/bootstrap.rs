@@ -52,7 +52,7 @@ impl SoloNodeBootstrap {
 
         let node_id =
             runner.add_rust_node(config.initial_peers(vec![ListenerNode::Custom(replayer)]));
-        eprintln!("launch Openmina node with default configuration, id: {node_id}");
+        eprintln!("launch Mina Rust node with default configuration, id: {node_id}");
 
         let mut timeout = TIMEOUT;
         let mut last_time = Instant::now();
