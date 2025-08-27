@@ -68,6 +68,7 @@ pub use driver::*;
 
 pub use crate::cluster::runner::*;
 
+use mina_core::log::{debug, system_time, warn};
 use strum_macros::{EnumIter, EnumString, IntoStaticStr};
 
 use crate::{
@@ -354,9 +355,9 @@ impl Scenarios {
                 let steps = std::mem::take(&mut self.0.steps);
                 let scenario = Scenario { info, steps };
 
-                eprintln!("saving scenario({}) before exit...", scenario.info.id);
+                debug!(system_time(); "saving scenario({}) before exit...", scenario.info.id);
                 if let Err(err) = scenario.save_sync() {
-                    eprintln!(
+                    warn!(system_time();
                         "failed to save scenario({})! error: {}",
                         scenario.info.id, err
                     );
@@ -364,7 +365,7 @@ impl Scenarios {
             }
         }
 
-        eprintln!("run_and_save: {}", self.to_str());
+        debug!(system_time(); "run_and_save: {}", self.to_str());
         let mut scenario = ScenarioSaveOnExit(self.blank_scenario());
         self.run(cluster, |step| scenario.0.add_step(step.clone()).unwrap())
             .await;
@@ -373,7 +374,7 @@ impl Scenarios {
     }
 
     pub async fn run_only(self, cluster: &mut Cluster) {
-        eprintln!("run_only: {}", self.to_str());
+        debug!(system_time(); "run_only: {}", self.to_str());
         self.run(cluster, |_| {}).await
     }
 
