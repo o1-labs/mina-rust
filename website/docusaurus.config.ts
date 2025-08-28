@@ -113,6 +113,12 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
+          sidebarId: 'researchersSidebar',
+          position: 'left',
+          label: 'Researchers',
+        },
+        {
+          type: 'docSidebar',
           sidebarId: 'appendixSidebar',
           position: 'left',
           label: 'Appendix',
@@ -147,6 +153,10 @@ const config: Config = {
             {
               label: 'Developers',
               to: '/docs/developers/architecture',
+            },
+            {
+              label: 'Researchers',
+              to: '/docs/researchers/protocol',
             },
             {
               label: 'Appendix',
