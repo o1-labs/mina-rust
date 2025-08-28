@@ -225,7 +225,7 @@ make postgres-setup
 make run-archive
 ```
 
-### Development Server
+### Building documentation
 
 For web development with the frontend:
 
@@ -261,28 +261,37 @@ npm install
 npm start
 ```
 
-### Testing Framework
+### Testing
 
-The Mina Rust Node includes a comprehensive testing framework:
+The Mina Rust Node includes a comprehensive testing framework with unit tests,
+integration tests, and scenario-based testing. For detailed information on
+running specific types of tests, see the
+[Testing Framework](testing/testing-framework) documentation.
+
+Quick test commands:
 
 ```bash
-# Build testing binary
-make build-testing
+# Run basic unit tests
+make test
 
-# Run specific test scenarios
-./target/release/mina-node-testing --help
+# Verify your setup works
+make test-p2p
 ```
 
 ## Next Steps
 
 1. **Explore the Codebase**: Start with
    [Architecture Documentation](./architecture.md)
-2. **Run Tests**: Ensure your setup works by running `make test`
-3. **Join the Community**: Connect with other developers on
+2. **Learn the Testing Framework**: Familiarize yourself with our comprehensive
+   [Testing Framework](testing/testing-framework) including unit tests, scenario
+   tests, and debugging tools
+3. **Run Tests**: Ensure your setup works by running tests as described in the
+   testing documentation
+4. **Join the Community**: Connect with other developers on
    [Discord](https://discord.com/channels/484437221055922177/1290662938734231552)
    and participate in discussions on the
    [Mina Protocol Forums](https://forums.minaprotocol.com/)
-4. **Read CLAUDE.md**: Check the project-specific development guide in the root
+5. **Read CLAUDE.md**: Check the project-specific development guide in the root
    directory
 
 ## Getting Help

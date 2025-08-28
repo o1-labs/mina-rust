@@ -3,7 +3,10 @@
 use std::time::Duration;
 
 use libp2p::Multiaddr;
-use node::p2p::{connection::outgoing::P2pConnectionOutgoingInitOpts, PeerId};
+use node::{
+    core::log::{debug, system_time},
+    p2p::{connection::outgoing::P2pConnectionOutgoingInitOpts, PeerId},
+};
 use rand::Rng;
 
 use crate::{
@@ -99,9 +102,7 @@ impl SoloNodeBasicConnectivityAcceptIncoming {
 
             // TODO: the threshold is too small, node cannot connect to many peer before the timeout
             if ready_peers >= KNOWN_PEERS && known_peers >= KNOWN_PEERS || step >= 1000 {
-                eprintln!("step: {step}");
-                eprintln!("known peers: {known_peers}");
-                eprintln!("connected peers: {ready_peers}");
+                debug!(system_time(); "Step: {}, known peers: {}, connected peers: {}", step, known_peers, ready_peers);
 
                 let ocaml_peer_id = if let Some(peer_id) = ocaml_node.as_ref() {
                     *peer_id

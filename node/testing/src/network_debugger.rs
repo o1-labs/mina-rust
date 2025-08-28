@@ -53,6 +53,10 @@ pub enum StreamId {
 }
 
 impl Debugger {
+    // TODO: Rename `drone_ci` to `external_ci` or `ci_sidecar` since the project
+    // no longer uses Drone CI. This method connects to an external debugger
+    // service (like the mina-network-debugger sidecar container) rather than
+    // spawning a local debugger process.
     pub fn drone_ci() -> Self {
         Debugger {
             child: None,

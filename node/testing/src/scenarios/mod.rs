@@ -1,13 +1,60 @@
-//! Basic connectivity tests.
-//! Initial Joining:
+//! # Mina Testing Scenarios
+//!
+//! This module contains scenario-based tests for the Mina Rust node implementation.
+//! Scenarios are deterministic, ordered sequences of steps that test complex
+//! multi-node blockchain interactions.
+//!
+//! ## Documentation
+//!
+//! For comprehensive documentation on the testing framework and available
+//! scenarios, see:
+//! - **[Scenario Tests](https://o1-labs.github.io/mina-rust/developers/testing/scenario-tests)** - Main scenario testing documentation
+//! - **[Testing Framework](https://o1-labs.github.io/mina-rust/developers/testing/testing-framework)** - Overall testing architecture
+//! - **[Network Connectivity](https://o1-labs.github.io/mina-rust/developers/testing/network-connectivity)** - Network connectivity testing details
+//!
+//! ## Usage
+//!
+//! List available scenarios:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-list
+//! ```
+//!
+//! Run a specific scenario:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-run --name scenario-name
+//! ```
+//!
+//! ## Test Categories
+//!
+//! ### Directory Structure and CI Integration
+//!
+//! The directory structure in this module maps to specific test execution contexts:
+//!
+//! - **`solo_node/`** - Single node scenarios, often testing OCaml interoperability
+//! - **`multi_node/`** - Multi-node Rust network scenarios
+//! - **`p2p/`** - Low-level P2P networking and protocol tests
+//! - **`record_replay/`** - Scenario recording and replay functionality
+//! - **`simulation/`** - Large-scale network simulations
+//!
+//! In CI environments, these directories determine which specialized test binaries
+//! are used for execution, while locally all scenarios are accessible through the
+//! unified `mina-node-testing` CLI using scenario names.
+//!
+//! ### Basic Connectivity Tests
+//!
 //! * Ensure new nodes can discover peers and establish initial connections.
-//! * Test how nodes handle scenarios when they are overwhelmed with too many connections or data requests.
+//! * Test how nodes handle scenarios when they are overwhelmed with too many
+//!   connections or data requests.
 //!
 //! TODO(vlad9486):
-//! Reconnection: Validate that nodes can reconnect after both intentional and unintentional disconnections.
-//! Handling Latency: Nodes should remain connected and synchronize even under high latency conditions.
-//! Intermittent Connections: Nodes should be resilient to sporadic network dropouts and still maintain synchronization.
-//! Dynamic IP Handling: Nodes with frequently changing IP addresses should maintain stable connections.
+//! - Reconnection: Validate that nodes can reconnect after both intentional and
+//!   unintentional disconnections.
+//! - Handling Latency: Nodes should remain connected and synchronize even under
+//!   high latency conditions.
+//! - Intermittent Connections: Nodes should be resilient to sporadic network
+//!   dropouts and still maintain synchronization.
+//! - Dynamic IP Handling: Nodes with frequently changing IP addresses should
+//!   maintain stable connections.
 
 pub mod multi_node;
 pub mod record_replay;
@@ -21,6 +68,7 @@ pub use driver::*;
 
 pub use crate::cluster::runner::*;
 
+use mina_core::log::{debug, system_time, warn};
 use strum_macros::{EnumIter, EnumString, IntoStaticStr};
 
 use crate::{
@@ -307,9 +355,9 @@ impl Scenarios {
                 let steps = std::mem::take(&mut self.0.steps);
                 let scenario = Scenario { info, steps };
 
-                eprintln!("saving scenario({}) before exit...", scenario.info.id);
+                debug!(system_time(); "saving scenario({}) before exit...", scenario.info.id);
                 if let Err(err) = scenario.save_sync() {
-                    eprintln!(
+                    warn!(system_time();
                         "failed to save scenario({})! error: {}",
                         scenario.info.id, err
                     );
@@ -317,7 +365,7 @@ impl Scenarios {
             }
         }
 
-        eprintln!("run_and_save: {}", self.to_str());
+        debug!(system_time(); "run_and_save: {}", self.to_str());
         let mut scenario = ScenarioSaveOnExit(self.blank_scenario());
         self.run(cluster, |step| scenario.0.add_step(step.clone()).unwrap())
             .await;
@@ -326,7 +374,7 @@ impl Scenarios {
     }
 
     pub async fn run_only(self, cluster: &mut Cluster) {
-        eprintln!("run_only: {}", self.to_str());
+        debug!(system_time(); "run_only: {}", self.to_str());
         self.run(cluster, |_| {}).await
     }
 
