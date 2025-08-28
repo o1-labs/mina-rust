@@ -43,7 +43,7 @@ database design and implementation.
 
 ## Key Design Principles
 
-Based on [Issue #522](https://github.com/o1-labs/openmina/issues/522), the
+Based on [Issue #522](https://github.com/o1-labs/mina-rust/issues/522), the
 persistence design follows these principles:
 
 1. **Simplicity First**: The design prioritizes simplicity over optimal
