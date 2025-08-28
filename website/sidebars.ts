@@ -85,6 +85,15 @@ const sidebars: SidebarsConfig = {
         'developers/libp2p',
       ],
     },
+    {
+      type: 'category',
+      label: 'Future Work',
+      items: [
+        'developers/future-work',
+        'developers/p2p-evolution',
+        'developers/persistence-design',
+      ],
+    },
   ],
 
   // Sidebar for researchers - focus on protocol and cryptography
