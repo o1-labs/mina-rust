@@ -16,7 +16,7 @@ derive_more = "0.99.17"
 hex = "0.4.3"
 lazy_static = "1.4.0"
 num-bigint = "0.4.6"
-serde = { version = "1.0.142", features = ["derive"] }
+serde = { workspace = true }
 serde_bytes = "0.11"
 serde_json = { version = "1.0.83" }
 sha2 = { version = "0.10.2" }
