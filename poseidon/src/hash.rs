@@ -12,8 +12,8 @@ enum Item {
     U64(u64),
 }
 
-impl std::fmt::Debug for Item {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Item {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::Bool(arg0) => f.write_fmt(format_args!("{}_bool", i32::from(*arg0))),
             Self::U2(arg0) => f.write_fmt(format_args!("{}_u2", arg0)),
@@ -64,8 +64,8 @@ impl Default for Inputs {
     }
 }
 
-impl std::fmt::Debug for Inputs {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Inputs {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("Inputs")
             .field(&format!("fields[{:?}]", self.fields.len()), &self.fields)
             .field(&format!("packeds[{:?}]", self.packeds.len()), &self.packeds)
@@ -145,13 +145,6 @@ impl Inputs {
             }
         }
     }
-
-    // pub fn append<T>(&mut self, value: &T)
-    // where
-    //     T: ToInputs,
-    // {
-    //     value.to_inputs(self);
-    // }
 
     #[allow(clippy::wrong_self_convention)]
     pub fn to_fields(mut self) -> Vec<Fp> {
