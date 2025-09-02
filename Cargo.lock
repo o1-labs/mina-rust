@@ -6931,6 +6931,7 @@ dependencies = [
  "ark-ff",
  "ark-serialize 0.5.0",
  "mina-curves",
+ "o1-utils",
  "once_cell",
  "serde",
 ]

@@ -1,4 +1,4 @@
-use ark_ff::{BigInt, BigInteger256, Field, FromBytes};
+use ark_ff::{BigInteger256, Field};
 use mina_curves::pasta::Fp;
 
 use crate::{PlonkSpongeConstantsKimchi, Sponge, SpongeParamsForField};
@@ -44,10 +44,9 @@ impl Item {
             Item::U8(v) => *v as u64,
             Item::U32(v) => *v as u64,
             Item::U48(v) => {
-                let mut bytes = <[u8; 32]>::default();
+                let mut bytes = [0u8; 8];
                 bytes[..6].copy_from_slice(&v[..]);
-                let value = FromBytes::read(&bytes[..]).expect("Must not go wrong");
-                BigInteger256::new(value).0[0] // Never fail with only 6 bytes
+                u64::from_le_bytes(bytes[..8].try_into().unwrap())
             }
             Item::U64(v) => *v,
         }
@@ -183,9 +182,7 @@ fn param_to_field_impl(param: &str, default: &[u8; 32]) -> Fp {
     let mut fp = *default;
     fp[..len].copy_from_slice(param_bytes);
 
-    let value = FromBytes::read(&fp[..]).expect("Error reading");
-    let element = BigInt::new(value);
-    Fp::new(element)
+    Fp::from_random_bytes(&fp).expect("Must be a valid field element")
 }
 
 pub fn param_to_field(param: &str) -> Fp {
