@@ -107,7 +107,6 @@ impl From<&mina_curves::pasta::Fq> for BigInt {
 }
 
 impl TryFrom<BigInt> for mina_curves::pasta::Fp {
-    // type Error = <mina_curves::pasta::Fp as TryFrom<BigInteger256>>::Error;
     type Error = InvalidBigInt;
     fn try_from(bigint: BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
@@ -115,7 +114,6 @@ impl TryFrom<BigInt> for mina_curves::pasta::Fp {
 }
 
 impl TryFrom<BigInt> for mina_curves::pasta::Fq {
-    // type Error = <mina_curves::pasta::Fq as TryFrom<BigInteger256>>::Error;
     type Error = InvalidBigInt;
     fn try_from(bigint: BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
@@ -123,7 +121,6 @@ impl TryFrom<BigInt> for mina_curves::pasta::Fq {
 }
 
 impl TryFrom<&BigInt> for mina_curves::pasta::Fp {
-    // type Error = <mina_curves::pasta::Fp as TryFrom<BigInteger256>>::Error;
     type Error = InvalidBigInt;
     fn try_from(bigint: &BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
@@ -131,7 +128,6 @@ impl TryFrom<&BigInt> for mina_curves::pasta::Fp {
 }
 
 impl TryFrom<&BigInt> for mina_curves::pasta::Fq {
-    // type Error = <mina_curves::pasta::Fq as TryFrom<BigInteger256>>::Error;
     type Error = InvalidBigInt;
     fn try_from(bigint: &BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()

@@ -3772,7 +3772,7 @@ mod tests_ocaml {
         Vec<Option<usize>>,
     ) {
         fn keypair_from_private(private: &str) -> Keypair {
-            use std::ops::Mul;
+            use core::ops::Mul;
 
             let bytes = bs58::decode(private).into_vec().unwrap();
             let bytes = &bytes[1..]; // ignore base58 check byte

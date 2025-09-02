@@ -1,5 +1,6 @@
 use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::{Field, UniformRand};
+use core::ops::Mul;
 use ledger::{
     generators::zkapp_command_builder::get_transaction_commitments,
     proofs::{
@@ -69,11 +70,7 @@ use mina_signer::{
     CompressedPubKey, CurvePoint, Keypair, NetworkId, ScalarField, SecKey, Signature, Signer,
 };
 use rand::{seq::SliceRandom, Rng};
-use std::{
-    array, iter,
-    ops::{Mul, RangeInclusive},
-    sync::Arc,
-};
+use std::{array, iter, ops::RangeInclusive, sync::Arc};
 use tuple_map::TupleMap2;
 
 use super::context::{FuzzerCtx, PermissionModel};
@@ -225,7 +222,7 @@ impl<F: Field + From<i32>> Generator<CurvePointGenerator<F>> for FuzzerCtx {
 impl Generator<(Fp, Fp)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fp, Fp) {
-        use std::ops::Mul;
+        use core::ops::Mul;
         if let Some((x, y)) = self.state.cache_curve_point_fp {
             let p = GroupAffine::<Fp>::new(x, y);
             let rand_scalar: u64 = self.r#gen.rng.gen();

@@ -327,7 +327,7 @@ fn add_nocarry(a: &mut BigInt, b: &BigInt) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use std::ops::MulAssign;
+    use core::ops::MulAssign;
     use std::str::FromStr;
 
     use super::*;

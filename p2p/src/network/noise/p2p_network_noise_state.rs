@@ -504,7 +504,7 @@ impl P2pNetworkNoiseStateResponder {
 
 pub use self::wrapper::{Pk, Sk};
 mod wrapper {
-    use std::ops::Mul;
+    use core::ops::Mul;
 
     use curve25519_dalek::{MontgomeryPoint, Scalar};
     use serde::{Deserialize, Serialize};

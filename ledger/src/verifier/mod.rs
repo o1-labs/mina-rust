@@ -381,9 +381,9 @@ pub mod common {
         msg: &TransactionCommitment,
     ) -> bool {
         use ark_ff::{BigInteger, Zero};
+        use core::ops::{Mul, Neg};
         use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
-        use std::ops::{Mul, Neg};
 
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;
@@ -410,9 +410,9 @@ pub mod common {
     ) -> bool {
         use ::poseidon::hash::legacy;
         use ark_ff::{BigInteger, Zero};
+        use core::ops::{Mul, Neg};
         use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
-        use std::ops::{Mul, Neg};
 
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;

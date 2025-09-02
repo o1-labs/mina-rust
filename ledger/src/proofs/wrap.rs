@@ -503,17 +503,7 @@ fn make_public_input(
 
     // `messages_for_next_wrap_proof_hash` were `Fq` previously, so we have to
     // build a `Fp` from them with care: they can overflow
-    let to_fp = |v: [u64; 4]| {
-        // match Fp::try_from(BigInteger256::new(v)) {
-        //     Ok(fp) => fp, // fast-path: we get the `Fp` without modulo/reducing
-        //     Err(_) => {
-        //         // slow path: we build the `Fp` bit by bit, so it will reduce it
-        //         let bits = crate::proofs::transaction::bigint_to_bits::<255>(BigInteger256::new(v));
-        //         super::util::field_of_bits(&bits)
-        //     }
-        // }
-        Fp::from(BigInteger256::new(v))
-    };
+    let to_fp = |v: [u64; 4]| Fp::from(BigInteger256::new(v));
     for msg in messages_for_next_wrap_proof_hash.iter().copied().map(to_fp) {
         msg.to_field_elements(&mut fields);
     }

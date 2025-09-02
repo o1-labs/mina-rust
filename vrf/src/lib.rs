@@ -1,4 +1,4 @@
-use ark_ec::AffineRepr;
+use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::PrimeField;
 use ledger::AccountIndex;
 use message::VrfMessage;
@@ -114,12 +114,14 @@ fn calculate_vrf(
     global_slot: u32,
     delegator_index: &AccountIndex,
 ) -> VrfResult<VrfOutput> {
+    use core::ops::Mul;
     let vrf_message = VrfMessage::new(global_slot, epoch_seed, delegator_index.as_u64());
 
     let vrf_message_hash_curve_point = vrf_message.to_group()?;
 
-    let scaled_message_hash =
-        producer_key.secret_multiply_with_curve_point(vrf_message_hash_curve_point);
+    let scaled_message_hash = vrf_message_hash_curve_point
+        .mul(producer_key.secret.clone().into_scalar())
+        .into_affine();
 
     Ok(VrfOutput::new(vrf_message, scaled_message_hash))
 }

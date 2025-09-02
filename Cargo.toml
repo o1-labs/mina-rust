@@ -83,24 +83,18 @@ vrf = { path = "vrf" }
 
 ark-ec = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode", features = [
   "std",
-] } # branch: fix-openmina-webnode
+] }
 ark-ff = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode", features = [
   "parallel",
   "asm",
   "std",
-] } # branch: fix-openmina-webnode
-ark-poly = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" } # branch: fix-openmina-webnode
+] }
+ark-poly = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }
 ark-serialize = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode", features = [
   "std",
-] } # branch: fix-openmina-webnode
-# Local
-# ark-ec = { path = "../deps/algebra/ec", features = ["std"] }
-# ark-ff = { path = "../deps/algebra/ff", features = ["parallel", "asm", "std"] }
-# ark-poly = { path = "../deps/algebra/poly", features = ["std"] }
-# ark-serialize = { path = "../deps/algebra/serialize" }
+] }
 
 num-bigint = { git = "https://github.com/openmina/num-bigint", branch = "rebase-onstack" } # branch: rebase-onstack
-# num-bigint.path = "../deps/num-bigint"
 
 # UNCOMMENTED_IN_CI ark-ff = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode", features = ["parallel", "asm", "std", "32x9" ] }
 
@@ -121,19 +115,13 @@ incremental = false
 codegen-units = 1
 
 [patch.crates-io]
-ark-ff = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }        # branch: fix-openmina-webnode
-ark-ec = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }        # branch: fix-openmina-webnode
-ark-poly = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }      # branch: fix-openmina-webnode
-ark-serialize = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" } # branch: fix-openmina-webnode
-# ark-ff.path = "../deps/algebra/ff"               # branch: fix-openmina-webnode
-# ark-ec.path = "../deps/algebra/ec"               # branch: fix-openmina-webnode
-# ark-poly.path = "../deps/algebra/poly"           # branch: fix-openmina-webnode
-# ark-serialize.path = "../deps/algebra/serialize" # branch: fix-openmina-webnode
+ark-ff = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }
+ark-ec = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }
+ark-poly = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }
+ark-serialize = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode" }
 
-num-bigint = { git = "https://github.com/openmina/num-bigint", branch = "rebase-onstack" } # branch: rebase-onstack
-# num-bigint.path = "../deps/num-bigint"     # branch: on-stack
+num-bigint = { git = "https://github.com/openmina/num-bigint", branch = "rebase-onstack" }     # branch: rebase-onstack
 num-rational = { git = "https://github.com/openmina/num-rational", branch = "rebase-onstack" } # branch: rebase-onstack
-# num-rational.path = "../deps/num-rational" # branch: on-stack
 
 [profile.test.package."*"]
 opt-level = 3
