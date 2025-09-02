@@ -5,7 +5,7 @@ use ark_ec::{short_weierstrass::Projective, AffineRepr, CurveGroup, PrimeGroup};
 use ark_ff::{fields::arithmetic::InvalidBigInt, AdditiveGroup, BigInteger256, Field, PrimeField};
 use kimchi::{
     circuits::{gate::CircuitGate, wires::COLUMNS},
-    groupmap::GroupMap,
+    groupmap::{BWParameters, GroupMap},
     proof::RecursionChallenge,
 };
 use mina_curves::pasta::{Fp, Fq};
@@ -24,6 +24,7 @@ use mina_p2p_messages::v2::{
 };
 use mina_poseidon::constants::PlonkSpongeConstantsKimchi;
 use mina_signer::{CompressedPubKey, PubKey};
+use poly_commitment::commitment::CommitmentCurve;
 
 use crate::{
     decompress_pk, gen_keypair,
@@ -3996,8 +3997,7 @@ pub(super) fn create_proof<C: ProofConstants, F: FieldWitness>(
     let mut rng = get_rng();
 
     let now = redux::Instant::now();
-    let group_map =
-        kimchi::groupmap::GroupMap::<<F as proofs::field::FieldWitness>::Scalar>::setup();
+    let group_map = <F::OtherCurve as CommitmentCurve>::Map::setup();
     let proof = kimchi::proof::ProverProof::create_recursive::<F::FqSponge, EFrSponge<F>, _>(
         &group_map,
         computed_witness,
@@ -4011,7 +4011,23 @@ pub(super) fn create_proof<C: ProofConstants, F: FieldWitness>(
         let prev_challenges_hash = debug::hash_prev_challenge::<F>(&prev_challenges);
         let witness_primary_hash = debug::hash_slice(&w.primary);
         let witness_aux_hash = debug::hash_slice(w.aux());
-        let group_map_hash = debug::hash_slice(&group_map.composition());
+        let group_map_hash = {
+            // Recreating the same value to access the field.
+            // We should find a way to bypass the type-checker to reuse
+            // the value group_map defined above.
+            // As it is only in the case of errors, the additional cost of
+            // creating a new value can be ignored.
+            let group_map_for_debug =
+                BWParameters::<<<F as FieldWitness>::Scalar as FieldWitness>::Parameters>::setup();
+            let d = vec![
+                group_map_for_debug.u,
+                group_map_for_debug.fu,
+                group_map_for_debug.sqrt_neg_three_u_squared_minus_u_over_2,
+                group_map_for_debug.sqrt_neg_three_u_squared,
+                group_map_for_debug.inv_three_u_squared,
+            ];
+            debug::hash_slice(&d)
+        };
 
         dbg!(
             &prev_challenges_hash,
