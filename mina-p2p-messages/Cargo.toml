@@ -34,6 +34,7 @@ o1-utils = { workspace = true }
 poseidon = { workspace = true }
 
 ark-ff = { workspace = true }
+ark-serialize = { workspace = true }
 rsexp = "0.2.3"
 rsexp-derive = "0.2.3"
 

@@ -3489,7 +3489,7 @@ dependencies = [
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -4251,7 +4251,7 @@ dependencies = [
 [[package]]
 name = "internal-tracing"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 
 [[package]]
 name = "io-lifetimes"
@@ -4421,7 +4421,7 @@ dependencies = [
 [[package]]
 name = "kimchi"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -5200,7 +5200,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -5236,7 +5236,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -5455,6 +5455,7 @@ dependencies = [
  "alloc-test",
  "anyhow",
  "ark-ff",
+ "ark-serialize 0.5.0",
  "base64 0.22.1",
  "binprot",
  "binprot_derive",
@@ -5493,7 +5494,7 @@ dependencies = [
 [[package]]
 name = "mina-poseidon"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -5535,7 +5536,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -5545,6 +5546,7 @@ dependencies = [
  "hex",
  "mina-curves",
  "mina-hasher",
+ "num-bigint",
  "o1-utils",
  "rand",
  "sha2 0.10.8",
@@ -6201,7 +6203,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -6876,7 +6878,7 @@ dependencies = [
 [[package]]
 name = "poly-commitment"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -9855,7 +9857,7 @@ dependencies = [
 [[package]]
 name = "turshi"
 version = "0.1.0"
-source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
+source = "git+https://github.com/o1-labs/proof-systems?rev=14331b51eccdd0989d2c6bedcffc5fd873260d42#14331b51eccdd0989d2c6bedcffc5fd873260d42"
 dependencies = [
  "ark-ff",
  "hex",
