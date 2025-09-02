@@ -1,10 +1,10 @@
 #![allow(clippy::type_complexity)]
 
 use ark_ec::short_weierstrass::Affine;
-use ark_ff::{fields::arithmetic::InvalidBigInt, Field, PrimeField};
+use ark_ff::{Field, PrimeField};
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
-    bigint::BigInt,
+    bigint::{BigInt, InvalidBigInt},
     binprot,
     pseq::PaddedSeq,
     v2::{

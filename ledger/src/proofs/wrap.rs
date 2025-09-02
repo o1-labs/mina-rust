@@ -1,6 +1,6 @@
 use std::{borrow::Cow, ops::Neg, rc::Rc};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, One, Zero};
+use ark_ff::{BigInteger256, One, Zero};
 use ark_poly::{univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain};
 use kimchi::{
     circuits::{expr::RowOffset, scalars::RandomOracles, wires::COLUMNS},
@@ -8,9 +8,12 @@ use kimchi::{
     proof::{PointEvaluations, ProofEvaluations, RecursionChallenge},
 };
 use mina_curves::pasta::{Fp, Fq, Pallas, Vesta};
-use mina_p2p_messages::v2::{
-    CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
-    PicklesBaseProofsVerifiedStableV1,
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{
+        CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
+        PicklesBaseProofsVerifiedStableV1,
+    },
 };
 use mina_poseidon::{sponge::ScalarChallenge, FqSponge};
 use poly_commitment::{commitment::b_poly_coefficients, ipa::OpeningProof, PolyComm, SRS};

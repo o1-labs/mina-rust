@@ -1,9 +1,9 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Zero};
+use ark_ff::{BigInteger256, Zero};
 use kimchi::proof::PointEvaluations;
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use poly_commitment::ipa::OpeningProof;
 use poseidon::hash::{
     hash_with_kimchi,

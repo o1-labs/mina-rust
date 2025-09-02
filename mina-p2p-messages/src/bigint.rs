@@ -1,7 +1,28 @@
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256};
+use ark_ff::BigInteger256;
 use malloc_size_of::MallocSizeOf;
 use rsexp::{OfSexp, SexpOf};
 use serde::{Deserialize, Serialize};
+
+// ---
+// This has been imported from a fork of arkworks/ff
+// We should probably revisit this structure in the future
+#[derive(Clone, Debug)]
+pub struct InvalidBigInt;
+
+impl core::fmt::Display for InvalidBigInt {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "InvalidBigInt")
+    }
+}
+
+impl From<InvalidBigInt> for String {
+    fn from(_: InvalidBigInt) -> Self {
+        "InvalidBigInt".to_string()
+    }
+}
+
+impl std::error::Error for InvalidBigInt {}
+// ---
 
 #[derive(Clone, Default, PartialEq, Eq, PartialOrd, Ord, derive_more::From, derive_more::Into)]
 pub struct BigInt(BigInteger256);

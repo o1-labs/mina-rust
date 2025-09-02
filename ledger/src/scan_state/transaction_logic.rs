@@ -3,12 +3,13 @@ use std::{
     fmt::Display,
 };
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use ark_ff::Zero;
 use itertools::{FoldWhile, Itertools};
 use mina_core::constants::ConstraintConstants;
 use mina_hasher::{Fp, Hashable, ROInput};
 use mina_macros::SerdeYojsonEnum;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot,
     v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2},
 };

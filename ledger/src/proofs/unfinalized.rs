@@ -1,7 +1,6 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use kimchi::proof::{PointEvaluations, ProofEvaluations};
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 
 use crate::proofs::{
     field::FieldWitness, public_input::plonk_checks::derive_plonk, step::FeatureFlags,

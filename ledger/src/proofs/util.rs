@@ -1,9 +1,10 @@
 use std::fmt::Debug;
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field};
+use ark_ff::{BigInteger256, Field};
 use kimchi::proof::{PointEvaluations, ProofEvaluations};
 use mina_p2p_messages::{
-    bigint::BigInt, pseq::PaddedSeq,
+    bigint::{BigInt, InvalidBigInt},
+    pseq::PaddedSeq,
     v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2A,
 };
 
