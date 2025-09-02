@@ -258,7 +258,8 @@ dependencies = [
 [[package]]
 name = "ark-ec"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "43d68f2d516162846c1238e755a7c4d131b892b70cc70c471a8e3ca3ed818fce"
 dependencies = [
  "ahash 0.8.8",
  "ark-ff",
@@ -279,7 +280,8 @@ dependencies = [
 [[package]]
 name = "ark-ff"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a177aba0ed1e0fbb62aa9f6d0502e9b46dad8c2eab04c14258a1212d2557ea70"
 dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
@@ -299,7 +301,8 @@ dependencies = [
 [[package]]
 name = "ark-ff-asm"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "62945a2f7e6de02a31fe400aa489f0e0f5b2502e69f95f853adb82a96c7a6b60"
 dependencies = [
  "quote 1.0.35",
  "syn 2.0.96",
@@ -308,7 +311,8 @@ dependencies = [
 [[package]]
 name = "ark-ff-macros"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "09be120733ee33f7693ceaa202ca41accd5653b779563608f1234f78ae07c4b3"
 dependencies = [
  "num-bigint",
  "num-traits",
@@ -320,7 +324,8 @@ dependencies = [
 [[package]]
 name = "ark-poly"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "579305839da207f02b89cd1679e50e67b4331e2f9294a57693e5051b7703fe27"
 dependencies = [
  "ahash 0.8.8",
  "ark-ff",
@@ -346,7 +351,8 @@ dependencies = [
 [[package]]
 name = "ark-serialize"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3f4d068aaf107ebcd7dfb52bc748f8030e0fc930ac8e360146ca54c1203088f7"
 dependencies = [
  "ark-serialize-derive",
  "ark-std 0.5.0",
@@ -359,7 +365,8 @@ dependencies = [
 [[package]]
 name = "ark-serialize-derive"
 version = "0.5.0"
-source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "213888f660fddcca0d257e88e54ac05bca01885f258ccdf695bafd77031bb69d"
 dependencies = [
  "proc-macro2 1.0.95",
  "quote 1.0.35",
@@ -3482,7 +3489,7 @@ dependencies = [
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -4244,7 +4251,7 @@ dependencies = [
 [[package]]
 name = "internal-tracing"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 
 [[package]]
 name = "io-lifetimes"
@@ -4414,7 +4421,7 @@ dependencies = [
 [[package]]
 name = "kimchi"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -5193,7 +5200,7 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-bn254",
  "ark-ec",
@@ -5229,7 +5236,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -5486,7 +5493,7 @@ dependencies = [
 [[package]]
 name = "mina-poseidon"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -5528,7 +5535,7 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -6023,13 +6030,13 @@ dependencies = [
 [[package]]
 name = "num-bigint"
 version = "0.4.6"
-source = "git+https://github.com/openmina/num-bigint?branch=rebase-onstack#5b79c7beecd32fd91ae2332b77d079f748eeacf5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a5e44f723f1133c9deac646763579fdb3ac745e418f2a7af9cd0c431da1f20b9"
 dependencies = [
  "num-integer",
  "num-traits",
  "rand",
  "serde",
- "tinyvec",
 ]
 
 [[package]]
@@ -6101,7 +6108,8 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.2"
-source = "git+https://github.com/openmina/num-rational?branch=rebase-onstack#be8f2bfa63191b3819739cbe286507cda88ce607"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f83d14da390562dca69fc84082e73e548e1ad308d24accdedd2720017cb37824"
 dependencies = [
  "num-bigint",
  "num-integer",
@@ -6193,7 +6201,7 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -6868,7 +6876,7 @@ dependencies = [
 [[package]]
 name = "poly-commitment"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -9846,7 +9854,7 @@ dependencies = [
 [[package]]
 name = "turshi"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
+source = "git+https://github.com/o1-labs/proof-systems?rev=04e5ac8#04e5ac87c39157f693144cd6d5dbfae671b91209"
 dependencies = [
  "ark-ff",
  "hex",
