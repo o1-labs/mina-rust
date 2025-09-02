@@ -146,13 +146,6 @@ impl Inputs {
         }
     }
 
-    // pub fn append<T>(&mut self, value: &T)
-    // where
-    //     T: ToInputs,
-    // {
-    //     value.to_inputs(self);
-    // }
-
     #[allow(clippy::wrong_self_convention)]
     pub fn to_fields(mut self) -> Vec<Fp> {
         let mut nbits = 0;
