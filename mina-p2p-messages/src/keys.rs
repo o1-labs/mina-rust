@@ -1,4 +1,4 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
+use crate::bigint::InvalidBigInt;
 
 impl TryFrom<crate::v2::NonZeroCurvePointUncompressedStableV1> for mina_signer::CompressedPubKey {
     type Error = InvalidBigInt;

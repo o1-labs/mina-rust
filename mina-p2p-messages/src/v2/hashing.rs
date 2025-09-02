@@ -1,6 +1,5 @@
 use std::{fmt, io, sync::Arc};
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use binprot::{BinProtRead, BinProtWrite};
 use generated::MinaStateBlockchainStateValueStableV2;
 use mina_curves::pasta::Fp;
@@ -15,7 +14,11 @@ use sha2::{
     Digest, Sha256,
 };
 
-use crate::{bigint::BigInt, hash::MinaHash, hash_input::FailableToInputs};
+use crate::{
+    bigint::{BigInt, InvalidBigInt},
+    hash::MinaHash,
+    hash_input::FailableToInputs,
+};
 
 use super::{
     generated, ConsensusBodyReferenceStableV1, ConsensusGlobalSlotStableV1,

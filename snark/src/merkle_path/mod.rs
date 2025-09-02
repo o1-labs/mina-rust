@@ -9,8 +9,10 @@
 //! This is commonly used in transaction verification (ensuring account exists).
 //! It uses the Poseidon hash function, as specified in the Mina protocol.
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_p2p_messages::{bigint::BigInt, v2::MerkleTreeNode};
+use mina_p2p_messages::{
+    bigint::{BigInt, InvalidBigInt},
+    v2::MerkleTreeNode,
+};
 use poseidon::hash::params::get_merkle_param_for_height;
 
 /// Computes the root hash of the merkle tree with an account and its merkle path

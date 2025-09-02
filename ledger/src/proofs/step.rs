@@ -18,13 +18,13 @@ use crate::{
     verifier::{get_srs, get_srs_mut},
 };
 use anyhow::Context;
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, One, Zero};
+use ark_ff::{BigInteger256, One, Zero};
 use ark_poly::{
     univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain, Radix2EvaluationDomain,
 };
 use kimchi::proof::{PointEvaluations, ProverCommitments, RecursionChallenge};
 use mina_curves::pasta::{Fp, Fq, Pallas};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use poly_commitment::{commitment::b_poly_coefficients, ipa::OpeningProof};
 
 use crate::proofs::{

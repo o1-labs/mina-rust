@@ -2,25 +2,28 @@ use std::{collections::HashMap, rc::Rc, str::FromStr, sync::Arc};
 
 use anyhow::Context;
 use ark_ec::{short_weierstrass::Projective, AffineRepr, CurveGroup, PrimeGroup};
-use ark_ff::{fields::arithmetic::InvalidBigInt, AdditiveGroup, BigInteger256, Field, PrimeField};
+use ark_ff::{AdditiveGroup, BigInteger256, Field, PrimeField};
 use kimchi::{
     circuits::{gate::CircuitGate, wires::COLUMNS},
     groupmap::{BWParameters, GroupMap},
     proof::RecursionChallenge,
 };
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2::{
-    self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
-    ConsensusProofOfStakeDataEpochDataStakingValueVersionedValueStableV1, CurrencyAmountStableV1,
-    MinaBaseEpochLedgerValueStableV1, MinaBaseFeeExcessStableV1,
-    MinaBaseProtocolConstantsCheckedValueStableV1, MinaNumbersGlobalSlotSinceGenesisMStableV1,
-    MinaNumbersGlobalSlotSinceHardForkMStableV1,
-    MinaStateBlockchainStateValueStableV2LedgerProofStatement,
-    MinaStateBlockchainStateValueStableV2LedgerProofStatementSource,
-    MinaStateBlockchainStateValueStableV2SignedAmount,
-    MinaTransactionLogicZkappCommandLogicLocalStateValueStableV1, SgnStableV1, SignedAmount,
-    TokenFeeExcess, UnsignedExtendedUInt32StableV1,
-    UnsignedExtendedUInt64Int64ForVersionTagsStableV1,
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{
+        self, ConsensusProofOfStakeDataEpochDataNextValueVersionedValueStableV1,
+        ConsensusProofOfStakeDataEpochDataStakingValueVersionedValueStableV1,
+        CurrencyAmountStableV1, MinaBaseEpochLedgerValueStableV1, MinaBaseFeeExcessStableV1,
+        MinaBaseProtocolConstantsCheckedValueStableV1, MinaNumbersGlobalSlotSinceGenesisMStableV1,
+        MinaNumbersGlobalSlotSinceHardForkMStableV1,
+        MinaStateBlockchainStateValueStableV2LedgerProofStatement,
+        MinaStateBlockchainStateValueStableV2LedgerProofStatementSource,
+        MinaStateBlockchainStateValueStableV2SignedAmount,
+        MinaTransactionLogicZkappCommandLogicLocalStateValueStableV1, SgnStableV1, SignedAmount,
+        TokenFeeExcess, UnsignedExtendedUInt32StableV1,
+        UnsignedExtendedUInt64Int64ForVersionTagsStableV1,
+    },
 };
 use mina_poseidon::constants::PlonkSpongeConstantsKimchi;
 use mina_signer::{CompressedPubKey, PubKey};

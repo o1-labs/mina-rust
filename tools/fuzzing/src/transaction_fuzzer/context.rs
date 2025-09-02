@@ -4,7 +4,7 @@ use crate::transaction_fuzzer::{
     mutator::Mutator,
     serialize,
 };
-use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use ark_ff::Zero;
 use ledger::{
     dummy,
     scan_state::{
@@ -27,7 +27,9 @@ use ledger::{
 use mina_core::{consensus::ConsensusConstants, constants::ConstraintConstants, NetworkConfig};
 use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::{
-    bigint, binprot,
+    bigint,
+    bigint::InvalidBigInt,
+    binprot,
     binprot::SmallString1k,
     v2::{
         MinaTransactionLogicTransactionAppliedStableV2,

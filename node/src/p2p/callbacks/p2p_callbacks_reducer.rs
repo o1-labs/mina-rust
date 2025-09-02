@@ -1,10 +1,10 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use mina_core::{
     block::{prevalidate::BlockPrevalidationError, BlockWithHash},
     bug_condition, log,
     transaction::TransactionWithHash,
 };
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     gossip::GossipNetMessageV2,
     v2::{MinaLedgerSyncLedgerAnswerStableV2, StateHash},
 };

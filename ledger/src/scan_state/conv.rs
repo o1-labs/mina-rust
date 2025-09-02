@@ -2,9 +2,9 @@
 
 use std::sync::Arc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot,
     list::List,
     pseq::PaddedSeq,

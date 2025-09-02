@@ -5,7 +5,6 @@ use std::{
 };
 
 use ark_ec::{short_weierstrass::Affine, AffineRepr, CurveConfig};
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ark_poly::{univariate::DensePolynomial, Radix2EvaluationDomain};
 use kimchi::{
     alphas::Alphas,
@@ -21,7 +20,7 @@ use kimchi::{
     verifier_index::LookupVerifierIndex,
 };
 use mina_curves::pasta::Fq;
-use mina_p2p_messages::bigint::BigInt;
+use mina_p2p_messages::bigint::{BigInt, InvalidBigInt};
 use once_cell::sync::OnceCell;
 use poly_commitment::{
     commitment::CommitmentCurve, hash_map_cache::HashMapCache, ipa::SRS, PolyComm,
