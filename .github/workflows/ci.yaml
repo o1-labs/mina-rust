@@ -62,6 +62,28 @@ jobs:
       - name: Run ledger tests
         run: make test-ledger
 
+  p2p-messages-tests:
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: nightly
+          cache-prefix: p2p-messages-v0
+
+      - name: Download circuits files
+        uses: ./.github/actions/setup-circuits
+
+      - name: Run mina-p2p-messages
+        run: make test-p2p-messages
+
   ledger-32x9-tests:
     runs-on: ubuntu-24.04
     steps:
