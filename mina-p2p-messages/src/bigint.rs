@@ -410,7 +410,8 @@ mod tests {
 
     #[test]
     fn from_numeric_string() {
-        let hex = "075bcd1500000000000000000000000000000000000000000000000000000000";
+        // Big endian encoding
+        let hex = "00000000000000000000000000000000000000000000000000000000075bcd15";
         let deser: BigInt = serde_json::from_str(r#""123456789""#).unwrap();
 
         let mut deser = deser.to_bytes();
