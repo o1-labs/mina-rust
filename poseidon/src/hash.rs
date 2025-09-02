@@ -3,7 +3,7 @@ use mina_curves::pasta::Fp;
 
 use crate::{PlonkSpongeConstantsKimchi, Sponge, SpongeParamsForField};
 
-enum Item {
+pub enum Item {
     Bool(bool),
     U2(u8),
     U8(u8),
@@ -26,7 +26,7 @@ impl core::fmt::Debug for Item {
 }
 
 impl Item {
-    fn nbits(&self) -> u32 {
+    pub fn nbits(&self) -> u32 {
         match self {
             Item::Bool(_) => 1,
             Item::U2(_) => 2,
@@ -37,7 +37,7 @@ impl Item {
         }
     }
 
-    fn as_bigint(&self) -> u64 {
+    pub fn as_bigint(&self) -> u64 {
         match self {
             Item::Bool(v) => *v as u64,
             Item::U2(v) => *v as u64,
