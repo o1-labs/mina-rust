@@ -15,7 +15,7 @@ libp2p-identity = { version = "=0.2.7", features = ["peerid"] }
 mina-p2p-messages = { workspace = true }
 num_cpus = "1.0"
 rand = "0.8.0"
-rayon = "1.5"
+rayon = "1.11"
 redux = { workspace = true }
 serde = "1.0.158"
 sha2 = "0.10"
