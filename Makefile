@@ -255,6 +255,10 @@ test-release: ## Run tests in release mode
 test-vrf: ## Run VRF tests, requires nightly Rust
 	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
 
+.PHONY: test-p2p-messages
+test-p2p-messages:
+	cargo test -p mina-p2p-messages --tests --release
+
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
 	@cargo nextest run
