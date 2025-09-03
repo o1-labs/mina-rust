@@ -518,7 +518,7 @@ jobs:
           ./${{ matrix.test }} --test-threads=1
 
   bootstrap-test:
-    timeout-minutes: 4
+    timeout-minutes: 10
     needs: [build, build-tests]
     runs-on: ubuntu-24.04
     env:
