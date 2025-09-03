@@ -22,4 +22,4 @@ services:
     environment:
       MINA_FRONTEND_ENVIRONMENT: compose
     ports:
-      - "8070:8070"
+      - "8070:80"
