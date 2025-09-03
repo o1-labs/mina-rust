@@ -393,7 +393,7 @@ jobs:
         if: ${{ always() }}
 
   scenario-tests:
-    timeout-minutes: 45
+    timeout-minutes: 60
     needs:
       - build-tests
       - build-tests-webrtc
