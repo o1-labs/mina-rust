@@ -17,6 +17,7 @@ mina-node-account = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
 num = { version = "0.4", features = ["std"] }
+num-bigint = { workspace = true }
 o1-utils = { workspace = true }
 poseidon = { workspace = true }
 redux = { workspace = true }

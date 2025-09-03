@@ -1,4 +1,4 @@
-use ark_ff::{BigInteger, BigInteger256, One, Zero};
+use ark_ff::{self, BigInteger, BigInteger256, One, Zero};
 use itertools::unfold;
 use num::{rational::Ratio, BigInt, FromPrimitive, Signed};
 
@@ -107,7 +107,7 @@ impl Threshold {
         }
     }
 
-    fn factorial<const N: usize>(n: BigInt<N>) -> BigInt<N> {
+    fn factorial<const N: usize>(n: num::bigint::BigInt<N>) -> num::bigint::BigInt<N> {
         if n == BigInt::<N>::zero() {
             return BigInt::<N>::one();
         }
@@ -194,14 +194,16 @@ pub fn get_fractional(vrf_out: BigInteger256) -> Ratio<BigInt2048> {
 }
 
 // TODO: is there a fn like this?
-pub fn bigint_to_bigrational<const N: usize>(x: &BigInt<N>) -> Ratio<BigInt<N>> {
-    Ratio::new(x.clone(), BigInt::one())
+pub fn bigint_to_bigrational<const N: usize>(
+    x: &num::bigint::BigInt<N>,
+) -> Ratio<num::bigint::BigInt<N>> {
+    Ratio::new(x.clone(), num::bigint::BigInt::one())
 }
 
 pub fn bigrational_as_fixed_point<const N: usize>(
-    c: Ratio<BigInt<N>>,
+    c: Ratio<num::bigint::BigInt<N>>,
     per_term_precission: usize,
-) -> BigInt<N> {
+) -> num::bigint::BigInt<N> {
     let numer = c.numer();
     let denom = c.denom();
 

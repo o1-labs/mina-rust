@@ -1,5 +1,5 @@
 use ark_ec::{AffineRepr, CurveGroup};
-use ark_ff::PrimeField;
+use ark_ff::{self, PrimeField};
 use core::ops::Mul;
 use ledger::AccountIndex;
 use message::VrfMessage;
@@ -54,14 +54,14 @@ pub enum VrfError {
 }
 
 /// 256 bits
-pub(crate) type BigInt256 = BigInt<4>;
+pub(crate) type BigInt256 = num::bigint::BigInt<4>;
 
 /// 2048 bits
-pub(crate) type BigInt2048 = BigInt<32>;
+pub(crate) type BigInt2048 = num::bigint::BigInt<32>;
 pub(crate) type BigRational2048 = Ratio<BigInt2048>;
 
 /// 4096 bits
-pub(crate) type BigInt4096 = BigInt<64>;
+pub(crate) type BigInt4096 = num::bigint::BigInt<64>;
 pub(crate) type BigRational4096 = Ratio<BigInt4096>;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]

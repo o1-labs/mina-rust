@@ -10127,6 +10127,7 @@ dependencies = [
  "mina-signer",
  "mina-tree",
  "num",
+ "num-bigint",
  "o1-utils",
  "poseidon",
  "rand",
