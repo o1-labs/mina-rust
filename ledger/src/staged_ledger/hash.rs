@@ -1,4 +1,4 @@
-use ark_ff::{PrimeField, ToBytes};
+use ark_ff::PrimeField;
 use mina_curves::pasta::Fp;
 use poseidon::hash::Inputs;
 use sha2::{Digest, Sha256};
@@ -159,10 +159,11 @@ impl NonStark {
         let mut ledger_hash_bytes: [u8; 32] = <[u8; 32]>::default();
 
         let ledger_hash = ledger_hash.into_bigint();
-        ledger_hash
-            .0
-            .write(ledger_hash_bytes.as_mut_slice())
-            .unwrap();
+        // Convert [u64; 4] to bytes in little-endian
+        for (i, &word) in ledger_hash.0.iter().enumerate() {
+            let bytes = word.to_le_bytes();
+            ledger_hash_bytes[i * 8..(i + 1) * 8].copy_from_slice(&bytes);
+        }
         ledger_hash_bytes.reverse();
 
         sha.update(ledger_hash_bytes.as_slice());
