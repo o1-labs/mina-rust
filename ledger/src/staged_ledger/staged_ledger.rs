@@ -2387,7 +2387,7 @@ mod tests_ocaml {
 
                         let mut signer =
                             mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-                        signer.sign(sender_pk, &payload_to_sign)
+                        signer.sign(sender_pk, &payload_to_sign, false)
                     }
                 };
 
@@ -5585,7 +5585,7 @@ mod tests_ocaml {
         let payload_to_sign = TransactionUnionPayload::of_user_command_payload(&payload);
 
         let mut signer = mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-        let signature = signer.sign(kp, &payload_to_sign);
+        let signature = signer.sign(kp, &payload_to_sign, false);
 
         let signed_command = SignedCommand {
             payload,
@@ -5681,7 +5681,7 @@ mod tests_ocaml {
             let payload_to_sign = TransactionUnionPayload::of_user_command_payload(&payload);
 
             let mut signer = mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-            let signature = signer.sign(&kp, &payload_to_sign);
+            let signature = signer.sign(&kp, &payload_to_sign, false);
 
             let signed_command = SignedCommand {
                 payload,
