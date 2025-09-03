@@ -121,14 +121,12 @@ impl TokenSymbol {
     }
 
     pub fn to_field<F: FieldWitness>(&self) -> F {
-        use ark_ff::FromBytes;
-
         let mut s = <[u8; 32]>::default();
         self.to_bytes(&mut s);
 
-        let value = FromBytes::read(&s[..]).expect("Shoudn't fail");
-        let bigint = BigInteger256::new(value);
-        F::from(bigint) // Never fail, `self` contain 6 bytes at most
+        // There is an assumption that a token symbol is on 6 bytes, therefore
+        // it will be smaller than the order
+        F::from_le_bytes_mod_order(&s)
     }
 }
 
