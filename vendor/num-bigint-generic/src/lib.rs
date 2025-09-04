@@ -81,13 +81,13 @@
 //! ### Arbitrary Big Integers
 //!
 //! `num-bigint` supports `arbitrary` and `quickcheck` features to implement
-//! [`arbitrary::Arbitrary`] and [`quickcheck::Arbitrary`], respectively, for both `BigInt` and
+//! `Arbitrary` traits from the `arbitrary` and `quickcheck` crates, respectively, for both `BigInt` and
 //! `BigUint`. These are useful for fuzzing and other forms of randomized testing.
 //!
 //! ### Serialization
 //!
-//! The `serde` feature adds implementations of [`Serialize`][serde::Serialize] and
-//! [`Deserialize`][serde::Deserialize] for both `BigInt` and `BigUint`. Their serialized data is
+//! The `serde` feature adds implementations of `Serialize` and
+//! `Deserialize` from the `serde` crate for both `BigInt` and `BigUint`. Their serialized data is
 //! generated portably, regardless of platform differences like the internal digit size.
 //!
 //!

@@ -817,9 +817,9 @@ fn get_half_radix_base(radix: u32) -> (BigDigit, usize) {
 /// are returned from `get_radix_base` to batch the multiplication/division of radix conversions on
 /// full `BigUint` values, operating on primitive integers as much as possible.
 ///
-/// e.g. BASES_16[3] = (59049, 10) // 3¹⁰ fits in u16, but 3¹¹ is too big
-///      BASES_32[3] = (3486784401, 20)
-///      BASES_64[3] = (12157665459056928801, 40)
+/// e.g. BASES_16\[3\] = (59049, 10) // 3¹⁰ fits in u16, but 3¹¹ is too big
+///      BASES_32\[3\] = (3486784401, 20)
+///      BASES_64\[3\] = (12157665459056928801, 40)
 ///
 /// Powers of two are not included, just zeroed, as they're implemented with shifts.
 const fn generate_radix_bases(max: BigDigit) -> [(BigDigit, usize); 257] {
