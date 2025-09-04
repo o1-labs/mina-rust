@@ -6,7 +6,8 @@ CRATE=num-bigint
 MSRV=1.60
 
 get_rust_version() {
-  local array=($(rustc --version));
+  local array
+  IFS=' ' read -ra array <<< "$(rustc --version)"
   echo "${array[1]}";
   return 0;
 }
@@ -44,7 +45,7 @@ cargo build
 cargo test
 
 # test each isolated feature with std
-for feature in ${STD_FEATURES[*]}; do
+for feature in "${STD_FEATURES[@]}"; do
   cargo build --no-default-features --features="std $feature"
   cargo test --no-default-features --features="std $feature"
 done
@@ -60,7 +61,7 @@ if [ -n "${NO_STD_FEATURES[*]}" ]; then
   cargo test --no-default-features
 
   # test each isolated feature without std
-  for feature in ${NO_STD_FEATURES[*]}; do
+  for feature in "${NO_STD_FEATURES[@]}"; do
     cargo build --no-default-features --features="$feature"
     cargo test --no-default-features --features="$feature"
   done
