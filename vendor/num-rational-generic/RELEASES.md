@@ -1,8 +1,10 @@
 # Release 0.4.2 (2024-05-07)
 
 - [Upgrade to 2021 edition, **MSRV 1.60**][126]
-- [Add `Ratio::approximate_float_unsigned` to convert `FloatCore` types to unsigned][109]
-- [Add `const ZERO` and `ONE`, and implement `num_traits::ConstZero` and `ConstOne`][128]
+- [Add `Ratio::approximate_float_unsigned` to convert `FloatCore` types to
+  unsigned][109]
+- [Add `const ZERO` and `ONE`, and implement `num_traits::ConstZero` and
+  `ConstOne`][128]
 - [Add `Ratio::into_raw` to deconstruct the numerator and denominator][129]
 
 **Contributors**: @cuviper, @Enyium, @flavioroth, @waywardmonkeys
@@ -91,8 +93,10 @@
 
 # Release 0.2.3 (2020-01-09)
 
-- [`Ratio` now performs earlier reductions to avoid overflow with `+-*/%` operators][42].
-- [`Ratio::{new_raw, numer, denom}` are now `const fn` for Rust 1.31 and later][48].
+- [`Ratio` now performs earlier reductions to avoid overflow with `+-*/%`
+  operators][42].
+- [`Ratio::{new_raw, numer, denom}` are now `const fn` for Rust 1.31 and
+  later][48].
 - [Updated the `autocfg` build dependency to 1.0][63].
 
 **Contributors**: @cuviper, @dingelish, @jimbo1qaz, @maxbla
@@ -126,13 +130,13 @@
 
 - [`num-rational` now requires rustc 1.15 or greater][18].
 - [There is now a `std` feature][23], enabled by default, along with the
-  implication that building *without* this feature makes this a `#![no_std]`
-  crate.  A few methods now require `FloatCore` instead of `Float`.
-- [The `serde` dependency has been updated to 1.0][24], and `rustc-serialize`
-  is no longer supported by `num-rational`.
+  implication that building _without_ this feature makes this a `#![no_std]`
+  crate. A few methods now require `FloatCore` instead of `Float`.
+- [The `serde` dependency has been updated to 1.0][24], and `rustc-serialize` is
+  no longer supported by `num-rational`.
 - The optional `num-bigint` dependency has been updated to 0.2, and should be
-  enabled using the `bigint-std` feature.  In the future, it may be possible
-  to use the `bigint` feature with `no_std`.
+  enabled using the `bigint-std` feature. In the future, it may be possible to
+  use the `bigint` feature with `no_std`.
 
 **Contributors**: @clarcharr, @cuviper, @Emerentius, @robomancer-or, @vks
 
@@ -144,19 +148,19 @@
 [25]: https://github.com/rust-num/num-rational/pull/25
 [29]: https://github.com/rust-num/num-rational/pull/29
 
-
 # Release 0.1.42 (2018-02-08)
 
 - Maintenance release to update dependencies.
 
-
 # Release 0.1.41 (2018-01-26)
 
-- [num-rational now has its own source repository][num-356] at [rust-num/num-rational][home].
-- [`Ratio` now implements `CheckedAdd`, `CheckedSub`, `CheckedMul`, and `CheckedDiv`][11].
-- [`Ratio` now implements `AddAssign`, `SubAssign`, `MulAssign`, `DivAssign`, and `RemAssign`][12]
-  with either `Ratio` or an integer on the right side.  The non-assignment operators now also
-  accept integers as an operand.
+- [num-rational now has its own source repository][num-356] at
+  [rust-num/num-rational][home].
+- [`Ratio` now implements `CheckedAdd`, `CheckedSub`, `CheckedMul`, and
+  `CheckedDiv`][11].
+- [`Ratio` now implements `AddAssign`, `SubAssign`, `MulAssign`, `DivAssign`,
+  and `RemAssign`][12] with either `Ratio` or an integer on the right side. The
+  non-assignment operators now also accept integers as an operand.
 - [`Ratio` operators now make fewer `clone()` calls][14].
 
 Thanks to @c410-f3r, @cuviper, and @psimonyi for their contributions!
@@ -167,8 +171,7 @@ Thanks to @c410-f3r, @cuviper, and @psimonyi for their contributions!
 [12]: https://github.com/rust-num/num-rational/pull/12
 [14]: https://github.com/rust-num/num-rational/pull/14
 
-
 # Prior releases
 
-No prior release notes were kept.  Thanks all the same to the many
-contributors that have made this crate what it is!
+No prior release notes were kept. Thanks all the same to the many contributors
+that have made this crate what it is!
