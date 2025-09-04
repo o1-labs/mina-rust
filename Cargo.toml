@@ -36,6 +36,7 @@ members = [
   "producer-dashboard",
 
   "fuzzer",
+  "vendor/num-bigint-generic",
 ]
 
 resolver = "2"

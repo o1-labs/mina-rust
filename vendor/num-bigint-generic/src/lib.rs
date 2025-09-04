@@ -104,7 +104,7 @@
 extern crate alloc;
 
 // #[cfg(feature = "std")]
-extern crate std;
+use std;
 
 use core::fmt;
 
