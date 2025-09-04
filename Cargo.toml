@@ -70,6 +70,7 @@ mina-poseidon = { git = "https://github.com/o1-labs/proof-systems", rev = "14331
 mina-producer-dashboard = { path = "producer-dashboard" }
 mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
 num-bigint = { version = "0.4.4" }
+num-bigint-generic = { path = "./vendor/num-bigint-generic" }
 o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
 poly-commitment = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
 poseidon = { path = "poseidon" }
