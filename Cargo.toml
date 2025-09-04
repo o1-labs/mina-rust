@@ -37,6 +37,7 @@ members = [
 
   "fuzzer",
   "vendor/num-bigint-generic",
+  "vendor/num-rational-generic",
 ]
 
 resolver = "2"
