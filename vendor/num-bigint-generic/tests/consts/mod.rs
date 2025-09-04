@@ -41,7 +41,13 @@ pub const MUL_TRIPLES: &[(&[u32], &[u32], &[u32])] = &[
     (&[0, 0, 1], &[0, 0, 0, 1], &[0, 0, 0, 0, 0, 1]),
 ];
 
-pub const DIV_REM_QUADRUPLES: &[(&[u32], &[u32], &[u32], &[u32])] = &[
+type DivRemQuadruple = (
+    &'static [u32],
+    &'static [u32],
+    &'static [u32],
+    &'static [u32],
+);
+pub const DIV_REM_QUADRUPLES: &[DivRemQuadruple] = &[
     (&[1], &[2], &[], &[1]),
     (&[3], &[2], &[1], &[1]),
     (&[1, 1], &[2], &[M / 2 + 1], &[1]),

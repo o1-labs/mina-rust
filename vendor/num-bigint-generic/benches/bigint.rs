@@ -3,7 +3,7 @@
 
 extern crate test;
 
-use num_bigint::{BigInt, BigUint, RandBigInt};
+use num_bigint_generic::{BigInt, BigUint, RandBigInt};
 use num_traits::{FromPrimitive, Num, One, Zero};
 use std::mem::replace;
 use test::Bencher;

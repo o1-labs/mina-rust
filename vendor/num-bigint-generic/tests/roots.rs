@@ -1,5 +1,5 @@
 mod biguint {
-    use num_bigint::BigUint;
+    type BigUint = num_bigint_generic::BigUint;
     use num_traits::{One, Zero};
 
     fn check<T: Into<BigUint>>(x: T, n: u32) {
@@ -112,7 +112,7 @@ mod biguint {
 }
 
 mod bigint {
-    use num_bigint::BigInt;
+    type BigInt = num_bigint_generic::BigInt;
     use num_traits::Signed;
 
     fn check(x: i64, n: u32) {

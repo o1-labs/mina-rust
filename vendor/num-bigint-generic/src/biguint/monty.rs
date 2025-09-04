@@ -83,13 +83,13 @@ fn montgomery<const N: usize>(
     }
 
     if c == 0 {
-        z.data = z.data[n..].into_iter().copied().collect();
+        z.data = z.data[n..].iter().copied().collect();
     } else {
         {
             let (first, second) = z.data.split_at_mut(n);
             sub_vv(first, second, &m.data);
         }
-        z.data = z.data[..n].into_iter().copied().collect();
+        z.data = z.data[..n].iter().copied().collect();
     }
 
     z

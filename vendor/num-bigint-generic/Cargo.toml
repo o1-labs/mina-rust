@@ -21,6 +21,7 @@ arbitrary = ["dep:arbitrary"]
 quickcheck = ["dep:quickcheck"]
 rand = ["dep:rand"]
 serde = ["dep:serde"]
+nightly = []
 
 [package.metadata.docs.rs]
 features = ["std", "serde", "rand", "quickcheck", "arbitrary"]
@@ -28,19 +29,24 @@ rustdoc-args = ["--cfg", "docsrs"]
 
 [[bench]]
 name = "bigint"
+required-features = ["nightly"]
 
 [[bench]]
 name = "factorial"
+required-features = ["nightly"]
 
 [[bench]]
 name = "gcd"
+required-features = ["nightly"]
 
 [[bench]]
 name = "roots"
+required-features = ["nightly"]
 
 [[bench]]
 harness = false
 name = "shootout-pidigits"
+required-features = ["nightly"]
 
 [dependencies]
 tinyvec = { version = "1", features = ["alloc", "rustc_1_55"] }

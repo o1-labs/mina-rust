@@ -3,7 +3,7 @@
 
 extern crate test;
 
-use num_bigint::{BigUint, RandBigInt};
+use num_bigint_generic::{BigUint, RandBigInt};
 use test::Bencher;
 
 mod rng;

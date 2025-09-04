@@ -1203,7 +1203,7 @@ impl num_traits::ToBytes for BigInt {
 #[test]
 fn test_from_biguint() {
     fn check(inp_s: Sign, inp_n: usize, ans_s: Sign, ans_n: usize) {
-        let inp = BigInt::from_biguint(inp_s, BigUint::from(inp_n));
+        let inp: BigInt = BigInt::from_biguint(inp_s, BigUint::from(inp_n));
         let ans = BigInt {
             sign: ans_s,
             data: BigUint::from(ans_n),
@@ -1219,7 +1219,7 @@ fn test_from_biguint() {
 #[test]
 fn test_from_slice() {
     fn check(inp_s: Sign, inp_n: u32, ans_s: Sign, ans_n: u32) {
-        let inp = BigInt::from_slice(inp_s, &[inp_n]);
+        let inp: BigInt = BigInt::from_slice(inp_s, &[inp_n]);
         let ans = BigInt {
             sign: ans_s,
             data: BigUint::from(ans_n),
@@ -1235,7 +1235,7 @@ fn test_from_slice() {
 #[test]
 fn test_assign_from_slice() {
     fn check(inp_s: Sign, inp_n: u32, ans_s: Sign, ans_n: u32) {
-        let mut inp = BigInt::from_slice(Minus, &[2627_u32, 0_u32, 9182_u32, 42_u32]);
+        let mut inp: BigInt = BigInt::from_slice(Minus, &[2627_u32, 0_u32, 9182_u32, 42_u32]);
         inp.assign_from_slice(inp_s, &[inp_n]);
         let ans = BigInt {
             sign: ans_s,

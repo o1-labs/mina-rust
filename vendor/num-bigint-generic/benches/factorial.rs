@@ -2,7 +2,7 @@
 
 extern crate test;
 
-use num_bigint::BigUint;
+use num_bigint_generic::BigUint;
 use num_traits::One;
 use std::ops::{Div, Mul};
 use test::Bencher;

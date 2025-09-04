@@ -530,7 +530,6 @@ pub trait ToBigUint {
 // pub(crate) fn biguint_from_vec(digits: Vec<BigDigit>) -> BigUint {
 //     BigUint { data: digits.into_iter().collect() }.normalized()
 // }
-
 #[inline]
 pub(crate) fn biguint_from_tinyvec<const N: usize>(digits: TinyVec<[BigDigit; N]>) -> BigUint<N> {
     BigUint { data: digits }.normalized()

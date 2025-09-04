@@ -53,7 +53,7 @@ static BIG_R: &str = "\
                       109c4735_6e7db425_7b5d74c7_0b709508";
 
 mod biguint {
-    use num_bigint::BigUint;
+    type BigUint = num_bigint_generic::BigUint;
     use num_integer::Integer;
     use num_traits::Num;
 
@@ -94,10 +94,10 @@ mod biguint {
 
     #[test]
     fn test_modpow_big() {
-        let b = BigUint::from_str_radix(super::BIG_B, 16).unwrap();
-        let e = BigUint::from_str_radix(super::BIG_E, 16).unwrap();
-        let m = BigUint::from_str_radix(super::BIG_M, 16).unwrap();
-        let r = BigUint::from_str_radix(super::BIG_R, 16).unwrap();
+        let b: BigUint = BigUint::from_str_radix(super::BIG_B, 16).unwrap();
+        let e: BigUint = BigUint::from_str_radix(super::BIG_E, 16).unwrap();
+        let m: BigUint = BigUint::from_str_radix(super::BIG_M, 16).unwrap();
+        let r: BigUint = BigUint::from_str_radix(super::BIG_R, 16).unwrap();
 
         assert_eq!(b.modpow(&e, &m), r);
 
@@ -109,7 +109,7 @@ mod biguint {
 }
 
 mod bigint {
-    use num_bigint::BigInt;
+    type BigInt = num_bigint_generic::BigInt;
     use num_integer::Integer;
     use num_traits::{Num, One, Signed};
 

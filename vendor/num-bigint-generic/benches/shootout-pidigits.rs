@@ -40,7 +40,7 @@
 
 use std::{io, str::FromStr};
 
-use num_bigint::BigInt;
+use num_bigint_generic::BigInt;
 use num_integer::Integer;
 use num_traits::{FromPrimitive, One, ToPrimitive, Zero};
 

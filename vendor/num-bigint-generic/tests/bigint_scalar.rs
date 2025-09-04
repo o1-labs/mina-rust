@@ -1,4 +1,5 @@
-use num_bigint::{BigInt, Sign::Plus};
+type BigInt = num_bigint_generic::BigInt;
+use num_bigint_generic::Sign::Plus;
 use num_traits::{One, Signed, ToPrimitive, Zero};
 
 use std::{ops::Neg, panic::catch_unwind};

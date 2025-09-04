@@ -1,4 +1,5 @@
-use num_bigint::{BigInt, Sign, ToBigInt};
+type BigInt = num_bigint_generic::BigInt;
+use num_bigint_generic::{Sign, ToBigInt};
 use num_traits::ToPrimitive;
 
 enum ValueVec {
@@ -12,9 +13,9 @@ use crate::ValueVec::*;
 impl ToBigInt for ValueVec {
     fn to_bigint(&self) -> Option<BigInt> {
         match self {
-            &N => Some(BigInt::from_slice(Sign::NoSign, &[])),
-            &P(s) => Some(BigInt::from_slice(Sign::Plus, s)),
-            &M(s) => Some(BigInt::from_slice(Sign::Minus, s)),
+            N => Some(BigInt::from_slice(Sign::NoSign, &[])),
+            P(s) => Some(BigInt::from_slice(Sign::Plus, s)),
+            M(s) => Some(BigInt::from_slice(Sign::Minus, s)),
         }
     }
 }
@@ -106,7 +107,7 @@ const I64_VALUES: &[i64] = &[
 
 #[test]
 fn test_not() {
-    for &(ref a, ref not) in NOT_VALUES.iter() {
+    for (a, not) in NOT_VALUES.iter() {
         let a = a.to_bigint().unwrap();
         let not = not.to_bigint().unwrap();
 
@@ -131,7 +132,7 @@ fn test_not_i64() {
 
 #[test]
 fn test_bitwise() {
-    for &(ref a, ref b, ref and, ref or, ref xor) in BITWISE_VALUES.iter() {
+    for (a, b, and, or, xor) in BITWISE_VALUES.iter() {
         let a = a.to_bigint().unwrap();
         let b = b.to_bigint().unwrap();
         let and = and.to_bigint().unwrap();
