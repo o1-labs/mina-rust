@@ -34,8 +34,8 @@ use core::{
 #[cfg(feature = "std")]
 use std::error::Error;
 
-#[cfg(feature = "num-bigint")]
-use num_bigint::{BigInt, BigUint, Sign, ToBigInt};
+#[cfg(feature = "num-bigint-generic")]
+use num_bigint_generic::{BigInt, BigUint, Sign, ToBigInt};
 
 use num_integer::Integer;
 use num_traits::{
@@ -66,7 +66,7 @@ pub type Rational32 = Ratio<i32>;
 /// Alias for a `Ratio` of 64-bit-sized integers.
 pub type Rational64 = Ratio<i64>;
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 /// Alias for arbitrary precision rationals.
 pub type BigRational = Ratio<BigInt>;
 
@@ -281,7 +281,7 @@ impl<T: Clone + Integer> Ratio<T> {
     }
 }
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 impl Ratio<BigInt> {
     /// Converts a float into a rational number.
     pub fn from_float<T: FloatCore>(f: T) -> Option<BigRational> {
@@ -888,7 +888,7 @@ where
     }
 }
 
-impl<'a, T> Neg for &'a Ratio<T>
+impl<T> Neg for &Ratio<T>
 where
     T: Clone + Integer + Neg<Output = T>,
 {
@@ -912,7 +912,7 @@ where
     }
 }
 
-impl<'a, T> Inv for &'a Ratio<T>
+impl<T> Inv for &Ratio<T>
 where
     T: Clone + Integer,
 {
@@ -1217,7 +1217,7 @@ impl RatioErrorKind {
     }
 }
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 impl FromPrimitive for Ratio<BigInt> {
     fn from_i64(n: i64) -> Option<Self> {
         Some(Ratio::from_integer(n.into()))
@@ -1415,7 +1415,7 @@ where
     Some(Ratio::new(n1, d1))
 }
 
-#[cfg(not(feature = "num-bigint"))]
+#[cfg(not(feature = "num-bigint-generic"))]
 macro_rules! to_primitive_small {
     ($($type_name:ty)*) => ($(
         impl ToPrimitive for Ratio<$type_name> {
@@ -1447,13 +1447,13 @@ macro_rules! to_primitive_small {
     )*)
 }
 
-#[cfg(not(feature = "num-bigint"))]
+#[cfg(not(feature = "num-bigint-generic"))]
 to_primitive_small!(u8 i8 u16 i16 u32 i32);
 
-#[cfg(all(target_pointer_width = "32", not(feature = "num-bigint")))]
+#[cfg(all(target_pointer_width = "32", not(feature = "num-bigint-generic")))]
 to_primitive_small!(usize isize);
 
-#[cfg(not(feature = "num-bigint"))]
+#[cfg(not(feature = "num-bigint-generic"))]
 macro_rules! to_primitive_64 {
     ($($type_name:ty)*) => ($(
         impl ToPrimitive for Ratio<$type_name> {
@@ -1488,13 +1488,13 @@ macro_rules! to_primitive_64 {
     )*)
 }
 
-#[cfg(not(feature = "num-bigint"))]
+#[cfg(not(feature = "num-bigint-generic"))]
 to_primitive_64!(u64 i64);
 
-#[cfg(all(target_pointer_width = "64", not(feature = "num-bigint")))]
+#[cfg(all(target_pointer_width = "64", not(feature = "num-bigint-generic")))]
 to_primitive_64!(usize isize);
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 impl<T: Clone + Integer + ToPrimitive + ToBigInt> ToPrimitive for Ratio<T> {
     fn to_i64(&self) -> Option<i64> {
         self.to_integer().to_i64()
@@ -1536,7 +1536,7 @@ trait Bits {
     fn bits(&self) -> u64;
 }
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 impl Bits for BigInt {
     fn bits(&self) -> u64 {
         self.bits()
@@ -1557,15 +1557,16 @@ fn ratio_to_f64<T: Bits + Clone + Integer + Signed + ShlAssign<usize> + ToPrimit
     numer: T,
     denom: T,
 ) -> f64 {
-    use core::f64::{INFINITY, MANTISSA_DIGITS, MAX_EXP, MIN_EXP, RADIX};
+    // Legacy numeric constants replaced with associated constants
 
     assert_eq!(
-        RADIX, 2,
+        f64::RADIX,
+        2,
         "only floating point implementations with radix 2 are supported"
     );
 
     // Inclusive upper and lower bounds to the range of exactly-representable ints in an f64.
-    const MAX_EXACT_INT: i64 = 1i64 << MANTISSA_DIGITS;
+    const MAX_EXACT_INT: i64 = 1i64 << f64::MANTISSA_DIGITS;
     const MIN_EXACT_INT: i64 = -MAX_EXACT_INT;
 
     let flo_sign = numer.signum().to_f64().unwrap() / denom.signum().to_f64().unwrap();
@@ -1596,10 +1597,10 @@ fn ratio_to_f64<T: Bits + Clone + Integer + Signed + ShlAssign<usize> + ToPrimit
 
     // Filter out overflows and underflows. After this step, the signed difference fits in an
     // isize.
-    if is_diff_positive && absolute_diff > MAX_EXP as u64 {
-        return INFINITY * flo_sign;
+    if is_diff_positive && absolute_diff > f64::MAX_EXP as u64 {
+        return f64::INFINITY * flo_sign;
     }
-    if !is_diff_positive && absolute_diff > -MIN_EXP as u64 + MANTISSA_DIGITS as u64 + 1 {
+    if !is_diff_positive && absolute_diff > -f64::MIN_EXP as u64 + f64::MANTISSA_DIGITS as u64 + 1 {
         return 0.0 * flo_sign;
     }
     let diff = if is_diff_positive {
@@ -1610,7 +1611,7 @@ fn ratio_to_f64<T: Bits + Clone + Integer + Signed + ShlAssign<usize> + ToPrimit
 
     // Shift is chosen so that the quotient will have 55 or 56 bits. The exception is if the
     // quotient is going to be subnormal, in which case it may have fewer bits.
-    let shift: isize = diff.max(MIN_EXP as isize) - MANTISSA_DIGITS as isize - 2;
+    let shift: isize = diff.max(f64::MIN_EXP as isize) - f64::MANTISSA_DIGITS as isize - 2;
     if shift >= 0 {
         denom <<= shift as usize
     } else {
@@ -1623,8 +1624,8 @@ fn ratio_to_f64<T: Bits + Clone + Integer + Signed + ShlAssign<usize> + ToPrimit
     let mut quotient = quotient.to_u64().unwrap();
     let n_rounding_bits = {
         let quotient_bits = 64 - quotient.leading_zeros() as isize;
-        let subnormal_bits = MIN_EXP as isize - shift;
-        quotient_bits.max(subnormal_bits) - MANTISSA_DIGITS as isize
+        let subnormal_bits = f64::MIN_EXP as isize - shift;
+        quotient_bits.max(subnormal_bits) - f64::MANTISSA_DIGITS as isize
     } as usize;
     debug_assert!(n_rounding_bits == 2 || n_rounding_bits == 3);
     let rounding_bit_mask = (1u64 << n_rounding_bits) - 1;
@@ -1648,25 +1649,26 @@ fn ratio_to_f64<T: Bits + Clone + Integer + Signed + ShlAssign<usize> + ToPrimit
 /// Multiply `x` by 2 to the power of `exp`. Returns an accurate result even if `2^exp` is not
 /// representable.
 fn ldexp(x: f64, exp: i32) -> f64 {
-    use core::f64::{INFINITY, MANTISSA_DIGITS, MAX_EXP, RADIX};
+    // Legacy numeric constants replaced with associated constants
 
     assert_eq!(
-        RADIX, 2,
+        f64::RADIX,
+        2,
         "only floating point implementations with radix 2 are supported"
     );
 
     const EXPONENT_MASK: u64 = 0x7ff << 52;
     const MAX_UNSIGNED_EXPONENT: i32 = 0x7fe;
-    const MIN_SUBNORMAL_POWER: i32 = MANTISSA_DIGITS as i32;
+    const MIN_SUBNORMAL_POWER: i32 = f64::MANTISSA_DIGITS as i32;
 
     if x.is_zero() || x.is_infinite() || x.is_nan() {
         return x;
     }
 
     // Filter out obvious over / underflows to make sure the resulting exponent fits in an isize.
-    if exp > 3 * MAX_EXP {
-        return INFINITY * x.signum();
-    } else if exp < -3 * MAX_EXP {
+    if exp > 3 * f64::MAX_EXP {
+        return f64::INFINITY * x.signum();
+    } else if exp < -3 * f64::MAX_EXP {
         return 0.0 * x.signum();
     }
 
@@ -1689,16 +1691,16 @@ fn ldexp(x: f64, exp: i32) -> f64 {
     };
 
     // The addition can't overflow because exponent is between 0 and 0x7fe, and exp is between
-    // -2*MAX_EXP and 2*MAX_EXP.
+    // -2*f64::MAX_EXP and 2*f64::MAX_EXP.
     let new_exp = curr_exp + exp;
 
     if new_exp > MAX_UNSIGNED_EXPONENT {
-        INFINITY * x.signum()
+        f64::INFINITY * x.signum()
     } else if new_exp > 0 {
         // Normal case: exponent is not too large nor subnormal.
         let new_bits = (bits & !EXPONENT_MASK) | ((new_exp as u64) << 52);
         f64::from_bits(new_bits)
-    } else if new_exp >= -(MANTISSA_DIGITS as i32) {
+    } else if new_exp >= -(f64::MANTISSA_DIGITS as i32) {
         // Result is subnormal but may not be zero.
         // In this case, we increase the exponent by 54 to make it normal, then multiply the end
         // result by 2^-53. This results in a single multiplication with no prior rounding error,
@@ -1725,10 +1727,10 @@ fn hash<T: Hash>(x: &T) -> u64 {
 #[cfg(test)]
 mod test {
     use super::{ldexp, Ratio, Rational64};
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     use super::{BigInt, BigRational};
 
-    use core::{f64, i32, i64, str::FromStr};
+    use core::{f64, str::FromStr};
     use num_integer::Integer;
     use num_traits::{FromPrimitive, One, Pow, Signed, ToPrimitive, Zero};
 
@@ -1804,14 +1806,14 @@ mod test {
         denom: 1,
     };
 
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     pub fn to_big(n: Rational64) -> BigRational {
         Ratio::new(
             FromPrimitive::from_i64(n.numer).unwrap(),
             FromPrimitive::from_i64(n.denom).unwrap(),
         )
     }
-    #[cfg(not(feature = "num-bigint"))]
+    #[cfg(not(feature = "num-bigint-generic"))]
     pub fn to_big(n: Rational64) -> Rational64 {
         Ratio::new(
             FromPrimitive::from_i64(n.numer).unwrap(),
@@ -1889,18 +1891,18 @@ mod test {
     #[allow(clippy::eq_op)]
     fn test_cmp() {
         assert!(_0 == _0 && _1 == _1);
-        assert!(_0 != _1 && _1 != _0);
-        assert!(_0 < _1 && !(_1 < _0));
-        assert!(_1 > _0 && !(_0 > _1));
+        assert!(_0 != _1);
+        assert!(_0 < _1 && (_1 >= _0));
+        assert!(_1 > _0 && (_0 <= _1));
 
         assert!(_0 <= _0 && _1 <= _1);
-        assert!(_0 <= _1 && !(_1 <= _0));
+        assert!(_0 <= _1 && (_1 > _0));
 
         assert!(_0 >= _0 && _1 >= _1);
-        assert!(_1 >= _0 && !(_0 >= _1));
+        assert!(_1 >= _0 && (_0 < _1));
 
-        let _0_2: Rational64 = Ratio::new_raw(0, 2);
-        assert_eq!(_0, _0_2);
+        let zero_over_two: Rational64 = Ratio::new_raw(0, 2);
+        assert_eq!(_0, zero_over_two);
     }
 
     #[test]
@@ -2325,36 +2327,36 @@ mod test {
                 T: Integer + Bounded + Clone + Debug + NumAssign + CheckedMul,
             {
                 let two = T::one() + T::one();
-                let _3 = T::one() + T::one() + T::one();
+                let three = T::one() + T::one() + T::one();
 
                 // 1/big * 2/3 = 1/(max/4*3), where big is max/2
                 // make big = max/2, but also divisible by 2
                 let big = T::max_value() / two.clone() / two.clone() * two.clone();
                 let _1_big: Ratio<T> = Ratio::new(T::one(), big.clone());
-                let _2_3: Ratio<T> = Ratio::new(two.clone(), _3.clone());
-                assert_eq!(None, big.clone().checked_mul(&_3.clone()));
-                let expected = Ratio::new(T::one(), big / two.clone() * _3.clone());
-                assert_eq!(expected.clone(), _1_big.clone() * _2_3.clone());
+                let two_thirds: Ratio<T> = Ratio::new(two.clone(), three.clone());
+                assert_eq!(None, big.clone().checked_mul(&three.clone()));
+                let expected = Ratio::new(T::one(), big / two.clone() * three.clone());
+                assert_eq!(expected.clone(), _1_big.clone() * two_thirds.clone());
                 assert_eq!(
                     Some(expected.clone()),
-                    _1_big.clone().checked_mul(&_2_3.clone())
+                    _1_big.clone().checked_mul(&two_thirds.clone())
                 );
                 assert_eq!(expected, {
                     let mut tmp = _1_big;
-                    tmp *= _2_3;
+                    tmp *= two_thirds;
                     tmp
                 });
 
                 // big/3 * 3 = big/1
                 // make big = max/2, but make it indivisible by 3
-                let big = T::max_value() / two / _3.clone() * _3.clone() + T::one();
-                assert_eq!(None, big.clone().checked_mul(&_3.clone()));
-                let big_3 = Ratio::new(big.clone(), _3.clone());
+                let big = T::max_value() / two / three.clone() * three.clone() + T::one();
+                assert_eq!(None, big.clone().checked_mul(&three.clone()));
+                let big_3 = Ratio::new(big.clone(), three.clone());
                 let expected = Ratio::new(big, T::one());
-                assert_eq!(expected, big_3.clone() * _3.clone());
+                assert_eq!(expected, big_3.clone() * three.clone());
                 assert_eq!(expected, {
                     let mut tmp = big_3;
-                    tmp *= _3;
+                    tmp *= three;
                     tmp
                 });
             }
@@ -2414,36 +2416,36 @@ mod test {
                 T: Integer + Bounded + Clone + Debug + NumAssign + CheckedMul,
             {
                 let two = T::one() + T::one();
-                let _3 = T::one() + T::one() + T::one();
+                let three = T::one() + T::one() + T::one();
 
                 // 1/big / 3/2 = 1/(max/4*3), where big is max/2
                 // big ~ max/2, and big is divisible by 2
                 let big = T::max_value() / two.clone() / two.clone() * two.clone();
-                assert_eq!(None, big.clone().checked_mul(&_3.clone()));
+                assert_eq!(None, big.clone().checked_mul(&three.clone()));
                 let _1_big: Ratio<T> = Ratio::new(T::one(), big.clone());
-                let _3_two: Ratio<T> = Ratio::new(_3.clone(), two.clone());
-                let expected = Ratio::new(T::one(), big / two.clone() * _3.clone());
-                assert_eq!(expected.clone(), _1_big.clone() / _3_two.clone());
+                let three_halves: Ratio<T> = Ratio::new(three.clone(), two.clone());
+                let expected = Ratio::new(T::one(), big / two.clone() * three.clone());
+                assert_eq!(expected.clone(), _1_big.clone() / three_halves.clone());
                 assert_eq!(
                     Some(expected.clone()),
-                    _1_big.clone().checked_div(&_3_two.clone())
+                    _1_big.clone().checked_div(&three_halves.clone())
                 );
                 assert_eq!(expected, {
                     let mut tmp = _1_big;
-                    tmp /= _3_two;
+                    tmp /= three_halves;
                     tmp
                 });
 
                 // 3/big / 3 = 1/big where big is max/2
                 // big ~ max/2, and big is not divisible by 3
-                let big = T::max_value() / two / _3.clone() * _3.clone() + T::one();
-                assert_eq!(None, big.clone().checked_mul(&_3.clone()));
-                let _3_big = Ratio::new(_3.clone(), big.clone());
+                let big = T::max_value() / two / three.clone() * three.clone() + T::one();
+                assert_eq!(None, big.clone().checked_mul(&three.clone()));
+                let three_big = Ratio::new(three.clone(), big.clone());
                 let expected = Ratio::new(T::one(), big);
-                assert_eq!(expected, _3_big.clone() / _3.clone());
+                assert_eq!(expected, three_big.clone() / three.clone());
                 assert_eq!(expected, {
-                    let mut tmp = _3_big;
-                    tmp /= _3;
+                    let mut tmp = three_big;
+                    tmp /= three;
                     tmp
                 });
             }
@@ -2734,15 +2736,15 @@ mod test {
             assert_eq!(Pow::pow(r, &e), expected);
             assert_eq!(Pow::pow(&r, e), expected);
             assert_eq!(Pow::pow(&r, &e), expected);
-            #[cfg(feature = "num-bigint")]
+            #[cfg(feature = "num-bigint-generic")]
             test_big(r, e, expected);
         }
 
-        #[cfg(feature = "num-bigint")]
+        #[cfg(feature = "num-bigint-generic")]
         fn test_big(r: Rational64, e: i32, expected: Rational64) {
             let r = BigRational::new_raw(r.numer.into(), r.denom.into());
             let expected = BigRational::new_raw(expected.numer.into(), expected.denom.into());
-            assert_eq!((&r).pow(e), expected);
+            assert_eq!(r.clone().pow(e), expected);
             assert_eq!(Pow::pow(r.clone(), e), expected);
             assert_eq!(Pow::pow(r.clone(), &e), expected);
             assert_eq!(Pow::pow(&r, e), expected);
@@ -2789,7 +2791,7 @@ mod test {
         }
     }
 
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     #[test]
     fn test_from_float() {
         use num_traits::float::FloatCore;
@@ -2815,8 +2817,8 @@ mod test {
             1.0 / 2f32.powf(100.),
             ("1", "1267650600228229401496703205376"),
         );
-        test(684729.48391f32, ("1369459", "2"));
-        test(-8573.5918555f32, ("-4389679", "512"));
+        test(684_729.5_f32, ("1369459", "2"));
+        test(-8_573.592_f32, ("-4389679", "512"));
 
         // f64
         test(
@@ -2836,7 +2838,7 @@ mod test {
         );
     }
 
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     #[test]
     fn test_from_float_fail() {
         use core::{f32, f64};
@@ -2997,7 +2999,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     fn test_ratio_to_i128() {
         assert_eq!(
             1i128 << 70,
@@ -3008,7 +3010,7 @@ mod test {
     }
 
     #[test]
-    #[cfg(feature = "num-bigint")]
+    #[cfg(feature = "num-bigint-generic")]
     fn test_big_ratio_to_f64() {
         assert_eq!(
             BigRational::new(
@@ -3033,11 +3035,11 @@ mod test {
         );
         assert_eq!(
             BigRational::from(BigInt::one() << 1050).to_f64(),
-            Some(core::f64::INFINITY)
+            Some(f64::INFINITY)
         );
         assert_eq!(
             BigRational::from((-BigInt::one()) << 1050).to_f64(),
-            Some(core::f64::NEG_INFINITY)
+            Some(f64::NEG_INFINITY)
         );
         assert_eq!(
             BigRational::new(
@@ -3049,11 +3051,11 @@ mod test {
         );
         assert_eq!(
             BigRational::new_raw(BigInt::one(), BigInt::zero()).to_f64(),
-            Some(core::f64::INFINITY)
+            Some(f64::INFINITY)
         );
         assert_eq!(
             BigRational::new_raw(-BigInt::one(), BigInt::zero()).to_f64(),
-            Some(core::f64::NEG_INFINITY)
+            Some(f64::NEG_INFINITY)
         );
         assert_eq!(
             BigRational::new_raw(BigInt::zero(), BigInt::zero()).to_f64(),
@@ -3077,20 +3079,17 @@ mod test {
             Rational64::new((1 << 60) + (1 << 8), 1 << 60).to_f64(),
             Some(1.0000000000000002f64),
         );
-        assert_eq!(
-            Ratio::<i32>::new_raw(1, 0).to_f64(),
-            Some(core::f64::INFINITY)
-        );
+        assert_eq!(Ratio::<i32>::new_raw(1, 0).to_f64(), Some(f64::INFINITY));
         assert_eq!(
             Ratio::<i32>::new_raw(-1, 0).to_f64(),
-            Some(core::f64::NEG_INFINITY)
+            Some(f64::NEG_INFINITY)
         );
         assert_eq!(Ratio::<i32>::new_raw(0, 0).to_f64(), None);
     }
 
     #[test]
     fn test_ldexp() {
-        use core::f64::{INFINITY, MAX_EXP, MIN_EXP, NAN, NEG_INFINITY};
+        // Legacy numeric constants replaced with associated constants
         assert_eq!(ldexp(1.0, 0), 1.0);
         assert_eq!(ldexp(1.0, 1), 2.0);
         assert_eq!(ldexp(0.0, 1), 0.0);
@@ -3099,28 +3098,31 @@ mod test {
         // Cases where ldexp is equivalent to multiplying by 2^exp because there's no over- or
         // underflow.
         assert_eq!(ldexp(3.5, 5), 3.5 * 2f64.powi(5));
-        assert_eq!(ldexp(1.0, MAX_EXP - 1), 2f64.powi(MAX_EXP - 1));
-        assert_eq!(ldexp(2.77, MIN_EXP + 3), 2.77 * 2f64.powi(MIN_EXP + 3));
+        assert_eq!(ldexp(1.0, f64::MAX_EXP - 1), 2f64.powi(f64::MAX_EXP - 1));
+        assert_eq!(
+            ldexp(2.77, f64::MIN_EXP + 3),
+            2.77 * 2f64.powi(f64::MIN_EXP + 3)
+        );
 
         // Case where initial value is subnormal
         assert_eq!(ldexp(5e-324, 4), 5e-324 * 2f64.powi(4));
         assert_eq!(ldexp(5e-324, 200), 5e-324 * 2f64.powi(200));
 
         // Near underflow (2^exp is too small to represent, but not x*2^exp)
-        assert_eq!(ldexp(4.0, MIN_EXP - 3), 2f64.powi(MIN_EXP - 1));
+        assert_eq!(ldexp(4.0, f64::MIN_EXP - 3), 2f64.powi(f64::MIN_EXP - 1));
 
         // Near overflow
-        assert_eq!(ldexp(0.125, MAX_EXP + 3), 2f64.powi(MAX_EXP));
+        assert_eq!(ldexp(0.125, f64::MAX_EXP + 3), 2f64.powi(f64::MAX_EXP));
 
         // Overflow and underflow cases
-        assert_eq!(ldexp(1.0, MIN_EXP - 54), 0.0);
-        assert_eq!(ldexp(-1.0, MIN_EXP - 54), -0.0);
-        assert_eq!(ldexp(1.0, MAX_EXP), INFINITY);
-        assert_eq!(ldexp(-1.0, MAX_EXP), NEG_INFINITY);
+        assert_eq!(ldexp(1.0, f64::MIN_EXP - 54), 0.0);
+        assert_eq!(ldexp(-1.0, f64::MIN_EXP - 54), -0.0);
+        assert_eq!(ldexp(1.0, f64::MAX_EXP), f64::INFINITY);
+        assert_eq!(ldexp(-1.0, f64::MAX_EXP), f64::NEG_INFINITY);
 
         // Special values
-        assert_eq!(ldexp(INFINITY, 1), INFINITY);
-        assert_eq!(ldexp(NEG_INFINITY, 1), NEG_INFINITY);
-        assert!(ldexp(NAN, 1).is_nan());
+        assert_eq!(ldexp(f64::INFINITY, 1), f64::INFINITY);
+        assert_eq!(ldexp(f64::NEG_INFINITY, 1), f64::NEG_INFINITY);
+        assert!(ldexp(f64::NAN, 1).is_nan());
     }
 }

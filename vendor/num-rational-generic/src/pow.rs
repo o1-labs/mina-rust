@@ -112,10 +112,10 @@ pow_signed_impl!(i64, u64);
 pow_signed_impl!(i128, u128);
 pow_signed_impl!(isize, usize);
 
-#[cfg(feature = "num-bigint")]
+#[cfg(feature = "num-bigint-generic")]
 mod bigint {
     use super::*;
-    use num_bigint::{BigInt, BigUint, Sign};
+    use num_bigint_generic::{BigInt, BigUint, Sign};
 
     impl<T: Clone + Integer + for<'b> Pow<&'b BigUint, Output = T>> Pow<BigUint> for Ratio<T> {
         type Output = Ratio<T>;

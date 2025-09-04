@@ -6,7 +6,7 @@ homepage = "https://github.com/rust-num/num-rational"
 keywords = ["mathematics", "numerics", "fractions"]
 categories = ["algorithms", "data-structures", "science", "no-std"]
 license = "MIT OR Apache-2.0"
-name = "num-rational"
+name = "num-rational-generic"
 repository = "https://github.com/rust-num/num-rational"
 version = "0.4.2"
 readme = "README.md"
@@ -19,9 +19,10 @@ features = ["std", "num-bigint-std", "serde"]
 
 [dependencies]
 
-[dependencies.num-bigint]
+[dependencies.num-bigint-generic]
 default-features = false
 optional = true
+path = "../num-bigint-generic"
 version = "0.4.0"
 
 [dependencies.num-integer]
@@ -40,8 +41,8 @@ optional = true
 version = "1.0.0"
 
 [features]
-default = ["num-bigint", "std"]
-std = ["num-bigint?/std", "num-integer/std", "num-traits/std"]
-num-bigint-std = ["num-bigint/std"]
-num-bigint = ["dep:num-bigint"]
+default = ["num-bigint-generic", "std"]
+std = ["num-bigint-generic?/std", "num-integer/std", "num-traits/std"]
+num-bigint-generic-std = ["num-bigint-generic/std"]
+num-bigint-generic = ["dep:num-bigint-generic"]
 serde = ["dep:serde"]

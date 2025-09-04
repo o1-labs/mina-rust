@@ -6110,6 +6110,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "num-rational-generic"
+version = "0.4.2"
+dependencies = [
+ "num-bigint-generic",
+ "num-integer",
+ "num-traits",
+ "serde",
+]
+
+[[package]]
 name = "num-traits"
 version = "0.2.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
