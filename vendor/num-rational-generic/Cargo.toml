@@ -20,24 +20,24 @@ features = ["std", "num-bigint-std", "serde"]
 [dependencies]
 
 [dependencies.num-bigint]
+default-features = false
 optional = true
 version = "0.4.0"
-default-features = false
 
 [dependencies.num-integer]
-version = "0.1.42"
 default-features = false
 features = ["i128"]
+version = "0.1.42"
 
 [dependencies.num-traits]
-version = "0.2.18"
 default-features = false
 features = ["i128"]
+version = "0.2.18"
 
 [dependencies.serde]
+default-features = false
 optional = true
 version = "1.0.0"
-default-features = false
 
 [features]
 default = ["num-bigint", "std"]

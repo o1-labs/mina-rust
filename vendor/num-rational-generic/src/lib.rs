@@ -24,12 +24,13 @@
 #[macro_use]
 extern crate std;
 
-use core::cmp;
-use core::fmt;
-use core::fmt::{Binary, Display, Formatter, LowerExp, LowerHex, Octal, UpperExp, UpperHex};
-use core::hash::{Hash, Hasher};
-use core::ops::{Add, Div, Mul, Neg, Rem, ShlAssign, Sub};
-use core::str::FromStr;
+use core::{
+    cmp, fmt,
+    fmt::{Binary, Display, Formatter, LowerExp, LowerHex, Octal, UpperExp, UpperHex},
+    hash::{Hash, Hasher},
+    ops::{Add, Div, Mul, Neg, Rem, ShlAssign, Sub},
+    str::FromStr,
+};
 #[cfg(feature = "std")]
 use std::error::Error;
 
@@ -37,10 +38,9 @@ use std::error::Error;
 use num_bigint::{BigInt, BigUint, Sign, ToBigInt};
 
 use num_integer::Integer;
-use num_traits::float::FloatCore;
 use num_traits::{
-    Bounded, CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, ConstOne, ConstZero, FromPrimitive,
-    Inv, Num, NumCast, One, Pow, Signed, ToPrimitive, Unsigned, Zero,
+    float::FloatCore, Bounded, CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, ConstOne, ConstZero,
+    FromPrimitive, Inv, Num, NumCast, One, Pow, Signed, ToPrimitive, Unsigned, Zero,
 };
 
 mod pow;
@@ -1169,8 +1169,7 @@ where
     where
         D: serde::Deserializer<'de>,
     {
-        use serde::de::Error;
-        use serde::de::Unexpected;
+        use serde::de::{Error, Unexpected};
         let (numer, denom): (T, T) = serde::Deserialize::deserialize(deserializer)?;
         if denom.is_zero() {
             Err(Error::invalid_value(
@@ -1717,8 +1716,7 @@ fn ldexp(x: f64, exp: i32) -> f64 {
 #[cfg(test)]
 #[cfg(feature = "std")]
 fn hash<T: Hash>(x: &T) -> u64 {
-    use std::collections::hash_map::RandomState;
-    use std::hash::BuildHasher;
+    use std::{collections::hash_map::RandomState, hash::BuildHasher};
     let mut hasher = <RandomState as BuildHasher>::Hasher::new();
     x.hash(&mut hasher);
     hasher.finish()
@@ -1726,18 +1724,13 @@ fn hash<T: Hash>(x: &T) -> u64 {
 
 #[cfg(test)]
 mod test {
-    use super::ldexp;
+    use super::{ldexp, Ratio, Rational64};
     #[cfg(feature = "num-bigint")]
     use super::{BigInt, BigRational};
-    use super::{Ratio, Rational64};
 
-    use core::f64;
-    use core::i32;
-    use core::i64;
-    use core::str::FromStr;
+    use core::{f64, i32, i64, str::FromStr};
     use num_integer::Integer;
-    use num_traits::ToPrimitive;
-    use num_traits::{FromPrimitive, One, Pow, Signed, Zero};
+    use num_traits::{FromPrimitive, One, Pow, Signed, ToPrimitive, Zero};
 
     pub const _0: Rational64 = Ratio { numer: 0, denom: 1 };
     pub const _1: Rational64 = Ratio { numer: 1, denom: 1 };
@@ -2147,8 +2140,10 @@ mod test {
     }
 
     mod arith {
-        use super::super::{Ratio, Rational64};
-        use super::{to_big, _0, _1, _1_2, _2, _3_2, _5_2, _MAX, _MAX_M1, _MIN, _MIN_P1, _NEG1_2};
+        use super::{
+            super::{Ratio, Rational64},
+            to_big, _0, _1, _1_2, _2, _3_2, _5_2, _MAX, _MAX_M1, _MIN, _MIN_P1, _NEG1_2,
+        };
         use core::fmt::Debug;
         use num_integer::Integer;
         use num_traits::{Bounded, CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, NumAssign};
