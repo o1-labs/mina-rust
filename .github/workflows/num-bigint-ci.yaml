@@ -25,7 +25,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
       - run: cargo build
-      - run: ./ci/test_full.sh
+      - run: vendor/num-bigint-generic/ci/test_full.sh
 
   # try a target with `BigDigit = u32`
   i686:
@@ -40,7 +40,7 @@ jobs:
         with:
           toolchain: stable-i686-unknown-linux-gnu
       - run: cargo build
-      - run: ./ci/test_full.sh
+      - run: vendor/num-bigint-generic/ci/test_full.sh
 
   # try building the x32 target -- x86_64 with target_pointer_width="32"
   # (we can't execute without kernel CONFIG_X86_X32_ABI though)
