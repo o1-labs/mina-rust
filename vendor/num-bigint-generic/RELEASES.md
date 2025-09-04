@@ -25,9 +25,12 @@
 # Release 0.4.4 (2023-08-22)
 
 - [Implemented `From<bool>` for `BigInt` and `BigUint`.][239]
-- [Implemented `num_traits::Euclid` and `CheckedEuclid` for `BigInt` and `BigUint`.][245]
-- [Implemented ties-to-even for `BigInt` and `BigUint::to_f32` and `to_f64`.][271]
-- [Implemented `num_traits::FromBytes` and `ToBytes` for `BigInt` and `BigUint`.][276]
+- [Implemented `num_traits::Euclid` and `CheckedEuclid` for `BigInt` and
+  `BigUint`.][245]
+- [Implemented ties-to-even for `BigInt` and `BigUint::to_f32` and
+  `to_f64`.][271]
+- [Implemented `num_traits::FromBytes` and `ToBytes` for `BigInt` and
+  `BigUint`.][276]
 - Limited pre-allocation from serde size hints against potential OOM.
 - Miscellaneous other code cleanups and maintenance tasks.
 
@@ -47,7 +50,8 @@
 **Contributors**: @arvidn, @cuviper, @guidovranken
 
 [228]: https://github.com/rust-num/num-bigint/pull/228
-[GHSA-v935-pqmr-g8v9]: https://github.com/rust-num/num-bigint/security/advisories/GHSA-v935-pqmr-g8v9
+[GHSA-v935-pqmr-g8v9]:
+  https://github.com/rust-num/num-bigint/security/advisories/GHSA-v935-pqmr-g8v9
 
 # Release 0.4.2 (2021-09-03)
 
@@ -163,8 +167,8 @@
 - [Removed `impl Neg for BigUint`][145], which only ever panicked.
 - [Bit counts are now `u64` instead of `usize`][143].
 
-**Contributors**: @cuviper, @dignifiedquire, @hansihe,
-@kpcyrd, @milesand, @tech6hutch
+**Contributors**: @cuviper, @dignifiedquire, @hansihe, @kpcyrd, @milesand,
+@tech6hutch
 
 [62]: https://github.com/rust-num/num-bigint/pull/62
 [101]: https://github.com/rust-num/num-bigint/pull/101
@@ -196,8 +200,8 @@
 - [The new `BigUint::to_u32_digits` method][104] returns the number as a
   little-endian vector of base-2<sup>32</sup> digits. The same method on
   `BigInt` also returns the sign.
-- [`BigUint::modpow` now applies a modulus even for exponent 1][113], which
-  also affects `BigInt::modpow`.
+- [`BigUint::modpow` now applies a modulus even for exponent 1][113], which also
+  affects `BigInt::modpow`.
 - [`BigInt::modpow` now returns the correct sign for negative bases with even
   exponents][114].
 
@@ -210,12 +214,15 @@
 # Release 0.2.3 (2019-09-03)
 
 - [`Pow` is now implemented for `BigUint` exponents][77].
-- [The optional `quickcheck` feature enables implementations of `Arbitrary`][99].
-- See the [full comparison][compare-0.2.3] for performance enhancements and more!
+- [The optional `quickcheck` feature enables implementations of
+  `Arbitrary`][99].
+- See the [full comparison][compare-0.2.3] for performance enhancements and
+  more!
 
 [77]: https://github.com/rust-num/num-bigint/pull/77
 [99]: https://github.com/rust-num/num-bigint/pull/99
-[compare-0.2.3]: https://github.com/rust-num/num-bigint/compare/num-bigint-0.2.2...num-bigint-0.2.3
+[compare-0.2.3]:
+  https://github.com/rust-num/num-bigint/compare/num-bigint-0.2.2...num-bigint-0.2.3
 
 **Contributors**: @cuviper, @lcnr, @maxbla, @mikelodder7, @mikong,
 @TheLetterTheta, @tspiteri, @XAMPPRocky, @youknowone
@@ -234,10 +241,10 @@
 # Release 0.2.1 (2018-11-02)
 
 - [`RandBigInt` now uses `Rng::fill_bytes`][53] to improve performance, instead
-  of repeated `gen::<u32>` calls.  The also affects the implementations of the
-  other `rand` traits.  This may potentially change the values produced by some
-  seeded RNGs on previous versions, but the values were tested to be stable
-  with `ChaChaRng`, `IsaacRng`, and `XorShiftRng`.
+  of repeated `gen::<u32>` calls. The also affects the implementations of the
+  other `rand` traits. This may potentially change the values produced by some
+  seeded RNGs on previous versions, but the values were tested to be stable with
+  `ChaChaRng`, `IsaacRng`, and `XorShiftRng`.
 - [`BigInt` and `BigUint` now implement `num_integer::Roots`][56].
 - [`BigInt` and `BigUint` now implement `num_traits::Pow`][54].
 - [`BigInt` and `BigUint` now implement operators with 128-bit integers][64].
@@ -255,10 +262,10 @@
 ### Enhancements
 
 - [`BigInt` and `BigUint` now implement `Product` and `Sum`][22] for iterators
-  of any item that we can `Mul` and `Add`, respectively.  For example, a
+  of any item that we can `Mul` and `Add`, respectively. For example, a
   factorial can now be simply: `let f: BigUint = (1u32..1000).product();`
 - [`BigInt` now supports two's-complement logic operations][26], namely
-  `BitAnd`, `BitOr`, `BitXor`, and `Not`.  These act conceptually as if each
+  `BitAnd`, `BitOr`, `BitXor`, and `Not`. These act conceptually as if each
   number had an infinite prefix of `0` or `1` bits for positive or negative.
 - [`BigInt` now supports assignment operators][41] like `AddAssign`.
 - [`BigInt` and `BigUint` now support conversions with `i128` and `u128`][44],
@@ -270,10 +277,10 @@
 ### Breaking Changes
 
 - [`num-bigint` now requires rustc 1.15 or greater][23].
-- [The crate now has a `std` feature, and won't build without it][46].  This is
+- [The crate now has a `std` feature, and won't build without it][46]. This is
   in preparation for someday supporting `#![no_std]` with `alloc`.
 - [The `serde` dependency has been updated to 1.0][24], still disabled by
-  default.  The `rustc-serialize` crate is no longer supported by `num-bigint`.
+  default. The `rustc-serialize` crate is no longer supported by `num-bigint`.
 - [The `rand` dependency has been updated to 0.5][48], now disabled by default.
   This requires rustc 1.22 or greater for `rand`'s own requirement.
 - [`Shr for BigInt` now rounds down][8] rather than toward zero, matching the
@@ -281,7 +288,7 @@
 - [`ParseBigIntError` is now an opaque type][37].
 - [The `big_digit` module is no longer public][38], nor are the `BigDigit` and
   `DoubleBigDigit` types and `ZERO_BIG_DIGIT` constant that were re-exported in
-  the crate root.  Public APIs which deal in digits, like `BigUint::from_slice`,
+  the crate root. Public APIs which deal in digits, like `BigUint::from_slice`,
   will now always be base-`u32`.
 
 **Contributors**: @clarcharr, @cuviper, @dodomorandi, @tiehuis, @tspiteri
@@ -319,10 +326,10 @@
 
 [18]: https://github.com/rust-num/num-bigint/pull/18
 
-
 # Release 0.1.42 (2018-02-07)
 
-- [num-bigint now has its own source repository][num-356] at [rust-num/num-bigint][home].
+- [num-bigint now has its own source repository][num-356] at
+  [rust-num/num-bigint][home].
 - [`lcm` now avoids creating a large intermediate product][num-350].
 - [`gcd` now uses Stein's algorithm][15] with faster shifts instead of division.
 - [`rand` support is now extended to 0.4][11] (while still allowing 0.3).
@@ -335,9 +342,7 @@
 [11]: https://github.com/rust-num/num-bigint/pull/11
 [15]: https://github.com/rust-num/num-bigint/pull/15
 
-
 # Prior releases
 
-No prior release notes were kept.  Thanks all the same to the many
-contributors that have made this crate what it is!
-
+No prior release notes were kept. Thanks all the same to the many contributors
+that have made this crate what it is!
