@@ -5,8 +5,10 @@ use super::{biguint_from_tinyvec, BigUint};
 
 use alloc::vec::Vec;
 use core::{cmp, fmt, mem};
-use serde::de::{SeqAccess, Visitor};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{
+    de::{SeqAccess, Visitor},
+    Deserialize, Deserializer, Serialize, Serializer,
+};
 
 // `cautious` is based on the function of the same name in `serde`, but specialized to `u32`:
 // https://github.com/dtolnay/serde/blob/399ef081ecc36d2f165ff1f6debdcbf6a1dc7efb/serde/src/private/size_hint.rs#L11-L22

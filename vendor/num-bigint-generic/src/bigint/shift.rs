@@ -1,5 +1,4 @@
-use super::BigInt;
-use super::Sign::NoSign;
+use super::{BigInt, Sign::NoSign};
 
 use core::ops::{Shl, ShlAssign, Shr, ShrAssign};
 use num_traits::{PrimInt, Signed, Zero};

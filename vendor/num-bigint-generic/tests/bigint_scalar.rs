@@ -1,9 +1,7 @@
-use num_bigint::BigInt;
-use num_bigint::Sign::Plus;
+use num_bigint::{BigInt, Sign::Plus};
 use num_traits::{One, Signed, ToPrimitive, Zero};
 
-use std::ops::Neg;
-use std::panic::catch_unwind;
+use std::{ops::Neg, panic::catch_unwind};
 
 mod consts;
 use crate::consts::*;

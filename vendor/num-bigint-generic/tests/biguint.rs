@@ -1,14 +1,14 @@
-use num_bigint::Sign::Plus;
-use num_bigint::{BigInt, ToBigInt};
-use num_bigint::{BigUint, ToBigUint};
+use num_bigint::{BigInt, BigUint, Sign::Plus, ToBigInt, ToBigUint};
 use num_integer::Integer;
 
-use std::cmp::Ordering::{Equal, Greater, Less};
-use std::collections::hash_map::RandomState;
-use std::hash::{BuildHasher, Hash, Hasher};
-use std::iter::repeat;
-use std::str::FromStr;
-use std::{f32, f64};
+use std::{
+    cmp::Ordering::{Equal, Greater, Less},
+    collections::hash_map::RandomState,
+    f32, f64,
+    hash::{BuildHasher, Hash, Hasher},
+    iter::repeat,
+    str::FromStr,
+};
 
 use num_traits::{
     pow, CheckedAdd, CheckedDiv, CheckedMul, CheckedSub, Euclid, FromBytes, FromPrimitive, Num,

@@ -3,8 +3,10 @@ use super::{biguint_from_tinyvec, BigUint};
 use crate::big_digit;
 
 use alloc::borrow::Cow;
-use core::mem;
-use core::ops::{Shl, ShlAssign, Shr, ShrAssign};
+use core::{
+    mem,
+    ops::{Shl, ShlAssign, Shr, ShrAssign},
+};
 use num_traits::{PrimInt, Zero};
 use tinyvec::TinyVec;
 

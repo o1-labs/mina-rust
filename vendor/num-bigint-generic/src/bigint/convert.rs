@@ -1,13 +1,17 @@
-use super::Sign::{self, Minus, NoSign, Plus};
-use super::{BigInt, ToBigInt};
+use super::{
+    BigInt,
+    Sign::{self, Minus, NoSign, Plus},
+    ToBigInt,
+};
 
-use crate::TryFromBigIntError;
-use crate::{BigUint, ParseBigIntError, ToBigUint};
+use crate::{BigUint, ParseBigIntError, ToBigUint, TryFromBigIntError};
 
 use alloc::vec::Vec;
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::convert::TryFrom;
-use core::str::{self, FromStr};
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    convert::TryFrom,
+    str::{self, FromStr},
+};
 use num_traits::{FromPrimitive, Num, One, ToPrimitive, Zero};
 
 impl FromStr for BigInt {

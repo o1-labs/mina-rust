@@ -1,5 +1,7 @@
-use super::BigInt;
-use super::Sign::{self, Minus, Plus};
+use super::{
+    BigInt,
+    Sign::{self, Minus, Plus},
+};
 
 use crate::BigUint;
 

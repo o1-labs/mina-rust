@@ -1,10 +1,14 @@
-use super::BigInt;
-use super::Sign::{Minus, NoSign, Plus};
+use super::{
+    BigInt,
+    Sign::{Minus, NoSign, Plus},
+};
 
 use crate::big_digit::{self, BigDigit, DoubleBigDigit};
 
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign};
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign},
+};
 use num_traits::{ToPrimitive, Zero};
 use tinyvec::TinyVec;
 

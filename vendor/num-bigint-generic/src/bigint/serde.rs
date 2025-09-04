@@ -3,8 +3,10 @@
 
 use super::{BigInt, Sign};
 
-use serde::de::{Error, Unexpected};
-use serde::{Deserialize, Deserializer, Serialize, Serializer};
+use serde::{
+    de::{Error, Unexpected},
+    Deserialize, Deserializer, Serialize, Serializer,
+};
 
 impl Serialize for Sign {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

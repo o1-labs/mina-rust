@@ -1,13 +1,18 @@
-use super::CheckedUnsignedAbs::{Negative, Positive};
-use super::Sign::{Minus, NoSign, Plus};
-use super::{BigInt, UnsignedAbs};
+use super::{
+    BigInt,
+    CheckedUnsignedAbs::{Negative, Positive},
+    Sign::{Minus, NoSign, Plus},
+    UnsignedAbs,
+};
 
 use crate::{IsizePromotion, UsizePromotion};
 
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::iter::Sum;
-use core::mem;
-use core::ops::{Add, AddAssign};
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    iter::Sum,
+    mem,
+    ops::{Add, AddAssign},
+};
 use num_traits::CheckedAdd;
 
 // We want to forward to BigUint::add, but it's not clear how that will go until

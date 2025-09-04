@@ -2,12 +2,12 @@
 #![cfg(feature = "rand")]
 #![cfg_attr(docsrs, doc(cfg(feature = "rand")))]
 
-use rand::distributions::uniform::{SampleBorrow, SampleUniform, UniformSampler};
-use rand::prelude::*;
+use rand::{
+    distributions::uniform::{SampleBorrow, SampleUniform, UniformSampler},
+    prelude::*,
+};
 
-use crate::BigInt;
-use crate::BigUint;
-use crate::Sign::*;
+use crate::{BigInt, BigUint, Sign::*};
 
 use crate::biguint::biguint_from_tinyvec;
 

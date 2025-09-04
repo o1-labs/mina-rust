@@ -38,8 +38,7 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
 // OF THE POSSIBILITY OF SUCH DAMAGE.
 
-use std::io;
-use std::str::FromStr;
+use std::{io, str::FromStr};
 
 use num_bigint::BigInt;
 use num_integer::Integer;

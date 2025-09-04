@@ -1,11 +1,16 @@
-use super::CheckedUnsignedAbs::{Negative, Positive};
-use super::Sign::{self, Minus, NoSign, Plus};
-use super::{BigInt, UnsignedAbs};
+use super::{
+    BigInt,
+    CheckedUnsignedAbs::{Negative, Positive},
+    Sign::{self, Minus, NoSign, Plus},
+    UnsignedAbs,
+};
 
 use crate::{IsizePromotion, UsizePromotion};
 
-use core::iter::Product;
-use core::ops::{Mul, MulAssign};
+use core::{
+    iter::Product,
+    ops::{Mul, MulAssign},
+};
 use num_traits::{CheckedMul, One, Zero};
 
 impl Mul<Sign> for Sign {

@@ -1,10 +1,14 @@
 use super::BigUint;
 
-use crate::big_digit::{self, BigDigit};
-use crate::UsizePromotion;
+use crate::{
+    big_digit::{self, BigDigit},
+    UsizePromotion,
+};
 
-use core::iter::Sum;
-use core::ops::{Add, AddAssign};
+use core::{
+    iter::Sum,
+    ops::{Add, AddAssign},
+};
 use num_traits::CheckedAdd;
 
 #[cfg(target_arch = "x86_64")]

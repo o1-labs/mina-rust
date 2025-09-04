@@ -1,14 +1,14 @@
 // `Add`/`Sub` ops may flip from `BigInt` to its `BigUint` magnitude
 #![allow(clippy::suspicious_arithmetic_impl)]
 
-use alloc::string::String;
-use alloc::vec::Vec;
-use core::cmp::Ordering::{self, Equal};
-use core::default::Default;
-use core::fmt;
-use core::hash;
-use core::ops::{Neg, Not};
-use core::str;
+use alloc::{string::String, vec::Vec};
+use core::{
+    cmp::Ordering::{self, Equal},
+    default::Default,
+    fmt, hash,
+    ops::{Neg, Not},
+    str,
+};
 use tinyvec::TinyVec;
 
 use num_integer::{Integer, Roots};
@@ -16,9 +16,10 @@ use num_traits::{Num, One, Pow, Signed, Zero};
 
 use self::Sign::{Minus, NoSign, Plus};
 
-use crate::big_digit::BigDigit;
-use crate::biguint::{to_str_radix_reversed, NLIMBS};
-use crate::biguint::{BigUint, U32Digits, U64Digits};
+use crate::{
+    big_digit::BigDigit,
+    biguint::{to_str_radix_reversed, BigUint, U32Digits, U64Digits, NLIMBS},
+};
 
 mod addition;
 mod division;

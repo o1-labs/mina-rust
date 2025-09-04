@@ -1,12 +1,15 @@
-use super::addition::__add2;
-use super::{cmp_slice, BigUint};
+use super::{addition::__add2, cmp_slice, BigUint};
 
-use crate::big_digit::{self, BigDigit, DoubleBigDigit};
-use crate::UsizePromotion;
+use crate::{
+    big_digit::{self, BigDigit, DoubleBigDigit},
+    UsizePromotion,
+};
 
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::mem;
-use core::ops::{Div, DivAssign, Rem, RemAssign};
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    mem,
+    ops::{Div, DivAssign, Rem, RemAssign},
+};
 use num_integer::Integer;
 use num_traits::{CheckedDiv, CheckedEuclid, Euclid, One, ToPrimitive, Zero};
 

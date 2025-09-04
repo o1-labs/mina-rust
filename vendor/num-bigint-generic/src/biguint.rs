@@ -1,16 +1,8 @@
 use crate::big_digit::{self, BigDigit};
 
-use alloc::string::String;
-use alloc::vec::Vec;
-use core::cmp;
-use core::cmp::Ordering;
-use core::default::Default;
-use core::fmt;
-use core::hash;
-use core::mem;
-use core::str;
-use tinyvec::tiny_vec;
-use tinyvec::TinyVec;
+use alloc::{string::String, vec::Vec};
+use core::{cmp, cmp::Ordering, default::Default, fmt, hash, mem, str};
+use tinyvec::{tiny_vec, TinyVec};
 
 use num_integer::{Integer, Roots};
 use num_traits::{Num, One, Pow, ToPrimitive, Unsigned, Zero};

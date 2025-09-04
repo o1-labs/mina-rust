@@ -1,6 +1,9 @@
-use super::CheckedUnsignedAbs::{Negative, Positive};
-use super::Sign::NoSign;
-use super::{BigInt, UnsignedAbs};
+use super::{
+    BigInt,
+    CheckedUnsignedAbs::{Negative, Positive},
+    Sign::NoSign,
+    UnsignedAbs,
+};
 
 use crate::{IsizePromotion, UsizePromotion};
 

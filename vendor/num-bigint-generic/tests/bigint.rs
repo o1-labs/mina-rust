@@ -1,13 +1,17 @@
-use num_bigint::BigUint;
-use num_bigint::Sign::{Minus, NoSign, Plus};
-use num_bigint::{BigInt, ToBigInt};
+use num_bigint::{
+    BigInt, BigUint,
+    Sign::{Minus, NoSign, Plus},
+    ToBigInt,
+};
 
-use std::cmp::Ordering::{Equal, Greater, Less};
-use std::collections::hash_map::RandomState;
-use std::hash::{BuildHasher, Hash, Hasher};
-use std::iter::repeat;
-use std::ops::Neg;
-use std::{f32, f64};
+use std::{
+    cmp::Ordering::{Equal, Greater, Less},
+    collections::hash_map::RandomState,
+    f32, f64,
+    hash::{BuildHasher, Hash, Hasher},
+    iter::repeat,
+    ops::Neg,
+};
 
 use num_integer::Integer;
 use num_traits::{

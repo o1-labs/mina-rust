@@ -1,14 +1,22 @@
-use super::addition::{__add2, add2};
-use super::subtraction::sub2;
-use super::{biguint_from_tinyvec, cmp_slice, BigUint};
+use super::{
+    addition::{__add2, add2},
+    biguint_from_tinyvec, cmp_slice,
+    subtraction::sub2,
+    BigUint,
+};
 
-use crate::big_digit::{self, BigDigit, DoubleBigDigit};
-use crate::Sign::{self, Minus, NoSign, Plus};
-use crate::{BigInt, UsizePromotion};
+use crate::{
+    big_digit::{self, BigDigit, DoubleBigDigit},
+    BigInt,
+    Sign::{self, Minus, NoSign, Plus},
+    UsizePromotion,
+};
 
-use core::cmp::Ordering;
-use core::iter::Product;
-use core::ops::{Mul, MulAssign};
+use core::{
+    cmp::Ordering,
+    iter::Product,
+    ops::{Mul, MulAssign},
+};
 use num_traits::{CheckedMul, FromPrimitive, One, Zero};
 use tinyvec::TinyVec;
 

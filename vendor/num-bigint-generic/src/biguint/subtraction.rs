@@ -1,10 +1,14 @@
 use super::BigUint;
 
-use crate::big_digit::{self, BigDigit};
-use crate::UsizePromotion;
+use crate::{
+    big_digit::{self, BigDigit},
+    UsizePromotion,
+};
 
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::ops::{Sub, SubAssign};
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    ops::{Sub, SubAssign},
+};
 use num_traits::CheckedSub;
 
 #[cfg(target_arch = "x86_64")]

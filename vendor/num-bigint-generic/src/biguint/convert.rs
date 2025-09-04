@@ -3,22 +3,26 @@
 
 use super::{biguint_from_tinyvec, BigUint, ToBigUint};
 
-use super::addition::add2;
-use super::division::{div_rem_digit, FAST_DIV_WIDE};
-use super::multiplication::mac_with_carry;
+use super::{
+    addition::add2,
+    division::{div_rem_digit, FAST_DIV_WIDE},
+    multiplication::mac_with_carry,
+};
 
-use crate::big_digit::{self, BigDigit};
-use crate::ParseBigIntError;
-use crate::TryFromBigIntError;
+use crate::{
+    big_digit::{self, BigDigit},
+    ParseBigIntError, TryFromBigIntError,
+};
 
 use alloc::vec::Vec;
-use core::cmp::Ordering::{Equal, Greater, Less};
-use core::convert::TryFrom;
-use core::mem;
-use core::str::FromStr;
+use core::{
+    cmp::Ordering::{Equal, Greater, Less},
+    convert::TryFrom,
+    mem,
+    str::FromStr,
+};
 use num_integer::{Integer, Roots};
-use num_traits::float::FloatCore;
-use num_traits::{FromPrimitive, Num, One, PrimInt, ToPrimitive, Zero};
+use num_traits::{float::FloatCore, FromPrimitive, Num, One, PrimInt, ToPrimitive, Zero};
 use tinyvec::TinyVec;
 
 /// Find last set bit

@@ -4,7 +4,7 @@ description = "Big integer implementation for Rust"
 documentation = "https://docs.rs/num-bigint"
 homepage = "https://github.com/rust-num/num-bigint"
 keywords = ["mathematics", "numerics", "bignum"]
-categories = [ "algorithms", "data-structures", "science" ]
+categories = ["algorithms", "data-structures", "science"]
 license = "MIT OR Apache-2.0"
 name = "num-bigint-generic"
 repository = "https://github.com/rust-num/num-bigint"
@@ -43,34 +43,34 @@ harness = false
 name = "shootout-pidigits"
 
 [dependencies]
-tinyvec = { version = "1", features = [ "alloc", "rustc_1_55" ] }
+tinyvec = { version = "1", features = ["alloc", "rustc_1_55"] }
 
 [dependencies.num-integer]
-version = "0.1.46"
 default-features = false
 features = ["i128"]
+version = "0.1.46"
 
 [dependencies.num-traits]
-version = "0.2.18"
 default-features = false
 features = ["i128"]
+version = "0.2.18"
 
 [dependencies.rand]
+default-features = false
 optional = true
 version = "0.8"
-default-features = false
 
 [dependencies.serde]
+default-features = false
 optional = true
 version = "1.0"
-default-features = false
 
 [dependencies.quickcheck]
+default-features = false
 optional = true
 version = "1"
-default-features = false
 
 [dependencies.arbitrary]
+default-features = false
 optional = true
 version = "1"
-default-features = false
