@@ -327,7 +327,7 @@ fn add_nocarry(a: &mut BigInt, b: &BigInt) -> bool {
 
 #[cfg(test)]
 mod tests {
-    use std::ops::MulAssign;
+    use core::ops::MulAssign;
     use std::str::FromStr;
 
     use super::*;
@@ -562,7 +562,7 @@ mod tests {
             let mina_fp = mina_curves::pasta::Fp::from_str(s).unwrap();
             assert_eq!(fp.0, mina_fp.0 .0);
 
-            assert_eq!(fp.into_repr(), mina_fp.into_repr().0)
+            assert_eq!(fp.into_bigint(), mina_fp.into_bigint().0)
         }
 
         for chunk in CONSTANTS.chunks(2) {

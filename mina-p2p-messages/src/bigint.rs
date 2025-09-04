@@ -10,7 +10,7 @@ impl std::fmt::Debug for BigInt {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let Self(bigint) = self;
         // Avoid vertical alignment
-        f.write_fmt(format_args!("BigInt({:?})", bigint.to_native()))
+        f.write_fmt(format_args!("BigInt({:?})", bigint.0))
     }
 }
 
@@ -35,22 +35,23 @@ impl BigInt {
 
     pub fn to_field<F>(&self) -> Result<F, InvalidBigInt>
     where
-        F: ark_ff::Field + TryFrom<BigInteger256, Error = InvalidBigInt>,
+        F: ark_ff::Field + From<BigInteger256>,
     {
         let Self(biginteger) = self;
-        F::try_from(*biginteger)
+        Ok(F::from(*biginteger))
     }
 
     pub fn to_bytes(&self) -> [u8; 32] {
         use ark_ff::ToBytes;
         let mut bytes = std::io::Cursor::new([0u8; 32]);
-        self.0.write(&mut bytes).unwrap(); // Never fail, there is 32 bytes
+        self.0 .0.write(&mut bytes).unwrap(); // Never fail, there is 32 bytes
         bytes.into_inner()
     }
 
     pub fn from_bytes(bytes: [u8; 32]) -> Self {
         use ark_ff::FromBytes;
-        Self(BigInteger256::read(&bytes[..]).unwrap()) // Never fail, we read from 32 bytes
+        let value = FromBytes::read(&bytes[..]).expect("Don't fail");
+        Self(BigInteger256::new(value)) // Never fail, we read from 32 bytes
     }
 
     pub fn from_decimal(s: &str) -> Result<Self, InvalidDecimalNumber> {
@@ -80,54 +81,54 @@ impl AsRef<BigInteger256> for BigInt {
 impl From<mina_curves::pasta::Fp> for BigInt {
     fn from(field: mina_curves::pasta::Fp) -> Self {
         use ark_ff::PrimeField;
-        Self(field.into_repr())
+        Self(field.into_bigint())
     }
 }
 
 impl From<mina_curves::pasta::Fq> for BigInt {
     fn from(field: mina_curves::pasta::Fq) -> Self {
         use ark_ff::PrimeField;
-        Self(field.into_repr())
+        Self(field.into_bigint())
     }
 }
 
 impl From<&mina_curves::pasta::Fp> for BigInt {
     fn from(field: &mina_curves::pasta::Fp) -> Self {
         use ark_ff::PrimeField;
-        Self(field.into_repr())
+        Self(field.into_bigint())
     }
 }
 
 impl From<&mina_curves::pasta::Fq> for BigInt {
     fn from(field: &mina_curves::pasta::Fq) -> Self {
         use ark_ff::PrimeField;
-        Self(field.into_repr())
+        Self(field.into_bigint())
     }
 }
 
 impl TryFrom<BigInt> for mina_curves::pasta::Fp {
-    type Error = <mina_curves::pasta::Fp as TryFrom<BigInteger256>>::Error;
+    type Error = InvalidBigInt;
     fn try_from(bigint: BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
     }
 }
 
 impl TryFrom<BigInt> for mina_curves::pasta::Fq {
-    type Error = <mina_curves::pasta::Fq as TryFrom<BigInteger256>>::Error;
+    type Error = InvalidBigInt;
     fn try_from(bigint: BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
     }
 }
 
 impl TryFrom<&BigInt> for mina_curves::pasta::Fp {
-    type Error = <mina_curves::pasta::Fp as TryFrom<BigInteger256>>::Error;
+    type Error = InvalidBigInt;
     fn try_from(bigint: &BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
     }
 }
 
 impl TryFrom<&BigInt> for mina_curves::pasta::Fq {
-    type Error = <mina_curves::pasta::Fq as TryFrom<BigInteger256>>::Error;
+    type Error = InvalidBigInt;
     fn try_from(bigint: &BigInt) -> Result<Self, Self::Error> {
         bigint.to_field()
     }
@@ -190,7 +191,8 @@ impl binprot::BinProtRead for BigInt {
         Self: Sized,
     {
         use ark_ff::FromBytes;
-        Ok(Self(BigInteger256::read(r)?))
+        let value = FromBytes::read(r)?;
+        Ok(Self(BigInteger256::new(value)))
     }
 }
 
@@ -198,7 +200,7 @@ impl binprot::BinProtWrite for BigInt {
     fn binprot_write<W: std::io::Write>(&self, w: &mut W) -> std::io::Result<()> {
         use ark_ff::ToBytes;
         let Self(biginteger) = self;
-        biginteger.write(w)
+        biginteger.0.write(w)
     }
 }
 
@@ -455,7 +457,7 @@ mod tests {
         let original_sexp = Sexp::Atom(hex_str.as_bytes().to_vec());
 
         let result = BigInt::of_sexp(&original_sexp).expect("Failed to convert Sexp to BigInt");
-        let expected_result = BigInt(BigInteger256::from_64x4(expected_array));
+        let expected_result = BigInt(BigInteger256::new(expected_array));
 
         assert_eq!(result, expected_result);
 

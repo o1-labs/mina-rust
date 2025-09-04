@@ -1,4 +1,4 @@
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field, FromBytes};
+use ark_ff::{BigInteger256, Field, FromBytes};
 use kimchi::proof::ProofEvaluations;
 use mina_curves::pasta::{Fp, Fq};
 
@@ -38,7 +38,7 @@ where
 
 pub fn field_from_hex<F>(mut s: &str) -> F
 where
-    F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>,
+    F: Field + From<BigInteger256>,
 {
     if s.starts_with("0x") {
         s = &s[2..];
@@ -48,8 +48,9 @@ where
     hex::decode_to_slice(s, &mut bytes).unwrap();
     bytes.reverse();
 
-    let bigint = BigInteger256::read(&bytes[..]).unwrap();
-    bigint.try_into().unwrap() // Never fail, we hardcode them with string literals
+    let value = FromBytes::read(&bytes[..]).expect("Should not fail");
+    let bigint = BigInteger256::new(value);
+    F::from(bigint) // Never fail, we hardcode them with string literals
 }
 
 fn field<F: FieldWitness>(s: &str) -> F {

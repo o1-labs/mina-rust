@@ -5,7 +5,7 @@ edition = "2021"
 
 
 [dependencies]
-ark-ec = { version = "0.3.0", features = ["std"] }
+ark-ec.workspace = true
 ark-ff = { workspace = true }
 ark-serialize = "0.4.2"
 bitvec = "1.0.1"

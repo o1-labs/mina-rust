@@ -6,9 +6,9 @@ license = "Apache-2.0"
 
 [dependencies]
 anyhow = "1.0.70"
-ark-ec = { version = "0.3.0", features = ["std"] }
+ark-ec.workspace = true
 ark-ff = { workspace = true }
-ark-serialize = { version = "0.3.0", features = ["std"] }
+ark-serialize.workspace = true
 hex = "0.4.3"
 ledger = { workspace = true }
 mina-curves = { workspace = true }

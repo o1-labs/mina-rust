@@ -126,8 +126,9 @@ impl TokenSymbol {
         let mut s = <[u8; 32]>::default();
         self.to_bytes(&mut s);
 
-        let bigint = BigInteger256::read(&s[..]).unwrap();
-        F::try_from(bigint).unwrap() // Never fail, `self` contain 6 bytes at most
+        let value = FromBytes::read(&s[..]).expect("Shoudn't fail");
+        let bigint = BigInteger256::new(value);
+        F::from(bigint) // Never fail, `self` contain 6 bytes at most
     }
 }
 

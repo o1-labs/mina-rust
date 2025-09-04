@@ -109,7 +109,7 @@ pub use snark_state::*;
 mod snark_reducer;
 
 pub type VerifierIndex = ledger::proofs::VerifierIndex<mina_curves::pasta::Fq>;
-pub type VerifierSRS = poly_commitment::srs::SRS<Vesta>;
+pub type VerifierSRS = poly_commitment::ipa::SRS<Vesta>;
 
 use redux::SubStore;
 pub trait SnarkStore<GlobalState>:
@@ -118,6 +118,6 @@ pub trait SnarkStore<GlobalState>:
 }
 impl<S, T: SubStore<S, SnarkState, SubAction = SnarkAction>> SnarkStore<S> for T {}
 
-pub fn get_srs() -> std::sync::Arc<poly_commitment::srs::SRS<Vesta>> {
+pub fn get_srs() -> std::sync::Arc<poly_commitment::ipa::SRS<Vesta>> {
     ledger::verifier::get_srs::<mina_curves::pasta::Fp>()
 }

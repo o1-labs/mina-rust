@@ -1,7 +1,7 @@
 FROM rust:bullseye AS build
 # hadolint ignore=DL3008
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends protobuf-compiler && \
+    apt-get install -y --no-install-recommends protobuf-compiler ocaml && \
     apt-get clean
 
 WORKDIR /mina

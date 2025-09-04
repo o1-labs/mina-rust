@@ -2010,7 +2010,7 @@ mod tests_ocaml {
         sync::atomic::{AtomicUsize, Ordering::Relaxed},
     };
 
-    use ark_ec::{AffineCurve, ProjectiveCurve};
+    use ark_ec::{AffineRepr, CurveGroup};
     use ark_ff::Zero;
     use mina_curves::pasta::Fq;
     use mina_signer::{Keypair, Signature, Signer};
@@ -3772,14 +3772,15 @@ mod tests_ocaml {
         Vec<Option<usize>>,
     ) {
         fn keypair_from_private(private: &str) -> Keypair {
+            use core::ops::Mul;
+
             let bytes = bs58::decode(private).into_vec().unwrap();
             let bytes = &bytes[1..]; // ignore base58 check byte
 
             let secret = mina_signer::ScalarField::from_bytes(&bytes[1..]).unwrap();
-            let public: mina_signer::CurvePoint =
-                mina_signer::CurvePoint::prime_subgroup_generator()
-                    .mul(secret)
-                    .into_affine();
+            let public: mina_signer::CurvePoint = mina_signer::CurvePoint::generator()
+                .mul(secret)
+                .into_affine();
 
             if !public.is_on_curve() {
                 panic!()

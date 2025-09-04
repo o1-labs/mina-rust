@@ -1,6 +1,6 @@
 use std::cmp::Ordering::{Equal, Greater, Less};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field};
+use ark_ff::{BigInteger256, Field};
 use mina_p2p_messages::v2::BlockTimeTimeStableV1;
 use rand::Rng;
 
@@ -447,7 +447,7 @@ macro_rules! impl_number {
 
             fn of_field<F: FieldWitness>(field: F) -> Self {
                 let amount: BigInteger256 = field.into();
-                let amount: $inner = amount.to_64x4()[0].try_into().unwrap();
+                let amount: $inner = amount.0[0].try_into().unwrap();
 
                 Self::$from_name(amount)
             }
@@ -531,7 +531,7 @@ macro_rules! impl_number {
                 std::array::from_fn(|_| iter.next().unwrap())
             }
 
-            pub fn to_field<F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>>(&self) -> F {
+            pub fn to_field<F: Field + From<BigInteger256>>(&self) -> F {
                 let int = self.0 as u64;
                 F::from(int)
             }

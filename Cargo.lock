@@ -239,14 +239,32 @@ dependencies = [
 ]
 
 [[package]]
-name = "ark-ec"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+name = "ark-bn254"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d69eab57e8d2663efa5c63135b2af4f396d66424f88954c21104125ab6b3e6bc"
 dependencies = [
+ "ark-ec",
  "ark-ff",
- "ark-serialize 0.3.0",
- "ark-std 0.3.0",
- "derivative",
+ "ark-std 0.5.0",
+]
+
+[[package]]
+name = "ark-ec"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
+dependencies = [
+ "ahash 0.8.8",
+ "ark-ff",
+ "ark-poly",
+ "ark-serialize 0.5.0",
+ "ark-std 0.5.0",
+ "educe",
+ "fnv",
+ "hashbrown 0.15.2",
+ "itertools 0.13.0",
+ "num-bigint",
+ "num-integer",
  "num-traits",
  "rayon",
  "zeroize",
@@ -254,63 +272,58 @@ dependencies = [
 
 [[package]]
 name = "ark-ff"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
- "ark-serialize 0.3.0",
- "ark-std 0.3.0",
- "derivative",
+ "ark-serialize 0.5.0",
+ "ark-std 0.5.0",
+ "arrayvec",
+ "digest 0.10.7",
+ "educe",
+ "itertools 0.13.0",
  "num-bigint",
  "num-traits",
  "paste",
  "rayon",
- "rustc_version 0.3.3",
  "zeroize",
 ]
 
 [[package]]
 name = "ark-ff-asm"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
  "quote 1.0.35",
- "syn 1.0.109",
+ "syn 2.0.96",
 ]
 
 [[package]]
 name = "ark-ff-macros"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
  "num-bigint",
  "num-traits",
+ "proc-macro2 1.0.95",
  "quote 1.0.35",
- "syn 1.0.109",
+ "syn 2.0.96",
 ]
 
 [[package]]
 name = "ark-poly"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
+ "ahash 0.8.8",
  "ark-ff",
- "ark-serialize 0.3.0",
- "ark-std 0.3.0",
- "derivative",
- "hashbrown 0.11.2",
+ "ark-serialize 0.5.0",
+ "ark-std 0.5.0",
+ "educe",
+ "fnv",
+ "hashbrown 0.15.2",
  "rayon",
-]
-
-[[package]]
-name = "ark-serialize"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
-dependencies = [
- "ark-serialize-derive",
- "ark-std 0.3.0",
- "digest 0.9.0",
 ]
 
 [[package]]
@@ -325,24 +338,26 @@ dependencies = [
 ]
 
 [[package]]
-name = "ark-serialize-derive"
-version = "0.3.0"
-source = "git+https://github.com/openmina/algebra?rev=150ab8d#150ab8d4cf4918f256580c0d17249ddf11e20aeb"
+name = "ark-serialize"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "syn 1.0.109",
+ "ark-serialize-derive",
+ "ark-std 0.5.0",
+ "arrayvec",
+ "digest 0.10.7",
+ "num-bigint",
+ "rayon",
 ]
 
 [[package]]
-name = "ark-std"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1df2c09229cbc5a028b1d70e00fdb2acee28b1055dfb5ca73eea49c5a25c4e7c"
+name = "ark-serialize-derive"
+version = "0.5.0"
+source = "git+https://github.com/openmina/algebra?branch=rebase-fix-openmina-webnode#0ee1798c746a0cf44b1336f943be138e491a7804"
 dependencies = [
- "num-traits",
- "rand",
- "rayon",
+ "proc-macro2 1.0.95",
+ "quote 1.0.35",
+ "syn 2.0.96",
 ]
 
 [[package]]
@@ -353,6 +368,17 @@ checksum = "94893f1e0c6eeab764ade8dc4c0db24caf4fe7cbbaafc0eba0a9030f447b5185"
 dependencies = [
  "num-traits",
  "rand",
+]
+
+[[package]]
+name = "ark-std"
+version = "0.5.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "246a225cc6131e9ee4f24619af0f19d67761fff15d7ccc22e42b80846e69449a"
+dependencies = [
+ "num-traits",
+ "rand",
+ "rayon",
 ]
 
 [[package]]
@@ -1087,7 +1113,7 @@ dependencies = [
  "aws-smithy-async",
  "aws-smithy-runtime-api",
  "aws-smithy-types",
- "rustc_version 0.4.0",
+ "rustc_version",
  "tracing",
 ]
 
@@ -1207,9 +1233,9 @@ checksum = "9d297deb1925b89f2ccc13d7635fa0714f12c87adce1c75356b39ca9b7178567"
 
 [[package]]
 name = "base64"
-version = "0.22.0"
+version = "0.22.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9475866fec1451be56a3c2400fd081ff546538961565ccb5b7142cbd22bc7a51"
+checksum = "72b3254f16251a8381aa12e40e3c4d2f0199f8c6508fbecb9d91f575e0fbb8c6"
 
 [[package]]
 name = "base64-simd"
@@ -1255,7 +1281,7 @@ dependencies = [
  "bitflags 2.8.0",
  "cexpr",
  "clang-sys",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "lazy_static",
  "lazycell",
  "log",
@@ -1906,7 +1932,7 @@ version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3a47af21622d091a8f0fb295b88bc886ac74efcc613efc19f5d0b21de5c89e47"
 dependencies = [
- "rustc_version 0.4.0",
+ "rustc_version",
 ]
 
 [[package]]
@@ -2086,7 +2112,7 @@ dependencies = [
  "digest 0.10.7",
  "fiat-crypto",
  "platforms",
- "rustc_version 0.4.0",
+ "rustc_version",
  "subtle",
  "zeroize",
 ]
@@ -2100,16 +2126,6 @@ dependencies = [
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
-]
-
-[[package]]
-name = "darling"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a01d95850c592940db9b8194bc39f4bc0e89dee5c4265e4b1807c34a9aba453c"
-dependencies = [
- "darling_core 0.13.4",
- "darling_macro 0.13.4",
 ]
 
 [[package]]
@@ -2130,20 +2146,6 @@ checksum = "c376d08ea6aa96aafe61237c7200d1241cb177b7d3a542d791f2d118e9cbb955"
 dependencies = [
  "darling_core 0.20.6",
  "darling_macro 0.20.6",
-]
-
-[[package]]
-name = "darling_core"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "859d65a907b6852c9361e3185c862aae7fafd2887876799fa55f5f99dc40d610"
-dependencies = [
- "fnv",
- "ident_case",
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "strsim 0.10.0",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -2172,17 +2174,6 @@ dependencies = [
  "quote 1.0.35",
  "strsim 0.10.0",
  "syn 2.0.96",
-]
-
-[[package]]
-name = "darling_macro"
-version = "0.13.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c972679f83bdf9c42bd905396b6c3588a843a17f0f16dfcfa3e2c5d57441835"
-dependencies = [
- "darling_core 0.13.4",
- "quote 1.0.35",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -2377,7 +2368,7 @@ dependencies = [
  "convert_case 0.4.0",
  "proc-macro2 1.0.95",
  "quote 1.0.35",
- "rustc_version 0.4.0",
+ "rustc_version",
  "syn 1.0.109",
 ]
 
@@ -2447,12 +2438,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "disjoint-set"
-version = "0.0.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d102f1a462fdcdddce88d6d46c06c074a2d2749b262230333726b06c52bb7585"
-
-[[package]]
 name = "displaydoc"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2506,6 +2491,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dcbb2bf8e87535c23f7a8a321e364ce21462d0ff10cb6407820e8e96dfff6653"
 
 [[package]]
+name = "dyn-clone"
+version = "1.0.20"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d0881ea181b1df73ff77ffaaf9c7544ecc11e82fba9b5f27b262a3c73a332555"
+
+[[package]]
 name = "ecdsa"
 version = "0.14.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2555,6 +2546,18 @@ dependencies = [
  "sha2 0.10.8",
  "subtle",
  "zeroize",
+]
+
+[[package]]
+name = "educe"
+version = "0.6.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d7bc049e1bd8cdeb31b68bbd586a9464ecf9f3944af3958a7a9d0f8b9799417"
+dependencies = [
+ "enum-ordinalize",
+ "proc-macro2 1.0.95",
+ "quote 1.0.35",
+ "syn 2.0.96",
 ]
 
 [[package]]
@@ -2641,6 +2644,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5ffccbb6966c05b32ef8fbac435df276c4ae4d3dc55a8cd0eb9745e6c12f546a"
 dependencies = [
  "heck 0.4.1",
+ "proc-macro2 1.0.95",
+ "quote 1.0.35",
+ "syn 2.0.96",
+]
+
+[[package]]
+name = "enum-ordinalize"
+version = "4.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fea0dcfa4e54eeb516fe454635a95753ddd39acda650ce703031c6973e315dd5"
+dependencies = [
+ "enum-ordinalize-derive",
+]
+
+[[package]]
+name = "enum-ordinalize-derive"
+version = "4.3.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d28318a75d4aead5c4db25382e8ef717932d0346600cacae6357eb5941bc5ff"
+dependencies = [
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
@@ -3453,7 +3476,7 @@ dependencies = [
 [[package]]
 name = "groupmap"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
@@ -3514,15 +3537,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b0c35f58762feb77d74ebe43bdbc3210f09be9fe6742234d573bacc26ed92b67"
 dependencies = [
  "byteorder",
-]
-
-[[package]]
-name = "hashbrown"
-version = "0.11.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
-dependencies = [
- "ahash 0.7.8",
 ]
 
 [[package]]
@@ -3593,7 +3607,7 @@ checksum = "cdc6457c0eb62c71aac4bc17216026d8410337c4126773b9c5daba343f17964f"
 dependencies = [
  "atomic-polyfill",
  "hash32",
- "rustc_version 0.4.0",
+ "rustc_version",
  "serde",
  "spin 0.9.8",
  "stable_deref_trait",
@@ -3604,7 +3618,7 @@ name = "heartbeats-processor"
 version = "0.16.0"
 dependencies = [
  "anyhow",
- "base64 0.22.0",
+ "base64 0.22.1",
  "chrono",
  "clap 4.5.20",
  "dotenv",
@@ -3835,7 +3849,7 @@ dependencies = [
  "httpdate",
  "itoa",
  "pin-project-lite",
- "smallvec 1.13.2",
+ "smallvec",
  "tokio",
  "want",
 ]
@@ -4014,7 +4028,7 @@ dependencies = [
  "icu_normalizer_data",
  "icu_properties",
  "icu_provider",
- "smallvec 1.13.2",
+ "smallvec",
  "utf16_iter",
  "utf8_iter",
  "write16",
@@ -4099,7 +4113,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "686f825264d630750a544639377bae737628043f20d38bbc029e8f29ea968a7e"
 dependencies = [
  "idna_adapter",
- "smallvec 1.13.2",
+ "smallvec",
  "utf8_iter",
 ]
 
@@ -4224,7 +4238,7 @@ dependencies = [
 [[package]]
 name = "internal-tracing"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 
 [[package]]
 name = "io-lifetimes"
@@ -4257,18 +4271,18 @@ checksum = "8f518f335dce6725a761382244631d86cf0ccb2863413590b31338feb467f9c3"
 
 [[package]]
 name = "itertools"
-version = "0.10.5"
+version = "0.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b0fd2260e829bddf4cb6ea802289de2f86d6a7a690192fbe91b3f46e0f2c8473"
+checksum = "ba291022dbbd398a455acf126c1e341954079855bc60dfdda641363bd6922569"
 dependencies = [
  "either",
 ]
 
 [[package]]
 name = "itertools"
-version = "0.12.0"
+version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25db6b064527c5d482d0423354fcd07a89a2dfe07b67892e62411946db7f07b0"
+checksum = "413ee7dfc52ee1a4949ceeb7dbc8a33f2d6c088194d9f922fb8318faf1f01186"
 dependencies = [
  "either",
 ]
@@ -4394,24 +4408,22 @@ dependencies = [
 [[package]]
 name = "kimchi"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.3.0",
+ "ark-serialize 0.5.0",
  "blake2",
- "disjoint-set",
  "groupmap",
  "hex",
  "internal-tracing",
- "itertools 0.10.5",
+ "itertools 0.12.1",
+ "log",
  "mina-curves",
  "mina-poseidon",
  "num-bigint",
- "num-derive",
  "num-integer",
- "num-traits",
  "o1-utils",
  "once_cell",
  "poly-commitment",
@@ -4420,10 +4432,10 @@ dependencies = [
  "rayon",
  "rmp-serde",
  "serde",
- "serde_with 1.14.0",
- "strum 0.24.1",
- "strum_macros 0.24.3",
- "thiserror 1.0.60",
+ "serde_with",
+ "strum",
+ "strum_macros",
+ "thiserror 2.0.11",
  "turshi",
 ]
 
@@ -4573,7 +4585,7 @@ dependencies = [
  "rand",
  "rw-stream-sink",
  "serde",
- "smallvec 1.13.2",
+ "smallvec",
  "thiserror 1.0.60",
  "unsigned-varint 0.7.2",
  "void",
@@ -4590,7 +4602,7 @@ dependencies = [
  "libp2p-identity",
  "log",
  "parking_lot 0.12.1",
- "smallvec 1.13.2",
+ "smallvec",
  "trust-dns-resolver",
 ]
 
@@ -4621,7 +4633,7 @@ dependencies = [
  "regex",
  "serde",
  "sha2 0.10.8",
- "smallvec 1.13.2",
+ "smallvec",
  "unsigned-varint 0.7.2",
  "void",
 ]
@@ -4643,7 +4655,7 @@ dependencies = [
  "lru",
  "quick-protobuf",
  "quick-protobuf-codec",
- "smallvec 1.13.2",
+ "smallvec",
  "thiserror 1.0.60",
  "void",
 ]
@@ -4689,7 +4701,7 @@ dependencies = [
  "rand",
  "serde",
  "sha2 0.10.8",
- "smallvec 1.13.2",
+ "smallvec",
  "thiserror 1.0.60",
  "uint",
  "unsigned-varint 0.7.2",
@@ -4709,7 +4721,7 @@ dependencies = [
  "libp2p-swarm",
  "log",
  "rand",
- "smallvec 1.13.2",
+ "smallvec",
  "socket2 0.5.5",
  "tokio",
  "trust-dns-proto",
@@ -4819,7 +4831,7 @@ dependencies = [
  "multistream-select",
  "once_cell",
  "rand",
- "smallvec 1.13.2",
+ "smallvec",
  "tokio",
  "void",
 ]
@@ -5108,7 +5120,7 @@ dependencies = [
 name = "mina-bootstrap-sandbox"
 version = "0.16.0"
 dependencies = [
- "base64 0.22.0",
+ "base64 0.22.1",
  "binprot",
  "bs58 0.5.0",
  "env_logger",
@@ -5135,7 +5147,7 @@ version = "0.16.0"
 dependencies = [
  "argon2",
  "ark-ff",
- "base64 0.22.0",
+ "base64 0.22.1",
  "binprot",
  "binprot_derive",
  "bs58 0.4.0",
@@ -5175,10 +5187,12 @@ dependencies = [
 [[package]]
 name = "mina-curves"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
+ "ark-bn254",
  "ark-ec",
  "ark-ff",
+ "num-bigint",
 ]
 
 [[package]]
@@ -5209,7 +5223,7 @@ dependencies = [
 [[package]]
 name = "mina-hasher"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ff",
  "bitvec",
@@ -5302,8 +5316,8 @@ dependencies = [
  "redux",
  "serde",
  "serde_json",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
 ]
 
 [[package]]
@@ -5337,8 +5351,8 @@ dependencies = [
  "serde",
  "serde_json",
  "sha3",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
  "thiserror 1.0.60",
  "tokio",
  "tracing",
@@ -5353,7 +5367,7 @@ version = "0.16.0"
 dependencies = [
  "anyhow",
  "axum",
- "base64 0.22.0",
+ "base64 0.22.1",
  "bs58 0.4.0",
  "clap 4.5.20",
  "console",
@@ -5381,8 +5395,8 @@ dependencies = [
  "reqwest 0.11.24",
  "serde",
  "serde_json",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
  "temp-dir",
  "thiserror 1.0.60",
  "time",
@@ -5428,7 +5442,7 @@ dependencies = [
  "alloc-test",
  "anyhow",
  "ark-ff",
- "base64 0.22.0",
+ "base64 0.22.1",
  "binprot",
  "binprot_derive",
  "blake2",
@@ -5453,8 +5467,8 @@ dependencies = [
  "serde_bytes",
  "serde_json",
  "sha2 0.10.8",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
  "thiserror 1.0.60",
  "time",
  "toml 0.5.11",
@@ -5466,18 +5480,19 @@ dependencies = [
 [[package]]
 name = "mina-poseidon"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
+ "ark-serialize 0.5.0",
  "mina-curves",
  "o1-utils",
  "once_cell",
  "rand",
  "rayon",
  "serde",
- "serde_with 1.14.0",
+ "serde_with",
 ]
 
 [[package]]
@@ -5507,20 +5522,20 @@ dependencies = [
 [[package]]
 name = "mina-signer"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "bitvec",
  "blake2",
- "bs58 0.4.0",
+ "bs58 0.5.0",
  "hex",
  "mina-curves",
  "mina-hasher",
  "o1-utils",
  "rand",
  "sha2 0.10.8",
- "thiserror 1.0.60",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -5542,7 +5557,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.3.0",
+ "ark-serialize 0.5.0",
  "backtrace",
  "base64 0.13.1",
  "bitvec",
@@ -5553,7 +5568,7 @@ dependencies = [
  "fraction",
  "getrandom",
  "hex",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "juniper",
  "kimchi",
  "lazy_static",
@@ -5581,10 +5596,10 @@ dependencies = [
  "rsa",
  "serde",
  "serde_json",
- "serde_with 3.7.0",
+ "serde_with",
  "sha2 0.10.8",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
  "thiserror 1.0.60",
  "tuple-map",
  "uuid",
@@ -5738,7 +5753,7 @@ dependencies = [
  "futures",
  "log",
  "pin-project 1.1.5",
- "smallvec 1.13.2",
+ "smallvec",
  "unsigned-varint 0.7.2",
 ]
 
@@ -5901,7 +5916,7 @@ version = "0.16.0"
 dependencies = [
  "anyhow",
  "ark-ff",
- "base64 0.22.0",
+ "base64 0.22.1",
  "blake2",
  "derive_more",
  "graphannis-malloc_size_of",
@@ -5927,11 +5942,11 @@ dependencies = [
  "rust-format",
  "serde",
  "serde_json",
- "serde_with 3.7.0",
+ "serde_with",
  "snark",
  "static_assertions",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "strum",
+ "strum_macros",
  "thiserror 1.0.60",
  "time",
  "tokio",
@@ -6002,7 +6017,7 @@ dependencies = [
 [[package]]
 name = "num-bigint"
 version = "0.4.6"
-source = "git+https://github.com/openmina/num-bigint?rev=8bb5ee4#8bb5ee4de12587b52d11eac13057c5e8664249a2"
+source = "git+https://github.com/openmina/num-bigint?branch=rebase-onstack#5b79c7beecd32fd91ae2332b77d079f748eeacf5"
 dependencies = [
  "num-integer",
  "num-traits",
@@ -6024,7 +6039,7 @@ dependencies = [
  "num-iter",
  "num-traits",
  "rand",
- "smallvec 1.13.2",
+ "smallvec",
  "zeroize",
 ]
 
@@ -6043,17 +6058,6 @@ name = "num-conv"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "51d515d32fb182ee37cda2ccdcb92950d6a3c2893aa280e540671c2cd0f3b1d9"
-
-[[package]]
-name = "num-derive"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "876a53fff98e03a936a674b29568b0e605f06b29372c2489ff4de23f1949743d"
-dependencies = [
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "num-integer"
@@ -6078,7 +6082,7 @@ dependencies = [
 [[package]]
 name = "num-rational"
 version = "0.4.2"
-source = "git+https://github.com/openmina/num-rational?rev=336f11d#336f11da2ba1b65fb9472bad29ff3f58b566266f"
+source = "git+https://github.com/openmina/num-rational?branch=rebase-onstack#be8f2bfa63191b3819739cbe286507cda88ce607"
 dependencies = [
  "num-bigint",
  "num-integer",
@@ -6160,24 +6164,25 @@ dependencies = [
 [[package]]
 name = "o1-utils"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.3.0",
+ "ark-serialize 0.5.0",
  "bcs",
  "hex",
  "num-bigint",
  "num-integer",
- "num-traits",
  "rand",
  "rand_core",
  "rayon",
+ "rmp-serde",
  "serde",
- "serde_with 1.14.0",
+ "serde_json",
+ "serde_with",
  "sha2 0.10.8",
- "thiserror 1.0.60",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -6257,9 +6262,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.19.0"
+version = "1.21.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
+checksum = "42f5e15c9953c5e4ccceeb2e7382a716482c34515315f7b03532b8b4e8393d2d"
 
 [[package]]
 name = "opaque-debug"
@@ -6378,7 +6383,7 @@ version = "0.16.0"
 dependencies = [
  "aes-gcm 0.10.3",
  "anyhow",
- "base64 0.22.0",
+ "base64 0.22.1",
  "binprot",
  "binprot_derive",
  "bitflags 2.8.0",
@@ -6423,11 +6428,11 @@ dependencies = [
  "salsa-simple",
  "serde",
  "serde_json",
- "serde_with 3.7.0",
+ "serde_with",
  "sha2 0.10.8",
- "smallvec 1.13.2",
- "strum 0.26.2",
- "strum_macros 0.26.4",
+ "smallvec",
+ "strum",
+ "strum_macros",
  "thiserror 1.0.60",
  "tokio",
  "unsigned-varint 0.8.0",
@@ -6514,7 +6519,7 @@ dependencies = [
  "instant",
  "libc",
  "redox_syscall 0.2.16",
- "smallvec 1.13.2",
+ "smallvec",
  "winapi 0.3.9",
 ]
 
@@ -6527,7 +6532,7 @@ dependencies = [
  "cfg-if",
  "libc",
  "redox_syscall 0.4.1",
- "smallvec 1.13.2",
+ "smallvec",
  "windows-targets 0.48.5",
 ]
 
@@ -6544,9 +6549,9 @@ dependencies = [
 
 [[package]]
 name = "paste"
-version = "1.0.14"
+version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
+checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
 
 [[package]]
 name = "pcap"
@@ -6578,7 +6583,7 @@ version = "3.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8e459365e590736a54c3fa561947c84837534b8e9af6fc5bf781307e82658fae"
 dependencies = [
- "base64 0.22.0",
+ "base64 0.22.1",
  "serde",
 ]
 
@@ -6834,17 +6839,19 @@ dependencies = [
 [[package]]
 name = "poly-commitment"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.3.0",
+ "ark-serialize 0.5.0",
  "blake2",
  "groupmap",
- "itertools 0.10.5",
+ "hex",
+ "itertools 0.12.1",
  "mina-curves",
  "mina-poseidon",
+ "num-bigint",
  "o1-utils",
  "once_cell",
  "rand",
@@ -6852,9 +6859,8 @@ dependencies = [
  "rayon",
  "rmp-serde",
  "serde",
- "serde_with 1.14.0",
- "smallvec 2.0.0-alpha.9",
- "thiserror 1.0.60",
+ "serde_with",
+ "thiserror 2.0.11",
 ]
 
 [[package]]
@@ -6914,8 +6920,10 @@ name = "poseidon"
 version = "0.16.0"
 dependencies = [
  "ark-ff",
+ "ark-serialize 0.5.0",
  "mina-curves",
  "once_cell",
+ "serde",
 ]
 
 [[package]]
@@ -7085,7 +7093,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ac6c3320f9abac597dcbc668774ef006702672474aad53c6d596b62e487b40b1"
 dependencies = [
  "heck 0.5.0",
- "itertools 0.12.0",
+ "itertools 0.13.0",
  "log",
  "multimap",
  "once_cell",
@@ -7105,7 +7113,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9554e3ab233f0a932403704f1a1d08c30d5ccd931adfdfa1e8b5a19b52c1d55a"
 dependencies = [
  "anyhow",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
@@ -7118,7 +7126,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "157c5a9d7ea5c2ed2d9fb8f495b64759f7816c7eaea54ba3978f0d63000162e3"
 dependencies = [
  "anyhow",
- "itertools 0.12.0",
+ "itertools 0.13.0",
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
@@ -7131,7 +7139,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9120690fafc389a67ba3803df527d0ec9cbbc9cc45e4cc20b332996dfb672425"
 dependencies = [
  "anyhow",
- "itertools 0.12.0",
+ "itertools 0.13.0",
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
@@ -7375,9 +7383,9 @@ dependencies = [
 
 [[package]]
 name = "rayon"
-version = "1.8.0"
+version = "1.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c27db03db7734835b3f53954b534c91069375ce6ccaa2e065441e07d9b6cdb1"
+checksum = "b418a60154510ca1a002a752ca9714984e21e4241e804d32555251faf8b78ffa"
 dependencies = [
  "either",
  "rayon-core",
@@ -7385,9 +7393,9 @@ dependencies = [
 
 [[package]]
 name = "rayon-core"
-version = "1.12.0"
+version = "1.12.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5ce3fb6ad83f861aac485e76e1985cd109d9a3713802152be56c3b1f0e0658ed"
+checksum = "1465873a3dfdaa8ae7cb14b4383657caab0b3e8a0aa9ae8e04b044854c8dfce2"
 dependencies = [
  "crossbeam-deque",
  "crossbeam-utils",
@@ -7458,6 +7466,26 @@ dependencies = [
  "paste",
  "serde",
  "wasm-timer",
+]
+
+[[package]]
+name = "ref-cast"
+version = "1.0.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a0ae411dbe946a674d89546582cea4ba2bb8defac896622d6496f14c23ba5cf"
+dependencies = [
+ "ref-cast-impl",
+]
+
+[[package]]
+name = "ref-cast-impl"
+version = "1.0.24"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1165225c21bff1f3bbce98f5a1f889949bc902d3575308cc7b0de30b4f6d27c7"
+dependencies = [
+ "proc-macro2 1.0.95",
+ "quote 1.0.35",
+ "syn 2.0.96",
 ]
 
 [[package]]
@@ -7566,7 +7594,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "43e734407157c3c2034e0258f5e4473ddb361b1e85f95a66690d67264d7cd1da"
 dependencies = [
  "async-compression",
- "base64 0.22.0",
+ "base64 0.22.1",
  "bytes",
  "encoding_rs",
  "futures-channel",
@@ -7697,9 +7725,9 @@ checksum = "944cd13fb0222712688b9e6cf8002c31eca42e9eb963bd0a1e4d36da2a27bdbf"
 
 [[package]]
 name = "rmp"
-version = "0.8.12"
+version = "0.8.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f9860a6cc38ed1da53456442089b4dfa35e7cedaa326df63017af88385e6b20"
+checksum = "228ed7c16fa39782c3b3468e974aec2795e9089153cd08ee2e9aefb3613334c4"
 dependencies = [
  "byteorder",
  "num-traits",
@@ -7708,9 +7736,9 @@ dependencies = [
 
 [[package]]
 name = "rmp-serde"
-version = "1.1.2"
+version = "1.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bffea85eea980d8a74453e5d02a8d93028f3c34725de143085a844ebe953258a"
+checksum = "52e599a477cf9840e92f2cde9a7189e67b42c57532749bf90aea6ec10facd4db"
 dependencies = [
  "byteorder",
  "rmp",
@@ -7845,20 +7873,11 @@ checksum = "c7fb8039b3032c191086b10f11f319a6e99e1e82889c5cc6046f515c9db1d497"
 
 [[package]]
 name = "rustc_version"
-version = "0.3.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f0dfe2087c51c460008730de8b57e6a320782fbfb312e1f4d520e6c6fae155ee"
-dependencies = [
- "semver 0.11.0",
-]
-
-[[package]]
-name = "rustc_version"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bfa0f585226d2e68097d4f95d113b15b83a82e819ab25717ec0590d9584ef366"
 dependencies = [
- "semver 1.0.20",
+ "semver",
 ]
 
 [[package]]
@@ -8080,6 +8099,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "schemars"
+version = "0.9.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4cd191f9397d57d581cddd31014772520aa448f65ef991055d7f61582c65165f"
+dependencies = [
+ "dyn-clone",
+ "ref-cast",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "schemars"
+version = "1.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "82d20c4491bc164fa2f6c5d44565947a52ad80b9505d8e36f8d54c27c739fcd0"
+dependencies = [
+ "dyn-clone",
+ "ref-cast",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "scoped-tls"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8191,33 +8234,15 @@ dependencies = [
 
 [[package]]
 name = "semver"
-version = "0.11.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f301af10236f6df4160f7c3f04eec6dbc70ace82d23326abad5edee88801c6b6"
-dependencies = [
- "semver-parser",
-]
-
-[[package]]
-name = "semver"
 version = "1.0.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "836fa6a3e1e547f9a2c4040802ec865b5d85f4014efe00555d7090a3dcaa1090"
 
 [[package]]
-name = "semver-parser"
-version = "0.10.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "00b0bef5b7f9e0df16536d3961cfb6e84331c065b4066afb39768d0e319411f7"
-dependencies = [
- "pest",
-]
-
-[[package]]
 name = "serde"
-version = "1.0.190"
+version = "1.0.219"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91d3c334ca1ee894a2c6f6ad698fe8c435b76d504b13d436f0685d648d6d96f7"
+checksum = "5f0e2c6ed6606019b4e29e69dbaba95b11854410e5347d525002456dbbb786b6"
 dependencies = [
  "serde_derive",
 ]
@@ -8233,9 +8258,9 @@ dependencies = [
 
 [[package]]
 name = "serde_derive"
-version = "1.0.190"
+version = "1.0.219"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "67c5609f394e5c2bd7fc51efda478004ea80ef42fee983d5c67a65e34f32c0e3"
+checksum = "5b0276cf7f2c73365f7157c8123c21cd9a50fbbd844757af28ca1f5925fc2a00"
 dependencies = [
  "proc-macro2 1.0.95",
  "quote 1.0.35",
@@ -8244,12 +8269,13 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.107"
+version = "1.0.141"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b420ce6e3d8bd882e9b243c6eed35dbc9a6110c9769e74b584e0d68d1f20c65"
+checksum = "30b9eff21ebe718216c6ec64e1d9ac57087aad11efc64e32002bce4a0d4c03d3"
 dependencies = [
  "indexmap 2.7.1",
  "itoa",
+ "memchr",
  "ryu",
  "serde",
 ]
@@ -8287,49 +8313,29 @@ dependencies = [
 
 [[package]]
 name = "serde_with"
-version = "1.14.0"
+version = "3.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "678b5a069e50bf00ecd22d0cd8ddf7c236f68581b03db652061ed5eb13a312ff"
+checksum = "f2c45cd61fefa9db6f254525d46e392b852e0e61d9a1fd36e5bd183450a556d5"
 dependencies = [
- "serde",
- "serde_with_macros 1.5.2",
-]
-
-[[package]]
-name = "serde_with"
-version = "3.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee80b0e361bbf88fd2f6e242ccd19cfda072cb0faa6ae694ecee08199938569a"
-dependencies = [
- "base64 0.21.7",
+ "base64 0.22.1",
  "chrono",
  "hex",
  "indexmap 1.9.3",
  "indexmap 2.7.1",
+ "schemars 0.9.0",
+ "schemars 1.0.4",
  "serde",
  "serde_derive",
  "serde_json",
- "serde_with_macros 3.7.0",
+ "serde_with_macros",
  "time",
 ]
 
 [[package]]
 name = "serde_with_macros"
-version = "1.5.2"
+version = "3.14.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e182d6ec6f05393cc0e5ed1bf81ad6db3a8feedf8ee515ecdd369809bcce8082"
-dependencies = [
- "darling 0.13.4",
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "syn 1.0.109",
-]
-
-[[package]]
-name = "serde_with_macros"
-version = "3.7.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6561dc161a9224638a31d876ccdfefbc1df91d3f3a8342eddb35f055d48c7655"
+checksum = "de90945e6565ce0d9a25098082ed4ee4002e047cb59892c318d66821e14bb30f"
 dependencies = [
  "darling 0.20.6",
  "proc-macro2 1.0.95",
@@ -8522,11 +8528,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "smallvec"
-version = "2.0.0-alpha.9"
-source = "git+https://github.com/servo/rust-smallvec.git#a176a870987f61b04e001a7c4d0863fdeb427083"
-
-[[package]]
 name = "smartstring"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8575,7 +8576,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.8",
- "strum_macros 0.26.4",
+ "strum_macros",
  "thiserror 1.0.60",
  "wasm-bindgen-test",
 ]
@@ -8591,7 +8592,7 @@ dependencies = [
  "curve25519-dalek",
  "rand_core",
  "ring 0.16.20",
- "rustc_version 0.4.0",
+ "rustc_version",
  "sha2 0.10.8",
  "subtle",
 ]
@@ -8657,7 +8658,7 @@ version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ce81b7bd7c4493975347ef60d8c7e8b742d4694f4c49f93e0a12ea263938176c"
 dependencies = [
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "nom 7.1.3",
  "unicode_categories",
 ]
@@ -8707,7 +8708,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.8",
- "smallvec 1.13.2",
+ "smallvec",
  "sqlformat",
  "thiserror 1.0.60",
  "tokio",
@@ -8762,7 +8763,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64bb4714269afa44aef2755150a0fc19d756fb580a67db8885608cf02f47d06a"
 dependencies = [
  "atoi",
- "base64 0.22.0",
+ "base64 0.22.1",
  "bitflags 2.8.0",
  "byteorder",
  "bytes",
@@ -8790,7 +8791,7 @@ dependencies = [
  "serde",
  "sha1",
  "sha2 0.10.8",
- "smallvec 1.13.2",
+ "smallvec",
  "sqlx-core",
  "stringprep",
  "thiserror 1.0.60",
@@ -8805,7 +8806,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6fa91a732d854c5d7726349bb4bb879bb9478993ceb764247660aee25f67c2f8"
 dependencies = [
  "atoi",
- "base64 0.22.0",
+ "base64 0.22.1",
  "bitflags 2.8.0",
  "byteorder",
  "chrono",
@@ -8829,7 +8830,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sha2 0.10.8",
- "smallvec 1.13.2",
+ "smallvec",
  "sqlx-core",
  "stringprep",
  "thiserror 1.0.60",
@@ -8937,28 +8938,9 @@ dependencies = [
 
 [[package]]
 name = "strum"
-version = "0.24.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "063e6045c0e62079840579a7e47a355ae92f60eb74daaf156fb1e84ba164e63f"
-
-[[package]]
-name = "strum"
 version = "0.26.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "5d8cec3501a5194c432b2b7976db6b7d10ec95c253208b45f83f7136aa985e29"
-
-[[package]]
-name = "strum_macros"
-version = "0.24.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e385be0d24f186b4ce2f9982191e7101bb737312ad61c1f2f984f34bcf85d59"
-dependencies = [
- "heck 0.4.1",
- "proc-macro2 1.0.95",
- "quote 1.0.35",
- "rustversion",
- "syn 1.0.109",
-]
 
 [[package]]
 name = "strum_macros"
@@ -9483,7 +9465,7 @@ dependencies = [
  "async-stream",
  "async-trait",
  "axum",
- "base64 0.22.0",
+ "base64 0.22.1",
  "bytes",
  "h2 0.4.7",
  "http 1.1.0",
@@ -9670,7 +9652,7 @@ dependencies = [
  "serde",
  "serde_json",
  "sharded-slab",
- "smallvec 1.13.2",
+ "smallvec",
  "thread_local",
  "tracing",
  "tracing-core",
@@ -9702,7 +9684,7 @@ dependencies = [
  "btreemultimap",
  "clap 4.5.20",
  "flate2",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "leb128",
  "md5",
  "mina-core",
@@ -9742,7 +9724,7 @@ dependencies = [
  "ipnet",
  "once_cell",
  "rand",
- "smallvec 1.13.2",
+ "smallvec",
  "socket2 0.5.5",
  "thiserror 1.0.60",
  "tinyvec",
@@ -9765,7 +9747,7 @@ dependencies = [
  "parking_lot 0.12.1",
  "rand",
  "resolv-conf",
- "smallvec 1.13.2",
+ "smallvec",
  "thiserror 1.0.60",
  "tokio",
  "tracing",
@@ -9826,7 +9808,7 @@ dependencies = [
 [[package]]
 name = "turshi"
 version = "0.1.0"
-source = "git+https://github.com/openmina/proof-systems?rev=f461b4b#f461b4bf65fe9677f81033ed7c3c4f997caea3fe"
+source = "git+https://github.com/openmina/proof-systems?rev=d1912bca54d2609296b9af9d09ad1ef78702e203#d1912bca54d2609296b9af9d09ad1ef78702e203"
 dependencies = [
  "ark-ff",
  "hex",
@@ -10061,7 +10043,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "85e7dc29b3c54a2ea67ef4f953d5ec0c4085035c0ae2d325be1c0d2144bd9f16"
 dependencies = [
  "anyhow",
- "rustc_version 0.4.0",
+ "rustc_version",
  "rustversion",
  "time",
 ]
@@ -10085,10 +10067,10 @@ dependencies = [
  "anyhow",
  "ark-ec",
  "ark-ff",
- "ark-serialize 0.3.0",
+ "ark-serialize 0.5.0",
  "bs58 0.4.0",
  "hex",
- "itertools 0.12.0",
+ "itertools 0.12.1",
  "mina-curves",
  "mina-hasher",
  "mina-node-account",

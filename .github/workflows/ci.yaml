@@ -1,13 +1,13 @@
 name: Mina CI
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    paths-ignore: [ "frontend" ]
+    paths-ignore: ["frontend"]
   workflow_dispatch:
     inputs:
       refresh_cache:
-        description: 'Refresh cargo cache'
+        description: "Refresh cargo cache"
         required: false
         type: boolean
         default: false
@@ -17,7 +17,7 @@ env:
   RUST_BACKTRACE: full
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
-  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -40,12 +40,20 @@ jobs:
   ledger-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -84,47 +92,56 @@ jobs:
       - name: Run mina-p2p-messages
         run: make test-p2p-messages
 
-  ledger-32x9-tests:
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
+  # TODO: add back when reimplemented
+  # ledger-32x9-tests:
+  #   runs-on: ubuntu-24.04
+  #   steps:
+  #     - name: Git checkout
+  #       uses: actions/checkout@v5
 
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
+  #     - name: Setup build dependencies
+  #       uses: ./.github/actions/setup-build-deps
 
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: nightly
-          cache-prefix: ledger-32x9-v0
+  #     - name: Setup Rust
+  #       uses: ./.github/actions/setup-rust
+  #       with:
+  #         toolchain: nightly
+  #         cache-prefix: ledger-32x9-v0
 
-      - name: Download circuits files
-        uses: ./.github/actions/setup-circuits
+  #     - name: Download circuits files
+  #       uses: ./.github/actions/setup-circuits
 
-      - name: Enable 32x9 fields implementation
-        run: |
-          cargo install sd
-          sd '^mina-curves.*$' '' ./Cargo.toml
-          sd '^ark-ff = \{ version .*$' '' ./Cargo.toml
-          sd -F '# UNCOMMENTED_IN_CI ' '' ./Cargo.toml
-          cat ./Cargo.toml
+  #     - name: Enable 32x9 fields implementation
+  #       run: |
+  #         cargo install sd
+  #         sd '^mina-curves.*$' '' ./Cargo.toml
+  #         sd '^ark-ff = \{ version .*$' '' ./Cargo.toml
+  #         sd -F '# UNCOMMENTED_IN_CI ' '' ./Cargo.toml
+  #         cat ./Cargo.toml
 
-      - name: Build ledger tests
-        run: make build-ledger
+  #     - name: Build ledger tests
+  #       run: make build-ledger
 
-      - name: Run ledger tests
-        run: make test-ledger
+  #     - name: Run ledger tests
+  #       run: make test-ledger
 
   vrf-tests:
-    timeout-minutes: 8
+    timeout-minutes: 20
     runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -162,9 +179,10 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
-      fail-fast: false  # Allow other platforms to continue if one fails
+      fail-fast: false # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+        ocaml_version: [4.14.2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
@@ -172,6 +190,11 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -195,9 +218,10 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
-      fail-fast: false  # Allow other platforms to continue if one fails
+      fail-fast: false # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+        ocaml_version: [4.14.2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
@@ -205,6 +229,11 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup WebAssembly environment
         uses: ./.github/actions/setup-wasm
@@ -213,15 +242,18 @@ jobs:
 
       - name: Release build
         run: make build-wasm
+        env:
+          RUSTFLAGS: ""
 
   build-tests:
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
-      fail-fast: false  # Allow other platforms to continue if one fails
+      fail-fast: false # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+        ocaml_version: [4.14.2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
@@ -229,6 +261,11 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -252,9 +289,10 @@ jobs:
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
     strategy:
-      fail-fast: false  # Allow other platforms to continue if one fails
+      fail-fast: false # Allow other platforms to continue if one fails
       matrix:
         os: [ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-latest]
+        ocaml_version: [4.14.2]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
@@ -262,6 +300,11 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -281,7 +324,7 @@ jobs:
           retention-days: 7
 
   p2p-scenario-tests:
-    needs: [ build-tests, build-tests-webrtc ]
+    needs: [build-tests, build-tests-webrtc]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     container:
@@ -291,8 +334,15 @@ jobs:
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
     strategy:
       matrix:
-        test: [p2p_basic_connections, p2p_basic_incoming, p2p_basic_outgoing, p2p_pubsub, p2p_kad,
-               webrtc_p2p_basic_connections]
+        test:
+          [
+            p2p_basic_connections,
+            p2p_basic_incoming,
+            p2p_basic_outgoing,
+            p2p_pubsub,
+            p2p_kad,
+            webrtc_p2p_basic_connections,
+          ]
       fail-fast: false
 
     services:
@@ -310,10 +360,10 @@ jobs:
     steps:
       - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           apt-get update && \
-              apt-get install -y --no-install-recommends libssl3t64 && \
-              apt-get clean && \
-              rm -rf /var/lib/apt/lists/*
+          apt-get update && \
+            apt-get install -y --no-install-recommends libssl3t64 && \
+            apt-get clean && \
+            rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
         uses: actions/download-artifact@v5
@@ -343,7 +393,7 @@ jobs:
         if: ${{ always() }}
 
   scenario-tests:
-    timeout-minutes: 45
+    timeout-minutes: 60
     needs:
       - build-tests
       - build-tests-webrtc
@@ -391,10 +441,10 @@ jobs:
     steps:
       - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           apt-get update && \
-              apt-get install -y --no-install-recommends libssl3t64 && \
-              apt-get clean && \
-              rm -rf /var/lib/apt/lists/*
+          apt-get update && \
+            apt-get install -y --no-install-recommends libssl3t64 && \
+            apt-get clean && \
+            rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
         uses: actions/download-artifact@v5
@@ -448,10 +498,10 @@ jobs:
     steps:
       - name: Install libssl3t64 # Our binaries are built on a newer ubuntu and require libssl3t64
         run: |
-           apt-get update && \
-              apt-get install -y --no-install-recommends libssl3t64 && \
-              apt-get clean && \
-              rm -rf /var/lib/apt/lists/*
+          apt-get update && \
+            apt-get install -y --no-install-recommends libssl3t64 && \
+            apt-get clean && \
+            rm -rf /var/lib/apt/lists/*
 
       - name: Download tests
         uses: actions/download-artifact@v5
@@ -469,7 +519,7 @@ jobs:
 
   bootstrap-test:
     timeout-minutes: 4
-    needs: [ build, build-tests ]
+    needs: [build, build-tests]
     runs-on: ubuntu-24.04
     env:
       MINA_HOME: data

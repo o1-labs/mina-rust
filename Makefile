@@ -30,6 +30,15 @@ NETWORK ?= devnet
 VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
+OPAM_PATH := $(shell command -v opam 2>/dev/null)
+
+ifdef OPAM_PATH
+# This captures what `eval $(opam env)` would set in your shell
+OPAM_ENV := $(shell eval $$(opam env) && env | grep '^OPAM\|^PATH\|^CAML' | sed 's/^/export /')
+export $(shell eval $$(opam env) && env | grep '^OPAM\|^PATH\|^CAML' | cut -d= -f1)
+$(foreach v,$(shell eval $$(opam env) && env | grep '^OPAM\|^PATH\|^CAML'),$(eval export $(v)))
+endif
+
 .PHONY: help
 help: ## Ask for help!
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

@@ -22,6 +22,9 @@ concurrency:
 jobs:
   test-doc-commands:
     runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -35,6 +38,11 @@ jobs:
           components: rustfmt
           toolchain: 1.84
           cache-prefix: test-doc-commands-v0
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ matrix.ocaml_version }}
 
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits

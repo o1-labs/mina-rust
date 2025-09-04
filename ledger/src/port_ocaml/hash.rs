@@ -91,7 +91,7 @@ fn hash_field(f: &Fp) -> u32 {
     let mut acc = 0;
 
     let bigint: BigInteger256 = (*f).into();
-    let bigint = bigint.to_64x4();
+    let bigint = bigint.0;
     let nignore: usize = bigint.iter().rev().take_while(|&b| *b == 0).count();
 
     for bigint in bigint.iter().take(BigInteger256::NUM_LIMBS - nignore) {
