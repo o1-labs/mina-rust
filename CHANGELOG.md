@@ -106,6 +106,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1230](https://github.com/o1-labs/openmina/pull/1230))
 - bump itertools from 0.10.5 to 0.12.0 #1228
   ([#1228](https://github.com/o1-labs/openmina/pull/1228))
+- vendor num-bigint#1996d080 and rename it in num-bigint-generic
+  ([#1379](https://github.com/o1-labs/mina-rust/pull/1379/))
 
 ### Other
 
