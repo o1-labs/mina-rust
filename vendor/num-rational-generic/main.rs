@@ -2,8 +2,8 @@
 
 extern crate test;
 
-use num_bigint_generic::BigInt;
-use num_rational_generic::{BigRational, Ratio};
+use num_bigint::BigInt;
+use num_rational::{BigRational, Ratio};
 use test::Bencher;
 
 mod rng;
