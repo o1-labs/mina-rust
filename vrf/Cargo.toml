@@ -19,6 +19,7 @@ mina-signer = { workspace = true }
 num = { version = "0.4", features = ["std"] }
 num-bigint-generic = { workspace = true }
 num-rational-generic = { workspace = true }
+num-traits = { workspace = true, features = ["std"] }
 o1-utils = { workspace = true }
 poseidon = { workspace = true }
 redux = { workspace = true }

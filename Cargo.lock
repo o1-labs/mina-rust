@@ -10129,6 +10129,7 @@ dependencies = [
  "num",
  "num-bigint-generic",
  "num-rational-generic",
+ "num-traits",
  "o1-utils",
  "poseidon",
  "rand",
