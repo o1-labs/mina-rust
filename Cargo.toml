@@ -71,7 +71,9 @@ mina-producer-dashboard = { path = "producer-dashboard" }
 mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 num-bigint = { version = "0.4.6" }
 num-bigint-generic = { path = "./vendor/num-bigint-generic" }
-num-rational-generic = { path = "./vendor/num-rational-generic" }
+num-rational-generic = { path = "./vendor/num-rational-generic", features = [
+  "num-bigint-generic",
+] }
 num-traits = "0.2"
 o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 poly-commitment = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }

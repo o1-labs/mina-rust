@@ -18,7 +18,7 @@ mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
 num = { version = "0.4", features = ["std"] }
 num-bigint-generic = { workspace = true }
-num-rational-generic = { workspace = true }
+num-rational-generic = { workspace = true, features = ["num-bigint-generic"] }
 num-traits = { workspace = true, features = ["std"] }
 o1-utils = { workspace = true }
 poseidon = { workspace = true }
