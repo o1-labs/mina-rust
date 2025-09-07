@@ -7,12 +7,12 @@ edition = "2021"
 
 [dependencies]
 
-[dependencies.num-rational]
+[dependencies.num-rational-generic]
 default-features = false
-features = ["num-bigint"]
+features = ["num-bigint-generic"]
 path = "../.."
 
-[dependencies.num-bigint]
+[dependencies.num-bigint-generic]
 default-features = false
 version = "0.4.0"
 
