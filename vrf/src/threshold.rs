@@ -107,15 +107,17 @@ impl Threshold {
         }
     }
 
-    fn factorial<const N: usize>(n: num::bigint::BigInt<N>) -> num::bigint::BigInt<N> {
-        if n == BigInt::<N>::zero() {
-            return BigInt::<N>::one();
+    fn factorial<const N: usize>(
+        n: num_bigint_generic::BigInt<N>,
+    ) -> num_bigint_generic::BigInt<N> {
+        if n == num_bigint_generic::BigInt::<N>::zero() {
+            return num_bigint_generic::BigInt::<N>::one();
         }
         let mut res = n.clone();
-        let mut i = n - BigInt::<N>::one();
-        while i != BigInt::<N>::zero() {
+        let mut i = n - num_bigint_generic::BigInt::<N>::one();
+        while i != num_bigint_generic::BigInt::<N>::zero() {
             res *= i.clone();
-            i -= BigInt::<N>::one();
+            i -= num_bigint_generic::BigInt::<N>::one();
         }
 
         res
@@ -195,15 +197,15 @@ pub fn get_fractional(vrf_out: BigInteger256) -> Ratio<BigInt2048> {
 
 // TODO: is there a fn like this?
 pub fn bigint_to_bigrational<const N: usize>(
-    x: &num::bigint::BigInt<N>,
-) -> Ratio<num::bigint::BigInt<N>> {
-    Ratio::new(x.clone(), num::bigint::BigInt::one())
+    x: &num_bigint_generic::BigInt<N>,
+) -> Ratio<num_bigint_generic::BigInt<N>> {
+    Ratio::new(x.clone(), num_bigint_generic::BigInt::one())
 }
 
 pub fn bigrational_as_fixed_point<const N: usize>(
-    c: Ratio<num::bigint::BigInt<N>>,
+    c: Ratio<num_bigint_generic::BigInt<N>>,
     per_term_precission: usize,
-) -> num::bigint::BigInt<N> {
+) -> num_bigint_generic::BigInt<N> {
     let numer = c.numer();
     let denom = c.denom();
 
