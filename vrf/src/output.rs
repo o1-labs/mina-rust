@@ -9,7 +9,7 @@ use poseidon::hash::params::MINA_VRF_OUTPUT;
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
 
-use crate::{BaseField, BigInt2048, ScalarField};
+use crate::{BaseField, BigInt2048, BigRational2048, ScalarField};
 
 use super::serialize::{ark_deserialize, ark_serialize};
 
@@ -88,14 +88,14 @@ impl VrfOutput {
         // ocaml:   Bignum_bigint.(shift_left one length_in_bits))
         //          where: length_in_bits = Int.min 256 (Field.size_in_bits - 2)
         //                 Field.size_in_bits = 255
-        let two_tpo_256 = BigInt::one() << 253u32;
+        let two_tpo_256 = BigInt2048::one() << 253u32;
 
         let vrf_out: BigInt2048 = BigInt2048::from_bytes_be(
             num_bigint_generic::Sign::Plus,
             &self.truncated().into_bigint().to_bytes_be(),
         );
 
-        BigRational::new(vrf_out, two_tpo_256).to_f64().unwrap()
+        BigRational2048::new(vrf_out, two_tpo_256).to_f64().unwrap()
     }
 
     pub fn to_base_58(&self) -> String {

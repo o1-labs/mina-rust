@@ -4,7 +4,9 @@ use ledger::AccountIndex;
 use message::VrfMessage;
 use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::v2::EpochSeed;
-use num::{rational::Ratio, BigInt, ToPrimitive};
+use num_bigint_generic::BigInt;
+use num_rational_generic::Ratio;
+use num_traits::ToPrimitive;
 use output::VrfOutput;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
@@ -28,7 +30,7 @@ pub enum VrfError {
     HexDecodeError(#[from] hex::FromHexError),
 
     #[error("Failed to parse decimal big integer from string: {0}")]
-    BigIntParseError(#[from] num::bigint::ParseBigIntError),
+    BigIntParseError(#[from] num_bigint_generic::ParseBigIntError),
 
     #[error("Field conversion error: {0}")]
     FieldHelpersError(#[from] o1_utils::field_helpers::FieldHelpersError),
@@ -175,7 +177,7 @@ mod test {
     use std::str::FromStr;
 
     use ledger::AccountIndex;
-    use num::BigInt;
+    use num_bigint_generic::BigInt;
 
     use mina_node_account::AccountSecretKey;
     use mina_p2p_messages::{

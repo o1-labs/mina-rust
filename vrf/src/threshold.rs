@@ -1,6 +1,8 @@
 use ark_ff::{self, BigInteger, BigInteger256, One, Zero};
 use itertools::unfold;
-use num::{rational::Ratio, BigInt, FromPrimitive, Signed};
+use num_bigint_generic::{BigInt, Sign};
+use num_rational_generic::Ratio;
+use num_traits::{FromPrimitive, Signed};
 
 use crate::{BigInt2048, BigInt256, BigInt4096, BigRational2048, BigRational4096};
 
@@ -20,7 +22,10 @@ impl Threshold {
         // 1. set up parameters to calculate threshold
         // Note: IMO all these parameters can be represented as constants. They do not change. The calculation is most likely in the
         //       code to adjust them in the future. We could create an utility that generates these params using f and log terms
-        let f = BigRational2048::new(BigInt::from_u8(3).unwrap(), BigInt::from_u8(4).unwrap());
+        let f = BigRational2048::new(
+            BigInt2048::from_u8(3).unwrap(),
+            BigInt2048::from_u8(4).unwrap(),
+        );
 
         let base = BigRational2048::one() - f;
 
@@ -29,15 +34,15 @@ impl Threshold {
         let (per_term_precission, terms_needed, _) = Self::bit_params(&abs_log_base);
 
         let terms_needed: i32 = terms_needed.try_into().unwrap();
-        let mut linear_term_integer_part = BigInt::zero();
+        let mut linear_term_integer_part = BigInt4096::zero();
 
         let abs_log_base: BigRational4096 = abs_log_base.to_nlimbs::<64>();
 
         let coefficients = (1..terms_needed).map(|x| {
             let c = abs_log_base.pow(x) / Self::factorial(x.into());
             let c_frac = if x == 1 {
-                let c_whole = c.to_integer();
-                let c_frac = c - bigint_to_bigrational(&c_whole);
+                let c_whole: BigInt4096 = c.to_integer();
+                let c_frac = c - bigint_to_bigrational::<64>(&c_whole);
                 linear_term_integer_part = c_whole;
                 c_frac
             } else {
@@ -62,7 +67,7 @@ impl Threshold {
         let input =
             BigRational4096::new(numer.to_nlimbs(), two_tpo_per_term_precission.to_nlimbs());
 
-        let denom = BigInt::one() << per_term_precission;
+        let denom = BigInt2048::one() << per_term_precission;
 
         let (res, _) = coefficients.into_iter().fold(
             (BigRational4096::zero(), BigRational4096::one()),
@@ -90,8 +95,8 @@ impl Threshold {
     }
 
     fn terms_needed(log_base: &BigRational2048, bits_of_precission: u32) -> i32 {
-        let two = BigInt4096::one() + BigInt::one();
-        let lower_bound = bigint_to_bigrational(&two.pow(bits_of_precission));
+        let two: BigInt4096 = BigInt4096::one() + BigInt4096::one();
+        let lower_bound: BigRational4096 = bigint_to_bigrational(&two.pow(bits_of_precission));
 
         let mut n = 0;
         let log_base: BigRational4096 = log_base.to_nlimbs();
@@ -190,7 +195,7 @@ pub fn get_fractional(vrf_out: BigInteger256) -> Ratio<BigInt2048> {
     //                 Field.size_in_bits = 255
     let two_tpo_256 = BigInt2048::one() << 253u32;
 
-    let vrf_out = BigInt2048::from_bytes_be(num::bigint::Sign::Plus, &vrf_out.to_bytes_be());
+    let vrf_out = BigInt2048::from_bytes_be(Sign::Plus, &vrf_out.to_bytes_be());
 
     Ratio::new(vrf_out, two_tpo_256)
 }
