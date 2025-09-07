@@ -58,21 +58,22 @@ ark-serialize = { version = "0.5", features = ["std"] }
 graphannis-malloc_size_of = { git = "https://github.com/openmina/graphannis-malloc_size_of.git", rev = "f7da9f6" }
 graphannis-malloc_size_of_derive = { git = "https://github.com/openmina/graphannis-malloc_size_of_derive.git" }
 juniper = { version = "0.16" }
-kimchi = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
+kimchi = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 ledger = { path = "ledger", package = "mina-tree" }
 libp2p = { git = "https://github.com/openmina/rust-libp2p", rev = "5c44c7d9", default-features = false }
 linkme = "0.3.22"
-mina-curves = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
-mina-hasher = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
+mina-curves = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
+mina-hasher = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 mina-node-account = { path = "node/account" }
 mina-p2p-messages = { path = "mina-p2p-messages" }
-mina-poseidon = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
+mina-poseidon = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 mina-producer-dashboard = { path = "producer-dashboard" }
-mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
-num-bigint = { version = "0.4.4" }
+mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
+num-bigint = { version = "0.4.6" }
 num-bigint-generic = { path = "./vendor/num-bigint-generic" }
-o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
-poly-commitment = { git = "https://github.com/o1-labs/proof-systems", rev = "14331b51eccdd0989d2c6bedcffc5fd873260d42" }
+num-rational-generic = { path = "./vendor/num-rational-generic" }
+o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
+poly-commitment = { git = "https://github.com/o1-labs/proof-systems", rev = "c513810dddec410c4065df359a66b1adfdf1aa23" }
 poseidon = { path = "poseidon" }
 redux = { git = "https://github.com/o1-labs/redux-rs.git", rev = "06c8366", features = [
   "serde",
