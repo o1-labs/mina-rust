@@ -76,7 +76,7 @@ pub type Rational64 = Ratio<i64>;
 
 #[cfg(feature = "num-bigint-generic")]
 /// Alias for arbitrary precision rationals.
-pub type BigRational<const N: usize = { num_bigint_generic::NLIMBS }> = Ratio<BigInt<N>>;
+pub type BigRational = Ratio<BigInt>;
 
 /// These method are `const`.
 impl<T> Ratio<T> {
@@ -2746,7 +2746,7 @@ mod test {
 
         #[cfg(feature = "num-bigint-generic")]
         fn test_big(r: Rational64, e: i32, expected: Rational64) {
-            let r = BigRational::<4>::new_raw(r.numer.into(), r.denom.into());
+            let r = BigRational::new_raw(r.numer.into(), r.denom.into());
             let expected = BigRational::new_raw(expected.numer.into(), expected.denom.into());
             assert_eq!(r.clone().pow(e), expected.clone());
             assert_eq!(Pow::pow(r.clone(), e), expected);
