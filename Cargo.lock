@@ -10128,6 +10128,7 @@ dependencies = [
  "mina-tree",
  "num",
  "num-bigint-generic",
+ "num-rational-generic",
  "o1-utils",
  "poseidon",
  "rand",
