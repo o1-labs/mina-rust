@@ -54,14 +54,14 @@ pub enum VrfError {
 }
 
 /// 256 bits
-pub(crate) type BigInt256 = num::bigint::BigInt<4>;
+pub(crate) type BigInt256 = num_bigint_generic::BigInt<4>;
 
 /// 2048 bits
-pub(crate) type BigInt2048 = num::bigint::BigInt<32>;
+pub(crate) type BigInt2048 = num_bigint_generic::BigInt<32>;
 pub(crate) type BigRational2048 = Ratio<BigInt2048>;
 
 /// 4096 bits
-pub(crate) type BigInt4096 = num::bigint::BigInt<64>;
+pub(crate) type BigInt4096 = num_bigint_generic::BigInt<64>;
 pub(crate) type BigRational4096 = Ratio<BigInt4096>;
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
