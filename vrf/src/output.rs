@@ -2,7 +2,8 @@ use ark_ec::short_weierstrass::Affine;
 use ark_ff::{BigInteger, BigInteger256, PrimeField};
 use ledger::{proofs::transaction::field_to_bits, AppendToInputs, ToInputs};
 use mina_p2p_messages::v2::ConsensusVrfOutputTruncatedStableV1;
-use num::{BigInt, BigRational, One, ToPrimitive};
+use num::{BigInt, One, ToPrimitive};
+use num_rational_generic::BigRational;
 use o1_utils::FieldHelpers;
 use poseidon::hash::params::MINA_VRF_OUTPUT;
 use serde::{Deserialize, Serialize};
@@ -90,7 +91,7 @@ impl VrfOutput {
         let two_tpo_256 = BigInt::one() << 253u32;
 
         let vrf_out: BigInt2048 = BigInt2048::from_bytes_be(
-            num::bigint::Sign::Plus,
+            num_bigint_generic::Sign::Plus,
             &self.truncated().into_bigint().to_bytes_be(),
         );
 

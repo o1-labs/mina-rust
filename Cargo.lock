@@ -5472,7 +5472,7 @@ dependencies = [
  "mina-hasher",
  "mina-macros",
  "mina-signer",
- "num-bigint",
+ "num-bigint-generic",
  "o1-utils",
  "poseidon",
  "rsexp",

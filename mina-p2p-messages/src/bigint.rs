@@ -75,7 +75,7 @@ impl BigInt {
     }
 
     pub fn from_decimal(s: &str) -> Result<Self, InvalidDecimalNumber> {
-        num_bigint::BigInt::<4>::parse_bytes(s.as_bytes(), 10)
+        num_bigint_generic::BigInt::<4>::parse_bytes(s.as_bytes(), 10)
             .map(|num| {
                 let mut bytes = num.to_bytes_be().1;
                 bytes.reverse();
@@ -264,7 +264,7 @@ impl<'de> Deserialize<'de> for BigInt {
                         }),
                         None => {
                             // Try to parse as a decimal number
-                            num_bigint::BigInt::<4>::parse_bytes(v.as_bytes(), 10)
+                            num_bigint_generic::BigInt::<4>::parse_bytes(v.as_bytes(), 10)
                                 .map(|num| {
                                     let mut bytes = num.to_bytes_be().1;
                                     bytes.reverse();
