@@ -86,8 +86,7 @@ impl BigInt {
     }
 
     pub fn to_decimal(&self) -> String {
-        let bigint: num_bigint::BigUint = self.0.into();
-        bigint.to_string()
+        self.0.to_string()
     }
 }
 
