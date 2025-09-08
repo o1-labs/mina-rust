@@ -1,6 +1,5 @@
 use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::PrimeField;
-use core::ops::Mul;
 use ledger::AccountIndex;
 use message::VrfMessage;
 use mina_node_account::AccountPublicKey;
