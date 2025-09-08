@@ -5292,7 +5292,7 @@ dependencies = [
  "mina-p2p-messages",
  "mina-signer",
  "mina-tree",
- "mio 1.0.3",
+ "mio 1.0.4",
  "node",
  "rand",
  "rayon",
@@ -5647,14 +5647,14 @@ dependencies = [
 
 [[package]]
 name = "mio"
-version = "1.0.3"
+version = "1.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2886843bf800fba2e3377cff24abf6379b4c4d5c6681eaf9ea5b0d15090450bd"
+checksum = "78bed444cc8a2160f01cbcf811ef18cac863ad68ae8ca62092e8db51d51c761c"
 dependencies = [
  "libc",
  "log",
  "wasi",
- "windows-sys 0.52.0",
+ "windows-sys 0.59.0",
 ]
 
 [[package]]
@@ -6423,7 +6423,7 @@ dependencies = [
  "mina-fuzzer",
  "mina-macros",
  "mina-p2p-messages",
- "mio 1.0.3",
+ "mio 1.0.4",
  "multiaddr",
  "multihash 0.18.1",
  "p2p-testing",
