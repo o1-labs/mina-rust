@@ -56,10 +56,10 @@ impl Neg for Sign {
 }
 
 impl<const A: usize> BigInt<A> {
-    pub fn to_digits<const N2: usize>(&self) -> BigInt<N2> {
+    pub fn to_nlimbs<const N2: usize>(&self) -> BigInt<N2> {
         BigInt {
             sign: self.sign,
-            data: self.data.to_digits(),
+            data: self.data.to_nlimbs(),
         }
     }
 }

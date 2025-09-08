@@ -67,7 +67,7 @@ impl Threshold {
         let input =
             BigRational4096::new(numer.to_nlimbs(), two_tpo_per_term_precission.to_nlimbs());
 
-        let denom = BigInt2048::one() << per_term_precission;
+        let denom = BigInt4096::one() << per_term_precission;
 
         let (res, _) = coefficients.into_iter().fold(
             (BigRational4096::zero(), BigRational4096::one()),
@@ -230,16 +230,18 @@ mod test {
     use std::str::FromStr;
 
     use ark_ff::{One, Zero};
-    use num::{BigInt, BigRational, ToPrimitive};
+    use num_bigint_generic::BigInt;
+    use num_rational_generic::BigRational;
+    use num_traits::ToPrimitive;
 
     use super::*;
 
     // TODO: move to regular fns, rework step
-    fn first_non_zero(stake: BigInt, total_currency: BigInt, step: BigInt) -> BigInt {
-        let ten = BigInt::from_str("10").unwrap();
+    fn first_non_zero(stake: BigInt<4>, total_currency: BigInt<4>, step: BigInt<4>) -> BigInt {
+        let ten = BigInt::<4>::from_str("10").unwrap();
         let mut stake = stake;
-        if step == BigInt::zero() {
-            stake + BigInt::one()
+        if step == BigInt::<4>::zero() {
+            stake + BigInt::<4>::one()
         } else {
             loop {
                 let thrs = Threshold::new(stake.clone(), total_currency.clone());

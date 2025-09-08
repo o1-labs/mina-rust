@@ -59,7 +59,7 @@ pub struct Ratio<T> {
 impl<const N: usize> Ratio<BigInt<N>> {
     pub fn to_nlimbs<const B: usize>(&self) -> Ratio<BigInt<B>> {
         let Self { numer, denom } = self;
-        Ratio::new(numer.to_digits(), denom.to_digits())
+        Ratio::new(numer.to_nlimbs(), denom.to_nlimbs())
     }
 }
 

@@ -32,7 +32,7 @@ pub struct BigUint<const N: usize = NLIMBS> {
 }
 
 impl<const A: usize> BigUint<A> {
-    pub fn to_digits<const N2: usize>(&self) -> BigUint<N2> {
+    pub fn to_nlimbs<const N2: usize>(&self) -> BigUint<N2> {
         BigUint {
             data: self.data.iter().copied().collect(),
         }
