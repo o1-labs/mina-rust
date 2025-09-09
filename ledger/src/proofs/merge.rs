@@ -6,9 +6,8 @@ use crate::proofs::{
     util::sha256_sum,
     wrap::{wrap, WrapParams},
 };
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 
 use crate::{
     proofs::transaction::transaction_snark::assert_equal_local_state,

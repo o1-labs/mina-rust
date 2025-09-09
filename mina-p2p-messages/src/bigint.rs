@@ -1,7 +1,29 @@
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256};
+use ark_ff::BigInteger256;
+use ark_serialize::{CanonicalDeserialize, CanonicalSerialize};
 use malloc_size_of::MallocSizeOf;
 use rsexp::{OfSexp, SexpOf};
 use serde::{Deserialize, Serialize};
+
+// ---
+// This has been imported from a fork of arkworks/ff
+// We should probably revisit this structure in the future
+#[derive(Clone, Debug)]
+pub struct InvalidBigInt;
+
+impl core::fmt::Display for InvalidBigInt {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "InvalidBigInt")
+    }
+}
+
+impl From<InvalidBigInt> for String {
+    fn from(_: InvalidBigInt) -> Self {
+        "InvalidBigInt".to_string()
+    }
+}
+
+impl std::error::Error for InvalidBigInt {}
+// ---
 
 #[derive(Clone, Default, PartialEq, Eq, PartialOrd, Ord, derive_more::From, derive_more::Into)]
 pub struct BigInt(BigInteger256);
@@ -42,16 +64,14 @@ impl BigInt {
     }
 
     pub fn to_bytes(&self) -> [u8; 32] {
-        use ark_ff::ToBytes;
-        let mut bytes = std::io::Cursor::new([0u8; 32]);
-        self.0 .0.write(&mut bytes).unwrap(); // Never fail, there is 32 bytes
-        bytes.into_inner()
+        let mut bytes = Vec::with_capacity(32);
+        self.0.serialize_uncompressed(&mut bytes).unwrap(); // Never fail, there is 32 bytes
+        bytes.try_into().unwrap()
     }
 
     pub fn from_bytes(bytes: [u8; 32]) -> Self {
-        use ark_ff::FromBytes;
-        let value = FromBytes::read(&bytes[..]).expect("Don't fail");
-        Self(BigInteger256::new(value)) // Never fail, we read from 32 bytes
+        let value = BigInteger256::deserialize_uncompressed(&bytes[..]).expect("Don't fail");
+        Self(value) // Never fail, we read from 32 bytes
     }
 
     pub fn from_decimal(s: &str) -> Result<Self, InvalidDecimalNumber> {
@@ -190,17 +210,15 @@ impl binprot::BinProtRead for BigInt {
     where
         Self: Sized,
     {
-        use ark_ff::FromBytes;
-        let value = FromBytes::read(r)?;
-        Ok(Self(BigInteger256::new(value)))
+        let mut bytes = [0u8; 32];
+        r.read_exact(&mut bytes)?;
+        Ok(Self::from_bytes(bytes))
     }
 }
 
 impl binprot::BinProtWrite for BigInt {
     fn binprot_write<W: std::io::Write>(&self, w: &mut W) -> std::io::Result<()> {
-        use ark_ff::ToBytes;
-        let Self(biginteger) = self;
-        biginteger.0.write(w)
+        w.write_all(&self.to_bytes())
     }
 }
 

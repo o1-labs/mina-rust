@@ -1,7 +1,6 @@
 mod rpc_state;
 use std::{collections::BTreeMap, str::FromStr};
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
     scan_state::{
         currency::{Amount, Balance, Fee, Nonce, Slot},
@@ -16,7 +15,7 @@ use mina_core::{
 };
 use mina_node_account::AccountPublicKey;
 use mina_p2p_messages::{
-    bigint::BigInt,
+    bigint::{BigInt, InvalidBigInt},
     v2::{
         LedgerHash, MinaBaseSignedCommandPayloadBodyStableV2, MinaBaseSignedCommandStableV2,
         MinaBaseTransactionStatusStableV2, MinaBaseUserCommandStableV2,
