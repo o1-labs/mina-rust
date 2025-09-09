@@ -61,6 +61,55 @@ it to `main`, and then tagging from `main`.
 - Documentation updates
 - No new features
 
+## Release Communication Checklist
+
+### Slack/Communication Template
+
+Copy and paste this checklist when announcing a release in progress:
+
+```markdown
+## 🚀 Release in Progress: vX.Y.Z
+
+**Release Manager:** @[your-name] **Target Date:** [date] **Type:** [ ] Major [
+] Minor [ ] Patch
+
+### Pre-Release
+
+- [ ] Develop branch stability verified
+- [ ] CHANGELOG.md updated
+- [ ] Version compatibility checked
+- [ ] Release branch created (if major/minor)
+- [ ] Version numbers updated in Cargo.toml files
+
+### Release Process
+
+- [ ] PR created from release branch to main
+- [ ] CI tests passing
+- [ ] Required approvals obtained
+- [ ] PR merged to main
+- [ ] Git tag created and pushed
+- [ ] Docker images building (automated)
+- [ ] GitHub release draft created
+
+### Verification
+
+- [ ] Docker images available on Docker Hub
+- [ ] Multi-arch images verified (amd64/arm64)
+- [ ] CI pipeline completed successfully
+- [ ] GitHub release published
+
+### Post-Release
+
+- [ ] Main branch merged back to develop
+- [ ] Documentation updated
+- [ ] Release announced in #announcements
+- [ ] Known issues documented (if any)
+
+**Tracking:** [Link to PR/Issue] **Status:** 🟡 In Progress
+
+_Updates will be posted in this thread_
+```
+
 ## Pre-Release Checklist
 
 1. **Verify develop branch stability**
