@@ -1,6 +1,6 @@
 [package]
 name = "mina-p2p-messages"
-version = "0.6.4"
+version = "0.17.0-alpha"
 edition = "2021"
 license = "Apache-2.0"
 
