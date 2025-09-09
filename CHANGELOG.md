@@ -110,6 +110,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1228](https://github.com/o1-labs/openmina/pull/1228))
 - Remove OpenMina forks of arkworks and proof-systems
   ([#1383](https://github.com/o1-labs/mina-rust/pull/1383))
+- Bump mio from 1.0.3 to 1.0.4
+  ([#1384](https://github.com/o1-labs/mina-rust/pull/1384))
 
 ### Other
 
