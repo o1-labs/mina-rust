@@ -142,7 +142,8 @@ jobs:
             echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-            echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
+            VERSION="${BRANCH_NAME#release/}"
+            echo "GIT_COMMIT=${VERSION}" >> $GITHUB_ENV
             echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           fi
 
@@ -176,7 +177,8 @@ jobs:
             echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
             BRANCH_NAME="${GITHUB_REF#refs/heads/}"
-            echo "GIT_COMMIT=${BRANCH_NAME}" >> $GITHUB_ENV
+            VERSION="${BRANCH_NAME#release/}"
+            echo "GIT_COMMIT=${VERSION}" >> $GITHUB_ENV
             echo "ADDITIONAL_TAGS=" >> $GITHUB_ENV
           fi
 
