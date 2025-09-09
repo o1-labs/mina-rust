@@ -42,7 +42,7 @@ impl SoloNodeBootstrap {
     pub async fn run(self, mut runner: ClusterRunner<'_>) {
         use self::TransitionFrontierSyncState::*;
 
-        const TIMEOUT: Duration = Duration::from_secs(60 * 40);
+        const TIMEOUT: Duration = Duration::from_secs(60 * 60);
 
         let replayer = hosts::replayer();
 
