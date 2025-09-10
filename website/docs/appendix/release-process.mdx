@@ -149,6 +149,33 @@ _Updates will be posted in this thread_
 
 ### 1. Create Release Branch (for major/minor releases)
 
+<!-- prettier-ignore-start -->
+
+:::info Release Branch Naming Convention
+
+Release branches **must** follow the format `release/vX.Y.Z` where:
+
+- The version **must** start with a lowercase `v`
+- X, Y, and Z are version numbers following semantic versioning (all three
+  components required)
+
+**Valid examples:**
+
+- `release/v1.5.0`
+- `release/v1.2.3`
+- `release/v2.0.0`
+
+**Invalid examples:**
+
+- `release/1.5.0` ❌ (missing 'v' prefix)
+- `release/v1.5` ❌ (missing patch version)
+- `release/V1.5.0` ❌ (uppercase 'V')
+
+This naming convention is enforced by CI checks. Any push to a branch starting
+with `release/` that doesn't follow this format will fail validation. :::
+
+<!-- prettier-ignore-stop -->
+
 ```bash
 # Create release branch from develop
 git checkout develop
