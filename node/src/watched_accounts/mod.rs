@@ -6,10 +6,12 @@ pub use watched_accounts_actions::*;
 
 mod watched_accounts_reducer;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_p2p_messages::v2::{
-    NonZeroCurvePoint, NonZeroCurvePointUncompressedStableV1, StagedLedgerDiffDiffDiffStableV2,
-    StagedLedgerDiffDiffPreDiffWithAtMostTwoCoinbaseStableV2B,
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{
+        NonZeroCurvePoint, NonZeroCurvePointUncompressedStableV1, StagedLedgerDiffDiffDiffStableV2,
+        StagedLedgerDiffDiffPreDiffWithAtMostTwoCoinbaseStableV2B,
+    },
 };
 
 pub fn is_transaction_affecting_account(

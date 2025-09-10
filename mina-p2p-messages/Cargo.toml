@@ -7,6 +7,7 @@ license = "Apache-2.0"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ark-serialize = { workspace = true }
 base64 = "0.22"
 binprot = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
 binprot_derive = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }

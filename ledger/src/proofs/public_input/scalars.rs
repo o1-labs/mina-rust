@@ -1,6 +1,7 @@
-use ark_ff::{BigInteger256, Field, FromBytes};
+use ark_ff::{BigInteger256, Field};
 use kimchi::proof::ProofEvaluations;
 use mina_curves::pasta::{Fp, Fq};
+use o1_utils::field_helpers::FieldHelpers;
 
 use crate::proofs::field::FieldWitness;
 
@@ -44,13 +45,7 @@ where
         s = &s[2..];
     }
 
-    let mut bytes = <[u8; 32]>::default();
-    hex::decode_to_slice(s, &mut bytes).unwrap();
-    bytes.reverse();
-
-    let value = FromBytes::read(&bytes[..]).expect("Should not fail");
-    let bigint = BigInteger256::new(value);
-    F::from(bigint) // Never fail, we hardcode them with string literals
+    F::from_hex(s).expect("Must not fail")
 }
 
 fn field<F: FieldWitness>(s: &str) -> F {

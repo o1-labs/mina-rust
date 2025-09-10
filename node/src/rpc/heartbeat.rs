@@ -196,7 +196,7 @@ impl NodeHeartbeat {
             );
             let kp = Keypair::from(secret_key.clone());
 
-            let signature = signer.sign(&kp, &digest);
+            let signature = signer.sign(&kp, &digest, false);
             signature.into()
         };
 

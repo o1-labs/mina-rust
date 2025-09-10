@@ -62,6 +62,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   [#1340](https://github.com/o1-labs/mina-rust/pull/1340),
   [#2981ecf](https://github.com/o1-labs/mina-rust/commit/2981ecf9519517f69947838407a09ea96f7ff293),
   [#1e9f33f](https://github.com/o1-labs/mina-rust/commit/1e9f33f125dcaab36d9dd2dc17759e3476bc36e8))
+- **Documentation**: add release communication checklist
+  ([#1390](https://github.com/o1-labs/mina-rust/pull/1390))
 
 ### Changed
 
@@ -108,6 +110,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1228](https://github.com/o1-labs/openmina/pull/1228))
 - bump aes from 0.8.3 to 0.8.4
   ([#1272](https://github.com/o1-labs/openmina/pull/1272))
+- Remove OpenMina forks of arkworks and proof-systems
+  ([#1383](https://github.com/o1-labs/mina-rust/pull/1383))
+- Bump mio from 1.0.3 to 1.0.4
+  ([#1384](https://github.com/o1-labs/mina-rust/pull/1384))
 
 ### Other
 

@@ -1,6 +1,8 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use mina_curves::pasta::{Fp, Vesta};
-use mina_p2p_messages::{bigint::BigInt, v2::PicklesProofProofsVerified2ReprStableV2};
+use mina_p2p_messages::{
+    bigint::{BigInt, InvalidBigInt},
+    v2::PicklesProofProofsVerified2ReprStableV2,
+};
 use poly_commitment::{commitment::CommitmentCurve, ipa::SRS};
 
 use super::{public_input::scalar_challenge::ScalarChallenge, urs_utils};

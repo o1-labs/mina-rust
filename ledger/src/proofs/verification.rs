@@ -1,9 +1,9 @@
 use std::rc::Rc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ark_poly::{EvaluationDomain, Radix2EvaluationDomain};
 use ark_serialize::Write;
 use itertools::Itertools;
+use mina_p2p_messages::bigint::InvalidBigInt;
 use poly_commitment::ipa::SRS;
 
 use crate::{

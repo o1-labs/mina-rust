@@ -1,5 +1,7 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_p2p_messages::v2::{self, StateHash};
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{self, StateHash},
+};
 
 use crate::constants::{constraint_constants, slots_per_window};
 
