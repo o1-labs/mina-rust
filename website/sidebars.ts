@@ -37,6 +37,7 @@ const sidebars: SidebarsConfig = {
         'node-operators/block-producer',
         'node-operators/archive-node',
         'node-operators/network-configuration',
+        'node-operators/node-management',
       ],
     },
     {

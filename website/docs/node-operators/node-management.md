@@ -1,0 +1,276 @@
+---
+sidebar_position: 8
+title: Node Management
+description: Essential commands and tools for managing your Mina Rust node
+---
+
+# Node Management
+
+This guide covers essential commands and tools for managing your Mina Rust node,
+including version verification, monitoring, and troubleshooting.
+
+## Checking Build Information
+
+It's important to verify the version and build information of your node to
+ensure you're running the correct version and to help with troubleshooting.
+
+### Using Docker
+
+To check the build information of your Docker-based node:
+
+```bash
+# Get build information
+docker run --rm o1labs/mina-rust:latest build-info
+```
+
+Example output:
+
+```
+Version:       0341fff
+Build time:    2025-09-10T18:11:40.953050700Z
+Commit SHA:    0341fffedba4900371504ad4b30853674960a209
+Commit time:   2025-09-10T19:30:31.000000000+02:00
+Commit branch: release/v0.17.0
+Rustc channel: stable
+Rustc version: 1.84.1
+```
+
+For a specific version:
+
+```bash
+docker run --rm o1labs/mina-rust:v0.17.0 build-info
+```
+
+### Using Native Binary
+
+If you've built from source or are running the binary directly:
+
+```bash
+# Get build information
+mina build-info
+
+# Or with the full path if not in PATH
+./target/release/mina build-info
+```
+
+### Understanding Build Information
+
+The build info provides critical details:
+
+- **Version**: Short commit hash identifying the exact code version
+- **Build time**: When the binary was compiled
+- **Commit SHA**: Full Git commit hash for precise version tracking
+- **Commit time**: When the source code commit was made
+- **Commit branch**: The Git branch used for the build
+- **Rustc channel**: Rust compiler channel (stable/beta/nightly)
+- **Rustc version**: Exact Rust compiler version used
+
+### Verifying Your Installation
+
+Always verify your node version after installation or updates:
+
+```bash
+# For Docker users
+docker run --rm o1labs/mina-rust:latest build-info | grep "Version\|branch"
+
+# For native binary users
+mina build-info | grep "Version\|branch"
+```
+
+## Monitoring Your Node
+
+### View Logs
+
+For Docker Compose setups:
+
+```bash
+# View all logs
+docker compose logs -f
+
+# View only node logs
+docker compose logs -f mina-rust-node
+
+# View last 100 lines
+docker compose logs --tail=100 mina-rust-node
+```
+
+For Docker containers:
+
+```bash
+# View container logs
+docker logs -f mina-rust-node
+
+# View with timestamps
+docker logs -f -t mina-rust-node
+```
+
+### Check Node Status
+
+```bash
+# Check if containers are running
+docker compose ps
+
+# Or for individual containers
+docker ps | grep mina
+```
+
+### Resource Usage
+
+Monitor CPU and memory usage:
+
+```bash
+# Docker stats
+docker stats mina-rust-node
+
+# System resources
+htop
+# or
+top
+```
+
+## Common Management Tasks
+
+### Restart Your Node
+
+```bash
+# Using Docker Compose
+docker compose restart
+
+# Or stop and start
+docker compose down
+docker compose up -d
+```
+
+### Update Your Node
+
+```bash
+# Pull latest images
+docker compose pull
+
+# Restart with new images
+docker compose up -d --force-recreate
+```
+
+### Backup Configuration
+
+Always backup your keys and configuration:
+
+```bash
+# Backup producer key (if running block producer)
+cp -r mina-workdir/producer-key ~/mina-backup/
+
+# Backup entire working directory
+tar -czf mina-backup-$(date +%Y%m%d).tar.gz mina-workdir/
+```
+
+### Managing File Permissions
+
+Docker containers often run as root, creating files owned by root on your host:
+
+```bash
+# Check file ownership
+ls -la mina-workdir/
+
+# Fix ownership for all files in mina-workdir
+sudo chown -R $(id -u):$(id -g) mina-workdir/
+
+# Set appropriate permissions for the producer key
+chmod 600 mina-workdir/producer-key
+```
+
+<!-- prettier-ignore-start -->
+
+:::tip
+
+Best Practice Always fix file ownership after Docker operations to ensure your
+local user can properly access, backup, and manage the files. This is especially
+important for sensitive files like producer keys.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Troubleshooting
+
+### Node Won't Start
+
+1. Check build info to verify correct version
+2. Review logs for errors:
+   ```bash
+   docker compose logs --tail=100
+   ```
+3. Verify ports are available:
+   ```bash
+   netstat -tuln | grep -E "8302|3000|8070"
+   ```
+
+### Missing .env File Error
+
+If you see an error like "env file .env not found", Docker Compose needs
+environment variables:
+
+**For regular node and block producer:**
+
+```bash
+# Quick fix: Create an empty .env file (has defaults)
+touch .env
+
+# Or create with custom settings
+cat > .env << EOF
+MINA_RUST_TAG=latest
+MINA_FRONTEND_TAG=latest
+MINA_LIBP2P_PORT=8302
+MINA_LIBP2P_EXTERNAL_IP=
+MINA_PRIVKEY_PASS=
+COINBASE_RECEIVER=
+EOF
+```
+
+**For archive node (required):**
+
+```bash
+# Archive node requires specific database settings
+cat > .env << EOF
+POSTGRES_PASSWORD=mina
+PG_PORT=5432
+PG_DB=archive
+MINA_RUST_TAG=latest
+EOF
+```
+
+Regular node docker-compose files have default values, but the archive node
+docker-compose file requires the `.env` file with PostgreSQL configuration.
+
+### Connection Issues
+
+1. Verify external IP configuration
+2. Check firewall rules
+3. Test connectivity:
+   ```bash
+   telnet <external-ip> 8302
+   ```
+
+### Performance Issues
+
+1. Check system resources:
+   ```bash
+   free -h
+   df -h
+   docker stats
+   ```
+2. Review node logs for warnings
+3. Consider adjusting Docker resource limits
+
+## Best Practices
+
+1. **Regular Version Checks**: Always verify your node version after updates
+2. **Log Monitoring**: Set up log rotation and monitoring
+3. **Backup Strategy**: Regular backups of keys and configuration
+4. **Update Schedule**: Plan updates during low-activity periods
+5. **Version Documentation**: Keep track of which versions you're running
+
+## Next Steps
+
+- [Network Configuration](network-configuration) - Configure network settings
+- [Block Producer](block-producer) - Set up block production
+- [Archive Node](archive-node) - Run an archive node
