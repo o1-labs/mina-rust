@@ -30,6 +30,9 @@ NETWORK ?= devnet
 VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
+# Documentation server port
+DOCS_PORT ?= 3000
+
 OPAM_PATH := $(shell command -v opam 2>/dev/null)
 
 ifdef OPAM_PATH
@@ -41,6 +44,16 @@ endif
 
 .PHONY: help
 help: ## Ask for help!
+	@echo "Mina Rust Makefile - Common Variables:"
+	@echo "  DOCS_PORT=<port>     Set documentation server port (default: 3000)"
+	@echo "  NETWORK=<network>    Set network (default: devnet)"
+	@echo "  VERBOSITY=<level>    Set logging verbosity (default: info)"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make docs-serve DOCS_PORT=8080    # Start docs server on port 8080"
+	@echo "  make run-node NETWORK=mainnet     # Run node on mainnet"
+	@echo ""
+	@echo "Available targets:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: build
@@ -470,13 +483,13 @@ docs-build: docs-integrate-rust docs-install ## Build the documentation website 
 .PHONY: docs-serve
 docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
 	@echo "Starting documentation server with Rust API documentation..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-serve
 docs-build-serve: docs-build ## Build and serve the documentation website locally with Rust API docs
-	@echo "Serving built documentation with Rust API documentation at: http://localhost:3000"
-	@cd website && npm run serve
+	@echo "Serving built documentation with Rust API documentation at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm run serve -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-only
 docs-build-only: docs-install ## Build the documentation website without Rust API docs
@@ -488,8 +501,8 @@ docs-build-only: docs-install ## Build the documentation website without Rust AP
 .PHONY: docs-serve-only
 docs-serve-only: docs-install ## Serve the documentation website locally without Rust API docs
 	@echo "Starting documentation server (without Rust API docs)..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-rust
 docs-rust: ## Generate Rust API documentation
