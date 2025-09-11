@@ -37,6 +37,7 @@ const sidebars: SidebarsConfig = {
         'node-operators/block-producer',
         'node-operators/archive-node',
         'node-operators/network-configuration',
+        'node-operators/node-management',
       ],
     },
     {
@@ -69,6 +70,14 @@ const sidebars: SidebarsConfig = {
         'developers/architecture',
         'developers/circuits',
         'developers/ledger-crate',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'APIs and Data',
+      items: [
+        'developers/graphql-api',
+        'developers/archive-database-queries',
       ],
     },
     {

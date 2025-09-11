@@ -245,6 +245,21 @@ files.
 - Maintain proper capitalization for proper nouns and technical terms
 - Apply this style consistently across all documentation files
 
+**Docusaurus admonitions (:::note, :::caution, :::info, etc.):**
+
+- Always wrap Docusaurus admonitions with `<!-- prettier-ignore-start -->` and
+  `<!-- prettier-ignore-stop -->` comments
+- This prevents prettier from reformatting the admonition blocks
+- Example:
+
+  ```mdx
+  <!-- prettier-ignore-start -->
+
+  :::note Content of the note here :::
+
+  <!-- prettier-ignore-stop -->
+  ```
+
 ### Documentation Script Testing
 
 When modifying developer setup scripts in `website/docs/developers/scripts/`,

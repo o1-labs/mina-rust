@@ -91,6 +91,18 @@ You can find available tags at:
 - [o1labs/mina-rust on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust/tags)
 - [o1labs/mina-rust-frontend on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
 
+<!-- prettier-ignore-start -->
+
+:::note Frontend Dashboard
+
+The frontend dashboard is currently being updated and will be fully functional
+in a future release. The Docker image is available but may not work as expected
+in v0.17.0.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
 ## Architecture Support
 
 All Docker images are built natively for multiple architectures to ensure
@@ -135,15 +147,67 @@ docker run -p 8302:8302 o1labs/mina-rust:latest
 
 ```bash
 # Run node and web dashboard together
-docker run -d --name mina-node -p 8302:8302 o1labs/mina-rust:latest \
+docker run -d --name mina-rust-node -p 8302:8302 o1labs/mina-rust:latest \
   node --network devnet
+# Frontend (currently being fixed, may not work as expected)
 docker run -d --name mina-frontend -p 8070:8070 o1labs/mina-rust-frontend:latest
 ```
 
 ### Using Docker Compose (Recommended)
 
 Docker Compose provides the easiest way to run both the Mina node and frontend
-dashboard together:
+dashboard together.
+
+<!-- prettier-ignore-start -->
+
+:::caution Frontend Status
+
+The frontend dashboard is included in the docker-compose setup but is currently
+being updated. It may not function correctly in v0.17.0 and will be fully
+operational in a future release.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+#### Quick Start with Release Version
+
+For each release, you can directly download the docker-compose.yml file:
+
+```bash
+# Create a directory for your Mina node
+mkdir mina-rust-node && cd mina-rust-node
+
+# Download the docker-compose.yml file (choose one method)
+# Using wget:
+wget https://raw.githubusercontent.com/o1-labs/mina-rust/v0.17.0/docker-compose.yml
+
+# Or using curl:
+curl -O https://raw.githubusercontent.com/o1-labs/mina-rust/v0.17.0/docker-compose.yml
+
+# Create an empty .env file to avoid warnings (optional - has defaults)
+touch .env
+
+# Or create .env with custom settings (optional)
+cat > .env << EOF
+MINA_RUST_TAG=latest
+MINA_FRONTEND_TAG=latest
+MINA_LIBP2P_PORT=8302
+EOF
+
+# Start the node
+docker compose up -d
+
+# View logs
+docker compose logs -f
+
+# Stop services
+docker compose down
+```
+
+#### Using Latest Development Version
+
+To use the latest development version with all configuration files:
 
 ```bash
 # Clone the repository to get the docker compose configuration
@@ -177,8 +241,9 @@ MINA_LIBP2P_PORT=9302 MINA_LIBP2P_EXTERNAL_IP=203.0.113.1 docker compose up -d
 
 #### What's Included
 
-- **mina-node**: The core Mina Rust node running on devnet
-- **frontend**: Web dashboard accessible at http://localhost:8070
+- **mina-rust-node**: The core Mina Rust node running on devnet
+- **frontend**: Web dashboard accessible at http://localhost:8070 (currently
+  being fixed)
 - **Persistent storage**: Node data stored in `./mina-workdir` directory
 - **Automatic networking**: Services can communicate with each other
 
@@ -193,7 +258,7 @@ MINA_LIBP2P_PORT=9302 MINA_LIBP2P_EXTERNAL_IP=203.0.113.1 docker compose up -d
 
 ```bash
 # Run with custom verbosity
-docker run -d --name mina-node \
+docker run -d --name mina-rust-node \
   -p 8302:8302 \
   o1labs/mina-rust:latest \
   node --network devnet --verbosity debug
@@ -201,12 +266,28 @@ docker run -d --name mina-node \
 # Run with external IP and custom libp2p port
 # Get your external IP first
 EXTERNAL_IP=$(curl -s https://ifconfig.me/ip)
-docker run -d --name mina-node \
+docker run -d --name mina-rust-node \
   -p 9302:9302 \
   -e MINA_LIBP2P_EXTERNAL_IP=$EXTERNAL_IP \
   o1labs/mina-rust:latest \
   node --network devnet --libp2p-port 9302
 ```
+
+### Verifying Docker Image Version
+
+Always verify the version of your Docker image to ensure you're running the
+correct build:
+
+```bash
+# Check build information
+docker run --rm o1labs/mina-rust:latest build-info
+
+# For a specific version
+docker run --rm o1labs/mina-rust:v0.17.0 build-info
+```
+
+This displays version details including commit hash, build time, and Rust
+compiler version. See [Node Management](node-management) for more details.
 
 ## Next Steps
 
