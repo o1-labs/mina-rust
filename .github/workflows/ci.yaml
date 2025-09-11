@@ -205,6 +205,23 @@ jobs:
       - name: Release build
         run: make build-release
 
+      - name: Verify build-info command
+        run: |
+          echo "Testing build-info command..."
+          ./target/release/mina build-info
+
+          # Verify required fields are present
+          ./target/release/mina build-info | grep -E "Version:|Build time:|Commit SHA:|Commit branch:|Rustc version:"
+
+          # Verify version format (should be a short commit hash)
+          VERSION=$(./target/release/mina build-info | grep "Version:" | awk '{print $2}')
+          if [[ ! "$VERSION" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Error: Version should be a 7-character commit hash, got: $VERSION"
+            exit 1
+          fi
+
+          echo "Build info verification passed!"
+
       - name: Upload binaries
         if: matrix.os == 'ubuntu-22.04'
         uses: actions/upload-artifact@v4
