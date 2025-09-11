@@ -9,6 +9,8 @@ use std::{
 
 use anyhow::Context;
 use ledger::proofs::provers::BlockProver;
+use mina_core::{consensus::ConsensusConstants, constants::constraint_constants};
+use mina_node_common::{archive::config::ArchiveStorageOptions, p2p::TaskSpawner};
 use mina_p2p_messages::v2::{self, NonZeroCurvePoint};
 use node::{
     account::AccountSecretKey,
@@ -23,8 +25,6 @@ use node::{
     BlockProducerConfig, GlobalConfig, LedgerConfig, P2pConfig, SnarkConfig, SnarkerConfig,
     SnarkerStrategy, TransitionFrontierConfig,
 };
-use openmina_core::{consensus::ConsensusConstants, constants::constraint_constants};
-use openmina_node_common::{archive::config::ArchiveStorageOptions, p2p::TaskSpawner};
 use rand::Rng;
 
 use crate::NodeServiceBuilder;
@@ -213,8 +213,12 @@ impl NodeBuilder {
         password: &str,
         provers: Option<BlockProver>,
     ) -> anyhow::Result<&mut Self> {
-        let key = AccountSecretKey::from_encrypted_file(path, password)
-            .context("Failed to decrypt secret key file")?;
+        let key = AccountSecretKey::from_encrypted_file(&path, password).with_context(|| {
+            format!(
+                "Failed to decrypt secret key file: {}",
+                path.as_ref().display()
+            )
+        })?;
         Ok(self.block_producer(key, provers))
     }
 
@@ -381,7 +385,7 @@ impl NodeBuilder {
 }
 
 fn default_peers() -> Vec<P2pConnectionOutgoingInitOpts> {
-    openmina_core::NetworkConfig::global()
+    mina_core::NetworkConfig::global()
         .default_peers
         .iter()
         .map(|s| s.parse().unwrap())
@@ -392,12 +396,25 @@ fn peers_from_reader(
     peers: &mut Vec<P2pConnectionOutgoingInitOpts>,
     read: impl Read,
 ) -> anyhow::Result<()> {
-    let read = BufReader::new(read);
-    for line in read.lines() {
+    let reader = BufReader::new(read);
+    for line in reader.lines() {
         let line = line.context("reading line")?;
-        let l = line.trim();
-        if !l.is_empty() {
-            peers.push(l.parse().context(anyhow::anyhow!("parsing entry"))?);
+        let trimmed = line.trim();
+        if trimmed.is_empty() {
+            continue;
+        }
+        match trimmed.parse::<P2pConnectionOutgoingInitOpts>() {
+            Ok(opts) => {
+                if let Some(opts) = opts.with_host_resolved() {
+                    peers.push(opts);
+                } else {
+                    mina_core::warn!(
+                        "Peer address name resolution failed, skipping: {:?}",
+                        trimmed
+                    );
+                }
+            }
+            Err(e) => mina_core::warn!("Peer address parse error: {:?}", e),
         }
     }
     Ok(())

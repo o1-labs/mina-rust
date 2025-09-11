@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # Set the base URL for OpenMina
-OPENMINA_BASE_URL="https://github.com/openmina"
+MINA_BASE_URL="https://github.com/openmina"
 
 # Function to download circuit files
 download_circuit_files() {
-    CIRCUITS_BASE_URL="$OPENMINA_BASE_URL/circuit-blobs/releases/download"
+    CIRCUITS_BASE_URL="$MINA_BASE_URL/circuit-blobs/releases/download"
     CIRCUITS_VERSION="3.0.1devnet"
 
     DEVNET_CIRCUIT_FILES=(
@@ -45,8 +45,11 @@ download_circuit_files() {
             echo "$FILE already exists in $DOWNLOAD_DIR, skipping download."
         else
             echo "Downloading $FILE to $DOWNLOAD_DIR..."
-            curl -s -L --retry 3 --retry-delay 5 -o "$DOWNLOAD_DIR/$FILE" "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
-            if [[ $? -ne 0 ]]; then
+            curl -s -L --retry 3 --retry-delay 5 \
+                -o "$DOWNLOAD_DIR/$FILE" \
+                "$CIRCUITS_BASE_URL/$CIRCUITS_VERSION/$FILE"
+            curl_exit_code=$?
+            if [[ $curl_exit_code -ne 0 ]]; then
                 echo "Failed to download $FILE after 3 attempts, exiting."
                 exit 1
             else

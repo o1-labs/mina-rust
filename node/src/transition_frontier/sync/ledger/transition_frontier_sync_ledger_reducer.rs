@@ -1,12 +1,10 @@
 use crate::Substate;
 
-use super::snarked::{
-    TransitionFrontierSyncLedgerSnarkedAction, TransitionFrontierSyncLedgerSnarkedState,
-};
-use super::staged::{
-    TransitionFrontierSyncLedgerStagedAction, TransitionFrontierSyncLedgerStagedState,
-};
 use super::{
+    snarked::{
+        TransitionFrontierSyncLedgerSnarkedAction, TransitionFrontierSyncLedgerSnarkedState,
+    },
+    staged::{TransitionFrontierSyncLedgerStagedAction, TransitionFrontierSyncLedgerStagedState},
     TransitionFrontierSyncLedgerAction, TransitionFrontierSyncLedgerActionWithMetaRef,
     TransitionFrontierSyncLedgerState,
 };

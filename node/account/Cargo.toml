@@ -1,19 +1,22 @@
 [package]
-name = "openmina-node-account"
-version = "0.16.0"
+name = "mina-node-account"
+version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = ["unbounded_depth", "arbitrary_precision"] }
-thiserror = "1.0.37"
 anyhow = "1.0.70"
 bs58 = "0.4.0"
 hex = "0.4.3"
-rand = "0.8"
 lazy_static = "1.4.0"
-mina-p2p-messages = { workspace = true }
+mina-core = { path = "../../core" }
 mina-hasher = { workspace = true }
+mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
-openmina-core = { path = "../../core" }
+rand = "0.8"
+serde = "1.0.147"
+serde_json = { version = "1.0.82", features = [
+  "unbounded_depth",
+  "arbitrary_precision",
+] }
+thiserror = "1.0.37"

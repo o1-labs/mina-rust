@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   max-height: 50vh;
@@ -12,7 +12,7 @@
     height: 22px;
 
     &:hover {
-      background-color: $base-container;
+      background-color: openmina.$base-container;
     }
   }
 
@@ -40,7 +40,7 @@
 }
 
 .node:focus {
-  outline: 2px solid $selected-primary;
+  outline: 2px solid openmina.$selected-primary;
 }
 
 .mina-icon {

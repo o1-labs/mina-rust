@@ -63,10 +63,11 @@ const initialStaged: NodesOverviewRootStagedLedgerStep = {
 };
 
 @Component({
-  selector: 'mina-dashboard-ledger',
-  templateUrl: './dashboard-ledger.component.html',
-  styleUrls: ['./dashboard-ledger.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-dashboard-ledger',
+    templateUrl: './dashboard-ledger.component.html',
+    styleUrls: ['./dashboard-ledger.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DashboardLedgerComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

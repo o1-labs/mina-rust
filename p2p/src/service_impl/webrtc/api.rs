@@ -1,6 +1,6 @@
 use std::{collections::BTreeMap, sync::Arc};
 
-use openmina_core::channels::broadcast;
+use mina_core::channels::broadcast;
 use tokio::sync::Mutex;
 
 use crate::PeerId;

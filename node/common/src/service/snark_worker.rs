@@ -1,15 +1,21 @@
-use ledger::proofs::provers::{TransactionProver, ZkappProver};
-use ledger::proofs::zkapp::ZkappParams;
-use ledger::scan_state::scan_state::transaction_snark::SokMessage;
+use ledger::{
+    proofs::{
+        provers::{TransactionProver, ZkappProver},
+        zkapp::ZkappParams,
+    },
+    scan_state::scan_state::transaction_snark::SokMessage,
+};
 use mina_p2p_messages::v2;
 use mina_signer::CompressedPubKey;
-use node::core::channels::mpsc;
-use node::event_source::ExternalSnarkWorkerEvent;
-use node::external_snark_worker::{
-    ExternalSnarkWorkerError, ExternalSnarkWorkerWorkError, SnarkWorkResult, SnarkWorkSpec,
-    SnarkWorkSpecError,
+use node::{
+    core::channels::mpsc,
+    event_source::ExternalSnarkWorkerEvent,
+    external_snark_worker::{
+        ExternalSnarkWorkerError, ExternalSnarkWorkerWorkError, SnarkWorkResult, SnarkWorkSpec,
+        SnarkWorkSpecError,
+    },
+    snark::TransactionVerifier,
 };
-use node::snark::TransactionVerifier;
 
 use crate::NodeService;
 
@@ -89,7 +95,7 @@ impl node::service::ExternalSnarkWorkerService for NodeService {
         }
 
         // TODO(binier): for wasm threads, call terminate:
-        // https://developer.mozilla.org/en-US/docs/Web/API/Worker/terminate
+        // <https://developer.mozilla.org/en-US/docs/Web/API/Worker/terminate>
         if self
             .snark_worker
             .as_ref()

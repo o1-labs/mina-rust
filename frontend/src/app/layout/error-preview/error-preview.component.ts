@@ -15,6 +15,7 @@ import { MARK_ERRORS_AS_SEEN, MarkErrorsAsSeen } from '@error-preview/error-prev
   templateUrl: './error-preview.component.html',
   styleUrls: ['./error-preview.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
 })
 export class ErrorPreviewComponent extends ManualDetection implements OnInit {
 

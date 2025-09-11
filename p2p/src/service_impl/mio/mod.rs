@@ -11,7 +11,7 @@ use std::{
 use libp2p_identity::Keypair;
 use mio::net::{TcpListener, TcpStream};
 
-use openmina_core::{bug_condition, channels::mpsc};
+use mina_core::{bug_condition, channels::mpsc};
 use thiserror::Error;
 
 use crate::{ConnectionAddr, MioCmd, MioEvent};
@@ -32,8 +32,8 @@ enum MioError {
 
 impl MioError {
     fn report(self) {
-        openmina_core::log::error!(
-            openmina_core::log::system_time();
+        mina_core::log::error!(
+            mina_core::log::system_time();
             kind = "MioError",
             summary = self.to_string(),
         );
@@ -75,7 +75,7 @@ impl MioService {
                 MioService::Ready(MioRunningService::run(event_sender, keypair.clone()))
             }
             _ => {
-                openmina_core::warn!(openmina_core::log::system_time(); "tried to run already running mio service");
+                mina_core::warn!(mina_core::log::system_time(); "tried to run already running mio service");
                 return;
             }
         }
@@ -238,18 +238,18 @@ where
                                 self.send(MioEvent::ConnectionDidClose(addr, Err(e.to_string())));
                             }
                             Ok(None) => {
-                                openmina_core::error!(
-                                    openmina_core::log::system_time();
+                                mina_core::error!(
+                                    mina_core::log::system_time();
                                     summary = "mio error event without actual error",
-                                    addr = openmina_core::log::inner::field::display(addr),
+                                    addr = mina_core::log::inner::field::display(addr),
                                 );
                             }
                             Err(e) => {
-                                openmina_core::error!(
-                                    openmina_core::log::system_time();
+                                mina_core::error!(
+                                    mina_core::log::system_time();
                                     summary = "error getting mio error",
-                                    error = openmina_core::log::inner::field::display(e),
-                                    addr = openmina_core::log::inner::field::display(addr),
+                                    error = mina_core::log::inner::field::display(e),
+                                    addr = mina_core::log::inner::field::display(addr),
                                 );
                             }
                         }
@@ -491,8 +491,8 @@ where
                         // TODO: upper bound? resize to `limit` or try to allocate some extra space too?
                         self.recv_buf.resize(limit, 0);
 
-                        openmina_core::warn!(
-                            openmina_core::log::system_time();
+                        mina_core::warn!(
+                            mina_core::log::system_time();
                             summary = format!("Increasing buffer size to {}kb", limit / 1024)
                         );
                     }

@@ -2,7 +2,7 @@ use std::array::IntoIter;
 
 use ark_ff::{BigInteger256, Field};
 
-use crate::proofs::{field::FieldWitness, transaction::endos};
+use crate::proofs::{self, field::FieldWitness, transaction::endos};
 
 #[derive(Clone, Debug)]
 pub struct ScalarChallenge {
@@ -12,7 +12,7 @@ pub struct ScalarChallenge {
 impl<F: FieldWitness> From<F> for ScalarChallenge {
     fn from(value: F) -> Self {
         let bigint: BigInteger256 = value.into();
-        let bigint = bigint.to_64x4();
+        let bigint = bigint.0;
         Self::new(bigint[0], bigint[1])
     }
 }
@@ -68,7 +68,7 @@ impl ScalarChallenge {
     }
 
     /// Implemention of `to_field_constant`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/scalar_challenge.ml#L139>
     pub fn to_field<F>(&self, endo: &F) -> F
     where
         F: Field + From<i32>,
@@ -95,12 +95,12 @@ impl ScalarChallenge {
     }
 
     pub fn array_to_fields<F: FieldWitness, const N: usize>(array: &[F; N]) -> [F; N] {
-        let (_, endo) = endos::<F::Scalar>();
+        let (_, endo) = endos::<<F as proofs::field::FieldWitness>::Scalar>();
         array.each_ref().map(|v| Self::from(*v).to_field(&endo))
     }
 
     pub fn limbs_to_field<F: FieldWitness>(limbs: &[u64; 2]) -> F {
-        let (_, endo) = endos::<F::Scalar>();
+        let (_, endo) = endos::<<F as proofs::FieldWitness>::Scalar>();
         Self::from(*limbs).to_field(&endo)
     }
 }
@@ -111,8 +111,7 @@ mod tests {
 
     use super::*;
 
-    use mina_curves::pasta::Fq;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::{Fp, Fq};
 
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;

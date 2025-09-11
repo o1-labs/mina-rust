@@ -7,14 +7,15 @@ use std::{
 };
 
 use crate::{account::AccountSecretKey, daemon_json::EpochData};
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
-    proofs::caching::{ensure_path_exists, openmina_cache_path},
+    proofs::caching::{ensure_path_exists, mina_cache_path},
     scan_state::currency::Balance,
     BaseLedger,
 };
-use mina_hasher::Fp;
+use mina_core::constants::{constraint_constants, DEFAULT_GENESIS_TIMESTAMP_MILLISECONDS};
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot::{
         self,
         macros::{BinProtRead, BinProtWrite},
@@ -22,7 +23,6 @@ use mina_p2p_messages::{
     },
     v2::{self, PROTOCOL_CONSTANTS},
 };
-use openmina_core::constants::{constraint_constants, DEFAULT_GENESIS_TIMESTAMP_MILLISECONDS};
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -364,8 +364,8 @@ impl GenesisConfig {
         ledger_name: String,
         accounts: impl Iterator<Item = ledger::Account>,
     ) -> Result<(ledger::Mask, v2::CurrencyAmountStableV1, LedgerHash), GenesisConfigError> {
-        openmina_core::info!(
-            openmina_core::log::system_time();
+        mina_core::info!(
+            mina_core::log::system_time();
             kind = "ledger loading",
             message = "loading the ledger",
             ledger_name = ledger_name,
@@ -383,8 +383,8 @@ impl GenesisConfig {
                         .map(|(n, h)| Ok((n, h.to_field()?)))
                         .collect::<Result<Vec<_>, InvalidBigInt>>()?,
                 )?;
-                openmina_core::info!(
-                    openmina_core::log::system_time();
+                mina_core::info!(
+                    mina_core::log::system_time();
                     kind = "ledger loaded",
                     message = "loaded from cache",
                     ledger_hash = accounts_with_hash.ledger_hash.to_string(),
@@ -408,8 +408,8 @@ impl GenesisConfig {
                         .collect(),
                 };
                 ledger_accounts.cache()?;
-                openmina_core::info!(
-                    openmina_core::log::system_time();
+                mina_core::info!(
+                    mina_core::log::system_time();
                     kind = "ledger loaded",
                     message = "built from config and cached",
                     ledger_hash = hash.to_string(),
@@ -561,7 +561,7 @@ struct LedgerAccountsWithHash {
 
 impl LedgerAccountsWithHash {
     fn cache(&self) -> Result<(), std::io::Error> {
-        let cache_dir = openmina_cache_path("ledgers").unwrap();
+        let cache_dir = mina_cache_path("ledgers").unwrap();
         let cache_file = cache_dir.join(format!("{}.bin", self.ledger_hash));
         ensure_path_exists(cache_dir)?;
         let mut file = File::create(cache_file)?;
@@ -569,7 +569,7 @@ impl LedgerAccountsWithHash {
     }
 
     fn load(ledger_name: String) -> Result<Option<Self>, binprot::Error> {
-        let cache_filename = openmina_cache_path(format!("ledgers/{}.bin", ledger_name)).unwrap();
+        let cache_filename = mina_cache_path(format!("ledgers/{}.bin", ledger_name)).unwrap();
         if cache_filename.is_file() {
             let mut file = File::open(cache_filename)?;
             LedgerAccountsWithHash::binprot_read(&mut file).map(Some)

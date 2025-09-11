@@ -1,12 +1,15 @@
 [package]
 name = "poseidon"
-version = "0.16.0"
+version = "0.17.0"
 edition = "2021"
 
 [lints]
 workspace = true
 
 [dependencies]
-mina-curves = { workspace = true }
-once_cell = "1"
 ark-ff = { workspace = true }
+ark-serialize.workspace = true
+mina-curves = { workspace = true }
+o1-utils.workspace = true
+once_cell = "1"
+serde.workspace = true

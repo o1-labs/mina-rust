@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, Substate};
+use mina_core::{bug_condition, Substate};
 use redux::ActionWithMeta;
 
 use crate::{

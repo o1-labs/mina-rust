@@ -4,13 +4,15 @@ use crate::{
 };
 use std::{cell::Cell, cmp::Ordering::Less};
 
-use crate::proofs::{
-    field::{field, Boolean, FieldWitness},
-    to_field_elements::ToFieldElements,
-    transaction::Check,
-    witness::Witness,
+use crate::{
+    proofs::{
+        field::{field, Boolean, FieldWitness},
+        to_field_elements::ToFieldElements,
+        transaction::Check,
+        witness::Witness,
+    },
+    ToInputs,
 };
-use crate::ToInputs;
 
 use super::common::{range_check, ForZkappCheck};
 
@@ -94,8 +96,8 @@ where
         }
     }
 
-    // https://github.com/MinaProtocol/mina/blob/ca9c8c86aa21d3c346d28ea0be7ad4cb0c22bf7f/src/lib/transaction_snark/transaction_snark.ml#L1891-L1892
-    // https://github.com/MinaProtocol/mina/blob/ca9c8c86aa21d3c346d28ea0be7ad4cb0c22bf7f/src/lib/currency/currency.ml#L579
+    // <https://github.com/MinaProtocol/mina/blob/ca9c8c86aa21d3c346d28ea0be7ad4cb0c22bf7f/src/lib/transaction_snark/transaction_snark.ml#L1891-L1892>
+    // <https://github.com/MinaProtocol/mina/blob/ca9c8c86aa21d3c346d28ea0be7ad4cb0c22bf7f/src/lib/currency/currency.ml#L579>
     pub fn constant_zero() -> Self {
         Self {
             magnitude: T::zero(),

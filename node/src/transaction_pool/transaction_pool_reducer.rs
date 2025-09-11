@@ -6,7 +6,7 @@ use ledger::{
     },
     Account, AccountId,
 };
-use openmina_core::{
+use mina_core::{
     bug_condition,
     constants::constraint_constants,
     transaction::{Transaction, TransactionPoolMessageSource, TransactionWithHash},
@@ -54,7 +54,7 @@ impl TransactionPoolState {
         match action {
             TransactionPoolAction::Candidate(a) => {
                 super::candidate::TransactionPoolCandidatesState::reducer(
-                    openmina_core::Substate::from_compatible_substate(state),
+                    mina_core::Substate::from_compatible_substate(state),
                     meta.with_action(a),
                 );
             }

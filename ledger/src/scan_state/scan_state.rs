@@ -4,7 +4,8 @@ use blake2::{
     digest::{generic_array::GenericArray, typenum::U32},
     Digest,
 };
-use mina_hasher::Fp;
+use mina_core::{constants::ConstraintConstants, snark::SnarkJobId};
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     binprot,
     v2::{
@@ -14,8 +15,6 @@ use mina_p2p_messages::{
     },
 };
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
-use openmina_core::snark::SnarkJobId;
 use sha2::Sha256;
 
 use crate::{
@@ -57,9 +56,8 @@ use super::{
 };
 // use super::parallel_scan::AvailableJob;
 
-pub use super::parallel_scan::base::Job as JobValueBase;
-pub use super::parallel_scan::merge::Job as JobValueMerge;
 pub use super::parallel_scan::{
+    base::Job as JobValueBase, merge::Job as JobValueMerge,
     AvailableJob as ParallelScanAvailableJob, JobValue, JobValueWithIndex, SpacePartition,
 };
 
@@ -98,14 +96,16 @@ pub mod transaction_snark {
     use std::sync::Arc;
 
     use itertools::Itertools;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot, string::ByteString, v2::TransactionSnarkProofStableV2};
     use mina_signer::CompressedPubKey;
     use serde::{Deserialize, Serialize};
 
     use crate::{
-        proofs::field::{field, Boolean},
-        proofs::witness::Witness,
+        proofs::{
+            field::{field, Boolean},
+            witness::Witness,
+        },
         scan_state::{
             currency::{Amount, Signed, Slot},
             fee_excess::FeeExcess,
@@ -122,7 +122,7 @@ pub mod transaction_snark {
 
     pub type LedgerHash = Fp;
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/registers.ml
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/registers.ml>
     #[derive(Debug, Clone, PartialEq, Eq)]
     pub struct Registers {
         pub first_pass_ledger: LedgerHash,
@@ -132,7 +132,7 @@ pub mod transaction_snark {
     }
 
     impl ToInputs for Registers {
-        /// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_state/registers.ml#L30
+        /// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_state/registers.ml#L30>
         fn to_inputs(&self, inputs: &mut Inputs) {
             let Self {
                 first_pass_ledger,
@@ -149,7 +149,7 @@ pub mod transaction_snark {
     }
 
     impl Registers {
-        /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_snark/transaction_snark.ml#L350
+        /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_snark/transaction_snark.ml#L350>
         pub fn check_equal(&self, other: &Self) -> bool {
             let Self {
                 first_pass_ledger,
@@ -168,7 +168,7 @@ pub mod transaction_snark {
                 )
         }
 
-        /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/registers.ml#L55
+        /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/registers.ml#L55>
         pub fn connected(r1: &Self, r2: &Self) -> bool {
             let Self {
                 first_pass_ledger,
@@ -221,7 +221,7 @@ pub mod transaction_snark {
     }
 
     impl Default for SokDigest {
-        /// https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_base/sok_message.ml#L76
+        /// <https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_base/sok_message.ml#L76>
         fn default() -> Self {
             Self(vec![0; 32])
         }
@@ -239,7 +239,7 @@ pub mod transaction_snark {
     }
 
     impl StatementLedgers {
-        /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L530
+        /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L530>
         pub fn of_statement<T>(s: &Statement<T>) -> Self {
             Self {
                 first_pass_ledger_source: s.source.first_pass_ledger,
@@ -254,13 +254,13 @@ pub mod transaction_snark {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L546
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L546>
     fn validate_ledgers_at_merge(
         s1: &StatementLedgers,
         s2: &StatementLedgers,
     ) -> Result<bool, String> {
         // Check ledgers are valid based on the rules described in
-        // https://github.com/MinaProtocol/mina/discussions/12000
+        // <https://github.com/MinaProtocol/mina/discussions/12000>
         let is_same_block_at_shared_boundary = {
             // First statement ends and the second statement starts in the
             // same block. It could be within a single scan state tree
@@ -395,7 +395,7 @@ pub mod transaction_snark {
     }
 
     impl ToInputs for Statement<SokDigest> {
-        /// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_state/snarked_ledger_state.ml#L263
+        /// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_state/snarked_ledger_state.ml#L263>
         fn to_inputs(&self, inputs: &mut Inputs) {
             let Self {
                 source,
@@ -469,7 +469,7 @@ pub mod transaction_snark {
             }
         }
 
-        /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L631
+        /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/snarked_ledger_state.ml#L631>
         pub fn merge(&self, s2: &Statement<()>) -> Result<Self, String> {
             let or_error_of_bool = |b: bool, error: &str| {
                 if b {
@@ -531,7 +531,7 @@ pub mod transaction_snark {
     }
 
     pub mod work {
-        use ark_ff::fields::arithmetic::InvalidBigInt;
+        use mina_p2p_messages::bigint::InvalidBigInt;
 
         use super::*;
 
@@ -548,10 +548,10 @@ pub mod transaction_snark {
 
         pub type Checked = Work;
 
-        impl TryFrom<&openmina_core::snark::Snark> for Work {
+        impl TryFrom<&mina_core::snark::Snark> for Work {
             type Error = InvalidBigInt;
 
-            fn try_from(value: &openmina_core::snark::Snark) -> Result<Self, Self::Error> {
+            fn try_from(value: &mina_core::snark::Snark) -> Result<Self, Self::Error> {
                 Ok(Self {
                     prover: (&value.snarker).try_into()?,
                     fee: (&value.fee).into(),
@@ -578,7 +578,7 @@ pub mod transaction_snark {
         }
 
         impl Checked {
-            /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/transaction_snark_work/transaction_snark_work.ml#L121
+            /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/transaction_snark_work/transaction_snark_work.ml#L121>
             pub fn forget(self) -> Unchecked {
                 self
             }
@@ -709,7 +709,7 @@ pub mod transaction_snark {
             }
         }
 
-        pub fn iter(&self) -> OneOrTwoIter<T> {
+        pub fn iter(&self) -> OneOrTwoIter<'_, T> {
             let array = match self {
                 OneOrTwo::One(a) => [Some(a), None],
                 OneOrTwo::Two((a, b)) => [Some(a), Some(b)],
@@ -780,7 +780,7 @@ pub mod transaction_snark {
             }
         }
 
-        /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/one_or_two/one_or_two.ml#L54
+        /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/one_or_two/one_or_two.ml#L54>
         pub fn zip<B>(a: OneOrTwo<T>, b: OneOrTwo<B>) -> Result<OneOrTwo<(T, B)>, String> {
             use OneOrTwo::*;
 
@@ -903,7 +903,7 @@ impl ScanState {
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/transaction_snark_scan_state/transaction_snark_scan_state.ml#L175
+/// <https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/transaction_snark_scan_state/transaction_snark_scan_state.ml#L175>
 fn create_expected_statement<F>(
     constraint_constants: &ConstraintConstants,
     get_state: F,

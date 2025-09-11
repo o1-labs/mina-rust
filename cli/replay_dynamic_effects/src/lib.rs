@@ -1,6 +1,6 @@
 use ::node::{ActionWithMeta, Store};
-use openmina_node_invariants::{InvariantIgnoreReason, InvariantResult, Invariants};
-use openmina_node_native::NodeService;
+use mina_node_invariants::{InvariantIgnoreReason, InvariantResult, Invariants};
+use mina_node_native::NodeService;
 
 pub mod ret {
     macro_rules! define {

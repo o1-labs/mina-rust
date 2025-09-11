@@ -1,5 +1,18 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_p2p_messages::{bigint::BigInt, v2::MerkleTreeNode};
+//! # Merkle Path Verification Utilities
+//!
+//! This module provides utilities for computing and verifying Merkle tree paths,
+//! which are essential for account existence proofs in the Mina ledger.
+//!
+//! [`calc_merkle_root_hash`] computes the root hash from an account and its
+//! Merkle path, allowing verification that the account is part of a specific
+//! ledger state.
+//! This is commonly used in transaction verification (ensuring account exists).
+//! It uses the Poseidon hash function, as specified in the Mina protocol.
+
+use mina_p2p_messages::{
+    bigint::{BigInt, InvalidBigInt},
+    v2::MerkleTreeNode,
+};
 use poseidon::hash::params::get_merkle_param_for_height;
 
 /// Computes the root hash of the merkle tree with an account and its merkle path

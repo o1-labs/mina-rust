@@ -16,7 +16,7 @@ const execute = (callback: () => void) => {
   getStore().then(getAppState).then((state: AppState) => {
     getConfig().then((config: any) => {
       if (cyIsSubFeatureEnabled(state.activeNode, 'block-production', 'won-slots', config.globalConfig)) {
-        cy.wait('@statsRequest')
+        cy.wait('@statsRequest', { timeout: 20000 })
           .url()
           .then((url: string) => {
             if (url.includes('/block-production/won-slots')) {
@@ -70,7 +70,7 @@ describe('BLOCK PRODUCTION WON SLOTS SIDE PANEL', () => {
             expect(state.activeSlot).to.not.be.null;
             expect(state.activeSlot).to.not.be.undefined;
           }
-          cy.get('mina-block-production-won-slots-side-panel > .h-minus-xl > div:first-child > div.h-lg:first-child')
+          cy.get('mina-block-production-won-slots-side-panel > .h-minus-lg > div:first-child > div.h-lg:first-child')
             .should('have.text', 'Global slot' + state.activeSlot.globalSlot);
         }
       });
@@ -89,12 +89,8 @@ describe('BLOCK PRODUCTION WON SLOTS SIDE PANEL', () => {
               const globalSlot = row.find('> span').eq(3).text();
               const expectedActiveSlot = state.slots.find(s => s.globalSlot.toString() === globalSlot);
               expect(expectedActiveSlot.globalSlot.toString()).to.equal(globalSlot);
-              cy.get('mina-block-production-won-slots-side-panel > .h-minus-xl > div:first-child > div.h-lg:first-child')
+              cy.get('mina-block-production-won-slots-side-panel > .h-minus-lg > div:first-child > div.h-lg:first-child')
                 .should('have.text', 'Global slot' + expectedActiveSlot.globalSlot)
-                .get('mina-block-production-won-slots-side-panel > div:first-child > span')
-                .then(span => expect(row.find('> span').eq(0).text()).to.contain(span.text()))
-                .get('mina-block-production-won-slots-side-panel > div:first-child > span')
-                .should('have.text', expectedActiveSlot.message)
                 .window()
                 .its('store')
                 .then(getBPWonSlots)

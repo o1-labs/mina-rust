@@ -10,7 +10,7 @@ macro_rules! cache {
         // The destructor won't be run, but we don't care.
         //
         // See
-        // https://github.com/rust-lang/rust/blob/635c4a5e612b0ee8af6615635599702d3dce9906/library/std/src/sys/common/thread_local/fast_local.rs#
+        // <https://github.com/rust-lang/rust/blob/635c4a5e612b0ee8af6615635599702d3dce9906/library/std/src/sys/common/thread_local/fast_local.rs#>
 
         use std::mem::ManuallyDrop;
         use std::cell::RefCell;
@@ -47,8 +47,7 @@ macro_rules! cache_one {
         // See comments in `cache` above
         // Here we don't support generic
 
-        use std::cell::RefCell;
-        use std::mem::ManuallyDrop;
+        use std::{cell::RefCell, mem::ManuallyDrop};
 
         thread_local! {
             static CACHE: ManuallyDrop<RefCell<Option<Box<$F>>>> =
@@ -69,26 +68,24 @@ macro_rules! cache_one {
 
 #[cfg(test)]
 mod tests {
-    use crate::proofs::field::FieldWitness;
-    use ark_ec::short_weierstrass_jacobian::GroupAffine;
-    use poly_commitment::srs::endos;
-    use std::sync::atomic::AtomicUsize;
-    use std::sync::atomic::Ordering::Relaxed;
+    use crate::proofs::{self, field::FieldWitness};
+    use ark_ec::short_weierstrass::Affine;
+    use poly_commitment::ipa::endos;
+    use std::sync::atomic::{AtomicUsize, Ordering::Relaxed};
 
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;
 
     #[test]
     fn test_cache() {
-        use mina_curves::pasta::Fq;
-        use mina_hasher::Fp;
+        use mina_curves::pasta::{Fp, Fq};
 
         static COUNTER: AtomicUsize = AtomicUsize::new(0);
 
-        fn my_test<F: FieldWitness>() -> (F, F::Scalar) {
-            cache!((F, F::Scalar), {
+        fn my_test<F: FieldWitness>() -> (F, <F as proofs::field::FieldWitness>::Scalar) {
+            cache!((F, <F as proofs::field::FieldWitness>::Scalar), {
                 COUNTER.fetch_add(1, Relaxed);
-                endos::<GroupAffine<F::Parameters>>()
+                endos::<Affine<F::Parameters>>()
             })
         }
 

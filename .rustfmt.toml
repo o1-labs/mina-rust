@@ -1,0 +1,4 @@
+# When updating, also update `rust_format::Config` in `node/build.rs`
+indent_style = "Block"
+imports_granularity = "Crate"
+reorder_imports = true

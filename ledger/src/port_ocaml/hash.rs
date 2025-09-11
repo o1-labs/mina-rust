@@ -1,10 +1,10 @@
 //! Implementation of janestreet hash:
-//! https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c
+//! <https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c>
 
 use std::hash::Hasher;
 
 use ark_ff::{BigInteger, BigInteger256};
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::AccountId;
 
@@ -17,7 +17,7 @@ pub(super) struct JaneStreetHasher {
 impl Default for JaneStreetHasher {
     fn default() -> Self {
         // the seed seems to be zero
-        // https://github.com/janestreet/base/blob/v0.14/src/hash.ml#L165
+        // <https://github.com/janestreet/base/blob/v0.14/src/hash.ml#L165>
         Self { h: 0 }
     }
 }
@@ -27,7 +27,7 @@ fn rotl32(x: u32, n: u32) -> u32 {
     (x) << n | (x) >> (32 - n)
 }
 
-/// https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L52
+/// <https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L52>
 fn mix(mut h: u32, mut d: u32) -> u32 {
     d = d.wrapping_mul(0xcc9e2d51);
     d = rotl32(d, 15);
@@ -38,7 +38,7 @@ fn mix(mut h: u32, mut d: u32) -> u32 {
     h
 }
 
-/// https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L35
+/// <https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L35>
 fn final_mix(mut h: u32) -> u32 {
     h ^= h >> 16;
     h = h.wrapping_mul(0x85ebca6b);
@@ -49,14 +49,14 @@ fn final_mix(mut h: u32) -> u32 {
 }
 
 impl Hasher for JaneStreetHasher {
-    /// https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L42C1-L47C2
+    /// <https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L42C1-L47C2>
     fn finish(&self) -> u64 {
         let h = final_mix(self.h);
         let h: u32 = h & 0x3FFF_FFFF; // 30 bits
         h as u64
     }
 
-    /// https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L60C1-L90C2
+    /// <https://github.com/janestreet/base/blob/v0.14/hash_types/src/internalhash_stubs.c#L60C1-L90C2>
     fn write(&mut self, s: &[u8]) {
         // Little endian implementation only
         for (chunk, chunk_len) in s.chunks(4).map(|chunk| (chunk, chunk.len())) {
@@ -86,12 +86,12 @@ impl Hasher for JaneStreetHasher {
     }
 }
 
-/// https://github.com/ocaml/Zarith/blob/6f840fb026ab6920104ea7b43140fdcc3e936914/caml_z.c#L3333-L3358
+/// <https://github.com/ocaml/Zarith/blob/6f840fb026ab6920104ea7b43140fdcc3e936914/caml_z.c#L3333-L3358>
 fn hash_field(f: &Fp) -> u32 {
     let mut acc = 0;
 
     let bigint: BigInteger256 = (*f).into();
-    let bigint = bigint.to_64x4();
+    let bigint = bigint.0;
     let nignore: usize = bigint.iter().rev().take_while(|&b| *b == 0).count();
 
     for bigint in bigint.iter().take(BigInteger256::NUM_LIMBS - nignore) {

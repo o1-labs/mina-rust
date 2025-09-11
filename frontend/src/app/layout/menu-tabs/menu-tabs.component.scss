@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   height: 56px;
@@ -7,15 +7,15 @@
     gap: 12px;
 
     .menu {
-      color: $base-tertiary;
+      color: openmina.$base-tertiary;
       min-width: 72px;
       flex: 1 0 auto;
 
       &.active {
-        color: $selected-primary;
+        color: openmina.$selected-primary;
 
         .mina-icon {
-          color: $selected-primary;
+          color: openmina.$selected-primary;
           font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20;
         }
       }

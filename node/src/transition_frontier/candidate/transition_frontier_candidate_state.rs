@@ -3,13 +3,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use mina_p2p_messages::v2::StateHash;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::consensus::{
-    consensus_take, ConsensusLongRangeForkDecisionReason, ConsensusShortRangeForkDecisionReason,
+use mina_core::{
+    block::ArcBlockWithHash,
+    consensus::{
+        consensus_take, ConsensusLongRangeForkDecisionReason, ConsensusShortRangeForkDecisionReason,
+    },
 };
 
-use crate::snark::block_verify::SnarkBlockVerifyId;
-use crate::transition_frontier::TransitionFrontierState;
+use crate::{
+    snark::block_verify::SnarkBlockVerifyId, transition_frontier::TransitionFrontierState,
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub enum ConsensusShortRangeForkDecision {

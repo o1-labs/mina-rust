@@ -12,8 +12,8 @@ use crate::{
     token, ConnectionAddr, Data, P2pLimits, P2pNetworkConnectionError, P2pNetworkSchedulerAction,
     P2pNetworkStreamProtobufError, P2pNetworkYamuxAction, P2pState, PeerId, YamuxFlags,
 };
+use mina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
 use multiaddr::Multiaddr;
-use openmina_core::{bug_condition, fuzzed_maybe, warn, Substate, SubstateAccess};
 use prost::Message;
 use quick_protobuf::BytesReader;
 use redux::{ActionWithMeta, Dispatcher};
@@ -398,7 +398,7 @@ impl P2pNetworkIdentifyStreamState {
         let identify_msg = P2pNetworkIdentify {
             protocol_version: Some("ipfs/0.1.0".to_string()),
             // TODO: include build info from GlobalConfig (?)
-            agent_version: Some("openmina".to_owned()),
+            agent_version: Some("mina".to_owned()),
             public_key,
             listen_addrs,
             // TODO: other peers seem to report inaccurate information, should we implement this?

@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, error, fuzz_maybe, fuzzed_maybe, Substate};
+use mina_core::{bug_condition, error, fuzz_maybe, fuzzed_maybe, Substate};
 use redux::Timestamp;
 use token::{
     AuthKind, DiscoveryAlgorithm, IdentifyAlgorithm, MuxKind, Protocol, RpcAlgorithm, StreamKind,

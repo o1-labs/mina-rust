@@ -11,11 +11,12 @@ import { getMergedRoute, MergedRoute, TableColumnList, TableSort } from '@openmi
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-fuzzing-files-table',
-  templateUrl: './fuzzing-files-table.component.html',
-  styleUrls: ['./fuzzing-files-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-fuzzing-files-table',
+    templateUrl: './fuzzing-files-table.component.html',
+    styleUrls: ['./fuzzing-files-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile> implements OnInit {
 

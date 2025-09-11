@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .overflow-y-auto {
   padding-bottom: 120px;
@@ -6,7 +6,7 @@
 
 :host {
   .title {
-    border: 1px solid $base-divider;
+    border: 1px solid openmina.$base-divider;
     border-bottom: none;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -18,16 +18,17 @@
       font-variation-settings: 'FILL' 1, 'wght' 200;
     }
   }
+
   div.selected {
-    background-color: $selected-container;
+    background-color: openmina.$selected-container;
 
     .tree {
-      color: $selected-primary;
+      color: openmina.$selected-primary;
     }
 
-    ::ng-deep mina-horizontal-menu .control div{
-      background-color: $selected-container !important;
-      color: $selected-primary !important;
+    ::ng-deep mina-horizontal-menu .control div {
+      background-color: openmina.$selected-container !important;
+      color: openmina.$selected-primary !important;
     }
   }
 }

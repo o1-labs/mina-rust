@@ -24,11 +24,12 @@ import { selectNetworkMessagesState } from '@network/network.state';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-  selector: 'mina-network-messages-table-footer',
-  templateUrl: './network-messages-table-footer.component.html',
-  styleUrls: ['./network-messages-table-footer.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'fx-row-vert-cent border-top h-lg' },
+    selector: 'mina-network-messages-table-footer',
+    templateUrl: './network-messages-table-footer.component.html',
+    styleUrls: ['./network-messages-table-footer.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'fx-row-vert-cent border-top h-lg' },
+    standalone: false
 })
 export class NetworkMessagesTableFooterComponent extends StoreDispatcher implements OnInit {
 

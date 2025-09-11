@@ -1,14 +1,13 @@
-use crate::scan_state::currency::{Fee, Magnitude};
 use crate::{
     scan_state::{
+        currency::{Fee, Magnitude},
         scan_state::transaction_snark::work,
         transaction_logic::{valid, CoinbaseFeeTransfer, GenericCommand},
     },
     staged_ledger::diff::AtMostTwo,
 };
 
-use self::detail::Detail;
-use self::summary::Summary;
+use self::{detail::Detail, summary::Summary};
 
 type CountAndFee = (u64, Fee);
 

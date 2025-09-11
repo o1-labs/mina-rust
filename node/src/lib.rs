@@ -3,7 +3,7 @@
 extern crate graphannis_malloc_size_of as malloc_size_of;
 extern crate graphannis_malloc_size_of_derive as malloc_size_of_derive;
 
-pub use openmina_core as core;
+pub use mina_core as core;
 
 #[macro_use]
 mod action;

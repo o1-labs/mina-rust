@@ -1,7 +1,7 @@
 use std::collections::VecDeque;
 
+use mina_core::block::ArcBlockWithHash;
 use mina_p2p_messages::v2::{LedgerHash, StateHash};
-use openmina_core::block::ArcBlockWithHash;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 

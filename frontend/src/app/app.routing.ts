@@ -6,7 +6,7 @@ import { getMergedRoute, MergedRoute } from '@openmina/shared';
 import { filter, take } from 'rxjs';
 import { landingPageGuard } from '@shared/guards/landing-page.guard';
 
-const APP_TITLE: string = 'Open Mina';
+const APP_TITLE: string = 'The Mina Rust Node';
 
 export const DASHBOARD_TITLE: string = APP_TITLE + ' - Dashboard';
 export const RESOURCES_TITLE: string = APP_TITLE + ' - Resources';
@@ -21,7 +21,7 @@ export const WEBNODE_TITLE: string = APP_TITLE + ' - Web Node';
 export const FUZZING_TITLE: string = APP_TITLE + ' - Fuzzing';
 
 
-function generateRoutes(): Routes {
+export function generateRoutes(): Routes {
   const routes: Routes = [
     {
       path: 'dashboard',

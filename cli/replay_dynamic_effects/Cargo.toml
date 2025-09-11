@@ -1,6 +1,6 @@
 [package]
 name = "replay_dynamic_effects"
-version = "0.16.0"
+version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
 
@@ -9,6 +9,6 @@ crate-type = ["dylib"]
 name = "replay_dynamic_effects"
 
 [dependencies]
+mina-node-invariants = { path = "../../node/invariants" }
+mina-node-native = { path = "../../node/native" }
 node = { path = "../../node", features = ["replay"] }
-openmina-node-native = { path = "../../node/native" }
-openmina-node-invariants = { path = "../../node/invariants" }

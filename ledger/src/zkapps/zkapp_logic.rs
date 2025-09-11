@@ -1,21 +1,19 @@
-use mina_hasher::Fp;
+use mina_core::constants::constraint_constants;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::constraint_constants;
 
-use crate::scan_state::transaction_logic::zkapp_command::{Actions, SetOrKeep};
-use crate::scan_state::transaction_logic::TimingValidation;
 use crate::{
     scan_state::{
         currency::{Fee, Magnitude, SlotSpan},
         transaction_logic::{
-            protocol_state::GlobalStateSkeleton, zkapp_command::CheckAuthorizationResult,
-            TransactionFailure,
+            protocol_state::GlobalStateSkeleton,
+            zkapp_command::{Actions, CheckAuthorizationResult, SetOrKeep},
+            TimingValidation, TransactionFailure,
         },
     },
     zkapps::intefaces::*,
-    AuthRequired, MyCow, TokenId,
+    AuthRequired, MyCow, Permissions, SetVerificationKey, TokenId, VerificationKeyWire,
 };
-use crate::{Permissions, SetVerificationKey, VerificationKeyWire};
 
 use crate::proofs::{
     field::{Boolean, ToBoolean},
@@ -43,7 +41,7 @@ pub enum ZkAppCommandElt {
 
 fn assert_<Z: ZkappApplication>(b: Z::Bool, s: &str) -> Result<(), String> {
     // Used only for circuit generation (add constraints)
-    // https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929
+    // <https://github.com/MinaProtocol/mina/blob/e44ddfe1ca54b3855e1ed336d89f6230d35aeb8c/src/lib/transaction_logic/zkapp_command_logic.ml#L929>
 
     if let Boolean::False = b.as_boolean() {
         return Err(s.to_string());

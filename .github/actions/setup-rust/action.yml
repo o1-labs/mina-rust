@@ -1,0 +1,35 @@
+name: 'Setup Rust Toolchain'
+description: 'Setup Rust toolchain with components and caching'
+inputs:
+  toolchain:
+    description: 'Rust toolchain version'
+    required: false
+    default: '1.84'
+  components:
+    description: 'Additional Rust components to install'
+    required: false
+    default: 'rustfmt'
+  cache-prefix:
+    description: 'Cache prefix key'
+    required: false
+    default: 'v0'
+  enable-cache:
+    description: 'Enable Rust cache'
+    required: false
+    default: 'true'
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Rust
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ inputs.toolchain }}
+        components: ${{ inputs.components }}
+
+    - name: Setup Rust Cache
+      if: inputs.enable-cache == 'true'
+      uses: Swatinem/rust-cache@v2
+      with:
+        prefix-key: ${{ inputs.cache-prefix }}-${{ inputs.toolchain }}
+        shared-key: shared-${{ inputs.toolchain }}
+        save-if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' }}

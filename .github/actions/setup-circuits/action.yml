@@ -1,0 +1,9 @@
+name: 'Download Circuit Files'
+description: 'Download required circuit files for Mina'
+runs:
+  using: 'composite'
+  steps:
+    - name: Download circuits files
+      shell: bash
+      run: |
+        make download-circuits

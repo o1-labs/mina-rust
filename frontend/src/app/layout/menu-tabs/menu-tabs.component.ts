@@ -24,17 +24,16 @@ import { EnvBuildModalComponent } from '@app/layout/env-build-modal/env-build-mo
 
 @UntilDestroy()
 @Component({
-  selector: 'mina-menu-tabs',
-  standalone: true,
-  imports: [
-    HorizontalMenuComponent,
-    RouterLink,
-    OpenminaEagerSharedModule,
-  ],
-  templateUrl: './menu-tabs.component.html',
-  styleUrl: './menu-tabs.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column w-100' },
+    selector: 'mina-menu-tabs',
+    imports: [
+        HorizontalMenuComponent,
+        RouterLink,
+        OpenminaEagerSharedModule,
+    ],
+    templateUrl: './menu-tabs.component.html',
+    styleUrl: './menu-tabs.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column w-100' }
 })
 export class MenuTabsComponent extends StoreDispatcher implements OnInit {
 

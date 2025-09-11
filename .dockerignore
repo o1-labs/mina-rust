@@ -14,3 +14,20 @@ tools/heartbeats-processor/credentials/
 tools/heartbeats-processor/*.db
 # Ensure .sqlx files are included
 !tools/heartbeats-processor/.sqlx/
+
+# Will be copied on demand in the Docker image, if necessary
+circuit-blobs
+
+# GH workflows
+.github
+.idea
+
+# Infrastructure
+helm
+
+# Output of build-wasm
+pkg
+
+# Outputs of build-tests-webrtc
+cargo-build-test.json
+tests.tsv

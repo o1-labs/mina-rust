@@ -1,6 +1,8 @@
-use std::future::Future;
-use std::rc::{Rc, Weak};
-use std::sync::Once;
+use std::{
+    future::Future,
+    rc::{Rc, Weak},
+    sync::Once,
+};
 
 use gloo_utils::format::JsValueSerdeExt;
 use wasm_bindgen::{convert::FromWasmAbi, prelude::*};
@@ -11,7 +13,7 @@ use web_sys::{
     RtcSessionDescriptionInit,
 };
 
-use openmina_core::channels::oneshot;
+use mina_core::channels::oneshot;
 
 use crate::{
     connection::P2pConnectionResponse,
@@ -182,7 +184,7 @@ impl RTCChannel {
                     let data = uarray.to_vec();
                     spawn_local(f(data.as_ref()));
                 } else {
-                    openmina_core::log::error!(redux::Timestamp::global_now(); "`event.data()` failed to cast to `ArrayBuffer`. {:?}", event.data());
+                    mina_core::log::error!(redux::Timestamp::global_now(); "`event.data()` failed to cast to `ArrayBuffer`. {:?}", event.data());
                 }
             },
         );

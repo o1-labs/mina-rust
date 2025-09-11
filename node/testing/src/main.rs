@@ -1,16 +1,43 @@
+//! # Mina Node Testing CLI
+//!
+//! Command-line interface for running Mina node scenario tests.
+//! Provides tools for generating, running, and managing deterministic
+//! blockchain testing scenarios.
+//!
+//! ## Documentation
+//!
+//! For detailed documentation and usage examples, see:
+//! - [Scenario Tests](https://o1-labs.github.io/mina-rust/developers/testing/scenario-tests) - Complete testing guide
+//! - [Testing Framework](https://o1-labs.github.io/mina-rust/developers/testing/testing-framework) - Testing architecture
+//!
+//! ## Quick Start
+//!
+//! List all available scenarios:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-list
+//! ```
+//!
+//! Run a specific scenario:
+//! ```bash
+//! cargo run --release --bin mina-node-testing -- scenarios-run --name p2p-signaling
+//! ```
+
 use clap::Parser;
 
+use mina_node_testing::{
+    cluster::{Cluster, ClusterConfig},
+    exit_with_error,
+    scenario::Scenario,
+    scenarios::Scenarios,
+    server, setup,
+};
 use node::p2p::webrtc::Host;
-use openmina_node_testing::cluster::{Cluster, ClusterConfig};
-use openmina_node_testing::scenario::Scenario;
-use openmina_node_testing::scenarios::Scenarios;
-use openmina_node_testing::{exit_with_error, server, setup};
 
 pub type CommandError = anyhow::Error;
 
 #[derive(Debug, clap::Parser)]
-#[command(name = "openmina-testing", about = "Openmina Testing Cli")]
-pub struct OpenminaTestingCli {
+#[command(name = "mina-testing", about = "Mina Testing Cli")]
+pub struct MinaTestingCli {
     #[command(subcommand)]
     pub command: Command,
 }
@@ -21,6 +48,7 @@ pub enum Command {
 
     ScenariosGenerate(CommandScenariosGenerate),
     ScenariosRun(CommandScenariosRun),
+    ScenariosList(CommandScenariosList),
 }
 
 #[derive(Debug, clap::Args)]
@@ -42,6 +70,14 @@ pub struct CommandScenariosGenerate {
     pub use_debugger: bool,
     #[arg(long, short)]
     pub webrtc: bool,
+    #[arg(long, short = 'o', default_value = "stdout", value_enum)]
+    pub output: OutputFormat,
+}
+
+#[derive(Debug, Clone, clap::ValueEnum)]
+pub enum OutputFormat {
+    Stdout,
+    Json,
 }
 
 /// Run scenario located at `res/scenarios`.
@@ -54,12 +90,15 @@ pub struct CommandScenariosRun {
     pub name: String,
 }
 
+#[derive(Debug, clap::Args)]
+pub struct CommandScenariosList {}
+
 impl Command {
     pub fn run(self) -> Result<(), crate::CommandError> {
         let rt = setup();
         let _rt_guard = rt.enter();
 
-        let (shutdown_tx, shutdown_rx) = openmina_core::channels::oneshot::channel();
+        let (shutdown_tx, shutdown_rx) = mina_core::channels::oneshot::channel();
         let mut shutdown_tx = Some(shutdown_tx);
 
         ctrlc::set_handler(move || match shutdown_tx.take() {
@@ -80,6 +119,7 @@ impl Command {
             Self::ScenariosGenerate(cmd) => {
                 #[cfg(feature = "scenario-generators")]
                 {
+                    let output_format = cmd.output.clone();
                     let run_scenario = |scenario: Scenarios| -> Result<_, anyhow::Error> {
                         let mut config = scenario.default_cluster_config()?;
                         if cmd.use_debugger {
@@ -88,18 +128,34 @@ impl Command {
                         if cmd.webrtc {
                             config.set_all_rust_to_rust_use_webrtc();
                         }
-                        Ok(scenario.run_only_from_scratch(config))
+                        Ok((scenario, config))
                     };
                     let fut = async move {
                         if let Some(name) = cmd.name {
                             if let Some(scenario) = Scenarios::find_by_name(&name) {
-                                run_scenario(scenario)?.await;
+                                let (scenario, config) = run_scenario(scenario)?;
+                                match output_format {
+                                    OutputFormat::Json => {
+                                        scenario.run_and_save_from_scratch(config).await
+                                    }
+                                    OutputFormat::Stdout => {
+                                        scenario.run_only_from_scratch(config).await
+                                    }
+                                }
                             } else {
                                 anyhow::bail!("no such scenario: \"{name}\"");
                             }
                         } else {
                             for scenario in Scenarios::iter() {
-                                run_scenario(scenario)?.await;
+                                let (scenario, config) = run_scenario(scenario)?;
+                                match output_format {
+                                    OutputFormat::Json => {
+                                        scenario.run_and_save_from_scratch(config).await
+                                    }
+                                    OutputFormat::Stdout => {
+                                        scenario.run_only_from_scratch(config).await
+                                    }
+                                }
                             }
                         }
                         Ok(())
@@ -152,12 +208,19 @@ impl Command {
                     }
                 })
             }
+            Self::ScenariosList(_) => {
+                println!("Available scenarios:");
+                for scenario in Scenarios::iter() {
+                    println!("  {}", scenario.to_str())
+                }
+                Ok(())
+            }
         }
     }
 }
 
 pub fn main() {
-    match OpenminaTestingCli::parse().command.run() {
+    match MinaTestingCli::parse().command.run() {
         Ok(_) => {}
         Err(err) => exit_with_error(err),
     }

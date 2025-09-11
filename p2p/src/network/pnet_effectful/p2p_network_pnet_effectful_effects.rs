@@ -1,8 +1,7 @@
-use openmina_core::fuzzed_maybe;
+use mina_core::fuzzed_maybe;
 
 use super::P2pNetworkPnetEffectfulAction;
-use crate::P2pMioService;
-use crate::{P2pNetworkSelectAction, SelectKind};
+use crate::{P2pMioService, P2pNetworkSelectAction, SelectKind};
 
 impl P2pNetworkPnetEffectfulAction {
     pub fn effects<Store, S>(self, _meta: &redux::ActionMeta, store: &mut Store)

@@ -22,12 +22,14 @@ pub enum P2pAction {
     ...
 }
 ```
+
 link to the definition of the node("root") action:
-[openmina_node::Action](node/src/action.rs).
+[mina_node::Action](node/src/action.rs).
 
 ## Enabling Condition
 
 Each [Action](#action) must implement the trait
+
 ```Rust
 pub trait EnablingCondition<State> {
     /// Enabling condition for the Action.
@@ -39,39 +41,38 @@ pub trait EnablingCondition<State> {
 }
 ```
 
-`is_enabled(state, time)` must return `false`, if action doesn't make sense given
-the current state and, optionally, time.
+`is_enabled(state, time)` must return `false`, if action doesn't make sense
+given the current state and, optionally, time.
 
 For example, message action from peer that isn't connected or we don't know
 about in the state, must not be enabled.
 
-Or timeout action. If according to state, duration for timeout hasn't
-passed, then we shouldn't enable that timeout action.
+Or timeout action. If according to state, duration for timeout hasn't passed,
+then we shouldn't enable that timeout action.
 
-Thanks to enabling condition, if properly written, impossible/unexpected
-state transition can be made impossible.
+Thanks to enabling condition, if properly written, impossible/unexpected state
+transition can be made impossible.
 
 #### Avoiding code duplication
 
-We can also utilize this property to avoid code duplication, by simply
-trying to dispatch an action instead of checking something in the effects
-before dispatch, knowing that enabling condition will filter out actions
-that shouldn't happen.
+We can also utilize this property to avoid code duplication, by simply trying to
+dispatch an action instead of checking something in the effects before dispatch,
+knowing that enabling condition will filter out actions that shouldn't happen.
 
 So for example for checking [timeouts](#timeouts), in the `CheckTimeoutsAction`
-effects, we can simply dispatch timeout action. If timeout duration
-hasn't passed yet, then action will be dropped, if it has passed, then
-action will be dispatched as expected.
+effects, we can simply dispatch timeout action. If timeout duration hasn't
+passed yet, then action will be dropped, if it has passed, then action will be
+dispatched as expected.
 
 #### Did action get dispatched
 
-If it's important to know in the effects by dispatcher, if action was
-enabled and got dispatched, it can be checked by checking the return value
-of the `store.dispatch(..)` call.
-It will return `true` if action did get dispatched, otherwise `false`.
+If it's important to know in the effects by dispatcher, if action was enabled
+and got dispatched, it can be checked by checking the return value of the
+`store.dispatch(..)` call. It will return `true` if action did get dispatched,
+otherwise `false`.
 
-Sometimes we want to dispatch one action or the other. In such case we
-can write:
+Sometimes we want to dispatch one action or the other. In such case we can
+write:
 
 ```Rust
 if !store.dispatch(A) {
@@ -81,58 +82,60 @@ if !store.dispatch(A) {
 
 ## Reducer
 
-Responsible for state management. Only function that's able to change
-the [state](node/src/state.rs) is the reducer.
+Responsible for state management. Only function that's able to change the
+[state](node/src/state.rs) is the reducer.
 
 Takes current `State` and an `Action` and computes new `State`.
 
 Pseudocode: `reducer(state, action) -> state`
 
-We don't really need to take state immutably, in JavaScript/frontend
-it makes sense, but in our case, it doesn't.
+We don't really need to take state immutably, in JavaScript/frontend it makes
+sense, but in our case, it doesn't.
 
 So reducer now looks like this:
+
 ```Rust
 type Reducer<State, Action> = fn(&mut State, &Action);
 ```
 
 Main reducer function that gets called on every action:
-[openmina_node::reducer](node/src/reducer.rs).
+[mina_node::reducer](node/src/reducer.rs).
 
 ## Effects(side-effects)
 
 Effects are a way to:
+
 1. interact with the [Service](#service).
 1. manage [control-flow](#control-flow).
 
-`Effects` run after every action and triggers side-effects (calls to the
-service or dispatches some other action).
+`Effects` run after every action and triggers side-effects (calls to the service
+or dispatches some other action).
 
-It has access to global `State`, as well as services.
-It can't mutate `Action` or the `State` directly. It can however dispatch
-another action, which can in turn mutate the state.
+It has access to global `State`, as well as services. It can't mutate `Action`
+or the `State` directly. It can however dispatch another action, which can in
+turn mutate the state.
 
 ```Rust
 type Effects<State, Service, Action> = fn(&mut Store<State, Service, Action>, &Action);
 ```
 
 Main effects function that gets called on every action:
-[openmina_node::effects](node/src/effects.rs).
+[mina_node::effects](node/src/effects.rs).
 
 ## Service
 
-Services are mostly just IO or computationally heavy tasks that we want
-to run in another thread.
+Services are mostly just IO or computationally heavy tasks that we want to run
+in another thread.
 
-- `Service` should have a minimal state! As a rule of thumb,
-  anything that can be serialized, should go inside our global `State`.
-- Logic in service should be minimal. No decision-making should be done
-  there. It should mostly only act as a common interface for interacting
-  with the outside platform (OS, Browser, etc...).
+- `Service` should have a minimal state! As a rule of thumb, anything that can
+  be serialized, should go inside our global `State`.
+- Logic in service should be minimal. No decision-making should be done there.
+  It should mostly only act as a common interface for interacting with the
+  outside platform (OS, Browser, etc...).
 
 ## State
 
-Our global state. [openmina_node::State](node/src/state.rs)
+Our global state. [mina_node::State](node/src/state.rs)
 
 ## Store
 
@@ -143,8 +146,8 @@ and calls `effects` after it.
 
 ## State Machine Inputs
 
-State machine's execution is fully predictable/deterministic. If it
-receives same inputs in the same order, it's behaviour will be the same.
+State machine's execution is fully predictable/deterministic. If it receives
+same inputs in the same order, it's behaviour will be the same.
 
 State machine has 3 kinds of inputs:
 
@@ -152,44 +155,50 @@ State machine has 3 kinds of inputs:
 1. Time, which is an extension of every action that gets dispatched.
 
    see: [ActionMeta](deps/redux-rs/src/action/action_meta.rs)
+
 1. Synchronously returned values by services.
 
-   Idially this one should be avoided as much as possible, because it
-   introduces non-determinism in the `effects` function.
+   Idially this one should be avoided as much as possible, because it introduces
+   non-determinism in the `effects` function.
 
-Thanks to this property, state machine's inputs can be [recorded](node/src/recorder/recorder.rs),
-to then be [replayed](cli/src/commands/replay/replay_state_with_input_actions.rs),
-which is very useful for debugging.
+Thanks to this property, state machine's inputs can be
+[recorded](node/src/recorder/recorder.rs), to then be
+[replayed](cli/src/commands/replay/replay_state_with_input_actions.rs), which is
+very useful for debugging.
 
 ## Event
 
 An [Event](node/src/event_source/event.rs), represents all types of data/input
 comming from outside the state machine (mostly from services).
 
-It is wrapped by [EventSourceNewEventAction](node/src/event_source/event_source_actions.rs),
-and dispatched when new event arrives.
+It is wrapped by
+[EventSourceNewEventAction](node/src/event_source/event_source_actions.rs), and
+dispatched when new event arrives.
 
-Only events can be dispatched outside the state machine. For case when
-there isn't any events, waiting for events will timeout and
+Only events can be dispatched outside the state machine. For case when there
+isn't any events, waiting for events will timeout and
 [EventSourceWaitTimeoutAction](node/src/event_source/event_source_actions.rs)
 will be dispatched. This way we won't get stuck forever waiting for events.
 
 ## Control Flow
 
-[event_source](node/src/event_source/event_source_actions.rs) actions
-are the only "root" actions that get dispatched. The rest get dispatched
-directly or indirectly by event's effects. We could have one large
-reducer/effects function for each of the event and it would work as it
-does now, but it would be very hard to write and debug.
+[event_source](node/src/event_source/event_source_actions.rs) actions are the
+only "root" actions that get dispatched. The rest get dispatched directly or
+indirectly by event's effects. We could have one large reducer/effects function
+for each of the event and it would work as it does now, but it would be very
+hard to write and debug.
 
-By having "non-root"(or effect) actions, we make it easier to represent
-complex logic and all the state transitions.
+By having "non-root"(or effect) actions, we make it easier to represent complex
+logic and all the state transitions.
 
 There are 2 types of effects:
+
 1. **Local Effects**
 
    Effects which make sense in local scope/subslice of the state machine.
-   Ideally/Mostly such functions are written as `effects` function on the action:
+   Ideally/Mostly such functions are written as `effects` function on the
+   action:
+
    ```Rust
     impl P2pConnectionOutgoingSuccessAction {
         pub fn effects<Store, S>(self, _: &ActionMeta, store: &mut Store)
@@ -199,86 +208,87 @@ There are 2 types of effects:
         }
     }
    ```
+
 1. **Global Effects**
 
    Effects that don't fit in the local scope.
 
-   For example, we could receive rpc request on p2p layer to send our
-   current best tip. Since [p2p](p2p/) is in a separate crate, it's not even
-   possible to answer that rpc there, as in that crate, we only have
-   partial view (p2p part) of the state. But we do have that access
-   in [openmina-node](node/) crate, so we write effects to respond to that
-   rpc [in there](https://github.com/openmina/openmina/blob/f6bde2138157dcdacd4baa0cd07c22506dc2a7c0/node/src/p2p/p2p_effects.rs#L517).
+   For example, we could receive rpc request on p2p layer to send our current
+   best tip. Since [p2p](p2p/) is in a separate crate, it's not even possible to
+   answer that rpc there, as in that crate, we only have partial view (p2p part)
+   of the state. But we do have that access in [mina-node](node/) crate, so we
+   write effects to respond to that rpc
+   [in there](https://github.com/openmina/openmina/blob/f6bde2138157dcdacd4baa0cd07c22506dc2a7c0/node/src/p2p/p2p_effects.rs#L517).
 
 Examples of the flow:
+
 - [Sync staged ledger](node/src/transition_frontier/sync/ledger/staged)
 
 ## Timeouts
 
-To ensure that the node is low in complexity, easy to test, to reason
-about and debug, all timeouts must be triggered inside state machine.
+To ensure that the node is low in complexity, easy to test, to reason about and
+debug, all timeouts must be triggered inside state machine.
 
-If timeouts happen in the service, then it's beyond our full control
-during testing, which will limit testing possibilities and will make
-tests flaky.
+If timeouts happen in the service, then it's beyond our full control during
+testing, which will limit testing possibilities and will make tests flaky.
 
-We have a special action: [CheckTimeoutsAction](node/src/action.rs).
-It triggers bunch of actions which will check timeouts and if timeout is
-detected, timeout action will be dispatched which will trigger other effects.
+We have a special action: [CheckTimeoutsAction](node/src/action.rs). It triggers
+bunch of actions which will check timeouts and if timeout is detected, timeout
+action will be dispatched which will trigger other effects.
 
 # Mental Model Tips
 
-When working with this architecture, conventional means of reading and
-writing the code goes out the window. A lot of code that we write,
-won't be a state machine, but the code that is, completely differs from
-what developers are used to. In order to be productive with it, mental
-model needs to be adjusted.
+When working with this architecture, conventional means of reading and writing
+the code goes out the window. A lot of code that we write, won't be a state
+machine, but the code that is, completely differs from what developers are used
+to. In order to be productive with it, mental model needs to be adjusted.
 
 For example, when developer needs to understand the logic written in a
-particular state machine, it might be tempting to use conventional methods,
-like finding a starting point in the code and trying to follow the code.
-One who'll attempt that, will quickly realise that the process is
-extremely taxing and almost impossible. The amount of things you need
-to keep in memory, number of jumps you need to perform, makes it very
-difficult. This hinders one's productivity and in the end, most likely,
-whatever change developer makes in the code will be buggy, due to
-partial understanding obtained through tedious process.
+particular state machine, it might be tempting to use conventional methods, like
+finding a starting point in the code and trying to follow the code. One who'll
+attempt that, will quickly realise that the process is extremely taxing and
+almost impossible. The amount of things you need to keep in memory, number of
+jumps you need to perform, makes it very difficult. This hinders one's
+productivity and in the end, most likely, whatever change developer makes in the
+code will be buggy, due to partial understanding obtained through tedious
+process.
 
-Instead we need to shift our mental model and change the overall way we
-process the code written with this architecture. We need to leverage
-the way state machines are written, in order to minimize the cognitive load.
-Instead of trying to follow the code, we should start with the state
-of the state machine, look at it carefully and try to deduce the flow
-using it. Our deductions just based on state will have flaws and holes,
-but we can fix that by filtering through actions and finding ones based
-on name, which most likely relates to those holes. By checking those
-and their enabling conditions, we will have a more clearer idea about
-the state machine. Sometimes it still might not be enough and we will
-need to check (only relevant) pieces of the reducer and effects.
+Instead we need to shift our mental model and change the overall way we process
+the code written with this architecture. We need to leverage the way state
+machines are written, in order to minimize the cognitive load. Instead of trying
+to follow the code, we should start with the state of the state machine, look at
+it carefully and try to deduce the flow using it. Our deductions just based on
+state will have flaws and holes, but we can fix that by filtering through
+actions and finding ones based on name, which most likely relates to those
+holes. By checking those and their enabling conditions, we will have a more
+clearer idea about the state machine. Sometimes it still might not be enough and
+we will need to check (only relevant) pieces of the reducer and effects.
 
 Main reason why conventional method doesn't work, is because nothing is
-abstracted/hidden away. When you follow the code, you follow actual
-execution that the cpu will perform. We have a single threaded state machine,
-responsible for business logic + managing concurrent/parallel processes,
-so following it's flow is like attempting to jump into async executor
-code at every `.await` point.
+abstracted/hidden away. When you follow the code, you follow actual execution
+that the cpu will perform. We have a single threaded state machine, responsible
+for business logic + managing concurrent/parallel processes, so following it's
+flow is like attempting to jump into async executor code at every `.await`
+point.
 
 ## Importance of State
 
-The `State` of the state machine, sits at the core of everything. It is
-the first thing we carefully design, actions with enabling conditions,
-effects and reducers come later.
+The `State` of the state machine, sits at the core of everything. It is the
+first thing we carefully design, actions with enabling conditions, effects and
+reducers come later.
 
-`State` is supposed to be a declarative way to describe a flow, then
-enabling conditions, reducers and effects enable that flow. Even if we
-remove all the rest of the code, simply having a `State` definition should
-be enough to get a general idea about the purpose and the flow of the
-state machine. Each sub-state/sub-statemachine must follow this rule.
+`State` is supposed to be a declarative way to describe a flow, then enabling
+conditions, reducers and effects enable that flow. Even if we remove all the
+rest of the code, simply having a `State` definition should be enough to get a
+general idea about the purpose and the flow of the state machine. Each
+sub-state/sub-statemachine must follow this rule.
 
-E.g. if we look at the state of the [snark_pool_candidate](node/src/snark_pool/candidate/snark_pool_candidate_state.rs)
+E.g. if we look at the state of the
+[snark_pool_candidate](node/src/snark_pool/candidate/snark_pool_candidate_state.rs)
 state machine, which is responsible for processing received snark work.
 
 (added comments represent thought process while reading the state).
+
 ```Rust
 pub enum SnarkPoolCandidateState {
     // some info received regarding the candidate?
@@ -324,135 +334,153 @@ pub enum SnarkPoolCandidateState {
 ...
 ```
 
-Above is just a demo to show how much we can deduce just by looking at
-the state. Of course it isn't enough to have a full understanding of the
-individual state machine, and it might leave some holes, but they can
-easily be filled by looking at the actions most related to those holes.
+Above is just a demo to show how much we can deduce just by looking at the
+state. Of course it isn't enough to have a full understanding of the individual
+state machine, and it might leave some holes, but they can easily be filled by
+looking at the actions most related to those holes.
 
 Examples of the holes left by above is:
-1. State machine starts with snark work info already received. How do we
-   know we even need that snark? Where is the filtering happening?
 
-   To find out we can look for the action name that would be "notifying"
-   this state machine that info was received. If we check, it's
-   `SnarkPoolCandidateInfoReceivedAction`. If we check it's enabling
-   condition, we will see that unneeded snarks will get filtered out there.
+1. State machine starts with snark work info already received. How do we know we
+   even need that snark? Where is the filtering happening?
+
+   To find out we can look for the action name that would be "notifying" this
+   state machine that info was received. If we check, it's
+   `SnarkPoolCandidateInfoReceivedAction`. If we check it's enabling condition,
+   we will see that unneeded snarks will get filtered out there.
+
 2. Do snarks get verified one by one? Or is there batching involved?
 
-   To find that out, we can look for actions regarding work verification
-   in this state machine. We can see `SnarkPoolCandidateWorkVerifyPendingAction`,
-   it's definition being:
-    ```Rust
-    pub struct SnarkPoolCandidateWorkVerifyPendingAction {
-        pub peer_id: PeerId,
-        pub job_ids: Vec<SnarkJobId>,
-        pub verify_id: SnarkWorkVerifyId,
-    }
-    ```
+   To find that out, we can look for actions regarding work verification in this
+   state machine. We can see `SnarkPoolCandidateWorkVerifyPendingAction`, it's
+   definition being:
 
-    We can clearly see from above that we have an array of `job_ids`,
-    while only having a single `verify_id`. Meaning we do have batching.
+   ```Rust
+   pub struct SnarkPoolCandidateWorkVerifyPendingAction {
+       pub peer_id: PeerId,
+       pub job_ids: Vec<SnarkJobId>,
+       pub verify_id: SnarkWorkVerifyId,
+   }
+   ```
 
-    Also we can see `peer_id` there, which might not be obvious why it's
-    there. To understand that and how snarks are batched together, we
-    need to check out a place where
-    `SnarkPoolCandidateWorkVerifyPendingAction` gets dispatched(in the effects).
+   We can clearly see from above that we have an array of `job_ids`, while only
+   having a single `verify_id`. Meaning we do have batching.
+
+   Also we can see `peer_id` there, which might not be obvious why it's there.
+   To understand that and how snarks are batched together, we need to check out
+   a place where `SnarkPoolCandidateWorkVerifyPendingAction` gets dispatched(in
+   the effects).
 
 ## Designing new state machine
 
 #### Where it belongs
 
-When creating a new state machine, first we need to figure out where
-it belongs. Whether we should add new statemachine in the root dir of
-the node, or if it needs to be a sub-statemachine.
+When creating a new state machine, first we need to figure out where it belongs.
+Whether we should add new statemachine in the root dir of the node, or if it
+needs to be a sub-statemachine.
 
 Once we decide, we need to make a new module there.
 
 #### Designing state
 
-Once we have that down, we need to think about the flow and logic we
-wish to introduce and use that in order to carefully craft the
-definition of the state. This is where the most amount of thought needs
-to go to. If we start with the state and make it represent the flow,
-we will make our new state machine:
+Once we have that down, we need to think about the flow and logic we wish to
+introduce and use that in order to carefully craft the definition of the state.
+This is where the most amount of thought needs to go to. If we start with the
+state and make it represent the flow, we will make our new state machine:
 
-1. Easy to debug, since state represents the flow and if we want to debug
-   it, we can easily follow the flow by observing state transitions.
-2. Easy to read/process, since a lot of information will be conveyed
-   just with state definition.
-3. Minimized or non-existent impossible/duplicate states, since state
-   represents the actual flow, we can use it to restrict the flow with
-   enabling conditions as much as possible.
+1. Easy to debug, since state represents the flow and if we want to debug it, we
+   can easily follow the flow by observing state transitions.
+2. Easy to read/process, since a lot of information will be conveyed just with
+   state definition.
+3. Minimized or non-existent impossible/duplicate states, since state represents
+   the actual flow, we can use it to restrict the flow with enabling conditions
+   as much as possible.
 
-When designing a state, above expectations must be taken into account.
-If `State` doesn't represent the flow and hides it, it will take other
-developers much longer to process the code and impossible states could
-become an issue.
+When designing a state, above expectations must be taken into account. If
+`State` doesn't represent the flow and hides it, it will take other developers
+much longer to process the code and impossible states could become an issue.
 
 #### Designing actions and enabling conditions
 
-Actions should be a reflection of the `State`. After designing the state,
-what actions we need to create should be clear, since we will simply be
-adding actions which will cause those state transitions we described above.
+Actions should be a reflection of the `State`. After designing the state, what
+actions we need to create should be clear, since we will simply be adding
+actions which will cause those state transitions we described above.
 
-Most of the action names should match state transition names. E.g.
-If we have state transition: `SnarkPoolCandidateState::WorkVerifyPending { .. }`,
-action which causes state to transition to that specific state, should be
-named: `SnarkPoolCandidateWorkVerifyPendingAction`. That way it's easy
-for developer reading it later on, to filter through actions more easily.
-Actions not following this pattern should be as rare as possible as they
-will need special attention while going through the code, in order to not
-miss anything.
+Most of the action names should match state transition names. E.g. If we have
+state transition: `SnarkPoolCandidateState::WorkVerifyPending { .. }`, action
+which causes state to transition to that specific state, should be named:
+`SnarkPoolCandidateWorkVerifyPendingAction`. That way it's easy for developer
+reading it later on, to filter through actions more easily. Actions not
+following this pattern should be as rare as possible as they will need special
+attention while going through the code, in order to not miss anything.
 
-Action's enabling condition should be as limiting as possible, in order
-to avoid impossible state transitions, which could break the node.
+Action's enabling condition should be as limiting as possible, in order to avoid
+impossible state transitions, which could break the node.
 
 #### Designing reducers
 
-Most of the time, reducers goal will simply be to facilitate state
-transitions and nothing more. Pretty much grabbing data from one enum
-variant and moving it to another, transforming any values that will need it.
+Most of the time, reducers goal will simply be to facilitate state transitions
+and nothing more. Pretty much grabbing data from one enum variant and moving it
+to another, transforming any values that will need it.
 
-In order to do those transitions however, we have to destructure current
-enum variant and extract fields from there, so we need to make sure that
-enabling condition guarantees that the action won't be triggered, unless
-our current state variant is indeed what we expect in the reducer.
+In order to do those transitions however, we have to destructure current enum
+variant and extract fields from there, so we need to make sure that enabling
+condition guarantees that the action won't be triggered, unless our current
+state variant is indeed what we expect in the reducer.
 
 #### Designing effects
 
-Simpler the effects are, better it is. Mostly they should just declare
-what actions may be dispatched after the current action. If checks need
-to be done before dispatching some action, those checks belong in the
-enabling condition, not the effects. Simpler and smaller the effects are,
-easier it is to traverse them.
+Simpler the effects are, better it is. Mostly they should just declare what
+actions may be dispatched after the current action. If checks need to be done
+before dispatching some action, those checks belong in the enabling condition,
+not the effects. Simpler and smaller the effects are, easier it is to traverse
+them.
 
 ## Substate access, Queued Reducer-Dispatch, and Callbacks
 
-The state machine is being refactored to make the code easier to follow and work with. While the core concepts remain mostly unchanged, the organization is evolving.
+The state machine is being refactored to make the code easier to follow and work
+with. While the core concepts remain mostly unchanged, the organization is
+evolving.
 
-**Note**: For reference on the direction of these changes, see [this document](https://github.com/openmina/state_machine_exp/blob/main/node/README.md).
+**Note**: For reference on the direction of these changes, see
+[this document](https://github.com/openmina/state_machine_exp/blob/main/node/README.md).
 
 **What is new**:
-- `SubstateAccess` trait: Specifies how specific substate slices are obtained from a parent state.
-- `Substate` context: Provides fine-grained control over state and dispatcher access, ensuring clear separation of concerns.
-- `Dispatcher`: Manages the queuing and execution of actions, allowing reducers to queue additional actions for dispatch after the current state update phase.
-- `Callback` handlers: Facilitate flexible control flow by enabling actions to specify follow-up actions at dispatch time, reducing coupling between components and making control flow more local.
-- *Stateful* vs *Effectful* actions:
-    - Stateful actions update the state and dispatch other actions. These are processed by `reducer` functions.
-    - Effectful actions are very thing layers over services that expose them as actions and can dispatch callback actions. These are processed by `effects` functions.
+
+- `SubstateAccess` trait: Specifies how specific substate slices are obtained
+  from a parent state.
+- `Substate` context: Provides fine-grained control over state and dispatcher
+  access, ensuring clear separation of concerns.
+- `Dispatcher`: Manages the queuing and execution of actions, allowing reducers
+  to queue additional actions for dispatch after the current state update phase.
+- `Callback` handlers: Facilitate flexible control flow by enabling actions to
+  specify follow-up actions at dispatch time, reducing coupling between
+  components and making control flow more local.
+- _Stateful_ vs _Effectful_ actions:
+  - Stateful actions update the state and dispatch other actions. These are
+    processed by `reducer` functions.
+  - Effectful actions are very thing layers over services that expose them as
+    actions and can dispatch callback actions. These are processed by `effects`
+    functions.
 
 ### New-Style Reducers
 
-New-style reducers accept a `Substate` context as their first argument instead of the state they act on.
+New-style reducers accept a `Substate` context as their first argument instead
+of the state they act on.
 
 This substate context provides the reducer function with access to:
+
 - A mutable reference to the substate that the reducer will mutate.
 - An immutable reference to the global state.
 - A mutable reference to a `Dispatcher`.
 
-The reducer function cannot access both the substate and the dispatcher/global state references simultaneously. This enforces a separation between the state update phase and the further action dispatching phase.
+The reducer function cannot access both the substate and the dispatcher/global
+state references simultaneously. This enforces a separation between the state
+update phase and the further action dispatching phase.
 
-This setup allows us to combine, the reducer function and the effect handler function into one, removing a level of flow indirection while keeping the phases separate.
+This setup allows us to combine, the reducer function and the effect handler
+function into one, removing a level of flow indirection while keeping the phases
+separate.
 
 ```rust
 impl WatchedAccountsState {
@@ -515,10 +543,15 @@ pub fn reducer(
 
 ### Effectful Actions
 
-Actions and their handling code are divided into two categories: *stateful* actions and *effectful* actions.
+Actions and their handling code are divided into two categories: _stateful_
+actions and _effectful_ actions.
 
-- **Stateful Actions**: These actions update the state and have a `reducer` function. They closely resemble the traditional state machine code, and most of the state machine logic should reside here.
-- **Effectful Actions**: These actions involve calling external services and have an `effects` function. They should serve as thin layers for handling service interactions.
+- **Stateful Actions**: These actions update the state and have a `reducer`
+  function. They closely resemble the traditional state machine code, and most
+  of the state machine logic should reside here.
+- **Effectful Actions**: These actions involve calling external services and
+  have an `effects` function. They should serve as thin layers for handling
+  service interactions.
 
 Example effectful action:
 
@@ -556,13 +589,23 @@ impl TransitionFrontierGenesisEffectfulAction {
 
 ### Callbacks
 
-Callbacks are a new construct that permit the uncoupling of state machine components by enabling the dynamic composition of actions and their sequencing.
+Callbacks are a new construct that permit the uncoupling of state machine
+components by enabling the dynamic composition of actions and their sequencing.
 
-With callbacks, a caller (handling actions of type `A`) can dispatch an action of type `B` that will produce a result. The action `B` includes callback values that specify how to return the result to `A`. When the result of processing `B` is ready (either further down the action chain or asynchronously from a service call), the callback is invoked with the result.
+With callbacks, a caller (handling actions of type `A`) can dispatch an action
+of type `B` that will produce a result. The action `B` includes callback values
+that specify how to return the result to `A`. When the result of processing `B`
+is ready (either further down the action chain or asynchronously from a service
+call), the callback is invoked with the result.
 
-This is particularly useful when implementing effectful actions to interact with services, but also for composing multiple components without introducing inter-dependencies (with callbacks we can avoid the *global effects* pattern that was described before in this document).
+This is particularly useful when implementing effectful actions to interact with
+services, but also for composing multiple components without introducing
+inter-dependencies (with callbacks we can avoid the _global effects_ pattern
+that was described before in this document).
 
-Callback blocks are declared with the `redux::callback!` macro and are described by a uniquely named code block with a single input and a single output, which must produce an `Action` value as a result.
+Callback blocks are declared with the `redux::callback!` macro and are described
+by a uniquely named code block with a single input and a single output, which
+must produce an `Action` value as a result.
 
 Example:
 
@@ -614,16 +657,19 @@ For a given `LocalState` that is a substate of `State`:
 
 #### Implement `SubstateAccess<LocalState>`
 
-Implement in `node/src/state.rs` the `SubstateAccess<LocalState>` trait for `State` if it is not defined already. For trivial cases use the `impl_substate_access!` macro.
+Implement in `node/src/state.rs` the `SubstateAccess<LocalState>` trait for
+`State` if it is not defined already. For trivial cases use the
+`impl_substate_access!` macro.
 
 #### Update the `reducer` function
 
 Update the `reducer` function so that:
 
 1. It is implemented as a method on `LocalState`.
-2. It accepts as it's first argument `mut state_context: crate::Substate<Self>` instead of `&mut self`.
+2. It accepts as it's first argument `mut state_context: crate::Substate<Self>`
+   instead of `&mut self`.
 3. It obtains `state` by calling `state_context.get_state_mut()`.
-3. All references to `self` are updated to instead reference `state`.
+4. All references to `self` are updated to instead reference `state`.
 
 Example:
 
@@ -660,7 +706,9 @@ impl ConsensusState {
 
 #### Move dispatches from `effects` to `reducer`
 
-For each action that doesn't call a service in it's effect handler, delete it's body from the effect handler and move it to the end of the body of the reducer's match branch that handles that action:
+For each action that doesn't call a service in it's effect handler, delete it's
+body from the effect handler and move it to the end of the body of the reducer's
+match branch that handles that action:
 
 Example:
 
@@ -669,7 +717,7 @@ Example:
 
  pub fn consensus_effects<S: crate::Service>(store: &mut Store<S>, action: ConsensusActionWithMeta) {
      let (action, _) = action.split();
- 
+
      match action {
          ConsensusAction::BlockReceived { hash, block, .. } => {
 -            let req_id = store.state().snark.block_verify.next_req_id();
@@ -725,7 +773,8 @@ Example:
 
 #### Update the reducer invocation in the parent reducer
 
-Replace the call in the parent reducer so that it creates a new `Substate` instance.
+Replace the call in the parent reducer so that it creates a new `Substate`
+instance.
 
 Example:
 
@@ -750,23 +799,33 @@ Example:
 
 #### Define effectful actions for service interactions
 
-Actions that interact with services must be updated so that the interaction is performed by dispatching a new effectful action. No reducer function should be implemented for these new effectful actions.
+Actions that interact with services must be updated so that the interaction is
+performed by dispatching a new effectful action. No reducer function should be
+implemented for these new effectful actions.
 
 Example:
 
-See `node/src/transition_frontier/genesis{_effectful}`, `snark/src/block_verify{_effectful}` and `snark/src/work_verify{_effectful}`.
+See `node/src/transition_frontier/genesis{_effectful}`,
+`snark/src/block_verify{_effectful}` and `snark/src/work_verify{_effectful}`.
 
 #### Add callbacks
 
 There are 3 main situations in which callbacks are an improvement:
 
 - Passing them to effectful actions that will call a service
-- Cross-component calls, to make the flow clearer and avoid inter-dependencies (eg. interactions between the transition frontier, and the p2p layer).
-- Abstraction of lower level layers (e.g. higher level p2p abstractions over lower level tcp and mio implementations).
+- Cross-component calls, to make the flow clearer and avoid inter-dependencies
+  (eg. interactions between the transition frontier, and the p2p layer).
+- Abstraction of lower level layers (e.g. higher level p2p abstractions over
+  lower level tcp and mio implementations).
 
-Example: when a block is received, the consensus state machine will dispatch an action to verify the block. This action will trigger an asynchronous snark verification process that will complete (or fail) some time in the future, and we are interested in its result.
+Example: when a block is received, the consensus state machine will dispatch an
+action to verify the block. This action will trigger an asynchronous snark
+verification process that will complete (or fail) some time in the future, and
+we are interested in its result.
 
-The `SnarkBlockVerifyAction::Init` action gets updated with the addition of two callbacks, one that will be called after a successful verification, and another when an error occurs:
+The `SnarkBlockVerifyAction::Init` action gets updated with the addition of two
+callbacks, one that will be called after a successful verification, and another
+when an error occurs:
 
 ```diff
  pub enum SnarkBlockVerifyAction {
@@ -780,7 +839,10 @@ The `SnarkBlockVerifyAction::Init` action gets updated with the addition of two 
  }
 ```
 
-The consensus reducer, after receiving a block, initializes the asynchronous block snark verification process specifying the callbacks, and sets the state to "pending". The dispatching of `SnarkBlockVerifyAction::Init` gets updated with the required callbacks:
+The consensus reducer, after receiving a block, initializes the asynchronous
+block snark verification process specifying the callbacks, and sets the state to
+"pending". The dispatching of `SnarkBlockVerifyAction::Init` gets updated with
+the required callbacks:
 
 ```diff
      match action {
@@ -806,8 +868,10 @@ The consensus reducer, after receiving a block, initializes the asynchronous blo
          // ...
 ```
 
-Then when handling `SnarkBlockVerifyAction::Init` a job is added to the state, with the callbacks stored there. Then the effectful action that will interact with the service is dispatched (**NOTE:** not shown here, see `snark/src/block_verify_effectful/`).
-
+Then when handling `SnarkBlockVerifyAction::Init` a job is added to the state,
+with the callbacks stored there. Then the effectful action that will interact
+with the service is dispatched (**NOTE:** not shown here, see
+`snark/src/block_verify_effectful/`).
 
 ```rust
 // when matching `SnarkBlockVerifyAction::Init`
@@ -831,7 +895,9 @@ dispatcher.push(SnarkBlockVerifyEffectfulAction::Init {
 dispatcher.push(SnarkBlockVerifyAction::Pending { req_id: *req_id });
 ```
 
-Finally, on the handling of the `SnarkBlockVerifyAction::Success` action, the internal state is updated, and the callback fetched and dispatched with the block hash as input.
+Finally, on the handling of the `SnarkBlockVerifyAction::Success` action, the
+internal state is updated, and the callback fetched and dispatched with the
+block hash as input.
 
 ```rust
 let callback_and_arg = state.jobs.get_mut(*req_id).and_then(|req| {
@@ -871,9 +937,16 @@ if store.dispatch(SomeAction) {
 }
 ```
 
-The equivalent with queueing is to use `dispatcher.push_if_enabled` which will return `true` if the enabling condition for that action returns `true`. This will work most of the time, but it is possible for the state to change between the time the action was enqueued and when it is finally going to be dispatched, so the enabling condition may not be `true` anymore. This means that the equivalence is not strict.
+The equivalent with queueing is to use `dispatcher.push_if_enabled` which will
+return `true` if the enabling condition for that action returns `true`. This
+will work most of the time, but it is possible for the state to change between
+the time the action was enqueued and when it is finally going to be dispatched,
+so the enabling condition may not be `true` anymore. This means that the
+equivalence is not strict.
 
-A better approach is to add a callback to the first action. This ensures that the second action only happens when intended, avoiding the potential race condition of the state changing between enqueuing and dispatching.
+A better approach is to add a callback to the first action. This ensures that
+the second action only happens when intended, avoiding the potential race
+condition of the state changing between enqueuing and dispatching.
 
 First a callback is added to the action:
 
@@ -903,7 +976,8 @@ Then in the handling code is updated to dispatch the callback:
              }
 ```
 
-Finally the dispatching of that action is update to provide a callback that will return the same action that was inside the body of the conditional dispatch:
+Finally the dispatching of that action is update to provide a callback that will
+return the same action that was inside the body of the conditional dispatch:
 
 ```diff
 -  if store.dispatch(LedgerWriteAction::Init {
@@ -926,7 +1000,9 @@ Finally the dispatching of that action is update to provide a callback that will
 +  });
 ```
 
-In the above example the passed argument is not used, but for other callbacks it is useful. Consider this example where we need the block hash for the next action, which can be extracted from the data contained in the request:
+In the above example the passed argument is not used, but for other callbacks it
+is useful. Consider this example where we need the block hash for the next
+action, which can be extracted from the data contained in the request:
 
 ```diff
 -   if store.dispatch(LedgerWriteAction::Init {

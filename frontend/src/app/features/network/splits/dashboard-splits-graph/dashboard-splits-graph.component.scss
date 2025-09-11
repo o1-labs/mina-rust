@@ -1,7 +1,7 @@
-@import 'openmina';
+@use 'openmina';
 
 :host ::ng-deep {
-	svg g:not(.links) > * {
-		cursor: pointer;
-	}
+  svg g:not(.links) > * {
+    cursor: pointer;
+  }
 }

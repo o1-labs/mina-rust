@@ -23,16 +23,14 @@ use binprot::{BinProtRead, BinProtWrite};
 use binprot_derive::{BinProtRead, BinProtWrite};
 use derive_more::From;
 use serde::{Deserialize, Serialize};
-use signaling::discovery::SignalingDiscoveryChannelMsg;
-use signaling::exchange::SignalingExchangeChannelMsg;
+use signaling::{discovery::SignalingDiscoveryChannelMsg, exchange::SignalingExchangeChannelMsg};
 use strum_macros::EnumIter;
 
-use self::best_tip::BestTipPropagationChannelMsg;
-use self::rpc::RpcChannelMsg;
-use self::snark::SnarkPropagationChannelMsg;
-use self::snark_job_commitment::SnarkJobCommitmentPropagationChannelMsg;
-use self::streaming_rpc::StreamingRpcChannelMsg;
-use self::transaction::TransactionPropagationChannelMsg;
+use self::{
+    best_tip::BestTipPropagationChannelMsg, rpc::RpcChannelMsg, snark::SnarkPropagationChannelMsg,
+    snark_job_commitment::SnarkJobCommitmentPropagationChannelMsg,
+    streaming_rpc::StreamingRpcChannelMsg, transaction::TransactionPropagationChannelMsg,
+};
 
 #[derive(Serialize, Deserialize, EnumIter, Debug, Ord, PartialOrd, Eq, PartialEq, Clone, Copy)]
 #[repr(u8)]

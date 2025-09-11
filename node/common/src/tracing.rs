@@ -90,7 +90,7 @@ mod native {
         max_log_level: Level,
         log_output_dir: PathBuf,
     ) -> WorkerGuard {
-        let file_appender = tracing_appender::rolling::daily(log_output_dir, "openmina.log");
+        let file_appender = tracing_appender::rolling::daily(log_output_dir, "mina.log");
         let (file_writer, file_guard) = tracing_appender::non_blocking(file_appender);
         let level_filter = LevelFilter::from_level(max_log_level);
 

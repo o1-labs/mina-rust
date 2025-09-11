@@ -4,7 +4,10 @@ use std::{collections::HashMap, time::Duration};
 
 use libp2p::Multiaddr;
 
-use node::p2p::connection::outgoing::P2pConnectionOutgoingInitOpts;
+use node::{
+    core::log::{debug, system_time},
+    p2p::connection::outgoing::P2pConnectionOutgoingInitOpts,
+};
 
 use crate::{
     hosts,
@@ -13,8 +16,8 @@ use crate::{
     scenarios::ClusterRunner,
 };
 
-/// Local test to ensure that the Openmina node can connect to an existing OCaml testnet.
-/// Launch an Openmina node and connect it to seed nodes of the public (or private) OCaml testnet.
+/// Local test to ensure that the Rust node can connect to an existing OCaml testnet.
+/// Launch a Rust node and connect it to seed nodes of the public (or private) OCaml testnet.
 /// Run the simulation until:
 /// * Number of known peers is greater than or equal to the maximum number of peers.
 /// * Number of connected peers is greater than or equal to some threshold.
@@ -48,7 +51,7 @@ impl SoloNodeBasicConnectivityInitialJoining {
                 .my_id(),
         )
         .unwrap();
-        eprintln!("launch Openmina node, id: {node_id}, peer_id: {peer_id}");
+        eprintln!("launch Mina Rust node, id: {node_id}, peer_id: {peer_id}");
 
         for step in 0..STEPS {
             tokio::time::sleep(STEP_DELAY).await;
@@ -102,10 +105,7 @@ impl SoloNodeBasicConnectivityInitialJoining {
 
             // TODO: the threshold is too small, node cannot connect to many peer before the timeout
             if ready_peers >= KNOWN_PEERS && known_peers >= KNOWN_PEERS {
-                eprintln!("step: {step}");
-                eprintln!("known peers: {known_peers}");
-                eprintln!("connected peers: {ready_peers}");
-                eprintln!("success");
+                debug!(system_time(); "Step: {}, known peers: {}, connected peers: {}, success", step, known_peers, ready_peers);
 
                 if let Some(debugger) = runner.debugger() {
                     tokio::time::sleep(Duration::from_secs(10)).await;

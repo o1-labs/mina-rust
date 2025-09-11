@@ -9,6 +9,11 @@ mod p2p_channels_rpc_reducer;
 use std::{sync::Arc, time::Duration};
 
 use binprot_derive::{BinProtRead, BinProtWrite};
+use mina_core::{
+    block::ArcBlock,
+    snark::{Snark, SnarkJobId},
+    transaction::{Transaction, TransactionHash},
+};
 use mina_p2p_messages::{
     list::List,
     rpc_kernel::QueryID,
@@ -18,11 +23,6 @@ use mina_p2p_messages::{
         MinaLedgerSyncLedgerQueryStableV1, MinaStateProtocolStateValueStableV2, StateHash,
         TransactionSnarkScanStateStableV2,
     },
-};
-use openmina_core::{
-    block::ArcBlock,
-    snark::{Snark, SnarkJobId},
-    transaction::{Transaction, TransactionHash},
 };
 use serde::{Deserialize, Serialize};
 

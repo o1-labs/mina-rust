@@ -1,8 +1,10 @@
 use node::{event_source::Event, p2p::connection::outgoing::P2pConnectionOutgoingInitOpts};
 use serde::{Deserialize, Serialize};
 
-use crate::cluster::{ClusterNodeId, ClusterOcamlNodeId};
-use crate::node::{NodeTestingConfig, NonDeterministicEvent, OcamlStep};
+use crate::{
+    cluster::{ClusterNodeId, ClusterOcamlNodeId},
+    node::{NodeTestingConfig, NonDeterministicEvent, OcamlStep},
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(tag = "kind")]

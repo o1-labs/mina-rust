@@ -7,7 +7,7 @@ import { AppNodeDetails, AppNodeStatus } from '@shared/types/app/app-node-detail
 import { getNetwork } from '@shared/helpers/mina.helper';
 import { getLocalStorage, nanOrElse, ONE_MILLION } from '@openmina/shared';
 import {
-  BlockProductionWonSlotsStatus
+  BlockProductionWonSlotsStatus,
 } from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
 import { AppEnvBuild } from '@shared/types/app/app-env-build.type';
 import { SentryService } from '@core/services/sentry.service';
@@ -75,7 +75,7 @@ export class AppService {
         BlockProductionWonSlotsStatus.Discarded,
         BlockProductionWonSlotsStatus.Orphaned,
         BlockProductionWonSlotsStatus.Canonical,
-      ].includes(status)
+      ].includes(status);
 
     if (
       this.previousProducedBlock && data.previous_block_production_attempt

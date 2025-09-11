@@ -11,10 +11,11 @@ import { selectNetworkNodeDhtActivePeer } from '@network/node-dht/network-node-d
 import { NetworkNodeDhtPeer } from '@shared/types/network/node-dht/network-node-dht.type';
 
 @Component({
-  selector: 'mina-network-node-dht',
-  templateUrl: './network-node-dht.component.html',
-  styleUrls: ['./network-node-dht.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-network-node-dht',
+    templateUrl: './network-node-dht.component.html',
+    styleUrls: ['./network-node-dht.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NetworkNodeDhtComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

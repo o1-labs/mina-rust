@@ -7,8 +7,7 @@ use kimchi::{
     curve::KimchiCurve,
     proof::{PointEvaluations, ProofEvaluations},
 };
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 
 use crate::{
     proofs::{
@@ -158,7 +157,7 @@ impl<F> Shift<F>
 where
     F: Field + From<i32>,
 {
-    /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L121
+    /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L121>
     pub fn create() -> Self {
         let c = (0..255).fold(F::one(), |accum, _| accum + accum) + F::one();
 
@@ -204,26 +203,26 @@ where
         Self { shifted: field }
     }
 
-    // /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L127
+    // /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L127>
     // pub fn of_field(field: F, shift: &Shift<F>) -> Self {
     //     Self {
     //         shifted: (field - shift.c) * shift.scale,
     //     }
     // }
 
-    // /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L131
+    // /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles_types/shifted_value.ml#L131>
     // #[allow(unused)]
     // pub fn to_field(&self, shift: &Shift<F>) -> F {
     //     self.shifted + self.shifted + shift.c
     // }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L218
+/// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L218>
 pub const PERM_ALPHA0: usize = 21;
 
 pub const NPOWERS_OF_ALPHA: usize = PERM_ALPHA0 + 3;
 
-/// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L141
+/// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L141>
 pub fn powers_of_alpha<F: FieldWitness>(alpha: F) -> Box<[F; NPOWERS_OF_ALPHA]> {
     // The OCaml code computes until alpha^71, but we don't need that much here
     let mut alphas = Box::new([F::one(); NPOWERS_OF_ALPHA]);
@@ -258,7 +257,7 @@ pub fn derive_plonk<F: FieldWitness, const NLIMB: usize>(
     let beta = *beta;
     let gamma = *gamma;
 
-    // https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L397
+    // <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L397>
     let perm = evals.s.iter().enumerate().fold(
         evals.z.zeta_omega * beta * alpha_pow(PERM_ALPHA0) * zkp,
         |accum, (index, elem)| accum * (gamma + (beta * elem.zeta) + w0[index]),
@@ -318,7 +317,7 @@ pub fn derive_plonk_checked<F: FieldWitness>(
     let perm = -perm;
 
     let zeta_to_domain_size = env.zeta_to_n_minus_1 + F::one();
-    // https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L46
+    // <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/pickles/plonk_checks/plonk_checks.ml#L46>
 
     // let minimal_for_scalar = MinimalForScalar {
     //     alpha: minimal.alpha,
@@ -450,8 +449,7 @@ fn get_feature_flag<F: FieldWitness>(
     feature: &kimchi::circuits::expr::FeatureFlag,
     w: &mut Witness<F>,
 ) -> Option<Boolean> {
-    use kimchi::circuits::expr::FeatureFlag::*;
-    use kimchi::circuits::lookup::lookups::LookupPattern;
+    use kimchi::circuits::{expr::FeatureFlag::*, lookup::lookups::LookupPattern};
 
     match feature {
         RangeCheck0 => Some(feature_flags.features.range_check0),
@@ -485,8 +483,12 @@ mod scalars {
 
     use kimchi::{
         circuits::{
+            berkeley_columns::{BerkeleyChallengeTerm, Column},
             constraints::FeatureFlags,
-            expr::{CacheId, Column, ConstantExpr, Constants, Expr, ExprError, Op2, Variable},
+            expr::{
+                CacheId, ConstantExpr, ConstantExprInner, Constants, Expr, ExprError, ExprInner,
+                Operations, Variable,
+            },
             gate::{CurrOrNext, GateType},
             lookup::lookups::{LookupFeatures, LookupPatterns},
         },
@@ -499,9 +501,9 @@ mod scalars {
 
     // This method `Variable::evaluate` is private in proof-systems :(
     fn var_evaluate<F: FieldWitness>(
-        v: &Variable,
+        v: &Variable<Column>,
         evals: &ProofEvaluations<PointEvaluations<F>>,
-    ) -> Result<F, ExprError> {
+    ) -> Result<F, ExprError<Column>> {
         let point_evaluations = {
             use kimchi::circuits::lookup::lookups::LookupPattern;
             use Column::*;
@@ -602,34 +604,42 @@ mod scalars {
         pub cache: BTreeMap<CacheId, F>,
         pub env: &'a ScalarsEnv<F>,
         pub w: &'a mut Witness<F>,
+        pub alpha: F,
+        pub beta: F,
+        pub gamma: F,
+        pub joint_combiner: Option<F>,
     }
 
     // TODO: Use cvar instead
-    fn is_const<F: FieldWitness>(e: &Expr<ConstantExpr<F>>) -> bool {
-        use ConstantExpr::*;
+    fn is_const<F: FieldWitness>(e: &Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>) -> bool {
         match e {
-            Expr::Constant(c) => matches!(c, EndoCoefficient | Literal(_) | Mds { .. }),
-            Expr::BinOp(_, x, y) => is_const(x) && is_const(y),
+            Expr::Atom(ExprInner::Constant(Operations::Atom(ConstantExprInner::Constant(_)))) => {
+                true
+            }
             Expr::Pow(x, _) => is_const(x),
             _ => false,
         }
     }
 
-    pub fn eval<F: FieldWitness>(e: &Expr<ConstantExpr<F>>, ctx: &mut EvalContext<F>) -> F {
-        use Expr::*;
+    pub fn eval<F: FieldWitness>(
+        e: &Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>,
+        ctx: &mut EvalContext<F>,
+    ) -> F {
+        use Operations;
         match e {
-            Double(x) => {
-                let v = eval(x, ctx);
-                v.double()
+            Operations::Atom(ExprInner::Cell(variable)) => {
+                var_evaluate(variable, ctx.evals).unwrap_or_else(|_| F::zero())
             }
-            Constant(x) => {
-                let v = x.value(ctx.constants);
-                if let ConstantExpr::Mul(_, _) = x {
-                    ctx.w.exists_no_check(v);
-                };
-                v
+            Operations::Atom(ExprInner::VanishesOnZeroKnowledgeAndPreviousRows) => {
+                ctx.env.vanishes_on_zero_knowledge_and_previous_rows
             }
-            Pow(x, p) => {
+            Operations::Atom(ExprInner::UnnormalizedLagrangeBasis(row_offset)) => {
+                let unnormalized_lagrange_basis =
+                    ctx.env.unnormalized_lagrange_basis.as_ref().unwrap();
+                unnormalized_lagrange_basis(*row_offset, ctx.w)
+            }
+            Operations::Atom(ExprInner::Constant(c)) => sub_eval(c, ctx),
+            Operations::Pow(x, p) => {
                 let p = *p;
                 let v = eval(x, ctx);
 
@@ -639,7 +649,12 @@ mod scalars {
                     pow(v, p, ctx.w)
                 }
             }
-            BinOp(Op2::Mul, x, y) => {
+            Operations::Add(x, y) => {
+                let y = eval(y, ctx);
+                let x = eval(x, ctx);
+                x + y
+            }
+            Operations::Mul(x, y) => {
                 let is_x_const = is_const(x);
                 let is_y_const = is_const(y);
                 let y = eval(y, ctx);
@@ -650,7 +665,16 @@ mod scalars {
                     field::mul(x, y, ctx.w)
                 }
             }
-            Square(x) => {
+            Operations::Sub(x, y) => {
+                let y = eval(y, ctx);
+                let x = eval(x, ctx);
+                x - y
+            }
+            Operations::Double(x) => {
+                let v = eval(x, ctx);
+                v.double()
+            }
+            Operations::Square(x) => {
                 let is_x_const = is_const(x);
                 let x = eval(x, ctx);
                 if is_x_const {
@@ -659,31 +683,8 @@ mod scalars {
                     field::mul(x, x, ctx.w)
                 }
             }
-            BinOp(Op2::Add, x, y) => {
-                let y = eval(y, ctx);
-                let x = eval(x, ctx);
-                x + y
-            }
-            BinOp(Op2::Sub, x, y) => {
-                let y = eval(y, ctx);
-                let x = eval(x, ctx);
-                x - y
-            }
-            VanishesOnZeroKnowledgeAndPreviousRows => {
-                ctx.env.vanishes_on_zero_knowledge_and_previous_rows
-            }
-            UnnormalizedLagrangeBasis(i) => {
-                let unnormalized_lagrange_basis =
-                    ctx.env.unnormalized_lagrange_basis.as_ref().unwrap();
-                unnormalized_lagrange_basis(*i, ctx.w)
-            }
-            Cell(v) => {
-                var_evaluate(v, ctx.evals).unwrap_or_else(|_| F::zero()) // TODO: Is that correct ?
-            }
-            Cache(id, _e) => {
-                ctx.cache.get(id).copied().unwrap() // Cached values were already computed
-            }
-            IfFeature(feature, e1, e2) => match ctx.env.feature_flags.as_ref() {
+            Operations::Cache(id, _e) => ctx.cache.get(id).copied().unwrap(),
+            Operations::IfFeature(feature, e1, e2) => match ctx.env.feature_flags.as_ref() {
                 None => eval(e2, ctx),
                 Some(feature_flags) => {
                     let is_feature_enabled = match get_feature_flag(feature_flags, feature, ctx.w) {
@@ -703,47 +704,119 @@ mod scalars {
         }
     }
 
+    /// This function use to look like following
+    /// but `x.value` has changed to accept list of challenges
+    ///
+    /// let v = x.value(ctx.constants);
+    /// if let ConstantExpr::Mul(_, _) = x {
+    ///    ctx.w.exists_no_check(v);
+    /// };
+    /// v
+    pub fn sub_eval<F: FieldWitness>(
+        e: &Operations<ConstantExprInner<F, BerkeleyChallengeTerm>>,
+        ctx: &mut EvalContext<F>,
+    ) -> F {
+        use Operations;
+        match e {
+            Operations::Atom(a) => match a {
+                ConstantExprInner::Challenge(term) => match term {
+                    BerkeleyChallengeTerm::Alpha => ctx.alpha,
+                    BerkeleyChallengeTerm::Beta => ctx.beta,
+                    BerkeleyChallengeTerm::Gamma => ctx.gamma,
+                    BerkeleyChallengeTerm::JointCombiner => ctx.joint_combiner.expect("Unexcepted"),
+                },
+                ConstantExprInner::Constant(constant_term) => match constant_term {
+                    kimchi::circuits::expr::ConstantTerm::EndoCoefficient => {
+                        ctx.constants.endo_coefficient
+                    }
+                    kimchi::circuits::expr::ConstantTerm::Mds { row, col } => {
+                        ctx.constants.mds[*row][*col]
+                    }
+                    kimchi::circuits::expr::ConstantTerm::Literal(literal) => *literal,
+                },
+            },
+            Operations::Pow(x, p) => {
+                let p = *p;
+                let v = sub_eval(x, ctx);
+
+                pow(v, p, ctx.w)
+            }
+            Operations::Add(x, y) => {
+                let y = sub_eval(y, ctx);
+                let x = sub_eval(x, ctx);
+                x + y
+            }
+            Operations::Mul(x, y) => {
+                let y = sub_eval(y, ctx);
+                let x = sub_eval(x, ctx);
+                field::mul(x, y, ctx.w)
+            }
+            Operations::Sub(x, y) => {
+                let x = sub_eval(x, ctx);
+                let y = sub_eval(y, ctx);
+                x - y
+            }
+            Operations::Double(x) => {
+                let x = sub_eval(x, ctx);
+                x.double()
+            }
+            Operations::Square(x) => {
+                let x = sub_eval(x, ctx);
+                field::mul(x, x, ctx.w)
+            }
+            Operations::Cache(id, _e) => ctx.cache.get(id).copied().unwrap(),
+            Operations::IfFeature(feature, e1, e2) => match ctx.env.feature_flags.as_ref() {
+                None => sub_eval(e2, ctx),
+                Some(feature_flags) => {
+                    let is_feature_enabled = match get_feature_flag(feature_flags, feature, ctx.w) {
+                        None => return sub_eval(e2, ctx),
+                        Some(enabled) => enabled,
+                    };
+
+                    let on_false = sub_eval(e2, ctx);
+                    let on_true = sub_eval(e1, ctx);
+
+                    ctx.w.exists_no_check(match is_feature_enabled {
+                        Boolean::True => on_true,
+                        Boolean::False => on_false,
+                    })
+                }
+            },
+        }
+    }
+
     #[derive(Default)]
     pub struct Cached<F: FieldWitness> {
         /// cache may contain their own caches
-        expr: BTreeMap<CacheId, (Box<Cached<F>>, Box<Expr<ConstantExpr<F>>>)>,
+        expr: BTreeMap<
+            CacheId,
+            (
+                Box<Cached<F>>,
+                Box<Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>>,
+            ),
+        >,
     }
 
     #[inline(never)]
-    pub fn extract_caches<F: FieldWitness>(e: &Expr<ConstantExpr<F>>, cache: &mut Cached<F>) {
-        use Expr::*;
+    pub fn extract_caches<F: FieldWitness>(
+        e: &Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>,
+        cache: &mut Cached<F>,
+    ) {
         match e {
-            Double(x) => {
-                extract_caches(x, cache);
-            }
-            Constant(_x) => (),
-            Pow(x, _p) => {
-                extract_caches(x, cache);
-            }
-            BinOp(Op2::Mul, x, y) => {
+            Operations::Atom(_) => {}
+            Operations::Pow(x, _) => extract_caches(x, cache),
+            Operations::Add(x, y) | Operations::Mul(x, y) | Operations::Sub(x, y) => {
                 extract_caches(y, cache);
                 extract_caches(x, cache);
             }
-            Square(x) => {
-                extract_caches(x, cache);
-            }
-            BinOp(Op2::Add, x, y) => {
-                extract_caches(y, cache);
-                extract_caches(x, cache);
-            }
-            BinOp(Op2::Sub, x, y) => {
-                extract_caches(y, cache);
-                extract_caches(x, cache);
-            }
-            VanishesOnZeroKnowledgeAndPreviousRows => todo!(),
-            UnnormalizedLagrangeBasis(_i) => todo!(),
-            Cell(_v) => (),
-            Cache(id, e) => {
+            Operations::Double(x) => extract_caches(x, cache),
+            Operations::Square(x) => extract_caches(x, cache),
+            Operations::Cache(id, e) => {
                 let mut cached = Cached::default();
                 extract_caches(e, &mut cached);
                 cache.expr.insert(*id, (Box::new(cached), e.clone()));
             }
-            IfFeature(_feature, e1, e2) => {
+            Operations::IfFeature(_, e1, e2) => {
                 if false {
                     extract_caches(e1, cache)
                 } else {
@@ -778,13 +851,14 @@ mod scalars {
         w: &mut Witness<F>,
     ) -> F {
         let (constant_term, index_terms) = &*{
-            type TermsMap<F> = BTreeMap<Column, Expr<ConstantExpr<F>>>;
-            type Const<F> = Expr<ConstantExpr<F>>;
+            type TermsMap<F> =
+                BTreeMap<Column, Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>>;
+            type Const<F> = Expr<ConstantExpr<F, BerkeleyChallengeTerm>, Column>;
             type Terms<F> = Rc<(Const<F>, TermsMap<F>)>;
             cache! {
                 Terms::<F>, {
                     // No features for `Fp`:
-                    // https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs
+                    // <https://github.com/MinaProtocol/mina/blob/4af0c229548bc96d76678f11b6842999de5d3b0b/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs>
                     let is_fp = std::any::TypeId::of::<F>() == std::any::TypeId::of::<Fp>();
 
                     let features = if is_fp {
@@ -826,11 +900,8 @@ mod scalars {
             }
         };
 
+        // Moved internally
         let constants = kimchi::circuits::expr::Constants::<F> {
-            alpha: minimal.alpha,
-            beta: minimal.beta,
-            gamma: minimal.gamma,
-            joint_combiner: minimal.lookup,
             endo_coefficient: {
                 let (base, _) = endos::<F>();
                 base
@@ -845,6 +916,10 @@ mod scalars {
             cache: BTreeMap::new(),
             env,
             w,
+            alpha: minimal.alpha,
+            beta: minimal.beta,
+            gamma: minimal.gamma,
+            joint_combiner: minimal.lookup,
         };
 
         let term = match gate {

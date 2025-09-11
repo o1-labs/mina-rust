@@ -10,10 +10,10 @@ use std::{
 
 use ark_ff::BigInteger256;
 use binprot::BinProtWrite;
-use mina_hasher::Fp;
-use mina_p2p_messages::binprot;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     bigint::BigInt,
+    binprot,
     v2::{MinaBaseAccountUpdateTStableV1, NonZeroCurvePointUncompressedStableV1},
 };
 use ocaml_interop::{

@@ -1,64 +1,76 @@
-use std::sync::Arc;
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
 use malloc_size_of_derive::MallocSizeOf;
+use mina_core::{
+    block::prevalidate::{prevalidate_block, BlockPrevalidationError},
+    consensus::ConsensusTime,
+    transaction::{TransactionInfo, TransactionWithHash},
+};
 use mina_p2p_messages::v2;
-use openmina_core::block::prevalidate::{prevalidate_block, BlockPrevalidationError};
-use openmina_core::consensus::ConsensusTime;
-use openmina_core::transaction::{TransactionInfo, TransactionWithHash};
 use p2p::P2pNetworkPubsubMessageCacheId;
 use rand::prelude::*;
 
-use openmina_core::block::BlockWithHash;
-use openmina_core::requests::RpcId;
-use openmina_core::snark::{Snark, SnarkInfo};
-use openmina_core::{
-    block::ArcBlockWithHash, consensus::ConsensusConstants, constants::constraint_constants, error,
-    snark::SnarkJobCommitment, ChainId,
+use mina_core::{
+    block::{ArcBlockWithHash, BlockWithHash},
+    consensus::ConsensusConstants,
+    constants::constraint_constants,
+    error,
+    requests::RpcId,
+    snark::{Snark, SnarkInfo, SnarkJobCommitment},
+    ChainId,
 };
-use p2p::channels::rpc::{P2pRpcId, P2pRpcRequest, P2pRpcResponse};
-use p2p::channels::streaming_rpc::P2pStreamingRpcResponseFull;
-use p2p::connection::outgoing::P2pConnectionOutgoingError;
-use p2p::connection::P2pConnectionResponse;
 use p2p::{
-    bootstrap::P2pNetworkKadBootstrapState, network::identify::P2pNetworkIdentifyState,
+    bootstrap::P2pNetworkKadBootstrapState,
+    channels::{
+        rpc::{P2pRpcId, P2pRpcRequest, P2pRpcResponse},
+        streaming_rpc::P2pStreamingRpcResponseFull,
+    },
+    connection::{outgoing::P2pConnectionOutgoingError, P2pConnectionResponse},
+    network::identify::P2pNetworkIdentifyState,
     P2pCallbacks, P2pConfig, P2pNetworkSchedulerState, P2pPeerState, P2pPeerStatusReady, PeerId,
 };
 use redux::{ActionMeta, EnablingCondition, Timestamp};
 use serde::{Deserialize, Serialize};
-use snark::block_verify::SnarkBlockVerifyState;
-use snark::user_command_verify::SnarkUserCommandVerifyState;
-use snark::work_verify::SnarkWorkVerifyState;
-
-use crate::block_producer::vrf_evaluator::BlockProducerVrfEvaluatorState;
-pub use crate::block_producer::BlockProducerState;
-use crate::external_snark_worker::{ExternalSnarkWorker, ExternalSnarkWorkers};
-use crate::ledger::read::LedgerReadState;
-use crate::ledger::write::LedgerWriteState;
-pub use crate::ledger::LedgerState;
-use crate::p2p::callbacks::P2pCallbacksAction;
-pub use crate::p2p::P2pState;
-pub use crate::rpc::RpcState;
-pub use crate::snark::SnarkState;
-use crate::snark_pool::candidate::SnarkPoolCandidateAction;
-pub use crate::snark_pool::candidate::SnarkPoolCandidatesState;
-pub use crate::snark_pool::SnarkPoolState;
-use crate::transaction_pool::candidate::{
-    TransactionPoolCandidateAction, TransactionPoolCandidatesState,
+use snark::{
+    block_verify::SnarkBlockVerifyState, user_command_verify::SnarkUserCommandVerifyState,
+    work_verify::SnarkWorkVerifyState,
 };
-use crate::transaction_pool::TransactionPoolState;
-use crate::transition_frontier::candidate::TransitionFrontierCandidateAction;
-pub use crate::transition_frontier::candidate::TransitionFrontierCandidatesState;
-use crate::transition_frontier::genesis::TransitionFrontierGenesisState;
-use crate::transition_frontier::sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedState;
-use crate::transition_frontier::sync::ledger::staged::TransitionFrontierSyncLedgerStagedState;
-use crate::transition_frontier::sync::ledger::TransitionFrontierSyncLedgerState;
-use crate::transition_frontier::sync::TransitionFrontierSyncState;
-pub use crate::transition_frontier::TransitionFrontierState;
-pub use crate::watched_accounts::WatchedAccountsState;
-pub use crate::Config;
-use crate::{config::GlobalConfig, SnarkPoolAction};
-use crate::{ActionWithMeta, RpcAction};
+
+use crate::{
+    block_producer::vrf_evaluator::BlockProducerVrfEvaluatorState,
+    config::GlobalConfig,
+    external_snark_worker::{ExternalSnarkWorker, ExternalSnarkWorkers},
+    ledger::{read::LedgerReadState, write::LedgerWriteState},
+    p2p::callbacks::P2pCallbacksAction,
+    snark_pool::candidate::SnarkPoolCandidateAction,
+    transaction_pool::{
+        candidate::{TransactionPoolCandidateAction, TransactionPoolCandidatesState},
+        TransactionPoolState,
+    },
+    transition_frontier::{
+        candidate::TransitionFrontierCandidateAction,
+        genesis::TransitionFrontierGenesisState,
+        sync::{
+            ledger::{
+                snarked::TransitionFrontierSyncLedgerSnarkedState,
+                staged::TransitionFrontierSyncLedgerStagedState, TransitionFrontierSyncLedgerState,
+            },
+            TransitionFrontierSyncState,
+        },
+    },
+    ActionWithMeta, RpcAction, SnarkPoolAction,
+};
+pub use crate::{
+    block_producer::BlockProducerState,
+    ledger::LedgerState,
+    p2p::P2pState,
+    rpc::RpcState,
+    snark::SnarkState,
+    snark_pool::{candidate::SnarkPoolCandidatesState, SnarkPoolState},
+    transition_frontier::{candidate::TransitionFrontierCandidatesState, TransitionFrontierState},
+    watched_accounts::WatchedAccountsState,
+    Config,
+};
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct State {
@@ -82,7 +94,7 @@ pub struct State {
 }
 
 // Substate accessors that will be used in reducers
-use openmina_core::{bug_condition, impl_substate_access, SubstateAccess};
+use mina_core::{bug_condition, impl_substate_access, SubstateAccess};
 
 impl_substate_access!(State, SnarkState, snark);
 impl_substate_access!(State, SnarkBlockVerifyState, snark.block_verify);
@@ -121,22 +133,22 @@ impl_substate_access!(State, LedgerState, ledger);
 impl_substate_access!(State, LedgerReadState, ledger.read);
 impl_substate_access!(State, LedgerWriteState, ledger.write);
 
-impl openmina_core::SubstateAccess<P2pState> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&P2pState> {
+impl mina_core::SubstateAccess<P2pState> for State {
+    fn substate(&self) -> mina_core::SubstateResult<&P2pState> {
         self.p2p
             .ready()
             .ok_or_else(|| "P2P state unavailable. P2P layer is not ready".to_owned())
     }
 
-    fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut P2pState> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut P2pState> {
         self.p2p
             .ready_mut()
             .ok_or_else(|| "P2P state unavailable. P2P layer is not ready".to_owned())
     }
 }
 
-impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerState> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&TransitionFrontierSyncLedgerState> {
+impl mina_core::SubstateAccess<TransitionFrontierSyncLedgerState> for State {
+    fn substate(&self) -> mina_core::SubstateResult<&TransitionFrontierSyncLedgerState> {
         self.transition_frontier
             .sync
             .ledger()
@@ -145,7 +157,7 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerState> for State 
 
     fn substate_mut(
         &mut self,
-    ) -> openmina_core::SubstateResult<&mut TransitionFrontierSyncLedgerState> {
+    ) -> mina_core::SubstateResult<&mut TransitionFrontierSyncLedgerState> {
         self.transition_frontier
             .sync
             .ledger_mut()
@@ -154,16 +166,14 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerState> for State 
 }
 
 impl SubstateAccess<BlockProducerVrfEvaluatorState> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&BlockProducerVrfEvaluatorState> {
+    fn substate(&self) -> mina_core::SubstateResult<&BlockProducerVrfEvaluatorState> {
         self.block_producer
             .as_ref()
             .map(|state| &state.vrf_evaluator)
             .ok_or_else(|| "Block producer VRF evaluator state unavailable".to_owned())
     }
 
-    fn substate_mut(
-        &mut self,
-    ) -> openmina_core::SubstateResult<&mut BlockProducerVrfEvaluatorState> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut BlockProducerVrfEvaluatorState> {
         self.block_producer
             .as_mut()
             .map(|state| &mut state.vrf_evaluator)
@@ -171,8 +181,8 @@ impl SubstateAccess<BlockProducerVrfEvaluatorState> for State {
     }
 }
 
-impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerSnarkedState> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&TransitionFrontierSyncLedgerSnarkedState> {
+impl mina_core::SubstateAccess<TransitionFrontierSyncLedgerSnarkedState> for State {
+    fn substate(&self) -> mina_core::SubstateResult<&TransitionFrontierSyncLedgerSnarkedState> {
         self.transition_frontier
             .sync
             .ledger()
@@ -185,7 +195,7 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerSnarkedState> for
 
     fn substate_mut(
         &mut self,
-    ) -> openmina_core::SubstateResult<&mut TransitionFrontierSyncLedgerSnarkedState> {
+    ) -> mina_core::SubstateResult<&mut TransitionFrontierSyncLedgerSnarkedState> {
         self.transition_frontier
             .sync
             .ledger_mut()
@@ -197,8 +207,8 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerSnarkedState> for
     }
 }
 
-impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerStagedState> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&TransitionFrontierSyncLedgerStagedState> {
+impl mina_core::SubstateAccess<TransitionFrontierSyncLedgerStagedState> for State {
+    fn substate(&self) -> mina_core::SubstateResult<&TransitionFrontierSyncLedgerStagedState> {
         self.transition_frontier
             .sync
             .ledger()
@@ -211,7 +221,7 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerStagedState> for 
 
     fn substate_mut(
         &mut self,
-    ) -> openmina_core::SubstateResult<&mut TransitionFrontierSyncLedgerStagedState> {
+    ) -> mina_core::SubstateResult<&mut TransitionFrontierSyncLedgerStagedState> {
         self.transition_frontier
             .sync
             .ledger_mut()
@@ -224,24 +234,24 @@ impl openmina_core::SubstateAccess<TransitionFrontierSyncLedgerStagedState> for 
 }
 
 impl SubstateAccess<State> for State {
-    fn substate(&self) -> openmina_core::SubstateResult<&State> {
+    fn substate(&self) -> mina_core::SubstateResult<&State> {
         Ok(self)
     }
 
-    fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut State> {
+    fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut State> {
         Ok(self)
     }
 }
 
 macro_rules! impl_p2p_state_access {
     ($state:ty, $substate_type:ty) => {
-        impl openmina_core::SubstateAccess<$substate_type> for $state {
-            fn substate(&self) -> openmina_core::SubstateResult<&$substate_type> {
+        impl mina_core::SubstateAccess<$substate_type> for $state {
+            fn substate(&self) -> mina_core::SubstateResult<&$substate_type> {
                 let substate: &P2pState = self.substate()?;
                 substate.substate()
             }
 
-            fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut $substate_type> {
+            fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut $substate_type> {
                 let substate: &mut P2pState = self.substate_mut()?;
                 substate.substate_mut()
             }
@@ -260,7 +270,7 @@ impl_p2p_state_access!(State, p2p::P2pConfig);
 
 impl p2p::P2pStateTrait for State {}
 
-pub type Substate<'a, S> = openmina_core::Substate<'a, crate::Action, State, S>;
+pub type Substate<'a, S> = mina_core::Substate<'a, crate::Action, State, S>;
 
 impl State {
     pub fn new(config: Config, constants: &ConsensusConstants, now: Timestamp) -> Self {
@@ -471,7 +481,7 @@ macro_rules! p2p_ready {
             Some(v) => v,
             None => {
                 //panic!("p2p is not ready: {:?}\nline: {}", $reason, line!());
-                openmina_core::error!($time; "p2p is not initialized: {}", $reason);
+                mina_core::error!($time; "p2p is not initialized: {}", $reason);
                 return;
             }
         }
@@ -666,7 +676,7 @@ impl P2p {
             .collect()
     }
 
-    pub fn ready_peers_iter(&self) -> ReadyPeersIter {
+    pub fn ready_peers_iter(&self) -> ReadyPeersIter<'_> {
         ReadyPeersIter::new(self)
     }
 }

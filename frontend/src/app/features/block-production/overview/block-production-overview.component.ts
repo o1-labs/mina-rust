@@ -11,10 +11,11 @@ import { BlockProductionOverviewEpoch } from '@shared/types/block-production/ove
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-block-production-overview',
-  templateUrl: './block-production-overview.component.html',
-  styleUrls: ['./block-production-overview.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-block-production-overview',
+    templateUrl: './block-production-overview.component.html',
+    styleUrls: ['./block-production-overview.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class BlockProductionOverviewComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

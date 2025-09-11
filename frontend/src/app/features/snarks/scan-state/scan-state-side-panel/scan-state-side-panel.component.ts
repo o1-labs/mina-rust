@@ -14,10 +14,11 @@ import { getFeaturesConfig } from '@shared/constants/config';
 import { getWindow } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-scan-state-side-panel',
-  templateUrl: './scan-state-side-panel.component.html',
-  styleUrls: ['./scan-state-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-scan-state-side-panel',
+    templateUrl: './scan-state-side-panel.component.html',
+    styleUrls: ['./scan-state-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ScanStateSidePanelComponent extends StoreDispatcher implements OnInit {
 

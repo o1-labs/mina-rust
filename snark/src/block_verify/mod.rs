@@ -1,3 +1,25 @@
+//! # Block Verification State Machine
+//!
+//! This module implements the state machine for verifying blockchain block proofs
+//! within the Mina protocol. It manages the lifecycle of block verification
+//! requests and maintains verification state.
+//!
+//! ## Overview
+//!
+//! Block verification ensures that:
+//! - Block proofs are cryptographically valid
+//! - Block headers contain correct consensus information
+//! - Blockchain state transitions are legitimate
+//!
+//! ## Usage
+//!
+//! Block verification is typically initiated by:
+//! - Consensus mechanisms validating incoming blocks
+//! - Fork resolution comparing competing chains
+//!
+//! The verification process runs asynchronously in service threads to avoid
+//! blocking the main state machine.
+
 mod snark_block_verify_state;
 pub use snark_block_verify_state::*;
 
@@ -14,7 +36,7 @@ pub use crate::block_verify_effectful::{
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;
 
-use openmina_core::block::{Block, BlockHash, BlockHeader, BlockHeaderWithHash, BlockWithHash};
+use mina_core::block::{Block, BlockHash, BlockHeader, BlockHeaderWithHash, BlockWithHash};
 
 #[derive(derive_more::From, Serialize, Deserialize, Debug, Clone)]
 pub enum VerifiableBlockWithHash {

@@ -1,4 +1,4 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use redux::EnablingCondition;
 use serde::{Deserialize, Serialize};
 

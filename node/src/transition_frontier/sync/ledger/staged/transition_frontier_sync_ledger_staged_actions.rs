@@ -1,12 +1,16 @@
 use std::sync::Arc;
 
+use mina_core::ActionEvent;
 use mina_p2p_messages::v2::{self, LedgerHash};
-use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
-use crate::p2p::channels::rpc::{P2pRpcId, StagedLedgerAuxAndPendingCoinbases};
-use crate::p2p::PeerId;
-use crate::transition_frontier::sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedState;
+use crate::{
+    p2p::{
+        channels::rpc::{P2pRpcId, StagedLedgerAuxAndPendingCoinbases},
+        PeerId,
+    },
+    transition_frontier::sync::ledger::snarked::TransitionFrontierSyncLedgerSnarkedState,
+};
 
 use super::{
     PeerStagedLedgerPartsFetchError, PeerStagedLedgerPartsFetchState,

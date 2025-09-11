@@ -20,10 +20,11 @@
 /// Stack operations are done for transaction snarks and tree operations are done for the blockchain snark*)
 use std::{collections::HashMap, fmt::Write, marker::PhantomData};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
-use mina_hasher::Fp;
+use ark_ff::Zero;
+use mina_core::constants::constraint_constants;
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::bigint::InvalidBigInt;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::constraint_constants;
 use poseidon::hash::{
     hash_noinputs, hash_with_kimchi,
     params::{
@@ -148,7 +149,7 @@ impl std::fmt::Debug for CoinbaseStack {
 }
 
 impl CoinbaseStack {
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L180
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L180>
     pub fn push(&self, cb: Coinbase) -> Self {
         let mut inputs = Inputs::new();
 
@@ -177,7 +178,7 @@ impl CoinbaseStack {
         field::equal(t1.0, s2.0, w)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L188
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L188>
     pub fn empty() -> Self {
         Self(hash_noinputs(&NO_INPUT_COINBASE_STACK))
     }
@@ -197,7 +198,7 @@ pub struct StateStack {
 }
 
 impl ToInputs for StateStack {
-    /// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/pending_coinbase.ml#L271
+    /// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/pending_coinbase.ml#L271>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let Self { init, curr } = self;
         inputs.append(init);
@@ -330,7 +331,7 @@ pub struct Stack {
 }
 
 impl ToInputs for Stack {
-    /// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/pending_coinbase.ml#L591
+    /// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/mina_base/pending_coinbase.ml#L591>
     fn to_inputs(&self, inputs: &mut Inputs) {
         let Self { data, state } = self;
         inputs.append(data);
@@ -418,7 +419,7 @@ impl Stack {
         valid_coinbase_stacks.and(&valid_state_stacks, w)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/pending_coinbase.ml#L651
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/pending_coinbase.ml#L651>
     pub fn create_with(other: &Self) -> Self {
         Self {
             state: StateStack::create(other.state.curr),
@@ -426,7 +427,7 @@ impl Stack {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/f5b013880dede0e2ef04cebf4b0213b850a85548/src/lib/mina_base/pending_coinbase.ml#L738
+    /// <https://github.com/MinaProtocol/mina/blob/f5b013880dede0e2ef04cebf4b0213b850a85548/src/lib/mina_base/pending_coinbase.ml#L738>
     pub fn var_create_with(other: &Self) -> Self {
         // Note: Here we use `init`
         Self {
@@ -435,7 +436,7 @@ impl Stack {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L658
+    /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/pending_coinbase.ml#L658>
     pub fn connected(first: &Self, second: &Self, prev: Option<&Self>) -> bool {
         // same as old stack or second could be a new stack with empty data
         let coinbase_stack_connected =

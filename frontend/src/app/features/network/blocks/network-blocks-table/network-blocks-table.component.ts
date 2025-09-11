@@ -8,11 +8,12 @@ import { NetworkBlocksSort } from '@network/blocks/network-blocks.actions';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-network-blocks-table',
-  templateUrl: './network-blocks-table.component.html',
-  styleUrls: ['./network-blocks-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column' },
+    selector: 'mina-network-blocks-table',
+    templateUrl: './network-blocks-table.component.html',
+    styleUrls: ['./network-blocks-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column' },
+    standalone: false
 })
 export class NetworkBlocksTableComponent extends MinaTableRustWrapper<NetworkBlock> implements OnInit {
 

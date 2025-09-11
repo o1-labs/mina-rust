@@ -1,11 +1,14 @@
-use std::borrow::Cow;
-use std::fs;
-use std::io::{BufWriter, Write};
-use std::path::{Path, PathBuf};
-use std::sync::{Mutex, TryLockError};
+use std::{
+    borrow::Cow,
+    fs,
+    io::{BufWriter, Write},
+    path::{Path, PathBuf},
+    sync::{Mutex, TryLockError},
+};
 
-use crate::p2p::identity::SecretKey as P2pSecretKey;
-use crate::{Action, ActionWithMeta, EventSourceAction, State};
+use crate::{
+    p2p::identity::SecretKey as P2pSecretKey, Action, ActionWithMeta, EventSourceAction, State,
+};
 
 use super::{RecordedActionWithMeta, RecordedInitialState};
 
@@ -27,13 +30,13 @@ impl Recorder {
         let path = work_dir.as_ref().join("recorder");
 
         let _ = fs::remove_dir_all(&path);
-        fs::create_dir_all(&path).expect("creating dir for openmina recorder failed!");
+        fs::create_dir_all(&path).expect("creating dir for mina recorder failed!");
 
         let actions_f_index = 1;
         let actions_path = super::actions_path(&path, actions_f_index);
 
         let file = fs::File::create(actions_path)
-            .expect("creating file for openmina recorder initial state failed!");
+            .expect("creating file for mina recorder initial state failed!");
         let mut actions_files = ACTIONS_F.try_lock().unwrap();
         actions_files.push(Some(file));
 
@@ -56,7 +59,7 @@ impl Recorder {
                 };
                 let initial_state_path = super::initial_state_path(recorder_path);
                 let mut initial_state_f = fs::File::create(initial_state_path)
-                    .expect("creating file for openmina recorder initial state failed!");
+                    .expect("creating file for mina recorder initial state failed!");
                 initial_state.write_to(&mut initial_state_f).unwrap();
                 initial_state_f.sync_all().unwrap();
             }

@@ -1,12 +1,10 @@
 use std::{rc::Rc, sync::Arc};
 
 use anyhow::Context;
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use consensus::ConsensusState;
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
-use mina_p2p_messages::v2;
-use openmina_core::constants::{constraint_constants, ForkConstants};
+use mina_core::constants::{constraint_constants, ForkConstants};
+use mina_curves::pasta::{Fp, Fq};
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use poseidon::hash::{
     params::{MINA_PROTO_STATE, MINA_PROTO_STATE_BODY},
     Inputs,
@@ -128,7 +126,7 @@ impl ToFieldElements<Fp> for SnarkTransition {
         blockchain_state.to_field_elements(fields);
         fields.push(Fp::from(consensus_transition.as_u32()));
 
-        // https://github.com/MinaProtocol/mina/blob/f6fb903bef974b191776f393a2f9a1e6360750fe/src/lib/mina_base/pending_coinbase.ml#L420
+        // <https://github.com/MinaProtocol/mina/blob/f6fb903bef974b191776f393a2f9a1e6360750fe/src/lib/mina_base/pending_coinbase.ml#L420>
         use crate::scan_state::pending_coinbase::update::Action::*;
         let bits = match action {
             None => [Boolean::False, Boolean::False],
@@ -317,17 +315,17 @@ mod floating_point {
     }
 
     const COEFFICIENTS: [(Sgn, BigInteger256); 11] = [
-        (Sgn::Pos, BigInteger256::from_64x4([405058, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([1007582, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([465602, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([161365, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([44739, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([10337, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([2047, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([354, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([54, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([7, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([0, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([405058, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([1007582, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([465602, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([161365, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([44739, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([10337, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([2047, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([354, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([54, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([7, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([0, 0, 0, 0])),
     ];
 
     pub struct Params {
@@ -502,7 +500,7 @@ mod floating_point {
 
         pub fn constant(value: &BigInteger256, precision: usize) -> anyhow::Result<Self> {
             Ok(Self {
-                value: (*value).try_into()?,
+                value: (*value).into(),
                 precision,
             })
         }
@@ -1569,7 +1567,7 @@ impl ProtocolStateBody {
         let ned = &cs.next_epoch_data;
 
         ProtocolStateView {
-            // https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/blockchain_state.ml#L58
+            // <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_state/blockchain_state.ml#L58>
             //
             snarked_ledger_hash: blockchain_state
                 .ledger_proof_statement
@@ -1882,10 +1880,10 @@ pub(super) fn generate_block_proof(
     };
 
     let dlog_plonk_index = super::merge::dlog_plonk_index(block_wrap_prover);
-    let verifier_index = &**block_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let verifier_index = block_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let tx_dlog_plonk_index = super::merge::dlog_plonk_index(tx_wrap_prover);
-    let tx_verifier_index = &**tx_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let tx_verifier_index = tx_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let dlog_plonk_index_cvar = dlog_plonk_index.to_cvar(CircuitVar::Var);
     let tx_dlog_plonk_index_cvar = tx_dlog_plonk_index.to_cvar(CircuitVar::Constant);

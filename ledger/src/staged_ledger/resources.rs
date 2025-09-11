@@ -1,7 +1,7 @@
 use std::collections::BTreeMap;
 
+use mina_core::constants::ConstraintConstants;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
 
 use crate::{
     scan_state::{
@@ -107,7 +107,7 @@ impl std::fmt::Debug for Resources {
 }
 
 impl Resources {
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1149
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1149>
     fn coinbase_ft(work: work::Unchecked) -> Option<CoinbaseFeeTransfer> {
         // Here we could not add the fee transfer if the prover=receiver_pk but
         // retaining it to preserve that information in the
@@ -120,7 +120,7 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1157
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1157>
     fn cheapest_two_work(works: &[work::Checked]) -> (Option<work::Work>, Option<work::Work>) {
         let (w1, w2) = works
             .iter()
@@ -147,7 +147,7 @@ impl Resources {
         (w1.cloned(), w2.cloned())
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1171
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1171>
     fn coinbase_work(
         constraint_constants: &ConstraintConstants,
         is_two: Option<bool>,
@@ -237,7 +237,7 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1244
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1244>
     fn init_coinbase_and_fee_transfers(
         constraint_constants: &ConstraintConstants,
         cw_seq: &[work::Unchecked],
@@ -290,7 +290,7 @@ impl Resources {
         (coinbase, singles)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1276
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1276>
     pub fn init(
         constraint_constants: &ConstraintConstants,
         uc_seq: Vec<valid::UserCommand>,
@@ -350,7 +350,7 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1335
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1335>
     fn reselect_coinbase_work(&mut self, constraint_constants: &ConstraintConstants) {
         let cw_unchecked = |works: &[work::Unchecked]| {
             works.iter().map(|w| w.clone().forget()).collect::<Vec<_>>()
@@ -411,7 +411,7 @@ impl Resources {
         self.fee_transfers = fee_transfers;
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1379
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1379>
     fn rebudget(&self) -> Result<Fee, String> {
         // get the correct coinbase and calculate the fee transfers
         let payment_fees = sum_fees(&self.commands_rev, |c| c.fee());
@@ -440,12 +440,12 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1399
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1399>
     pub fn budget_sufficient(&self) -> bool {
         self.budget.is_ok()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1402
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1402>
     pub fn coinbase_added(&self) -> u64 {
         match &self.coinbase {
             AtMostTwo::Zero => 0,
@@ -454,7 +454,7 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1411
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1411>
     #[allow(clippy::bool_to_int_with_if)]
     pub fn slots_occupied(&self) -> u64 {
         let fee_for_self = match &self.budget {
@@ -503,13 +503,13 @@ impl Resources {
         self.commands_rev.len() as u64 + ((total_fee_transfer_pks + 1) / 2) + self.coinbase_added()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1430
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1430>
     pub fn space_available(&self) -> bool {
         let slots = self.slots_occupied();
         self.max_space > slots
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1434
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1434>
     fn work_done(&self) -> bool {
         let no_of_proof_bundles = self.completed_work_rev.len() as u64;
         let slots = self.slots_occupied();
@@ -519,13 +519,13 @@ impl Resources {
         no_of_proof_bundles == self.max_jobs || slots <= self.max_space - self.max_jobs
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1440
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1440>
     pub fn space_constraint_satisfied(&self) -> bool {
         let occupied = self.slots_occupied();
         occupied <= self.max_space
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1444
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1444>
     pub fn work_constraint_satisfied(&self) -> bool {
         // Are we doing all the work available
         let all_proofs = self.work_done();
@@ -537,7 +537,7 @@ impl Resources {
         all_proofs || slots == 0 || enough_work
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1454
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1454>
     pub fn available_space(&self) -> u64 {
         self.max_space - self.slots_occupied()
     }
@@ -546,7 +546,7 @@ impl Resources {
         self.max_space - self.slots_occupied_dbg()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1456
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1456>
     pub fn discard_last_work(
         &mut self,
         constraint_constants: &ConstraintConstants,
@@ -576,7 +576,7 @@ impl Resources {
         Some(w)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1476
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1476>
     pub fn discard_user_command(&mut self) -> Option<valid::UserCommand> {
         if self.commands_rev.is_empty() {
             let update_fee_transfers =
@@ -629,7 +629,7 @@ impl Resources {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1521
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1521>
     pub fn worked_more(&self, constraint_constants: &ConstraintConstants) -> bool {
         // Is the work constraint satisfied even after discarding a work bundle?
         // We reach here after having more than enough work
@@ -642,7 +642,7 @@ impl Resources {
         cw_count > 0 && cw_count >= slots
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1532
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1532>
     pub fn incr_coinbase_part_by(
         &mut self,
         constraint_constants: &ConstraintConstants,

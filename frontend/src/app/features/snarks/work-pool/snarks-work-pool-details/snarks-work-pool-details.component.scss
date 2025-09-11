@@ -1,25 +1,25 @@
-@import 'openmina';
+@use 'openmina';
 
 .tab-group {
-	@include flexRowVertCenter();
+  @include openmina.flexRowVertCenter();
 
-	.tab {
-		min-width: 90px;
-		max-width: 140px;
-		width: 33%;
-		text-align: center;
-		border-radius: 6px;
-		color: $base-secondary;
-		transition: 0.2s;
-		background-color: transparent;
+  .tab {
+    min-width: 90px;
+    max-width: 140px;
+    width: 33%;
+    text-align: center;
+    border-radius: 6px;
+    color: openmina.$base-secondary;
+    transition: 0.2s;
+    background-color: transparent;
 
-		&.selected {
-			background-color: $selected-container;
-			color: $selected-primary;
-		}
+    &.selected {
+      background-color: openmina.$selected-container;
+      color: openmina.$selected-primary;
+    }
 
-		&:hover:not(.selected) {
-			background-color: $base-container;
-		}
-	}
+    &:hover:not(.selected) {
+      background-color: openmina.$base-container;
+    }
+  }
 }

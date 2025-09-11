@@ -1,7 +1,9 @@
 use std::ops::Neg;
 
-use crate::proofs::field::{field, FieldWitness};
-use crate::proofs::witness::Witness;
+use crate::proofs::{
+    field::{field, FieldWitness},
+    witness::Witness,
+};
 
 pub mod bw19 {
     use super::*;
@@ -96,22 +98,24 @@ pub mod bw19 {
     }
 }
 
-use ark_ff::{FpParameters, One};
-use mina_hasher::Fp;
+use ark_ff::One;
+use mina_curves::pasta::{fields::fft::FpParameters as _, Fp};
 
 use self::tock::Conic;
 
-use super::field::{Boolean, GroupAffine, ToBoolean};
-use super::transaction::make_group;
+use super::{
+    field::{Boolean, GroupAffine, ToBoolean},
+    transaction::make_group,
+};
 
 fn sqrt_exn<F: FieldWitness>(x: F, w: &mut Witness<F>) -> F {
     w.exists(x.sqrt().unwrap())
 }
 
 fn is_square<F: FieldWitness>(x: F) -> bool {
-    use ark_ff::BigInteger;
+    let modulus_minus_one_div_two =
+        mina_curves::pasta::fields::FpParameters::MODULUS_MINUS_ONE_DIV_TWO.0;
 
-    let modulus_minus_one_div_two = F::Params::MODULUS_MINUS_ONE_DIV_TWO.to_64x4();
     let s = x.pow(modulus_minus_one_div_two);
     s.is_zero() || s.is_one()
 }
@@ -183,7 +187,7 @@ pub fn wrap<F: FieldWitness>(potential_xs: (F, F, F), w: &mut Witness<F>) -> Gro
 mod tock {
     use super::*;
 
-    use ark_ff::{SquareRootField, Zero};
+    use ark_ff::{Field, Zero};
 
     /// A good name from OCaml
     #[derive(Clone, Debug)]

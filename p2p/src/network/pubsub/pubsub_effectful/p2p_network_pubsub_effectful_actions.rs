@@ -1,5 +1,5 @@
 use crate::{pubsub::pb::Message, ConnectionAddr, P2pState, PeerId};
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 /// Eeffectful actions within the P2P Network PubSub system.

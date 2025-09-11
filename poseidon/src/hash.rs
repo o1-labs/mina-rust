@@ -1,9 +1,9 @@
-use ark_ff::{BigInteger256, Field, FromBytes as _};
+use ark_ff::{BigInteger256, Field};
 use mina_curves::pasta::Fp;
 
 use crate::{PlonkSpongeConstantsKimchi, Sponge, SpongeParamsForField};
 
-enum Item {
+pub enum Item {
     Bool(bool),
     U2(u8),
     U8(u8),
@@ -12,8 +12,8 @@ enum Item {
     U64(u64),
 }
 
-impl std::fmt::Debug for Item {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Item {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Self::Bool(arg0) => f.write_fmt(format_args!("{}_bool", i32::from(*arg0))),
             Self::U2(arg0) => f.write_fmt(format_args!("{}_u2", arg0)),
@@ -26,7 +26,7 @@ impl std::fmt::Debug for Item {
 }
 
 impl Item {
-    fn nbits(&self) -> u32 {
+    pub fn nbits(&self) -> u32 {
         match self {
             Item::Bool(_) => 1,
             Item::U2(_) => 2,
@@ -37,16 +37,16 @@ impl Item {
         }
     }
 
-    fn as_bigint(&self) -> u64 {
+    pub fn as_bigint(&self) -> u64 {
         match self {
             Item::Bool(v) => *v as u64,
             Item::U2(v) => *v as u64,
             Item::U8(v) => *v as u64,
             Item::U32(v) => *v as u64,
             Item::U48(v) => {
-                let mut bytes = <[u8; 32]>::default();
+                let mut bytes = [0u8; 8];
                 bytes[..6].copy_from_slice(&v[..]);
-                BigInteger256::read(&bytes[..]).unwrap().to_64x4()[0] // Never fail with only 6 bytes
+                u64::from_le_bytes(bytes[..8].try_into().unwrap())
             }
             Item::U64(v) => *v,
         }
@@ -64,8 +64,8 @@ impl Default for Inputs {
     }
 }
 
-impl std::fmt::Debug for Inputs {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+impl core::fmt::Debug for Inputs {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         f.debug_struct("Inputs")
             .field(&format!("fields[{:?}]", self.fields.len()), &self.fields)
             .field(&format!("packeds[{:?}]", self.packeds.len()), &self.packeds)
@@ -146,13 +146,6 @@ impl Inputs {
         }
     }
 
-    // pub fn append<T>(&mut self, value: &T)
-    // where
-    //     T: ToInputs,
-    // {
-    //     value.to_inputs(self);
-    // }
-
     #[allow(clippy::wrong_self_convention)]
     pub fn to_fields(mut self) -> Vec<Fp> {
         let mut nbits = 0;
@@ -168,16 +161,14 @@ impl Inputs {
                 // `current` are zero (we just shift-left them)
                 current[0] |= item;
             } else {
-                self.fields
-                    .push(BigInteger256::from_64x4(current).try_into().unwrap()); // Never fail
+                self.fields.push(BigInteger256::new(current).into()); // Never fail
                 current = [item, 0, 0, 0];
                 nbits = item_nbits;
             }
         }
 
         if nbits > 0 {
-            self.fields
-                .push(BigInteger256::from_64x4(current).try_into().unwrap()); // Never fail
+            self.fields.push(BigInteger256::new(current).into()); // Never fail
         }
 
         self.fields
@@ -191,7 +182,7 @@ fn param_to_field_impl(param: &str, default: &[u8; 32]) -> Fp {
     let mut fp = *default;
     fp[..len].copy_from_slice(param_bytes);
 
-    Fp::read(&fp[..]).expect("fp read failed")
+    Fp::from_random_bytes(&fp).expect("Must be a valid field element")
 }
 
 pub fn param_to_field(param: &str) -> Fp {
@@ -438,8 +429,6 @@ pub mod params {
 }
 
 pub mod legacy {
-    use ark_ff::fields::arithmetic::InvalidBigInt;
-
     use super::*;
 
     #[derive(Clone, Debug)]
@@ -499,7 +488,7 @@ pub mod legacy {
         }
     }
 
-    impl<F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>> Inputs<F> {
+    impl<F: Field + From<BigInteger256>> Inputs<F> {
         pub fn to_fields(mut self) -> Vec<F> {
             const NBITS: usize = 255 - 1;
 
@@ -511,7 +500,7 @@ pub mod legacy {
                     let bit_index = index % 64;
                     field[limb_index] |= (*bit as u64) << bit_index;
                 }
-                F::try_from(BigInteger256::from_64x4(field)).unwrap() // Never fail
+                F::from(BigInteger256::new(field)) // Never fail
             }));
             self.fields
         }

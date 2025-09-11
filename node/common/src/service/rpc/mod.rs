@@ -21,11 +21,16 @@ use node::rpc::{
 };
 use serde::{Deserialize, Serialize};
 
-use node::core::channels::{mpsc, oneshot};
-use node::core::requests::PendingRequests;
-use node::p2p::connection::P2pConnectionResponse;
-use node::State;
-use node::{event_source::Event, rpc::RpcSnarkPoolJobGetResponse};
+use node::{
+    core::{
+        channels::{mpsc, oneshot},
+        requests::PendingRequests,
+    },
+    event_source::Event,
+    p2p::connection::P2pConnectionResponse,
+    rpc::RpcSnarkPoolJobGetResponse,
+    State,
+};
 pub use node::{
     rpc::{
         ActionStatsResponse, RpcActionStatsGetResponse, RpcId, RpcIdType,
@@ -134,7 +139,7 @@ macro_rules! state_field_filter {
 /// field, returns [None].
 ///
 /// ```ignore
-/// use openmina_node_native::rpc::strip_root_field;
+/// use mina_node_native::rpc::strip_root_field;
 ///
 /// let filter = strip_root_field("$.field", "field");
 /// assert_eq!(filter, Some(""));

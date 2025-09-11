@@ -8,11 +8,12 @@ import { fromEvent } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'mina-leaderboard-filters',
-  templateUrl: './leaderboard-filters.component.html',
-  styleUrl: './leaderboard-filters.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-row flex-center w-100' },
+    selector: 'mina-leaderboard-filters',
+    templateUrl: './leaderboard-filters.component.html',
+    styleUrl: './leaderboard-filters.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-row flex-center w-100' },
+    standalone: false
 })
 export class LeaderboardFiltersComponent extends StoreDispatcher implements OnInit, AfterViewInit {
 

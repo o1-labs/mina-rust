@@ -5,11 +5,12 @@ import { WorkPool } from '@shared/types/snarks/work-pool/work-pool.type';
 import { BarGraphComponent } from '@openmina/shared';
 
 @Component({
-  selector: 'mina-snarks-work-pool-statistics',
-  templateUrl: './snarks-work-pool-statistics.component.html',
-  styleUrls: ['./snarks-work-pool-statistics.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-minus-xl' },
+    selector: 'mina-snarks-work-pool-statistics',
+    templateUrl: './snarks-work-pool-statistics.component.html',
+    styleUrls: ['./snarks-work-pool-statistics.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-minus-xl' },
+    standalone: false
 })
 export class SnarksWorkPoolStatisticsComponent extends StoreDispatcher implements OnInit {
 

@@ -2,9 +2,9 @@
 
 use std::sync::Arc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot,
     list::List,
     pseq::PaddedSeq,
@@ -822,10 +822,12 @@ impl TryFrom<&MinaBaseZkappPreconditionProtocolStateEpochDataStableV1>
     fn try_from(
         value: &MinaBaseZkappPreconditionProtocolStateEpochDataStableV1,
     ) -> Result<Self, Self::Error> {
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed as Seed;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint as Start;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Hash;
+        use mina_p2p_messages::v2::{
+            MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed as Seed,
+            MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint as Start,
+            MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount,
+            MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Hash,
+        };
         use zkapp_command::{ClosedInterval, OrIgnore};
 
         Ok(Self {
@@ -871,10 +873,12 @@ fn fp_to_statehash(value: &Fp) -> StateHash {
 
 impl From<&zkapp_command::EpochData> for MinaBaseZkappPreconditionProtocolStateEpochDataStableV1 {
     fn from(value: &zkapp_command::EpochData) -> Self {
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed as Seed;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint as Start;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Hash;
+        use mina_p2p_messages::v2::{
+            MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed as Seed,
+            MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint as Start,
+            MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount,
+            MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Hash,
+        };
         use zkapp_command::OrIgnore;
 
         Self {
@@ -917,11 +921,12 @@ impl TryFrom<&MinaBaseAccountUpdatePreconditionsStableV1> for zkapp_command::Pre
     type Error = InvalidBigInt;
 
     fn try_from(value: &MinaBaseAccountUpdatePreconditionsStableV1) -> Result<Self, Self::Error> {
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot as MSlot;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Ledger;
-        use zkapp_command::AccountPreconditions;
-        use zkapp_command::{ClosedInterval, Numeric, OrIgnore};
+        use mina_p2p_messages::v2::{
+            MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount,
+            MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot as MSlot,
+            MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Ledger,
+        };
+        use zkapp_command::{AccountPreconditions, ClosedInterval, Numeric, OrIgnore};
 
         Ok(Self {
             network: zkapp_command::ZkAppPreconditions {
@@ -950,12 +955,14 @@ impl TryFrom<&MinaBaseAccountUpdatePreconditionsStableV1> for zkapp_command::Pre
             },
             account: {
                 let account = &value.account.0;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2Balance as MBalance;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2Delegate as Delegate;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2ProvedState as Proved;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash as Receipt;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2StateA as State;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Length as MNonce;
+                use mina_p2p_messages::v2::{
+                    MinaBaseZkappPreconditionAccountStableV2Balance as MBalance,
+                    MinaBaseZkappPreconditionAccountStableV2Delegate as Delegate,
+                    MinaBaseZkappPreconditionAccountStableV2ProvedState as Proved,
+                    MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash as Receipt,
+                    MinaBaseZkappPreconditionAccountStableV2StateA as State,
+                    MinaBaseZkappPreconditionProtocolStateStableV1Length as MNonce,
+                };
 
                 AccountPreconditions(zkapp_command::Account {
                     balance: match &account.balance {
@@ -1021,10 +1028,12 @@ impl From<&BlockTime> for BlockTimeTimeStableV1 {
 
 impl From<&zkapp_command::Preconditions> for MinaBaseAccountUpdatePreconditionsStableV1 {
     fn from(value: &zkapp_command::Preconditions) -> Self {
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateAccountPreconditionStableV1 as MAccount;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot as MSlot;
-        use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Ledger;
+        use mina_p2p_messages::v2::{
+            MinaBaseAccountUpdateAccountPreconditionStableV1 as MAccount,
+            MinaBaseZkappPreconditionProtocolStateStableV1Amount as MAmount,
+            MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot as MSlot,
+            MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash as Ledger,
+        };
         use zkapp_command::{Numeric, OrIgnore};
 
         Self {
@@ -1060,12 +1069,14 @@ impl From<&zkapp_command::Preconditions> for MinaBaseAccountUpdatePreconditionsS
                 next_epoch_data: (&value.network.next_epoch_data).into(),
             },
             account: {
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2Balance as MBalance;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2Delegate as Delegate;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2ProvedState as Proved;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash as Receipt;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionAccountStableV2StateA as State;
-                use mina_p2p_messages::v2::MinaBaseZkappPreconditionProtocolStateStableV1Length as MNonce;
+                use mina_p2p_messages::v2::{
+                    MinaBaseZkappPreconditionAccountStableV2Balance as MBalance,
+                    MinaBaseZkappPreconditionAccountStableV2Delegate as Delegate,
+                    MinaBaseZkappPreconditionAccountStableV2ProvedState as Proved,
+                    MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash as Receipt,
+                    MinaBaseZkappPreconditionAccountStableV2StateA as State,
+                    MinaBaseZkappPreconditionProtocolStateStableV1Length as MNonce,
+                };
 
                 let account = &value.account.0;
                 MAccount(MinaBaseZkappPreconditionAccountStableV2 {
@@ -1128,7 +1139,7 @@ impl From<&zkapp_command::Preconditions> for MinaBaseAccountUpdatePreconditionsS
     }
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/verification_key_wire.ml#L37
+/// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/verification_key_wire.ml#L37>
 fn of_vk(data: VerificationKey) -> VerificationKeyWire {
     VerificationKeyWire::new(data)
 }
@@ -1137,13 +1148,15 @@ impl TryFrom<&MinaBaseAccountUpdateTStableV1> for AccountUpdate {
     type Error = InvalidBigInt;
 
     fn try_from(value: &MinaBaseAccountUpdateTStableV1) -> Result<Self, Self::Error> {
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Delegate as Delegate;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Permissions as Perm;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Timing as Timing;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1TokenSymbol as TokenSymbol;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1VerificationKey as VK;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1VotingFor as Voting;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1ZkappUri as ZkAppUri;
+        use mina_p2p_messages::v2::{
+            MinaBaseAccountUpdateUpdateStableV1Delegate as Delegate,
+            MinaBaseAccountUpdateUpdateStableV1Permissions as Perm,
+            MinaBaseAccountUpdateUpdateStableV1Timing as Timing,
+            MinaBaseAccountUpdateUpdateStableV1TokenSymbol as TokenSymbol,
+            MinaBaseAccountUpdateUpdateStableV1VerificationKey as VK,
+            MinaBaseAccountUpdateUpdateStableV1VotingFor as Voting,
+            MinaBaseAccountUpdateUpdateStableV1ZkappUri as ZkAppUri,
+        };
         use MinaBaseAccountUpdateUpdateStableV1AppStateA as AppState;
 
         Ok(Self {
@@ -1283,11 +1296,11 @@ impl TryFrom<&List<MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA>>
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        // https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_command.ml#L1113-L1115
+        // <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_command.ml#L1113-L1115>
 
         let call_forest = CallForest(values);
         // OCaml hashes the zkapp on deserialization:
-        // https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/mina_base/zkapp_command.ml#L805
+        // <https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/mina_base/zkapp_command.ml#L805>
         // But we delay hashing until we need the hashes
         // call_forest.of_wire(&[]);
         // call_forest.of_wire(value);
@@ -1487,13 +1500,15 @@ impl AsAccountUpdateWithHash for MinaBaseZkappCommandTStableV1WireStableV1Accoun
 
 impl From<&AccountUpdate> for MinaBaseAccountUpdateTStableV1 {
     fn from(value: &AccountUpdate) -> Self {
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Delegate as Delegate;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Permissions as Perm;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1Timing as Timing;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1TokenSymbol as TokenSymbol;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1VerificationKey as VK;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1VotingFor as Voting;
-        use mina_p2p_messages::v2::MinaBaseAccountUpdateUpdateStableV1ZkappUri as ZkAppUri;
+        use mina_p2p_messages::v2::{
+            MinaBaseAccountUpdateUpdateStableV1Delegate as Delegate,
+            MinaBaseAccountUpdateUpdateStableV1Permissions as Perm,
+            MinaBaseAccountUpdateUpdateStableV1Timing as Timing,
+            MinaBaseAccountUpdateUpdateStableV1TokenSymbol as TokenSymbol,
+            MinaBaseAccountUpdateUpdateStableV1VerificationKey as VK,
+            MinaBaseAccountUpdateUpdateStableV1VotingFor as Voting,
+            MinaBaseAccountUpdateUpdateStableV1ZkappUri as ZkAppUri,
+        };
         use MinaBaseAccountUpdateUpdateStableV1AppStateA as AppState;
 
         Self {
@@ -1838,9 +1853,11 @@ impl TryFrom<&MinaTransactionLogicTransactionAppliedVaryingStableV2>
     fn try_from(
         value: &MinaTransactionLogicTransactionAppliedVaryingStableV2,
     ) -> Result<Self, Self::Error> {
-        use mina_p2p_messages::v2::MinaTransactionLogicTransactionAppliedVaryingStableV2::*;
-        use mina_p2p_messages::v2::MinaTransactionLogicTransactionAppliedCommandAppliedStableV2::*;
-        use mina_p2p_messages::v2::MinaTransactionLogicTransactionAppliedSignedCommandAppliedBodyStableV2::*;
+        use mina_p2p_messages::v2::{
+            MinaTransactionLogicTransactionAppliedCommandAppliedStableV2::*,
+            MinaTransactionLogicTransactionAppliedSignedCommandAppliedBodyStableV2::*,
+            MinaTransactionLogicTransactionAppliedVaryingStableV2::*,
+        };
         use transaction_applied::signed_command_applied;
 
         let result = match value {

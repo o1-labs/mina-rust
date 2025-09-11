@@ -1,0 +1,319 @@
+/**
+ * Rust Node Documentation Theme
+ * Mina Protocol and o1js inspired design system
+ */
+
+/* Import Inter font for better typography */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+/* Color Tokens - Mina/o1js inspired palette */
+:root {
+  /* Light theme colors (softer gradients for light mode) */
+  --bg: #ffffff;
+  --surface: #f7f7f9;
+  --text: #0b0c10;
+  --muted: #4e4e4e;
+  --accent: #7a3cff;   /* purple - softer for light mode */
+  --accent-2: #ff4da6; /* magenta - softer for light mode */
+  --accent-3: #00a6cc; /* cyan - softer for light mode */
+  --accent-orange: #ff8c42; /* Mina Protocol orange - softer for light mode */
+  --border: rgba(0,0,0,0.08);
+  --grad-primary: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  --grad-orange: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-2) 100%);
+  
+  /* Docusaurus overrides */
+  --ifm-color-primary: #7a3cff;
+  --ifm-color-primary-dark: #6930e6;
+  --ifm-color-primary-darker: #6228d9;
+  --ifm-color-primary-darkest: #5121b3;
+  --ifm-color-primary-light: #8b48ff;
+  --ifm-color-primary-lighter: #9356ff;
+  --ifm-color-primary-lightest: #ab70ff;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(122, 60, 255, 0.1);
+  
+  /* Typography */
+  --ifm-font-family-base: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --ifm-heading-font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --ifm-heading-font-weight: 600;
+  --ifm-font-weight-bold: 600;
+  
+  /* Global spacing and sizing */
+  --ifm-global-radius: 12px;
+  --ifm-button-border-radius: 12px;
+  --ifm-navbar-height: 72px;
+}
+
+/* Dark theme - Mina Protocol inspired */
+[data-theme='dark'] {
+  --bg: #0b0c10;
+  --surface: #121317;
+  --text: #ffffff;
+  --muted: #a0a0a0;
+  --accent: #b14cff;   /* purple */
+  --accent-2: #ff007a; /* magenta */
+  --accent-3: #00cfff; /* cyan */
+  --accent-orange: #ff6b35; /* Mina Protocol orange */
+  --border: rgba(255,255,255,0.08);
+  --grad-primary: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+  --grad-orange: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-2) 100%);
+  
+  /* Docusaurus dark theme overrides */
+  --ifm-color-primary: #b14cff;
+  --ifm-color-primary-dark: #a033ff;
+  --ifm-color-primary-darker: #9626ff;
+  --ifm-color-primary-darkest: #7b00d9;
+  --ifm-color-primary-light: #c266ff;
+  --ifm-color-primary-lighter: #ce7aff;
+  --ifm-color-primary-lightest: #e6b3ff;
+  --docusaurus-highlighted-code-line-bg: rgba(177, 76, 255, 0.2);
+  
+  /* Background colors */
+  --ifm-background-color: var(--bg);
+  --ifm-background-surface-color: var(--surface);
+  --ifm-color-content: var(--text);
+  --ifm-color-content-secondary: var(--muted);
+  
+  /* Navbar */
+  --ifm-navbar-background-color: rgba(18, 19, 23, 0.95);
+  --ifm-navbar-link-color: var(--text);
+  --ifm-navbar-link-hover-color: var(--accent-3);
+  
+  /* Footer */
+  --ifm-footer-background-color: var(--surface);
+  --ifm-footer-color: var(--muted);
+  --ifm-footer-link-color: var(--text);
+  --ifm-footer-link-hover-color: var(--accent-3);
+  
+  /* Cards */
+  --ifm-card-background-color: var(--surface);
+  --ifm-card-border-radius: 16px;
+}
+
+/* Global typography improvements */
+html {
+  font-family: var(--ifm-font-family-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Enhanced navbar styling */
+.navbar {
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, transparent 0%, var(--accent) 50%, transparent 100%) 1;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, var(--accent) 15%, var(--accent-orange) 35%, var(--accent-2) 55%, var(--accent-3) 80%, transparent 100%);
+  opacity: 0.6;
+}
+
+[data-theme='dark'] .navbar {
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Navbar links with accent color on hover */
+.navbar__link:hover {
+  color: var(--accent-3);
+}
+
+/* Logo adjustments */
+.navbar__brand {
+  margin-right: 2rem;
+}
+
+.navbar__logo {
+  height: 28px;
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+/* Logo visibility in dark mode */
+[data-theme='dark'] .navbar__logo {
+  filter: brightness(0) invert(1);
+  opacity: 0.9;
+}
+
+[data-theme='dark'] .navbar__logo:hover {
+  opacity: 1;
+  filter: brightness(0) invert(1) drop-shadow(0 0 8px rgba(177, 76, 255, 0.4));
+}
+
+/* Mobile hamburger menu visibility in dark theme */
+[data-theme='dark'] .navbar__toggle svg {
+  color: var(--text);
+  fill: var(--text);
+}
+
+[data-theme='dark'] .navbar__toggle:hover svg {
+  color: white;
+  fill: white;
+}
+
+/* Enhanced button styles */
+.button {
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.button--primary {
+  background: var(--grad-primary);
+  border: none;
+  box-shadow: 0 2px 8px rgba(177, 76, 255, 0.3);
+}
+
+.button--primary:hover {
+  background: var(--grad-orange);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
+}
+
+/* Enhanced cards */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--ifm-card-border-radius);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(177, 76, 255, 0.2);
+  border-color: rgba(177, 76, 255, 0.2);
+}
+
+/* Code blocks */
+.prism-code {
+  border-radius: 12px;
+}
+
+/* Sidebar improvements */
+.theme-doc-sidebar-container {
+  border-right: 2px solid transparent;
+  border-image: linear-gradient(180deg, transparent 0%, var(--accent) 25%, var(--accent-orange) 50%, var(--accent-2) 75%, transparent 100%) 1;
+  position: relative;
+}
+
+.theme-doc-sidebar-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent 0%, var(--accent) 25%, var(--accent-orange) 50%, var(--accent-2) 75%, transparent 100%);
+  opacity: 0.3;
+}
+
+/* Link improvements */
+a {
+  color: var(--accent-3);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent-3);
+  text-decoration: underline;
+}
+
+/* Focus styles for accessibility */
+.navbar__link:focus,
+.button:focus,
+.card:focus,
+a:focus {
+  outline: 2px solid var(--accent-3);
+  outline-offset: 2px;
+}
+
+/* Hero section background gradients for pages */
+.hero {
+  background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 100%);
+}
+
+/* Improved table of contents */
+.table-of-contents {
+  border-left: 2px solid transparent;
+  border-image: var(--grad-primary) 1;
+}
+
+.table-of-contents__link--active {
+  color: var(--accent);
+  border-left: 2px solid var(--accent);
+  background: linear-gradient(90deg, rgba(177, 76, 255, 0.1) 0%, transparent 100%);
+  margin-left: -2px;
+  padding-left: 8px;
+  border-radius: 0 4px 4px 0;
+}
+
+/* Enhanced badges and pills */
+.badge {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.badge--primary {
+  background: var(--grad-primary);
+  color: white;
+  border: none;
+}
+
+/* Mobile navbar adjustments */
+@media screen and (max-width: 996px) {
+  /* Hide hamburger menu but keep navbar */
+  .navbar__toggle {
+    display: none;
+  }
+  
+  /* Center the logo */
+  .navbar__brand {
+    margin: 0 auto;
+  }
+  
+  .navbar > .container {
+    justify-content: center;
+  }
+  
+  /* Mobile theme toggle in footer */
+  .footer__bottom::after {
+    content: 'Toggle Theme';
+    display: block;
+    text-align: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--accent-3);
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  
+  .footer__bottom::after:hover {
+    color: var(--accent);
+  }
+}
+
+/* Performance optimization - reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .card,
+  .navbar__link {
+    transition: none;
+  }
+  
+  .button--primary:hover,
+  .card:hover {
+    transform: none;
+  }
+}

@@ -2,7 +2,7 @@ use binprot_derive::{BinProtRead, BinProtWrite};
 use derive_more::Deref;
 use malloc_size_of::MallocSizeOf;
 use malloc_size_of_derive::MallocSizeOf;
-use openmina_macros::SerdeYojsonEnum;
+use mina_macros::SerdeYojsonEnum;
 use rsexp_derive::{OfSexp, SexpOf};
 use serde::{Deserialize, Serialize};
 use std::sync::Arc;

@@ -8,6 +8,7 @@ This types are generated from `bin_prot` shapes.
 ## Decoding `bin_prot` Stream
 
 To decode a binary gossip message, one of the following types should be used:
+
 - `mina_p2p_messages::p2p::MinaBlockExternalTransitionRawVersionedStable` for an
   External Transition message
 - `mina_p2p_messages::p2p::NetworkPoolSnarkPoolDiffVersionedStable` for a Snark
@@ -22,7 +23,7 @@ three kinds of messages to be used over the wire.
 Each message implement `binprot::BinProtRead` trait, so e.g. for reading an
 external transition, use the following:
 
-``` rust
+```rust
     let external_transition =
         MinaBlockExternalTransitionRawVersionedStable::binprot_read(&mut ptr)?;
 ```
@@ -30,7 +31,7 @@ external transition, use the following:
 All types implement `serde` serialization, so they can be easily turned into
 JSON:
 
-``` rust
+```rust
    let external_transition_json = serde_json::to_string(&external_transition)?;
 ```
 
@@ -44,17 +45,18 @@ listed in the files [types-v1.txt](types-v1.txt) and
 
 To generate Mina V2 types, use the following command:
 
-``` sh
+```sh
 mina-types shapes/berkeley-b1facec.txt gen \
    --config default-v2.toml \
    --out src/v2/generated.rs
    $(cat types-v2.txt)
 ```
 
-Note that still some additional manual work is needed, like reverting missing derives.
+Note that still some additional manual work is needed, like reverting missing
+derives.
 
 The `mina-types` executable can be built using the following command:
 
-``` sh
+```sh
 cargo install --git https://github.com/openmina/bin-prot-rs --bin mina-types
 ```

@@ -8,10 +8,11 @@ import { selectDashboardSplitsActivePeer, selectDashboardSplitsSort } from '@net
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-  selector: 'mina-dashboard-splits-side-panel-table',
-  templateUrl: './dashboard-splits-side-panel-table.component.html',
-  styleUrls: ['./dashboard-splits-side-panel-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-dashboard-splits-side-panel-table',
+    templateUrl: './dashboard-splits-side-panel-table.component.html',
+    styleUrls: ['./dashboard-splits-side-panel-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class DashboardSplitsSidePanelTableComponent extends MinaTableRustWrapper<DashboardSplitsPeer> implements OnInit {
 
@@ -21,7 +22,6 @@ export class DashboardSplitsSidePanelTableComponent extends MinaTableRustWrapper
   protected readonly tableHeads: TableColumnList<DashboardSplitsPeer> = [
     { name: 'address' },
     { name: 'name', sort: 'node' },
-    { name: 'peer ID', sort: 'peerId' },
     { name: 'Conn. \nIn / Out', sort: 'outgoingConnections' },
   ];
 
@@ -30,13 +30,13 @@ export class DashboardSplitsSidePanelTableComponent extends MinaTableRustWrapper
   constructor(private router: Router) { super(); }
 
   override async ngOnInit(): Promise<void> {
-    this.height = isDesktop() ? ((this.peers.length + 1) * 36 +1) : ((this.peers.length) * 104) + 90;
+    this.height = isDesktop() ? ((this.peers.length + 1) * 36 + 1) : ((this.peers.length) * 104) + 90;
     await super.ngOnInit();
     this.listenToActivePeerChanges();
   }
 
   protected override setupTable(): void {
-    this.table.gridTemplateColumns = [115, 85, 80, '1fr'];
+    this.table.gridTemplateColumns = [140, 85, '1fr'];
     this.table.minWidth = 400;
     this.table.sortClz = DashboardSplitsSortPeers;
     this.table.sortSelector = selectDashboardSplitsSort;

@@ -1,15 +1,15 @@
 use std::sync::Arc;
 
-use ledger::scan_state::scan_state::transaction_snark::OneOrTwo;
-use ledger::scan_state::scan_state::AvailableJobMessage;
-use openmina_core::snark::{Snark, SnarkJobCommitment, SnarkJobId};
-use openmina_core::ActionEvent;
+use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
+use mina_core::{
+    snark::{Snark, SnarkJobCommitment, SnarkJobId},
+    ActionEvent,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::p2p::PeerId;
 
-use super::candidate::SnarkPoolCandidateAction;
-use super::SnarkWork;
+use super::{candidate::SnarkPoolCandidateAction, SnarkWork};
 
 pub type SnarkPoolActionWithMeta = redux::ActionWithMeta<SnarkPoolAction>;
 pub type SnarkPoolActionWithMetaRef<'a> = redux::ActionWithMeta<&'a SnarkPoolAction>;

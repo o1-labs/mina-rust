@@ -1,4 +1,4 @@
-use openmina_core::{
+use mina_core::{
     impl_substate_access,
     log::{
         inner::{
@@ -105,13 +105,13 @@ impl_substate_access!(State, P2pState, 0);
 
 macro_rules! impl_p2p_state_access {
     ($state:ty, $substate_type:ty) => {
-        impl openmina_core::SubstateAccess<$substate_type> for $state {
-            fn substate(&self) -> openmina_core::SubstateResult<&$substate_type> {
+        impl mina_core::SubstateAccess<$substate_type> for $state {
+            fn substate(&self) -> mina_core::SubstateResult<&$substate_type> {
                 let substate: &P2pState = self.substate()?;
                 substate.substate()
             }
 
-            fn substate_mut(&mut self) -> openmina_core::SubstateResult<&mut $substate_type> {
+            fn substate_mut(&mut self) -> mina_core::SubstateResult<&mut $substate_type> {
                 let substate: &mut P2pState = self.substate_mut()?;
                 substate.substate_mut()
             }

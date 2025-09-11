@@ -2,8 +2,8 @@ pub mod read;
 pub mod write;
 
 mod ledger_config;
-use ark_ff::fields::arithmetic::InvalidBigInt;
 pub use ledger_config::*;
+use mina_p2p_messages::bigint::InvalidBigInt;
 
 mod ledger_event;
 pub use ledger_event::*;
@@ -21,8 +21,7 @@ pub use ledger_service::*;
 
 pub mod ledger_manager;
 
-pub use ledger::AccountIndex as LedgerAccountIndex;
-pub use ledger::Address as LedgerAddress;
+pub use ledger::{AccountIndex as LedgerAccountIndex, Address as LedgerAddress};
 pub use ledger_manager::LedgerManager;
 
 use ledger::TreeVersion;
@@ -104,9 +103,9 @@ pub fn complete_num_accounts_tree_with_empties(
 
 pub fn hash_node_at_depth(
     depth: usize,
-    left: mina_hasher::Fp,
-    right: mina_hasher::Fp,
-) -> mina_hasher::Fp {
+    left: mina_curves::pasta::Fp,
+    right: mina_curves::pasta::Fp,
+) -> mina_curves::pasta::Fp {
     let height = LEDGER_DEPTH.saturating_sub(depth).saturating_sub(1);
     ledger::V2::hash_node(height, left, right)
 }

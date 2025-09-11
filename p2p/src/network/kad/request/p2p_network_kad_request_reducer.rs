@@ -1,4 +1,4 @@
-use openmina_core::{bug_condition, requests::RpcId, Substate, SubstateAccess};
+use mina_core::{bug_condition, requests::RpcId, Substate, SubstateAccess};
 use redux::{ActionWithMeta, Dispatcher};
 
 use crate::{

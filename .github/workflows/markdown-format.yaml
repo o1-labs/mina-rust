@@ -1,0 +1,26 @@
+name: Markdown Format Check
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+
+jobs:
+  markdown-format:
+    name: Check Markdown Formatting
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Check markdown formatting
+        run: make check-md

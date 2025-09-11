@@ -1,8 +1,7 @@
-use std::collections::BTreeMap;
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
+use mina_core::block::ArcBlockWithHash;
 use mina_p2p_messages::v2;
-use openmina_core::block::ArcBlockWithHash;
 use serde::{Deserialize, Serialize};
 
 use crate::{account::AccountPublicKey, block_producer::BlockProducerWonSlot};
@@ -599,6 +598,7 @@ mod test {
 
     use lazy_static::lazy_static;
     use ledger::AccountIndex;
+    use mina_node_account::AccountSecretKey;
     use mina_p2p_messages::{
         bigint::BigInt,
         number::Number,
@@ -610,7 +610,6 @@ mod test {
             UnsignedExtendedUInt64Int64ForVersionTagsStableV1,
         },
     };
-    use openmina_node_account::AccountSecretKey;
     use vrf::VrfWonSlot;
 
     use crate::block_producer::vrf_evaluator::{

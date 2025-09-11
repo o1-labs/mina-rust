@@ -1,10 +1,10 @@
 [package]
 name = "libp2p-rpc-behaviour"
-version = "0.16.0"
+version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-log = { version = "0.4.19" }
 libp2p = { workspace = true }
+log = { version = "0.4.19" }
 mina-p2p-messages = { workspace = true }

@@ -9,8 +9,7 @@ mod p2p_connection_incoming_reducer;
 use malloc_size_of_derive::MallocSizeOf;
 use serde::{Deserialize, Serialize};
 
-use crate::connection::RejectionReason;
-use crate::{webrtc, P2pState, PeerId};
+use crate::{connection::RejectionReason, webrtc, P2pState, PeerId};
 
 #[derive(Serialize, Deserialize, Eq, PartialEq, Debug, Clone)]
 pub struct P2pConnectionIncomingInitOpts {

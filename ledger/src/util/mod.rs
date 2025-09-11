@@ -1,8 +1,7 @@
 use std::ops::Neg;
 
 use ark_ff::{BigInteger, PrimeField};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
 use mina_signer::{CompressedPubKey, CurvePoint, Keypair, PubKey};
 
 mod backtrace;
@@ -29,7 +28,7 @@ pub trait FpExt {
 
 impl FpExt for Fp {
     fn to_decimal(&self) -> String {
-        let r = self.into_repr();
+        let r = self.into_bigint();
         let bigint: num_bigint::BigUint = r.into();
         bigint.to_string()
     }
@@ -37,7 +36,7 @@ impl FpExt for Fp {
 
 impl FpExt for Fq {
     fn to_decimal(&self) -> String {
-        let r = self.into_repr();
+        let r = self.into_bigint();
         let bigint: num_bigint::BigUint = r.into();
         bigint.to_string()
     }
@@ -54,14 +53,14 @@ pub fn gen_compressed() -> CompressedPubKey {
 
 /// Not sure if it's correct
 /// I used the same code as there:
-/// https://github.com/o1-labs/proof-systems/blob/226de4aeb11b8814327ab832e4fccdce5585f473/signer/src/pubkey.rs#L95-L106
+/// <https://github.com/o1-labs/proof-systems/blob/226de4aeb11b8814327ab832e4fccdce5585f473/signer/src/pubkey.rs#L95-L106>
 pub fn decompress_pk(pk: &CompressedPubKey) -> Option<PubKey> {
     let y_parity = pk.is_odd;
     let x = pk.x;
 
-    let mut pt = CurvePoint::get_point_from_x(x, y_parity)?;
+    let mut pt = CurvePoint::get_point_from_x_unchecked(x, y_parity)?;
 
-    if pt.y.into_repr().is_even() == y_parity {
+    if pt.y.into_bigint().is_even() == y_parity {
         pt.y = pt.y.neg();
     }
 

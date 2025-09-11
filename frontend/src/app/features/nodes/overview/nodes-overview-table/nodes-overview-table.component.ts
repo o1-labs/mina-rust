@@ -13,10 +13,11 @@ import { filter, take } from 'rxjs';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-  selector: 'mina-nodes-overview-table',
-  templateUrl: './nodes-overview-table.component.html',
-  styleUrls: ['./nodes-overview-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-overview-table',
+    templateUrl: './nodes-overview-table.component.html',
+    styleUrls: ['./nodes-overview-table.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesOverviewTableComponent extends MinaTableRustWrapper<NodesOverviewNode> implements OnInit {
 

@@ -1,5 +1,4 @@
-use std::future::Future;
-use std::sync::Arc;
+use std::{future::Future, sync::Arc};
 
 use webrtc::{
     api::APIBuilder,
@@ -128,8 +127,8 @@ impl RTCConnection {
 
     pub async fn close(self) {
         if let Err(error) = self.0.close().await {
-            openmina_core::warn!(
-                openmina_core::log::system_time();
+            mina_core::warn!(
+                mina_core::log::system_time();
                 summary = "CONNECTION LEAK: Failure when closing RTCConnection",
                 error = error.to_string(),
             )

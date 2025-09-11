@@ -61,7 +61,7 @@ impl BlockProducerService {
         let event_sender_clone = event_sender.clone();
         let producer_keypair = keypair.clone();
         thread::Builder::new()
-            .name("openmina_vrf_evaluator".to_owned())
+            .name("mina_vrf_evaluator".to_owned())
             .spawn(move || {
                 vrf_evaluator::vrf_evaluator(
                     event_sender_clone,
@@ -73,7 +73,7 @@ impl BlockProducerService {
 
         let producer_keypair = keypair.clone();
         thread::Builder::new()
-            .name("openmina_block_prover".to_owned())
+            .name("mina_block_prover".to_owned())
             .spawn(move || prover_loop(producer_keypair, event_sender, prove_receiver))
             .unwrap();
 
@@ -106,9 +106,9 @@ fn prover_loop(
         let (provers, block_hash, mut input) = msg.0;
         let res = prove(provers, &mut input, &keypair, false);
         if let Err(error) = &res {
-            openmina_core::error!(message = "Block proof failed", error = format!("{error:?}"));
+            mina_core::error!(message = "Block proof failed", error = format!("{error:?}"));
             if let Err(error) = dump_failed_block_proof_input(block_hash.clone(), input, error) {
-                openmina_core::error!(
+                mina_core::error!(
                     message = "Failure when dumping failed block proof inputs",
                     error = format!("{error}")
                 );
@@ -239,12 +239,12 @@ kGqG7QLzSPjAtP/YbUponwaD+t+A0kBg0hV4hhcJOkPeA2NOi04K93bz3HuYCVRe
         },
     };
 
-    let debug_dir = openmina_core::get_debug_dir();
+    let debug_dir = mina_core::get_debug_dir();
     let filename = debug_dir
         .join(format!("failed_block_proof_input_{block_hash}.binprot"))
         .to_string_lossy()
         .to_string();
-    openmina_core::warn!(message = "Dumping failed block proof.", filename = filename);
+    mina_core::warn!(message = "Dumping failed block proof.", filename = filename);
     std::fs::create_dir_all(&debug_dir)?;
     let mut file = std::fs::File::create(&filename)?;
     input.binprot_write(&mut file)?;

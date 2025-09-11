@@ -1,70 +1,80 @@
 mod rpc_service;
 
-use std::collections::VecDeque;
-use std::sync::Mutex as StdMutex;
-use std::time::Duration;
-use std::{collections::BTreeMap, sync::Arc};
+use std::{
+    collections::{BTreeMap, VecDeque},
+    sync::{Arc, Mutex as StdMutex},
+    time::Duration,
+};
 
-use ledger::dummy::dummy_transaction_proof;
-use ledger::proofs::transaction::ProofError;
-use ledger::scan_state::scan_state::transaction_snark::SokMessage;
-use ledger::scan_state::transaction_logic::{verifiable, WithStatus};
-use ledger::Mask;
-use mina_p2p_messages::string::ByteString;
-use mina_p2p_messages::v2::{
-    CurrencyFeeStableV1, LedgerHash, LedgerProofProdStableV2, MinaBaseProofStableV2,
-    MinaStateSnarkedLedgerStateWithSokStableV2, NonZeroCurvePoint,
-    ProverExtendBlockchainInputStableV2, SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponseA0Single,
-    StateHash, TransactionSnarkStableV2, TransactionSnarkWorkTStableV2Proofs,
+use ledger::{
+    dummy::dummy_transaction_proof,
+    proofs::transaction::ProofError,
+    scan_state::{
+        scan_state::transaction_snark::SokMessage,
+        transaction_logic::{verifiable, WithStatus},
+    },
+    Mask,
 };
-use node::account::AccountPublicKey;
-use node::block_producer::vrf_evaluator::VrfEvaluatorInput;
-use node::block_producer::BlockProducerEvent;
-use node::core::channels::mpsc;
-use node::core::invariants::InvariantsState;
-use node::core::snark::{Snark, SnarkJobId};
-use node::external_snark_worker_effectful::ExternalSnarkWorkerEvent;
-use node::ledger::write::BlockApplyResult;
-use node::p2p::service_impl::webrtc_with_libp2p::P2pServiceWebrtcWithLibp2p;
-use node::p2p::P2pCryptoService;
-use node::recorder::Recorder;
-use node::service::{
-    BlockProducerService, BlockProducerVrfEvaluatorService, TransitionFrontierGenesisService,
-};
-use node::snark::block_verify::{
-    SnarkBlockVerifyId, SnarkBlockVerifyService, VerifiableBlockWithHash,
-};
-use node::snark::user_command_verify::SnarkUserCommandVerifyId;
-use node::snark::user_command_verify_effectful::SnarkUserCommandVerifyService;
-use node::snark::work_verify::{SnarkWorkVerifyId, SnarkWorkVerifyService};
-use node::snark::{BlockVerifier, SnarkEvent, TransactionVerifier, VerifierSRS};
-use node::snark_pool::SnarkPoolService;
-use node::stats::Stats;
-use node::transition_frontier::archive::archive_service::ArchiveService;
-use node::transition_frontier::genesis::GenesisConfig;
-use node::{
-    event_source::Event,
-    external_snark_worker::SnarkWorkSpec,
-    external_snark_worker_effectful::ExternalSnarkWorkerService,
-    p2p::{
-        connection::outgoing::P2pConnectionOutgoingInitOpts,
-        service_impl::webrtc::{Cmd, P2pServiceWebrtc, PeerState},
-        webrtc, PeerId,
+use mina_core::channels::Aborter;
+use mina_node_native::NodeService;
+use mina_p2p_messages::{
+    string::ByteString,
+    v2::{
+        CurrencyFeeStableV1, LedgerHash, LedgerProofProdStableV2, MinaBaseProofStableV2,
+        MinaStateSnarkedLedgerStateWithSokStableV2, NonZeroCurvePoint,
+        ProverExtendBlockchainInputStableV2,
+        SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponseA0Single, StateHash,
+        TransactionSnarkStableV2, TransactionSnarkWorkTStableV2Proofs,
     },
 };
-use node::{ActionWithMeta, State};
-use openmina_core::channels::Aborter;
-use openmina_node_native::NodeService;
+use node::{
+    account::AccountPublicKey,
+    block_producer::{vrf_evaluator::VrfEvaluatorInput, BlockProducerEvent},
+    core::{
+        channels::mpsc,
+        invariants::InvariantsState,
+        snark::{Snark, SnarkJobId},
+    },
+    event_source::Event,
+    external_snark_worker::SnarkWorkSpec,
+    external_snark_worker_effectful::{ExternalSnarkWorkerEvent, ExternalSnarkWorkerService},
+    ledger::write::BlockApplyResult,
+    p2p::{
+        connection::outgoing::P2pConnectionOutgoingInitOpts,
+        service_impl::{
+            webrtc::{Cmd, P2pServiceWebrtc, PeerState},
+            webrtc_with_libp2p::P2pServiceWebrtcWithLibp2p,
+        },
+        webrtc, P2pCryptoService, PeerId,
+    },
+    recorder::Recorder,
+    service::{
+        BlockProducerService, BlockProducerVrfEvaluatorService, TransitionFrontierGenesisService,
+    },
+    snark::{
+        block_verify::{SnarkBlockVerifyId, SnarkBlockVerifyService, VerifiableBlockWithHash},
+        user_command_verify::SnarkUserCommandVerifyId,
+        user_command_verify_effectful::SnarkUserCommandVerifyService,
+        work_verify::{SnarkWorkVerifyId, SnarkWorkVerifyService},
+        BlockVerifier, SnarkEvent, TransactionVerifier, VerifierSRS,
+    },
+    snark_pool::SnarkPoolService,
+    stats::Stats,
+    transition_frontier::{archive::archive_service::ArchiveService, genesis::GenesisConfig},
+    ActionWithMeta, State,
+};
 use redux::Instant;
 
-use crate::cluster::{ClusterNodeId, ProofKind};
-use crate::node::NonDeterministicEvent;
+use crate::{
+    cluster::{ClusterNodeId, ProofKind},
+    node::NonDeterministicEvent,
+};
 
 pub type DynEffects = Box<dyn FnMut(&State, &NodeTestingService, &ActionWithMeta) + Send>;
 
 #[derive(Hash, Ord, PartialOrd, Eq, PartialEq)]
 pub struct PendingEventIdType;
-impl openmina_core::requests::RequestIdType for PendingEventIdType {
+impl mina_core::requests::RequestIdType for PendingEventIdType {
     fn request_id_type() -> &'static str {
         "PendingEventId"
     }
@@ -538,7 +548,7 @@ impl BlockProducerService for NodeTestingService {
                 let _ = self.real.event_sender().send(dummy_proof_event(block_hash));
             }
             ProofKind::ConstraintsChecked => {
-                match openmina_node_native::block_producer::prove(
+                match mina_node_native::block_producer::prove(
                     self.provers(),
                     &mut input,
                     &keypair,
@@ -572,7 +582,7 @@ impl BlockProducerService for NodeTestingService {
                     {
                         Ok(proof.clone())
                     } else {
-                        openmina_node_native::block_producer::prove(
+                        mina_node_native::block_producer::prove(
                             self.provers(),
                             &mut input,
                             &keypair,

@@ -1,46 +1,46 @@
-@import 'openmina';
+@use 'openmina';
 
 div.h-sm span {
-	width: 55px;
+  width: 55px;
 }
 
 form {
-	background-color: $base-container;
-	color: $base-tertiary;
+  background-color: openmina.$base-container;
+  color: openmina.$base-tertiary;
 
-	&:hover {
-		background-color: $base-divider;
-	}
+  &:hover {
+    background-color: openmina.$base-divider;
+  }
 
-	input {
-		outline: none;
-		color: inherit;
-		background-color: unset;
-		padding-left: 35px;
-		padding-right: 25px;
+  input {
+    outline: none;
+    color: inherit;
+    background-color: unset;
+    padding-left: 35px;
+    padding-right: 25px;
 
-		&::placeholder {
-			font-weight: 400;
-		}
-	}
+    &::placeholder {
+      font-weight: 400;
+    }
+  }
 
-	.p-absolute:first-child {
-		left: 5px;
-		top: 2px;
-	}
+  .p-absolute:first-child {
+    left: 5px;
+    top: 2px;
+  }
 
-	.p-absolute:last-child {
-		right: 5px;
-		top: 0;
-		display: none;
-	}
+  .p-absolute:last-child {
+    right: 5px;
+    top: 0;
+    display: none;
+  }
 
-	&.active {
-		background-color: $selected-container;
-		color: $selected-primary;
+  &.active {
+    background-color: openmina.$selected-container;
+    color: openmina.$selected-primary;
 
-		.p-absolute:last-child {
-			display: block;
-		}
-	}
+    .p-absolute:last-child {
+      display: block;
+    }
+  }
 }

@@ -6,8 +6,8 @@ use ledger::{
     transaction_pool::{Config, ValidCommandWithHash},
     AccountId,
 };
+use mina_core::{consensus::ConsensusConstants, distributed_pool::DistributedPool};
 use mina_p2p_messages::v2::{self, TransactionHash};
-use openmina_core::{consensus::ConsensusConstants, distributed_pool::DistributedPool};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap};
 
@@ -133,8 +133,7 @@ impl TransactionPoolState {
 
 #[cfg(test)]
 mod tests {
-    use super::super::TransactionPoolActionWithMeta;
-    use super::*;
+    use super::{super::TransactionPoolActionWithMeta, *};
     use crate::State;
     use redux::Dispatcher;
 

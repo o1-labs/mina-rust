@@ -13,7 +13,7 @@ pub type SubstateResult<T> = Result<T, String>;
 ///            .ready()
 ///            .ok_or_else(|| "P2P state unavailable. P2P layer is not ready".to_owned())
 ///    }
-///  
+///
 ///    fn substate_mut(&mut self) -> SubstateResult<&mut P2pState> {
 ///        self.p2p
 ///            .ready_mut()

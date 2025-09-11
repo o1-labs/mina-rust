@@ -25,25 +25,24 @@ export interface WebNodeLoadingStep {
 }
 
 @Component({
-  selector: 'mina-web-node-initialization',
-  templateUrl: './web-node-initialization.component.html',
-  styleUrls: ['./web-node-initialization.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100 w-100 align-center' },
-  standalone: true,
-  imports: [
-    NgClass,
-    NgOptimizedImage,
-    LoadingSpinnerComponent,
-  ],
-  animations: [
-    trigger('messageChange', [
-      transition('* => *', [
-        style({ opacity: 0, transform: 'translateY(-10px)' }),
-        animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
-      ]),
-    ]),
-  ],
+    selector: 'mina-web-node-initialization',
+    templateUrl: './web-node-initialization.component.html',
+    styleUrls: ['./web-node-initialization.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100 w-100 align-center' },
+    imports: [
+        NgClass,
+        NgOptimizedImage,
+        LoadingSpinnerComponent,
+    ],
+    animations: [
+        trigger('messageChange', [
+            transition('* => *', [
+                style({ opacity: 0, transform: 'translateY(-10px)' }),
+                animate('300ms ease-out', style({ opacity: 1, transform: 'translateY(0)' })),
+            ]),
+        ]),
+    ]
 })
 export class WebNodeInitializationComponent extends StoreDispatcher implements OnInit, AfterViewInit {
 

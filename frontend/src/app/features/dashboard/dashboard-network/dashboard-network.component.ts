@@ -5,11 +5,12 @@ import { skip } from 'rxjs';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-  selector: 'mina-dashboard-network',
-  templateUrl: './dashboard-network.component.html',
-  styleUrls: ['./dashboard-network.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column' },
+    selector: 'mina-dashboard-network',
+    templateUrl: './dashboard-network.component.html',
+    styleUrls: ['./dashboard-network.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column' },
+    standalone: false
 })
 export class DashboardNetworkComponent extends StoreDispatcher implements OnInit {
 

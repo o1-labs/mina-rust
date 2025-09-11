@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 $green: #59bfb5;
 $light-peach: #0d0d0d;
@@ -59,8 +59,8 @@ $white: #000000;
   button {
     width: 158px;
     height: 48px !important;
-    background-color: $base-background;
-    color: $base-primary;
+    background-color: openmina.$base-background;
+    color: openmina.$base-primary;
     filter: invert(1);
 
     &.disabled {

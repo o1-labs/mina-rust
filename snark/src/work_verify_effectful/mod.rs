@@ -9,13 +9,13 @@ pub use snark_work_verify_service::*;
 use serde::{Deserialize, Serialize};
 
 pub struct SnarkWorkVerifyIdType;
-impl openmina_core::requests::RequestIdType for SnarkWorkVerifyIdType {
+impl mina_core::requests::RequestIdType for SnarkWorkVerifyIdType {
     fn request_id_type() -> &'static str {
         "SnarkWorkVerifyId"
     }
 }
 
-pub type SnarkWorkVerifyId = openmina_core::requests::RequestId<SnarkWorkVerifyIdType>;
+pub type SnarkWorkVerifyId = mina_core::requests::RequestId<SnarkWorkVerifyIdType>;
 
 #[derive(Serialize, Deserialize, Debug, Clone, thiserror::Error)]
 pub enum SnarkWorkVerifyError {

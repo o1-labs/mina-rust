@@ -18,16 +18,14 @@ use crate::{
     verifier::{get_srs, get_srs_mut},
 };
 use anyhow::Context;
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, One, Zero};
+use ark_ff::{BigInteger256, One, Zero};
 use ark_poly::{
-    univariate::DensePolynomial, EvaluationDomain, Radix2EvaluationDomain, UVPolynomial,
+    univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain, Radix2EvaluationDomain,
 };
 use kimchi::proof::{PointEvaluations, ProverCommitments, RecursionChallenge};
-use mina_curves::pasta::Fq;
-use mina_curves::pasta::Pallas;
-use mina_hasher::Fp;
-use mina_p2p_messages::v2;
-use poly_commitment::{commitment::b_poly_coefficients, evaluation_proof::OpeningProof};
+use mina_curves::pasta::{Fp, Fq, Pallas};
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
+use poly_commitment::{commitment::b_poly_coefficients, ipa::OpeningProof};
 
 use crate::proofs::{
     public_input::{
@@ -318,6 +316,7 @@ pub mod step_verifier {
 
     use super::*;
     use crate::proofs::{
+        self,
         field::{field, ToBoolean},
         opt_sponge::OptSponge,
         public_input::plonk_checks::{self, ft_eval0_checked},
@@ -339,7 +338,7 @@ pub mod step_verifier {
     };
     use itertools::Itertools;
     use kimchi::circuits::wires::PERMUTS;
-    use poly_commitment::{srs::SRS, PolyComm};
+    use poly_commitment::{ipa::SRS, PolyComm};
 
     fn squeeze_challenge(s: &mut Sponge<Fp>, w: &mut Witness<Fp>) -> Fp {
         lowest_128_bits(s.squeeze(w), true, w)
@@ -587,7 +586,7 @@ pub mod step_verifier {
                 OptFlag::Maybe => {
                     // TODO: Hack
                     // This assumes that `plonk.lookup` (just above) is [0, 0]
-                    // https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles/composition_types/composition_types.ml#L131
+                    // <https://github.com/MinaProtocol/mina/blob/a51f09d09e6ae83362ea74eaca072c8e40d08b52/src/lib/pickles/composition_types/composition_types.ml#L131>
                     Some(scalar(&[0, 0], w))
                 }
                 OptFlag::Yes => todo!(),
@@ -714,7 +713,7 @@ pub mod step_verifier {
 
         let to_bytes = |f: Fp| {
             let bigint: BigInteger256 = f.into();
-            bigint.to_64x4()
+            bigint.0
         };
 
         let plonk_mininal = PlonkMinimal::<Fp, 4> {
@@ -1063,12 +1062,12 @@ pub mod step_verifier {
         let s_parts = w.exists({
             // TODO: Here `s` is a `F` but needs to be read as a `F::Scalar`
             let bigint: BigInteger256 = s.into();
-            let bigint = bigint.to_64x4();
+            let bigint = bigint.0;
             let s_odd = bigint[0] & 1 != 0;
             let v = if s_odd { s - F2::one() } else { s };
             // TODO: Remove this ugly hack
             let v: BigInteger256 = (v / F2::from(2u64)).into();
-            (F::try_from(v).unwrap(), s_odd.to_boolean()) // `unwrap` never fail
+            (F::from(v), s_odd.to_boolean()) // `unwrap` never fail
         });
 
         scale_fast2(g, s_parts, num_bits, w)
@@ -1076,7 +1075,7 @@ pub mod step_verifier {
 
     // TODO: Dedup with the one in `wrap_verifier`
     pub(super) fn ft_comm<F: FieldWitness, Scale>(
-        plonk: &Plonk<F::Scalar>,
+        plonk: &Plonk<<F as proofs::field::FieldWitness>::Scalar>,
         t_comm: &PolyComm<GroupAffine<F>>,
         verification_key: &CircuitPlonkVerificationKeyEvals<F>,
         scale: Scale,
@@ -1085,7 +1084,7 @@ pub mod step_verifier {
     where
         Scale: Fn(
             CircuitVar<GroupAffine<F>>,
-            <F::Scalar as FieldWitness>::Shifting,
+            <<F as proofs::field::FieldWitness>::Scalar as FieldWitness>::Shifting,
             &mut Witness<F>,
         ) -> GroupAffine<F>,
     {
@@ -1102,7 +1101,7 @@ pub mod step_verifier {
             .unwrap();
 
         let chunked_t_comm = t_comm
-            .elems
+            .chunks
             .iter()
             .rev()
             .copied()
@@ -1129,15 +1128,15 @@ pub mod step_verifier {
 
     fn public_input_commitment_dynamic(
         which: &[Boolean],
-        srs: &mut poly_commitment::srs::SRS<Pallas>,
+        srs: &mut poly_commitment::ipa::SRS<Pallas>,
         domains: Vec<Domains>,
         public_input: Vec<Packed>,
         w: &mut Witness<Fp>,
     ) -> GroupAffine<Fp> {
         let lagrange_commitment =
-            |d: &Domains, i: usize, srs: &mut poly_commitment::srs::SRS<Pallas>| {
+            |d: &Domains, i: usize, srs: &mut poly_commitment::ipa::SRS<Pallas>| {
                 let d = 2u64.pow(d.h.log2_size() as u32);
-                let elems = wrap_verifier::lagrange_commitment::<Fp>(srs, d, i).elems;
+                let elems = wrap_verifier::lagrange_commitment::<Fp>(srs, d, i).chunks;
                 assert_eq!(elems.len(), 1);
                 InnerCurve::<Fp>::of_affine(elems[0])
             };
@@ -1145,11 +1144,11 @@ pub mod step_verifier {
         fn select_curve_points(
             domains: &[Domains],
             which: &[Boolean],
-            srs: &mut poly_commitment::srs::SRS<Pallas>,
+            srs: &mut poly_commitment::ipa::SRS<Pallas>,
             w: &mut Witness<Fp>,
             points_for_domain: impl Fn(
                 &Domains,
-                &mut poly_commitment::srs::SRS<Pallas>,
+                &mut poly_commitment::ipa::SRS<Pallas>,
             ) -> Vec<InnerCurve<Fp>>,
         ) -> Vec<InnerCurve<Fp>> {
             let (d, ds) = domains.split_first().unwrap();
@@ -1168,7 +1167,7 @@ pub mod step_verifier {
         }
 
         let lagrange =
-            |i: usize, srs: &mut poly_commitment::srs::SRS<Pallas>, w: &mut Witness<Fp>| {
+            |i: usize, srs: &mut poly_commitment::ipa::SRS<Pallas>, w: &mut Witness<Fp>| {
                 let vec = select_curve_points(&domains, which, srs, w, |d, srs| {
                     vec![lagrange_commitment(d, i, srs)]
                 });
@@ -1179,7 +1178,7 @@ pub mod step_verifier {
 
         let lagrange_with_correction = |input_length: usize,
                                         i: usize,
-                                        srs: &mut poly_commitment::srs::SRS<Pallas>,
+                                        srs: &mut poly_commitment::ipa::SRS<Pallas>,
                                         w: &mut Witness<Fp>|
          -> Vec<InnerCurve<Fp>> {
             let actual_shift = OPS_BITS_PER_CHUNK * chunks_needed(input_length);
@@ -1341,7 +1340,7 @@ pub mod step_verifier {
         i: usize,
     ) -> InnerCurve<F> {
         let d = domain.size();
-        let elems = wrap_verifier::lagrange_commitment::<F>(srs, d, i).elems;
+        let elems = wrap_verifier::lagrange_commitment::<F>(srs, d, i).chunks;
 
         assert_eq!(elems.len(), 1);
         InnerCurve::of_affine(elems[0])
@@ -1534,7 +1533,7 @@ pub mod step_verifier {
 
     struct IncrementallyVerifyProofParams<'a> {
         pub proofs_verified: usize,
-        pub srs: &'a mut poly_commitment::srs::SRS<Pallas>,
+        pub srs: &'a mut poly_commitment::ipa::SRS<Pallas>,
         pub wrap_domain: &'a ForStepKind<Domain, Box<[Boolean]>>,
         pub sponge: Sponge<Fp>,
         pub sponge_after_index: Sponge<Fp>,
@@ -1614,7 +1613,7 @@ pub mod step_verifier {
         absorb_curve(&x_hat, &mut sponge, w);
 
         let w_comm = &messages.w_comm;
-        for g in w_comm.iter().flat_map(|w| &w.elems) {
+        for g in w_comm.iter().flat_map(|w| &w.chunks) {
             absorb_curve(g, &mut sponge, w);
         }
 
@@ -1622,14 +1621,14 @@ pub mod step_verifier {
         let _gamma = sample(&mut sponge, w);
 
         let z_comm = &messages.z_comm;
-        for z in z_comm.elems.iter() {
+        for z in z_comm.chunks.iter() {
             absorb_curve(z, &mut sponge, w);
         }
 
         let _alpha = sample_scalar(&mut sponge, w);
 
         let t_comm = &messages.t_comm;
-        for t in t_comm.elems.iter() {
+        for t in t_comm.chunks.iter() {
             absorb_curve(t, &mut sponge, w);
         }
 
@@ -1653,7 +1652,7 @@ pub mod step_verifier {
                 let sg_old = sg_old.iter().copied().map(cvar);
                 let rest = [cvar(x_hat), cvar(ft_comm)]
                     .into_iter()
-                    .chain(z_comm.elems.iter().cloned().map(cvar))
+                    .chain(z_comm.chunks.iter().cloned().map(cvar))
                     .chain([
                         wrap_verification_key.generic,
                         wrap_verification_key.psm,
@@ -1665,7 +1664,7 @@ pub mod step_verifier {
                     .chain(
                         w_comm
                             .iter()
-                            .flat_map(|w| w.elems.iter().cloned().map(cvar)),
+                            .flat_map(|w| w.chunks.iter().cloned().map(cvar)),
                     )
                     .chain(wrap_verification_key.coefficients)
                     .chain(sigma_comm_init.iter().cloned());
@@ -1692,7 +1691,7 @@ pub mod step_verifier {
     }
 
     pub(super) struct VerifyParams<'a> {
-        pub(super) srs: &'a mut poly_commitment::srs::SRS<Pallas>,
+        pub(super) srs: &'a mut poly_commitment::ipa::SRS<Pallas>,
         pub(super) feature_flags: &'a FeatureFlags<OptFlag>,
         pub(super) lookup_parameters: (),
         pub(super) proofs_verified: usize,
@@ -1789,7 +1788,7 @@ pub mod step_verifier {
 }
 
 struct VerifyOneParams<'a> {
-    srs: &'a mut poly_commitment::srs::SRS<Pallas>,
+    srs: &'a mut poly_commitment::ipa::SRS<Pallas>,
     proof: &'a PerProofWitness,
     data: &'a ForStep,
     messages_for_next_wrap_proof: Fp,
@@ -1911,7 +1910,7 @@ fn verify_one(params: VerifyOneParams, w: &mut Witness<Fp>) -> anyhow::Result<(V
 
 fn to_bytes(f: Fp) -> [u64; 4] {
     let bigint: BigInteger256 = f.into();
-    bigint.to_64x4()
+    bigint.0
 }
 
 fn to_4limbs(v: [u64; 2]) -> [u64; 4] {
@@ -2102,7 +2101,7 @@ fn wrap_compute_sg(challenges: &[[u64; 2]]) -> GroupAffine<Fp> {
         let srs = get_srs::<Fq>();
         srs.commit_non_hiding(&p, 1)
     };
-    comm.elems[0]
+    comm.chunks[0]
 }
 
 struct ExpandProofParams<'a> {
@@ -2304,7 +2303,7 @@ fn expand_proof(params: ExpandProofParams) -> anyhow::Result<ExpandedProof> {
 
     let to_bytes = |f: Fq| {
         let bigint: BigInteger256 = f.into();
-        let [a, b, c, d] = bigint.to_64x4();
+        let [a, b, c, d] = bigint.0;
         assert_eq!([c, d], [0, 0]);
         [a, b]
     };
@@ -2407,7 +2406,7 @@ fn expand_proof(params: ExpandProofParams) -> anyhow::Result<ExpandedProof> {
 
         let to_bytes = |f: Fq| {
             let bigint: BigInteger256 = f.into();
-            bigint.to_64x4()
+            bigint.0
         };
 
         PlonkMinimal {
@@ -2480,7 +2479,7 @@ fn expand_proof(params: ExpandProofParams) -> anyhow::Result<ExpandedProof> {
         should_finalize: must_verify.value().as_bool(),
         sponge_digest_before_evaluations: {
             let bigint: BigInteger256 = sponge_digest_before_evaluations.into();
-            bigint.to_64x4()
+            bigint.0
         },
     };
 
@@ -2580,10 +2579,10 @@ impl Check<Fp> for PerProofWitness {
         } = wrap_proof;
 
         for poly in w_comm {
-            poly.elems.check(w);
+            poly.chunks.check(w);
         }
-        z_comm.elems.check(w);
-        t_comm.elems.check(w);
+        z_comm.chunks.check(w);
+        t_comm.chunks.check(w);
         lr.check(w);
 
         let shift = |f: Fq| <Fq as FieldWitness>::Shifting::of_field(f);
@@ -2624,7 +2623,7 @@ impl Check<Fp> for PerProofWitness {
         perm.check(w);
         combined_inner_product.check(w);
         b.check(w);
-        two_u64_to_field::<Fp>(xi).check(w);
+        two_u64_to_field::<Fp, _>(xi).check(w);
         bulletproof_challenges.check(w);
 
         {
@@ -2676,7 +2675,7 @@ pub fn extract_recursion_challenges<const N: usize>(
         .zip(comms)
         .map(|(chals, (x, y))| {
             let comm = PolyComm::<mina_curves::pasta::Vesta> {
-                elems: vec![make_group(x, y)],
+                chunks: vec![make_group(x, y)],
             };
             RecursionChallenge {
                 chals: chals.to_vec(),
@@ -2765,7 +2764,7 @@ pub fn step<C: ProofConstants, const N_PREVIOUS: usize>(
         w.exists(expanded_proofs.each_ref().map(|p| &p.unfinalized));
 
     let messages_for_next_wrap_proof: [Fp; N_PREVIOUS] = {
-        let f = four_u64_to_field::<Fp>;
+        let f = four_u64_to_field::<Fp, _>;
 
         crate::try_array_into_with(&expanded_proofs, |p| {
             f(&p.prev_statement_with_hashes

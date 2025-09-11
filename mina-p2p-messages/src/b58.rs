@@ -1,8 +1,6 @@
 //! Base58check encoding/decoding.
 
-use std::fmt;
-use std::marker::PhantomData;
-use std::str::FromStr;
+use std::{fmt, marker::PhantomData, str::FromStr};
 
 use binprot::{BinProtRead, BinProtWrite};
 use binprot_derive::{BinProtRead, BinProtWrite};

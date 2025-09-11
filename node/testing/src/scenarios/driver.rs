@@ -407,7 +407,7 @@ impl<'cluster> Driver<'cluster> {
         (node_id, item)
     }
 
-    pub fn inner(&self) -> &ClusterRunner {
+    pub fn inner(&self) -> &ClusterRunner<'_> {
         &self.runner
     }
 

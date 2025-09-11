@@ -16,7 +16,7 @@ pub trait TaskSpawner: Send + Clone {
 pub mod webrtc {
     use std::collections::BTreeMap;
 
-    use openmina_core::channels::mpsc;
+    use mina_core::channels::mpsc;
 
     use crate::{
         channels::{ChannelId, ChannelMsg, MsgId},

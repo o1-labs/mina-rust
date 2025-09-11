@@ -1,14 +1,12 @@
 use std::ops::Deref;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use poseidon::hash::Inputs;
 
 use crate::{
-    bigint::BigInt,
+    bigint::{BigInt, InvalidBigInt},
     list::List,
     number::{Int32, Int64, UInt32, UInt64},
-    string::ByteString,
-    string::ZkAppUri,
+    string::{ByteString, ZkAppUri},
 };
 
 /// Difference with `ToInputs` in `ledger` is that it can fail here, due

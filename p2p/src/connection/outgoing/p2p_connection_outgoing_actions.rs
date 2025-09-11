@@ -1,11 +1,10 @@
-use openmina_core::ActionEvent;
+use mina_core::ActionEvent;
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::requests::RpcId;
+use mina_core::requests::RpcId;
 
-use crate::connection::P2pConnectionErrorResponse;
-use crate::{webrtc, P2pState, PeerId};
+use crate::{connection::P2pConnectionErrorResponse, webrtc, P2pState, PeerId};
 
 use super::{P2pConnectionOutgoingError, P2pConnectionOutgoingInitOpts};
 

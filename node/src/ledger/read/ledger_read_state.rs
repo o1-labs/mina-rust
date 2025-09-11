@@ -1,4 +1,4 @@
-use openmina_core::requests::{PendingRequests, RequestId, RequestIdType};
+use mina_core::requests::{PendingRequests, RequestId, RequestIdType};
 use serde::{Deserialize, Serialize};
 
 use super::{LedgerReadRequest, LedgerReadResponse};

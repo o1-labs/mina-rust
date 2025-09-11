@@ -1,7 +1,6 @@
 mod p2p_network_actions;
 use malloc_size_of_derive::MallocSizeOf;
-use serde::Deserialize;
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 
 use crate::Limit;
 

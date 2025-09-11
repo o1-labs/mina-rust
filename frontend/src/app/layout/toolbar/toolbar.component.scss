@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   height: 40px;
@@ -27,7 +27,7 @@
     height: 1px;
     width: 25%;
     border-radius: 4px;
-    background-color: $selected-primary;
+    background-color: openmina.$selected-primary;
     bottom: 0;
     left: 0;
     animation: loading 1.5s infinite;

@@ -9,10 +9,9 @@ use warp::{
     Filter, Rejection, Reply,
 };
 
-use node::core::snark::SnarkJobId;
-use node::rpc::*;
+use node::{core::snark::SnarkJobId, rpc::*};
 
-use openmina_node_common::rpc::{
+use mina_node_common::rpc::{
     RpcActionStatsGetResponse, RpcSender, RpcSnarkPoolGetResponse, RpcSnarkerJobCommitResponse,
     RpcSnarkerJobSpecResponse, RpcStateGetResponse, RpcSyncStatsGetResponse,
 };
@@ -664,10 +663,10 @@ fn readiness(
 }
 
 mod discovery {
+    use mina_node_common::rpc::RpcSender;
     use node::rpc::{
         RpcDiscoveryBoostrapStatsResponse, RpcDiscoveryRoutingTableResponse, RpcRequest,
     };
-    use openmina_node_common::rpc::RpcSender;
     use warp::Filter;
 
     use super::{with_rpc_sender, DroppedChannel};
@@ -737,8 +736,10 @@ async fn recover(rejection: warp::Rejection) -> Result<impl warp::Reply, warp::R
     }
 }
 
-use warp::filters::BoxedFilter;
-use warp::reply::{json, Json, WithStatus};
+use warp::{
+    filters::BoxedFilter,
+    reply::{json, Json, WithStatus},
+};
 
 fn optq<T: 'static + Default + Send + DeserializeOwned>() -> BoxedFilter<(T,)> {
     warp::any()

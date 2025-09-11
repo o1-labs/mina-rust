@@ -1,7 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-pub use super::ocaml::*;
-pub use super::rust::*;
+pub use super::{ocaml::*, rust::*};
 
 #[derive(Serialize, Deserialize, derive_more::From, Debug, Clone)]
 #[serde(tag = "kind")]

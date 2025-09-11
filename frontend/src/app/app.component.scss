@@ -1,9 +1,9 @@
-@import 'openmina';
+@use 'openmina';
 
 mat-sidenav {
   width: 160px;
   border-right: none;
-  background-color: $base-background;
+  background-color: openmina.$base-background;
   transition: 200ms ease-out !important;
   visibility: visible !important;
   display: block !important;
@@ -47,20 +47,23 @@ mat-sidenav-content {
   @media (min-width: 768px) {
     transition: 200ms ease-out !important;
   }
-  overflow: hidden;
+
+  & {
+    overflow: hidden;
+  }
 }
 
 mat-sidenav-container,
 mat-sidenav-content {
   color: inherit;
-  background-color: $base-background;
+  background-color: openmina.$base-background;
 }
 
 #mina-content {
   $toolbar: 40px;
   height: calc(100% - #{$toolbar});
   border-top-left-radius: 6px;
-  background-color: $base-surface;
+  background-color: openmina.$base-surface;
 
   &.no-toolbar {
     height: 100%;

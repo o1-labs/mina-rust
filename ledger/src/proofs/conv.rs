@@ -1,6 +1,5 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_hasher::Fp;
-use mina_p2p_messages::v2;
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 
 use crate::scan_state::{
     currency::{self, Length, Slot},

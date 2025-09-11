@@ -1,12 +1,12 @@
-@import 'openmina';
+@use 'openmina';
 
 .icon-wrap {
-	width: 24px;
-	height: 24px;
-	margin-right: -10px;
+  width: 24px;
+  height: 24px;
+  margin-right: -10px;
 
-	&:hover {
-		background-color: $selected-container;
-		filter: brightness(160%);
-	}
+  &:hover {
+    background-color: openmina.$selected-container;
+    filter: brightness(160%);
+  }
 }

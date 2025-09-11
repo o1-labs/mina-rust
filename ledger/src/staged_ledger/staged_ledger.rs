@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
-use mina_hasher::Fp;
+use mina_core::constants::ConstraintConstants;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::MinaStateProtocolStateValueStableV2;
 use mina_signer::CompressedPubKey;
-use openmina_core::constants::ConstraintConstants;
 
 use crate::{
     decompress_pk,
@@ -47,14 +47,14 @@ use super::{
     resources::Resources,
 };
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#470
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#470>
 #[derive(Clone, Debug)]
 pub struct StackStateWithInitStack {
     pub pc: StackState,
     pub init_stack: Stack,
 }
 
-/// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L23
+/// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L23>
 #[derive(Debug, derive_more::From)]
 pub enum StagedLedgerError {
     NonZeroFeeExcess(Vec<WithStatus<Transaction>>, Box<SpacePartition>),
@@ -221,7 +221,7 @@ impl StagedLedger {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L325
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L325>
     fn of_scan_state_and_ledger_unchecked(
         constraint_constants: &ConstraintConstants,
         last_proof_statement: Option<Statement<()>>,
@@ -254,7 +254,7 @@ impl StagedLedger {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L353
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L353>
     fn of_scan_state_pending_coinbases_and_snarked_ledger_prime<F, G>(
         constraint_constants: &ConstraintConstants,
         pending_coinbase: PendingCoinbase,
@@ -338,7 +338,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L378
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L378>
     pub fn of_scan_state_pending_coinbases_and_snarked_ledger<F>(
         logger: (),
         constraint_constants: &ConstraintConstants,
@@ -382,7 +382,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L386
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L386>
     fn of_scan_state_pending_coinbases_and_snarked_ledger_unchecked<F>(
         constraint_constants: &ConstraintConstants,
         scan_state: ScanState,
@@ -407,7 +407,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L393
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L393>
     pub fn copy(&self) -> Self {
         let new_mask = self.ledger.make_child();
 
@@ -419,7 +419,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#403
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#403>
     pub fn hash(&mut self) -> StagedLedgerHash<Fp> {
         StagedLedgerHash::of_aux_ledger_and_coinbase_hash(
             self.scan_state.hash(),
@@ -428,7 +428,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#422
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#422>
     pub fn ledger(&self) -> Mask {
         self.ledger.clone()
     }
@@ -441,7 +441,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#424
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#424>
     pub fn create_exn(
         constraint_constants: ConstraintConstants,
         ledger: Mask,
@@ -456,12 +456,12 @@ impl StagedLedger {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#434
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#434>
     fn current_ledger_proof(&self) -> Option<&LedgerProofWithSokMessage> {
         self.scan_state.latest_ledger_proof().map(|(f, _)| f)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#439
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#439>
     fn replace_ledger_exn(&mut self, mut ledger: Mask) {
         assert_eq!(
             ledger.merkle_root(),
@@ -471,7 +471,7 @@ impl StagedLedger {
         self.ledger = ledger;
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#456
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#456>
     fn working_stack(
         pending_coinbase_collection: &PendingCoinbase,
         is_new_stack: bool,
@@ -479,7 +479,7 @@ impl StagedLedger {
         Ok(pending_coinbase_collection.latest_stack(is_new_stack))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#460
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#460>
     fn push_coinbase(current_stack: &Stack, transaction: &Transaction) -> Stack {
         match transaction {
             Transaction::Coinbase(c) => current_stack.push_coinbase(c.clone()),
@@ -491,7 +491,7 @@ impl StagedLedger {
         current_stack.push_state(state_body_hash, global_slot)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#477
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#477>
     pub fn coinbase_amount(
         supercharge_coinbase: bool,
         constraint_constants: &ConstraintConstants,
@@ -504,7 +504,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L518
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L518>
     pub fn apply_single_transaction_first_pass(
         constraint_constants: &ConstraintConstants,
         global_slot: Slot,
@@ -789,7 +789,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L164
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L164>
     fn verify(
         logger: (),
         verifier: &Verifier,
@@ -814,7 +814,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L654
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L654>
     fn check_completed_works(
         logger: (),
         verifier: &Verifier,
@@ -842,7 +842,7 @@ impl StagedLedger {
     /// the slots are split into two partitions, total fee excess of the transactions
     /// to be enqueued on each of the partitions should be zero respectively
     ///
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L674
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L674>
     fn check_zero_fee_excess(
         scan_state: &ScanState,
         data: &[TransactionWithWitness],
@@ -889,7 +889,7 @@ impl StagedLedger {
         Ok(())
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L712
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L712>
     fn update_coinbase_stack_and_get_data(
         constraint_constants: &ConstraintConstants,
         global_slot: Slot,
@@ -1021,7 +1021,7 @@ impl StagedLedger {
 
     /// update the pending_coinbase tree with the updated/new stack and delete the oldest stack if a proof was emitted
     ///
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L806
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L806>
     fn update_pending_coinbase_collection<A>(
         depth: usize,
         pending_coinbase: &mut PendingCoinbase,
@@ -1057,7 +1057,7 @@ impl StagedLedger {
         Ok(())
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L855
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L855>
     fn coinbase_for_blockchain_snark(amounts: &[Amount]) -> Result<Amount, StagedLedgerError> {
         match amounts {
             [] => Ok(Amount::zero()),
@@ -1069,7 +1069,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L868
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L868>
     fn apply_diff(
         &mut self,
         _logger: (),
@@ -1200,7 +1200,7 @@ impl StagedLedger {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1016
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1016>
     fn forget_prediff_info<B, C, D>(
         (a, b, c, d): (Vec<WithStatus<valid::Transaction>>, B, C, D),
     ) -> (Vec<WithStatus<Transaction>>, B, C, D) {
@@ -1214,7 +1214,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L1089
+    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/staged_ledger/staged_ledger.ml#L1089>
     fn check_commands(
         ledger: Mask,
         verifier: &Verifier,
@@ -1286,7 +1286,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1095
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1095>
     pub fn apply_diff_unchecked(
         &mut self,
         constraint_constants: &ConstraintConstants,
@@ -1316,7 +1316,7 @@ impl StagedLedger {
         )
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1580
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1580>
     fn check_constraints_and_update(
         constraint_constants: &ConstraintConstants,
         resources: &mut Resources,
@@ -1366,7 +1366,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1624
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1624>
     fn one_prediff(
         constraint_constants: &ConstraintConstants,
         cw_seq: Vec<work::Unchecked>,
@@ -1405,7 +1405,7 @@ impl StagedLedger {
         (init_resources, log)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1643
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1643>
     fn generate(
         constraint_constants: &ConstraintConstants,
         logger: (),
@@ -1690,7 +1690,7 @@ impl StagedLedger {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1781
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1781>
     pub fn can_apply_supercharged_coinbase_exn(
         winner: CompressedPubKey,
         epoch_ledger: &SparseLedger,
@@ -1707,7 +1707,7 @@ impl StagedLedger {
         fun(&mut mask)
     }
 
-    // /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1787
+    // /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1787>
     // fn validate_account_update_proofs(
     //     _logger: (),
     //     validating_ledger: &HashlessLedger,
@@ -1781,7 +1781,7 @@ impl StagedLedger {
     //     }
     // }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1863
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L1863>
     pub fn create_diff<F>(
         &self,
         constraint_constants: &ConstraintConstants,
@@ -1959,11 +1959,11 @@ impl StagedLedger {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L2024
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/staged_ledger/staged_ledger.ml#L2024>
     pub fn latest_block_accounts_created(&self, previous_block_state_hash: Fp) -> Vec<AccountId> {
-        use scan_state::transaction_logic::transaction_applied::signed_command_applied::Body;
-        use scan_state::transaction_logic::transaction_applied::CommandApplied;
-        use scan_state::transaction_logic::transaction_applied::Varying;
+        use scan_state::transaction_logic::transaction_applied::{
+            signed_command_applied::Body, CommandApplied, Varying,
+        };
 
         let block_transactions_applied = {
             let f = |t: Arc<TransactionWithWitness>| {
@@ -2010,11 +2010,10 @@ mod tests_ocaml {
         sync::atomic::{AtomicUsize, Ordering::Relaxed},
     };
 
-    use ark_ec::{AffineCurve, ProjectiveCurve};
+    use ark_ec::{AffineRepr, CurveGroup};
     use ark_ff::Zero;
     use mina_curves::pasta::Fq;
-    use mina_signer::Signer;
-    use mina_signer::{Keypair, Signature};
+    use mina_signer::{Keypair, Signature, Signer};
     use o1_utils::FieldHelpers;
     use once_cell::sync::Lazy;
     use rand::{seq::SliceRandom, CryptoRng, Rng};
@@ -2075,7 +2074,7 @@ mod tests_ocaml {
 
     const VERIFIER: Verifier = Verifier;
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2092
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2092>
     fn supercharge_coinbase(ledger: Mask, winner: CompressedPubKey, global_slot: Slot) -> bool {
         // using staged ledger to confirm coinbase amount is correctly generated
 
@@ -2089,7 +2088,7 @@ mod tests_ocaml {
 
     /// Functor for testing with different instantiated staged ledger modules.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2102
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2102>
     fn create_and_apply_with_state_body_hash<F>(
         coinbase_receiver: Option<CompressedPubKey>,
         winner: Option<CompressedPubKey>,
@@ -2174,7 +2173,7 @@ mod tests_ocaml {
             .collect::<Vec<_>>()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_ledger/ledger.ml#L408
+    /// <https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_ledger/ledger.ml#L408>
     fn gen_initial_ledger_state() -> LedgerInitialState {
         let mut rng = rand::thread_rng();
 
@@ -2388,7 +2387,7 @@ mod tests_ocaml {
 
                         let mut signer =
                             mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-                        signer.sign(sender_pk, &payload_to_sign)
+                        signer.sign(sender_pk, &payload_to_sign, false)
                     }
                 };
 
@@ -2404,7 +2403,7 @@ mod tests_ocaml {
     /// Generate a valid sequence of payments based on the initial state of a
     /// ledger. Use this together with Ledger.gen_initial_ledger_state.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_base/signed_command.ml#L246
+    /// <https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_base/signed_command.ml#L246>
     fn signed_command_sequence(
         length: usize,
         sign_kind: SignKind,
@@ -2425,7 +2424,7 @@ mod tests_ocaml {
     /// Same as gen_at_capacity except that the number of iterations[iters] is
     /// the function of [extra_block_count] and is same for all generated values
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2597
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2597>
     fn gen_at_capacity_fixed_blocks(
         extra_block_count: usize,
     ) -> (
@@ -2467,7 +2466,7 @@ mod tests_ocaml {
     ///   init_state to both. In the below tests we apply the same commands to
     ///   the staged and test ledgers, and verify they are in the same state.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2180
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2180>
     #[allow(clippy::blocks_in_conditions)]
     fn async_with_given_ledger<F, R>(
         _ledger_init_state: &LedgerInitialState,
@@ -2509,7 +2508,7 @@ mod tests_ocaml {
     ///
     /// Print the generated state when a panic occurs
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2192
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2192>
     fn async_with_ledgers<F, R>(
         ledger_init_state: &LedgerInitialState,
         cmds: Vec<valid::UserCommand>,
@@ -2541,7 +2540,7 @@ mod tests_ocaml {
     /// Abstraction for the pattern of taking a list of commands and applying it
     /// in chunks up to a given max size.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2392
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2392>
     fn iter_cmds_acc<A, F>(
         cmds: &[valid::UserCommand],
         cmd_iters: &[Option<usize>],
@@ -2624,7 +2623,7 @@ mod tests_ocaml {
         dummy_state_and_view(global_slot).1
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2164
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2164>
     fn create_and_apply<F>(
         coinbase_receiver: Option<CompressedPubKey>,
         winner: Option<CompressedPubKey>,
@@ -2659,7 +2658,7 @@ mod tests_ocaml {
 
     /// Fee excess at top level ledger proofs should always be zero
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2377
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2377>
     fn assert_fee_excess(
         proof: &Option<(
             LedgerProof,
@@ -2671,7 +2670,7 @@ mod tests_ocaml {
         };
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2322
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2322>
     fn coinbase_first_prediff(
         v: &AtMostTwo<CoinbaseFeeTransfer>,
     ) -> (usize, Vec<&CoinbaseFeeTransfer>) {
@@ -2685,7 +2684,7 @@ mod tests_ocaml {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2336
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2336>
     fn coinbase_second_prediff(
         v: &AtMostOne<CoinbaseFeeTransfer>,
     ) -> (usize, Vec<&CoinbaseFeeTransfer>) {
@@ -2696,7 +2695,7 @@ mod tests_ocaml {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2344
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2344>
     fn coinbase_count(sl_diff: &Diff) -> usize {
         coinbase_first_prediff(&sl_diff.diff.0.coinbase).0
             + sl_diff
@@ -2707,7 +2706,7 @@ mod tests_ocaml {
                 .unwrap_or(0)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2349
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2349>
     fn coinbase_cost(sl_diff: &Diff) -> Fee {
         let first = coinbase_first_prediff(&sl_diff.diff.0.coinbase).1;
         let snd = sl_diff
@@ -2728,7 +2727,7 @@ mod tests_ocaml {
     /// states of the block producer account and user accounts but ignores
     /// snark workers for simplicity.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2203
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2203>
     #[allow(unused)]
     fn assert_ledger(
         test_ledger: Mask,
@@ -2832,7 +2831,7 @@ mod tests_ocaml {
 
     /// Generic test framework.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2427
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2427>
     fn test_simple<F>(params: TestSimpleParams<F>) -> StagedLedger
     where
         F: Fn(&work::Statement) -> Option<work::Checked>,
@@ -3082,7 +3081,7 @@ mod tests_ocaml {
 
     /// Deterministically compute a prover public key from a snark work statement.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2279
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2279>
     fn stmt_to_prover(stmt: &work::Statement) -> CompressedPubKey {
         use rand::RngCore;
         use rand_pcg::Pcg64;
@@ -3123,7 +3122,7 @@ mod tests_ocaml {
             .into_compressed()
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2289
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2289>
     fn proofs(stmt: &work::Statement) -> OneOrTwo<LedgerProof> {
         stmt.map(|statement| {
             LedgerProof::create(
@@ -3134,7 +3133,7 @@ mod tests_ocaml {
         })
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2295
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2295>
     fn stmt_to_work_random_prover(stmt: &work::Statement) -> Option<work::Checked> {
         let mut rng = rand::thread_rng();
         // TODO: In OCaml it is "deterministic"
@@ -3149,7 +3148,7 @@ mod tests_ocaml {
 
     /// Max throughput-ledger proof count-fixed blocks
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2636
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2636>
     #[test]
     fn max_throughput_ledger_proof_count_fixed_blocks() {
         const EXPECTED_PROOF_COUNT: usize = 3;
@@ -3213,7 +3212,7 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2511
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2511>
     fn gen_at_capacity() -> (
         LedgerInitialState,
         Vec<valid::UserCommand>,
@@ -3233,7 +3232,7 @@ mod tests_ocaml {
 
     /// Max throughput
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2651
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2651>
     #[test]
     fn max_throughput_normal() {
         let (ledger_init_state, cmds, cmd_iters) = gen_at_capacity();
@@ -3297,7 +3296,7 @@ mod tests_ocaml {
         WithHash { data: vk, hash }
     });
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2525
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2525>
     fn gen_zkapps(
         failure: Option<Failure>,
         num_zkapps: usize,
@@ -3343,7 +3342,7 @@ mod tests_ocaml {
         (ledger, zkapps, zkapps_per_iter)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2571
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2571>
     fn gen_zkapps_at_capacity() -> (Mask, Vec<valid::UserCommand>, Vec<Option<usize>>) {
         let mut rng = rand::thread_rng();
 
@@ -3352,7 +3351,7 @@ mod tests_ocaml {
         gen_zkapps(None, num_zkapps, vec![None; iters])
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/staged_ledger/staged_ledger.ml#L2560
+    /// <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/staged_ledger/staged_ledger.ml#L2560>
     fn gen_failing_zkapps_at_capacity() -> (Mask, Vec<valid::UserCommand>, Vec<Option<usize>>) {
         let mut rng = rand::thread_rng();
 
@@ -3396,7 +3395,7 @@ mod tests_ocaml {
 
     /// Max throughput (zkapps)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2664
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2664>
     // #[test]
     fn max_throughput_zkapps() {
         let (ledger, zkapps, cmd_iters) = gen_zkapps_at_capacity();
@@ -3430,7 +3429,7 @@ mod tests_ocaml {
 
     /// Max_throughput with zkApp transactions that may fail
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2675
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2675>
     // #[test]
     fn max_throughput_zkapps_that_may_fail() {
         let (ledger, zkapps, cmd_iters) = gen_failing_zkapps_at_capacity();
@@ -3534,7 +3533,7 @@ mod tests_ocaml {
 
     /// Generator for when we have less commands than needed to fill all slots.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2612
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2612>
     fn gen_below_capacity(
         extra_blocks: Option<bool>,
     ) -> (
@@ -3617,7 +3616,7 @@ mod tests_ocaml {
 
     /// Be able to include random number of commands
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2686
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2686>
     #[test]
     fn be_able_to_include_random_number_of_commands_many_normal() {
         let (ledger_init_state, cmds, cmd_iters) = gen_below_capacity(None);
@@ -3773,14 +3772,15 @@ mod tests_ocaml {
         Vec<Option<usize>>,
     ) {
         fn keypair_from_private(private: &str) -> Keypair {
+            use core::ops::Mul;
+
             let bytes = bs58::decode(private).into_vec().unwrap();
             let bytes = &bytes[1..]; // ignore base58 check byte
 
             let secret = mina_signer::ScalarField::from_bytes(&bytes[1..]).unwrap();
-            let public: mina_signer::CurvePoint =
-                mina_signer::CurvePoint::prime_subgroup_generator()
-                    .mul(secret)
-                    .into_affine();
+            let public: mina_signer::CurvePoint = mina_signer::CurvePoint::generator()
+                .mul(secret)
+                .into_affine();
 
             if !public.is_on_curve() {
                 panic!()
@@ -4161,7 +4161,7 @@ mod tests_ocaml {
         test_hash(cmds, &iters[..], &expected);
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/staged_ledger/staged_ledger.ml#L2579
+    /// <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/staged_ledger/staged_ledger.ml#L2579>
     fn gen_zkapps_below_capacity(
         extra_blocks: Option<bool>,
     ) -> (Mask, Vec<valid::UserCommand>, Vec<Option<usize>>) {
@@ -4189,7 +4189,7 @@ mod tests_ocaml {
 
     /// Be able to include random number of commands (zkapps)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2694
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2694>
     // #[test]
     fn be_able_to_include_random_number_of_commands_zkapps() {
         let (ledger, zkapps, cmd_iters) = gen_zkapps_below_capacity(None);
@@ -4223,7 +4223,7 @@ mod tests_ocaml {
 
     /// Be able to include random number of commands (One prover)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2704
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2704>
     #[test]
     fn be_able_to_include_random_number_of_commands_one_prover_normal() {
         let (ledger_init_state, cmds, cmd_iters) = gen_below_capacity(None);
@@ -4285,7 +4285,7 @@ mod tests_ocaml {
 
     /// Be able to include random number of commands (One prover, zkapps)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2712
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2712>
     // #[test]
     fn be_able_to_include_random_number_of_commands_one_prover_zkapps() {
         let (ledger, zkapps, cmd_iters) = gen_zkapps_below_capacity(Some(true));
@@ -4324,7 +4324,7 @@ mod tests_ocaml {
     });
     // Lazy::new(|| gen_keypair().public.into_compressed());
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2295
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2295>
     fn stmt_to_work_one_prover(stmt: &work::Statement) -> Option<work::Checked> {
         Some(work::Checked {
             fee: WORK_FEE,
@@ -4335,7 +4335,7 @@ mod tests_ocaml {
 
     /// Zero proof-fee should not create a fee transfer
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2723
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2723>
     #[test]
     fn zero_proof_fee_should_not_create_a_fee_transfer() {
         const EXPECTED_PROOF_COUNT: usize = 3;
@@ -4379,7 +4379,7 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2745
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2745>
     fn compute_statutes(
         ledger: Mask,
         coinbase_amount: Amount,
@@ -4412,7 +4412,7 @@ mod tests_ocaml {
 
     /// Invalid diff test: check zero fee excess for partitions
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2761
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2761>
     #[test]
     fn check_zero_fee_excess_for_partitions() {
         let create_diff_with_non_zero_fee_excess =
@@ -4567,7 +4567,7 @@ mod tests_ocaml {
 
     /// Provers can't pay the account creation fee
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2866
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2866>
     #[test]
     fn provers_cant_pay_the_account_creation_fee() {
         let no_work_included = |diff: &Diff| diff.completed_works().is_empty();
@@ -4621,7 +4621,7 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2914
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2914>
     fn stmt_to_work_restricted(
         work_list: &[work::Statement],
         provers: NumProvers,
@@ -4645,7 +4645,7 @@ mod tests_ocaml {
 
     /// Like test_simple but with a random number of completed jobs available.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2939
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2939>
     fn test_random_number_of_proofs(
         global_slot: Slot,
         init: &LedgerInitialState,
@@ -4733,7 +4733,7 @@ mod tests_ocaml {
     ///
     /// Always at worst case number of provers
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2983
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L2983>
     #[test]
     fn max_throughput_random_number_of_proofs_worst_case_provers() {
         let mut rng = rand::thread_rng();
@@ -4776,7 +4776,7 @@ mod tests_ocaml {
 
     /// random no of transactions-random number of proofs-worst case provers
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3008
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3008>
     #[test]
     fn random_number_of_transactions_random_number_of_proofs_worst_case_provers() {
         let mut rng = rand::thread_rng();
@@ -4810,7 +4810,7 @@ mod tests_ocaml {
 
     /// Random number of commands-random number of proofs-one prover
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3057
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3057>
     #[test]
     fn random_number_of_commands_random_number_of_proofs_one_prover() {
         let mut rng = rand::thread_rng();
@@ -4842,7 +4842,7 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3076
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3076>
     fn stmt_to_work_random_fee(
         work_list: &[(work::Statement, Fee)],
         provers: NumProvers,
@@ -4865,7 +4865,7 @@ mod tests_ocaml {
 
     /// Like test_random_number_of_proofs but with random proof fees.
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3095
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3095>
     fn test_random_proof_fee(
         global_slot: Slot,
         _init: &LedgerInitialState,
@@ -5003,7 +5003,7 @@ mod tests_ocaml {
     ///
     /// Always at worst case number of provers
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3188
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3188>
     #[test]
     fn max_throughput_random_number_fee_number_of_proofs_worst_case_provers() {
         let mut rng = rand::thread_rng();
@@ -5048,7 +5048,7 @@ mod tests_ocaml {
 
     /// Max throughput-random fee
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3214
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3214>
     #[test]
     fn max_throughput_random_fee() {
         let mut rng = rand::thread_rng();
@@ -5093,12 +5093,12 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3244
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3244>
     fn check_pending_coinbase() {
         // TODO: this seems to be related to proof generation ? Which we don't support yet
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3290
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3290>
     fn test_pending_coinbase(
         global_slot: Slot,
         init: &LedgerInitialState,
@@ -5174,7 +5174,7 @@ mod tests_ocaml {
         assert!(proofs_available_left.is_empty());
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3348
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3348>
     fn pending_coinbase_test(prover: NumProvers) {
         let mut rng = rand::thread_rng();
 
@@ -5208,7 +5208,7 @@ mod tests_ocaml {
     /// Validate pending coinbase for random number of
     /// commands-random number of proofs-one prover)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3379
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3379>
     #[test]
     fn validate_pending_coinbase_for_random_number_of_commands_one_prover() {
         pending_coinbase_test(NumProvers::One);
@@ -5217,13 +5217,13 @@ mod tests_ocaml {
     /// Validate pending coinbase for random number of
     /// commands-random number of proofs-many prover)
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3383
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3383>
     #[test]
     fn validate_pending_coinbase_for_random_number_of_commands_many_prover() {
         pending_coinbase_test(NumProvers::Many);
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3387
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3387>
     fn timed_account(_n: usize) -> (Keypair, Account) {
         let keypair = gen_keypair();
         let account_id = AccountId::new(keypair.public.into_compressed(), TokenId::default());
@@ -5240,7 +5240,7 @@ mod tests_ocaml {
         (keypair, account)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3410
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3410>
     fn untimed_account(_n: usize) -> (Keypair, Account) {
         let keypair = gen_keypair();
         let account_id = AccountId::new(keypair.public.into_compressed(), TokenId::default());
@@ -5261,7 +5261,7 @@ mod tests_ocaml {
         }
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3425
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3425>
     fn supercharge_coinbase_test<F>(
         this: Account,
         delegator: Account,
@@ -5320,7 +5320,7 @@ mod tests_ocaml {
 
     /// Supercharged coinbase - staking
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3468
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3468>
     #[test]
     fn supercharged_coinbase_staking() {
         let (keypair_this, this) = timed_account(1);
@@ -5380,7 +5380,7 @@ mod tests_ocaml {
 
     /// Supercharged coinbase - unlocked account delegating to locked account
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3505
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3505>
     #[test]
     fn supercharged_coinbase_unlocked_account_delegating_to_locked_account() {
         let (keypair_this, locked_this) = timed_account(1);
@@ -5435,7 +5435,7 @@ mod tests_ocaml {
 
     /// Supercharged coinbase - locked account delegating to unlocked account
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3537
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3537>
     #[test]
     fn supercharged_coinbase_locked_account_delegating_to_unlocked_account() {
         let (keypair_this, unlocked_this) = untimed_account(1);
@@ -5504,7 +5504,7 @@ mod tests_ocaml {
 
     /// Supercharged coinbase - locked account delegating to locked account
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3580
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3580>
     #[test]
     fn supercharged_coinbase_locked_account_delegating_to_locked_account() {
         let (keypair_this, locked_this) = timed_account(1);
@@ -5559,7 +5559,7 @@ mod tests_ocaml {
         );
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3612
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3612>
     fn command_insufficient_funds() -> (LedgerInitialState, valid::UserCommand, Slot) {
         let ledger_initial_state = gen_initial_ledger_state();
         let global_slot = Slot::gen_small();
@@ -5585,7 +5585,7 @@ mod tests_ocaml {
         let payload_to_sign = TransactionUnionPayload::of_user_command_payload(&payload);
 
         let mut signer = mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-        let signature = signer.sign(kp, &payload_to_sign);
+        let signature = signer.sign(kp, &payload_to_sign, false);
 
         let signed_command = SignedCommand {
             payload,
@@ -5599,7 +5599,7 @@ mod tests_ocaml {
 
     /// Commands with Insufficient funds are not included
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3643
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3643>
     #[test]
     fn commands_with_insufficient_funds_are_not_included() {
         let (ledger_init_state, invalid_commands, global_slot) = command_insufficient_funds();
@@ -5632,7 +5632,7 @@ mod tests_ocaml {
 
     /// Blocks having commands with insufficient funds are rejected
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3665
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3665>
     #[test]
     fn blocks_having_commands_with_sufficient_funds_are_rejected() {
         enum Validity {
@@ -5681,7 +5681,7 @@ mod tests_ocaml {
             let payload_to_sign = TransactionUnionPayload::of_user_command_payload(&payload);
 
             let mut signer = mina_signer::create_legacy(mina_signer::NetworkId::TESTNET);
-            let signature = signer.sign(&kp, &payload_to_sign);
+            let signature = signer.sign(&kp, &payload_to_sign, false);
 
             let signed_command = SignedCommand {
                 payload,
@@ -5767,7 +5767,7 @@ mod tests_ocaml {
 
     /// Mismatched verification keys in zkApp accounts and and transactions
     ///
-    /// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3776
+    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/staged_ledger/staged_ledger.ml#L3776>
     // #[test] // TODO: This test requires the prover
     #[allow(unused)]
     fn mismatched_vk_in_zkapp_accounts_and_transactions() {
@@ -5856,7 +5856,7 @@ mod tests_ocaml {
 mod tests {
     use std::{collections::BTreeMap, fs::File};
 
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot, list::List};
 
     use crate::{
@@ -6260,7 +6260,7 @@ mod tests {
 
         let mut staged_ledger = StagedLedger::of_scan_state_pending_coinbases_and_snarked_ledger(
             (),
-            openmina_core::constants::constraint_constants(),
+            mina_core::constants::constraint_constants(),
             Verifier,
             scan_state,
             ledger,

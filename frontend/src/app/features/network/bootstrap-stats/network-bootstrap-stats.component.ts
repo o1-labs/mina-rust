@@ -12,10 +12,11 @@ import {
 } from '@network/bootstrap-stats/network-bootstrap-stats.state';
 
 @Component({
-  selector: 'mina-network-bootstrap-stats',
-  templateUrl: './network-bootstrap-stats.component.html',
-  styleUrls: ['./network-bootstrap-stats.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-network-bootstrap-stats',
+    templateUrl: './network-bootstrap-stats.component.html',
+    styleUrls: ['./network-bootstrap-stats.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NetworkBootstrapStatsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

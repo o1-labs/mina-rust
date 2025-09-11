@@ -4,9 +4,10 @@ use mina_p2p_messages::v2::{MinaStateProtocolStateValueStableV2, StateHash};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use super::snarked::TransitionFrontierSyncLedgerSnarkedState;
-use super::staged::TransitionFrontierSyncLedgerStagedState;
-use super::{SyncLedgerTarget, SyncLedgerTargetKind};
+use super::{
+    snarked::TransitionFrontierSyncLedgerSnarkedState,
+    staged::TransitionFrontierSyncLedgerStagedState, SyncLedgerTarget, SyncLedgerTargetKind,
+};
 
 #[derive(derive_more::From, Serialize, Deserialize, Debug, Clone)]
 pub enum TransitionFrontierSyncLedgerState {

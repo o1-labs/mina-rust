@@ -1,10 +1,10 @@
 use std::rc::Rc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ark_poly::{EvaluationDomain, Radix2EvaluationDomain};
 use ark_serialize::Write;
 use itertools::Itertools;
-use poly_commitment::srs::SRS;
+use mina_p2p_messages::bigint::InvalidBigInt;
+use poly_commitment::ipa::SRS;
 
 use crate::{
     proofs::{
@@ -40,8 +40,7 @@ use kimchi::{
     mina_curves::pasta::Pallas,
     proof::{PointEvaluations, ProofEvaluations},
 };
-use mina_curves::pasta::{Fq, Vesta};
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq, Vesta};
 use mina_p2p_messages::{
     bigint::BigInt,
     binprot::BinProtWrite,
@@ -501,10 +500,9 @@ fn verify_with(
     proof: &ProverProof<Fq>,
     public_input: &[Fq],
 ) -> Result<(), VerifyError> {
-    use kimchi::groupmap::GroupMap;
-    use kimchi::mina_curves::pasta::PallasParameters;
+    use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
-    use poly_commitment::evaluation_proof::OpeningProof;
+    use poly_commitment::ipa::OpeningProof;
 
     type SpongeParams = mina_poseidon::constants::PlonkSpongeConstantsKimchi;
     type EFqSponge = DefaultFqSponge<PallasParameters, SpongeParams>;
@@ -527,11 +525,9 @@ pub struct VerificationContext<'a> {
 }
 
 fn batch_verify(proofs: &[VerificationContext]) -> Result<(), VerifyError> {
-    use kimchi::groupmap::GroupMap;
-    use kimchi::mina_curves::pasta::PallasParameters;
-    use kimchi::verifier::Context;
+    use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters, verifier::Context};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
-    use poly_commitment::evaluation_proof::OpeningProof;
+    use poly_commitment::ipa::OpeningProof;
 
     type SpongeParams = mina_poseidon::constants::PlonkSpongeConstantsKimchi;
     type EFqSponge = DefaultFqSponge<PallasParameters, SpongeParams>;
@@ -716,7 +712,7 @@ fn compute_deferred_values(
     })
 }
 
-/// https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/verification_key.mli#L30
+/// <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/verification_key.mli#L30>
 pub struct VK<'a> {
     pub commitments: PlonkVerificationKeyEvals<Fp>,
     pub index: &'a VerifierIndex<Fq>,
@@ -741,9 +737,7 @@ pub fn verify_block(
     };
 
     let Ok(protocol_state) = ProtocolState::try_from(protocol_state) else {
-        openmina_core::warn!(
-            message = format!("verify_block: Protocol state contains invalid field")
-        );
+        mina_core::warn!(message = format!("verify_block: Protocol state contains invalid field"));
         return false; // invalid bigint
     };
     let protocol_state_hash = MinaHash::hash(&protocol_state);
@@ -753,7 +747,7 @@ pub fn verify_block(
     let verified = verify_impl(&protocol_state_hash, protocol_state_proof, &vk).unwrap_or(false);
     let ok = accum_check && verified;
 
-    openmina_core::info!(message = format!("verify_block OK={ok:?}"));
+    mina_core::info!(message = format!("verify_block OK={ok:?}"));
 
     if !ok {
         on_fail::dump_block_verification(header);
@@ -794,7 +788,7 @@ pub fn verify_transaction<'a>(
     let verified = batch_verify_impl(inputs.as_slice()).unwrap_or(false);
     let ok = accum_check && verified;
 
-    openmina_core::info!(message = format!("verify_transactions OK={ok:?}"));
+    mina_core::info!(message = format!("verify_transactions OK={ok:?}"));
 
     if !ok {
         on_fail::dump_tx_verification(&inputs);
@@ -803,7 +797,7 @@ pub fn verify_transaction<'a>(
     ok
 }
 
-/// https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_proof.rs#L116
+/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/crypto/kimchi_bindings/stubs/src/pasta_fq_plonk_proof.rs#L116>
 pub fn verify_zkapp(
     verification_key: &VerificationKey,
     zkapp_statement: &ZkappStatement,
@@ -811,7 +805,7 @@ pub fn verify_zkapp(
     srs: &SRS<Vesta>,
 ) -> bool {
     let verifier_index = make_zkapp_verifier_index(verification_key);
-    // https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/pickles.ml#LL260C1-L274C18
+    // <https://github.com/MinaProtocol/mina/blob/4e0b324912017c3ff576704ee397ade3d9bda412/src/lib/pickles/pickles.ml#LL260C1-L274C18>
     let vk = VK {
         commitments: *verification_key.wrap_index.clone(),
         index: &verifier_index,
@@ -824,7 +818,7 @@ pub fn verify_zkapp(
 
     let ok = accum_check && verified;
 
-    openmina_core::info!(message = format!("verify_zkapp OK={ok:?}"));
+    mina_core::info!(message = format!("verify_zkapp OK={ok:?}"));
 
     if !ok {
         on_fail::dump_zkapp_verification(verification_key, zkapp_statement, sideloaded_proof);
@@ -933,8 +927,10 @@ mod on_fail {
         zkapp_statement: &ZkappStatement,
         sideloaded_proof: &PicklesProofProofsVerified2ReprStableV2,
     ) {
-        use mina_p2p_messages::binprot;
-        use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
+        use mina_p2p_messages::{
+            binprot,
+            binprot::macros::{BinProtRead, BinProtWrite},
+        };
 
         #[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]
         struct VerifyZkapp {
@@ -983,7 +979,7 @@ mod on_fail {
         }
 
         if let Err(e) = dump_to_file_impl(data, filename) {
-            openmina_core::error!(
+            mina_core::error!(
                 message = "Failed to dump proof verification data",
                 error = format!("{e:?}")
             );
@@ -997,7 +993,7 @@ mod on_fail {
             vec
         };
 
-        let debug_dir = openmina_core::get_debug_dir();
+        let debug_dir = mina_core::get_debug_dir();
         let filename = debug_dir
             .join(generate_new_filename(filename, "binprot", &bin)?)
             .to_string_lossy()
@@ -1008,7 +1004,7 @@ mod on_fail {
         file.write_all(&bin)?;
         file.sync_all()?;
 
-        openmina_core::error!(
+        mina_core::error!(
             message = format!("proof verication failed, dumped data to {:?}", &filename)
         );
 
@@ -1034,7 +1030,7 @@ mod on_fail {
 mod tests {
     use std::path::Path;
 
-    use mina_hasher::Fp;
+    use mina_curves::pasta::Fp;
     use mina_p2p_messages::{binprot::BinProtRead, v2};
 
     use crate::proofs::{provers::devnet_circuit_directory, transaction::tests::panic_in_ci};
@@ -1046,8 +1042,10 @@ mod tests {
 
     #[test]
     fn test_verify_zkapp() {
-        use mina_p2p_messages::binprot;
-        use mina_p2p_messages::binprot::macros::{BinProtRead, BinProtWrite};
+        use mina_p2p_messages::{
+            binprot,
+            binprot::macros::{BinProtRead, BinProtWrite},
+        };
 
         #[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]
         struct VerifyZkapp {

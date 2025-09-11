@@ -1,6 +1,6 @@
 use std::{borrow::Borrow, cell::RefCell, rc::Rc, str::FromStr};
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::v2::NonZeroCurvePointUncompressedStableV1;
 use ocaml_interop::{
     impl_to_ocaml_polymorphic_variant, impl_to_ocaml_variant, ocaml_export, DynBox, OCaml,
@@ -11,8 +11,7 @@ use crate::{
     account::{Account, AccountId},
     address::Address,
     base::{AccountIndex, BaseLedger, MerklePath},
-    ffi::util::*,
-    ffi::DatabaseFFI,
+    ffi::{util::*, DatabaseFFI},
     short_backtrace, Mask, UnregisterBehavior,
 };
 

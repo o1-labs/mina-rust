@@ -1,0 +1,29 @@
+name: Format
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+
+jobs:
+  format:
+    name: Format using nightly
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v5
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+          toolchain: nightly-2025-08-18
+          components: rustfmt
+          cache-prefix: format-nightly-v0
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: taplo
+      - name: rustfmt
+        run: make check-format

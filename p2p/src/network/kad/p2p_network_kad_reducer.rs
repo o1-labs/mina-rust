@@ -1,5 +1,5 @@
 use crate::{P2pLimits, P2pNetworkKadEntry};
-use openmina_core::{debug, Substate, SubstateAccess};
+use mina_core::{debug, Substate, SubstateAccess};
 use redux::ActionWithMeta;
 
 use super::{

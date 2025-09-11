@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 $green: #59bfb5;
 $light-peach: #0d0d0d;
@@ -45,7 +45,7 @@ $white: #000000;
 }
 
 .welcome-container {
-  background: linear-gradient(180deg, transparent 75%, $base-background), url('../../../assets/images/web-node-demo/Hero BG.jpg');
+  background: linear-gradient(180deg, transparent 75%, openmina.$base-background), url('../../../assets/images/web-node-demo/Hero BG.jpg');
   background-size: cover;
   background-position: top;
 
@@ -83,8 +83,8 @@ $white: #000000;
 }
 
 .hardcoded-key {
-  background-color: $warn-container;
-  color: $warn-primary;
+  background-color: openmina.$warn-container;
+  color: openmina.$warn-primary;
   margin: 64px 10px;
   width: calc(100% - 20px);
   max-width: 946px;
@@ -137,7 +137,7 @@ $white: #000000;
       min-height: 32px;
       border-radius: 50%;
       background: linear-gradient(96deg, $sand 0%, $peach 132.89%);
-      color: $base-background;
+      color: openmina.$base-background;
       font-size: 18px;
       margin-right: 24px;
     }

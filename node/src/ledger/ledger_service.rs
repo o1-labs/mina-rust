@@ -24,7 +24,6 @@ use crate::{
         },
     },
 };
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
     scan_state::{
         currency::Slot,
@@ -47,8 +46,16 @@ use ledger::{
     verifier::Verifier,
     Account, AccountId, AccountIndex, BaseLedger, Database, Mask, TokenId, UnregisterBehavior,
 };
-use mina_hasher::Fp;
+use mina_core::{
+    block::{AppliedBlock, ArcBlockWithHash},
+    bug_condition,
+    constants::constraint_constants,
+    snark::{Snark, SnarkJobId},
+    thread,
+};
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot::BinProtRead,
     list::List,
     v2::{
@@ -61,13 +68,6 @@ use mina_p2p_messages::{
     },
 };
 use mina_signer::CompressedPubKey;
-use openmina_core::{
-    block::{AppliedBlock, ArcBlockWithHash},
-    bug_condition,
-    constants::constraint_constants,
-    snark::{Snark, SnarkJobId},
-    thread,
-};
 use std::{
     collections::{BTreeMap, BTreeSet},
     path::Path,
@@ -177,8 +177,7 @@ pub struct LedgerCtx {
     sync: LedgerSyncState,
     /// Returns more data on block application necessary for archive node
     archive_mode: bool,
-    event_sender:
-        Option<openmina_core::channels::mpsc::UnboundedSender<crate::event_source::Event>>,
+    event_sender: Option<mina_core::channels::mpsc::UnboundedSender<crate::event_source::Event>>,
 }
 
 #[derive(Default)]
@@ -230,7 +229,7 @@ impl LedgerCtx {
     // reconstruction async, can be removed when the ledger services are made async
     pub fn set_event_sender(
         &mut self,
-        event_sender: openmina_core::channels::mpsc::UnboundedSender<crate::event_source::Event>,
+        event_sender: mina_core::channels::mpsc::UnboundedSender<crate::event_source::Event>,
     ) {
         self.event_sender = Some(event_sender);
     }
@@ -418,7 +417,7 @@ impl LedgerCtx {
         new_root_snarked_ledger_hash: &LedgerHash,
         new_root_staged_ledger_hash: &MinaBaseStagedLedgerHashStableV1,
     ) -> Result<(), String> {
-        openmina_core::debug!(openmina_core::log::system_time();
+        mina_core::debug!(mina_core::log::system_time();
             kind = "LedgerService::push_snarked_ledger",
             summary = format!("{old_root_snarked_ledger_hash} -> {new_root_snarked_ledger_hash}"));
         // Steps 4-7 from https://github.com/openmina/mina/blob/bc812dc9b90e05898c0c36ac76ba51ccf6cac137/src/lib/transition_frontier/full_frontier/full_frontier.ml#L354-L392
@@ -665,7 +664,7 @@ impl LedgerCtx {
         pred_block: AppliedBlock,
         skip_verification: Option<SkipVerification>,
     ) -> Result<BlockApplyResult, String> {
-        openmina_core::info!(openmina_core::log::system_time();
+        mina_core::info!(mina_core::log::system_time();
             kind = "LedgerService::block_apply",
             summary = format!("{}, {} <- {}", block.height(), block.hash(), block.pred_hash()),
             pred_staged_ledger_hash = pred_block.merkle_root_hash().to_string(),
@@ -723,13 +722,13 @@ impl LedgerCtx {
                 .unwrap(); // We already know the ledger exists, see the same call a few lines above
 
             match dump_application_to_file(staged_ledger, block.clone(), pred_block) {
-                Ok(filename) => openmina_core::info!(
-                    openmina_core::log::system_time();
+                Ok(filename) => mina_core::info!(
+                    mina_core::log::system_time();
                     kind = "LedgerService::dump - Failed application",
                     summary = format!("StagedLedger and block saved to: {filename:?}")
                 ),
-                Err(e) => openmina_core::error!(
-                    openmina_core::log::system_time();
+                Err(e) => mina_core::error!(
+                    mina_core::log::system_time();
                     kind = "LedgerService::dump - Failed application",
                     summary = format!("Failed to save block application to file: {e:?}")
                 ),
@@ -748,7 +747,7 @@ impl LedgerCtx {
 
             let coinbase_receiver_id = AccountId::new(coinbase_receiver, TokenId::default());
 
-            // https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L78
+            // <https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L78>
             let (accessed, not_accessed): (BTreeSet<_>, BTreeSet<_>) = block
                 .body()
                 .tranasctions_with_status()
@@ -771,7 +770,7 @@ impl LedgerCtx {
             // Note: If for whatever reason the network has set the coinbase amount to zero,
             // to mimic the behavior of the ocaml node, we still include the coinbase receiver
             // in the accessed accounts as a coinbase transaction is created regardless of the coinbase amount.
-            // https://github.com/MinaProtocol/mina/blob/b595a2bf00ae138d745737da628bd94bb2bd91e2/src/lib/staged_ledger/pre_diff_info.ml#L139
+            // <https://github.com/MinaProtocol/mina/blob/b595a2bf00ae138d745737da628bd94bb2bd91e2/src/lib/staged_ledger/pre_diff_info.ml#L139>
             let has_coinbase = block.body().has_coinbase();
 
             if has_coinbase {
@@ -815,7 +814,7 @@ impl LedgerCtx {
                 .collect();
 
             // A token is used regardless of txn status
-            // https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L114
+            // <https://github.com/MinaProtocol/mina/blob/85149735ca3a76d026e8cf36b8ff22941a048e31/src/app/archive/lib/diff.ml#L114>
             let all_account_ids: BTreeSet<_> = account_ids_accessed
                 .union(&account_ids_not_accessed)
                 .collect();
@@ -877,7 +876,7 @@ impl LedgerCtx {
         new_root: &ArcBlockWithHash,
         new_best_tip: &ArcBlockWithHash,
     ) -> CommitResult {
-        openmina_core::debug!(openmina_core::log::system_time();
+        mina_core::debug!(mina_core::log::system_time();
             kind = "LedgerService::commit",
             summary = format!("commit {}, {}", new_best_tip.height(), new_best_tip.hash()),
             new_root = format!("{}, {}", new_root.height(), new_root.hash()),
@@ -895,7 +894,7 @@ impl LedgerCtx {
         self.snarked_ledgers.retain(|hash, _| {
             let keep = ledgers_to_keep.contains(hash);
             if !keep {
-                openmina_core::debug!(openmina_core::log::system_time();
+                mina_core::debug!(mina_core::log::system_time();
                     kind = "LedgerService::commit - snarked_ledgers.drop",
                     summary = format!("drop snarked ledger {hash}"));
             }
@@ -907,7 +906,7 @@ impl LedgerCtx {
                 .filter(|(hash, _)| {
                     let keep = ledgers_to_keep.contains(hash);
                     if !keep {
-                        openmina_core::debug!(openmina_core::log::system_time();
+                        mina_core::debug!(mina_core::log::system_time();
                             kind = "LedgerService::commit - snarked_ledgers.drop",
                             summary = format!("drop snarked ledger {hash}"));
                     }
@@ -947,7 +946,7 @@ impl LedgerCtx {
                 .map(|mut parent| (merkle_root(&mut parent), parent))
                 .filter(|(parent_hash, _)| !ledgers_to_keep.contains(parent_hash))
             {
-                openmina_core::debug!(openmina_core::log::system_time();
+                mina_core::debug!(mina_core::log::system_time();
                     kind = "LedgerService::commit - mask.commit_and_reparent",
                     summary = format!("{ledger_hash} -> {parent_hash}"));
                 snarked_ledger.commit();
@@ -1017,7 +1016,7 @@ impl LedgerCtx {
                 (uuid, hash)
             })
             .collect::<Vec<_>>();
-        openmina_core::debug!(redux::Timestamp::global_now(); "alive_ledgers_after_commit: {alive_ledgers:#?}");
+        mina_core::debug!(redux::Timestamp::global_now(); "alive_ledgers_after_commit: {alive_ledgers:#?}");
 
         if !alive.is_empty() {
             bug_condition!(
@@ -1088,8 +1087,8 @@ impl LedgerCtx {
         ids: Vec<AccountId>,
     ) -> Vec<Account> {
         let Some((mask, _)) = self.mask(&ledger_hash) else {
-            openmina_core::warn!(
-                openmina_core::log::system_time();
+            mina_core::warn!(
+                mina_core::log::system_time();
                 kind = "LedgerService::get_accounts",
                 summary = format!("Ledger not found: {ledger_hash:?}")
             );
@@ -1188,7 +1187,7 @@ impl LedgerCtx {
             .map_err(|err| format!("{err:?}"))?;
 
         // TODO(binier): maybe here, check if block reward is above threshold.
-        // https://github.com/minaprotocol/mina/blob/b3d418a8c0ae4370738886c2b26f0ec7bdb49303/src/lib/block_producer/block_producer.ml#L222
+        // <https://github.com/minaprotocol/mina/blob/b3d418a8c0ae4370738886c2b26f0ec7bdb49303/src/lib/block_producer/block_producer.ml#L222>
 
         let pred_body_hash = pred_block
             .header()
@@ -1411,7 +1410,7 @@ impl LedgerSyncState {
             .ok_or_else(|| format!("Missing sync snarked ledger {}", hash))
     }
 
-    /// Returns a [Mask] instance for the snarked ledger with [hash]. If it doesn't
+    /// Returns a [Mask] instance for the snarked ledger with `hash`. If it doesn't
     /// exist a new instance is created.
     fn snarked_ledger_mut(&mut self, hash: LedgerHash) -> Result<&mut Mask, InvalidBigInt> {
         let hash_fp = hash.to_field()?;
@@ -1470,8 +1469,8 @@ fn staged_ledger_reconstruct(
         }
         Err(_) => {
             if let Err(e) = dump_reconstruct_to_file(&snarked_ledger, &parts) {
-                openmina_core::error!(
-                    openmina_core::log::system_time();
+                mina_core::error!(
+                    mina_core::log::system_time();
                     kind = "LedgerService::dump - Failed reconstruct",
                     summary = format!("Failed to save reconstruction to file: {e:?}")
                 );
@@ -1550,7 +1549,7 @@ fn dump_reconstruct_to_file(
         states: needed_blocks.clone(),
     };
 
-    let debug_dir = openmina_core::get_debug_dir();
+    let debug_dir = mina_core::get_debug_dir();
     let filename = debug_dir
         .join("failed_reconstruct_ctx.binprot")
         .to_string_lossy()
@@ -1562,8 +1561,8 @@ fn dump_reconstruct_to_file(
     reconstruct_context.binprot_write(&mut file)?;
     file.sync_all()?;
 
-    openmina_core::info!(
-        openmina_core::log::system_time();
+    mina_core::info!(
+        mina_core::log::system_time();
         kind = "LedgerService::dump - Failed reconstruct",
         summary = format!("Reconstruction saved to: {filename:?}")
     );
@@ -1573,7 +1572,7 @@ fn dump_reconstruct_to_file(
 
 /// Save staged ledger and block to file, when the application fail.
 /// So we can easily reproduce the application both in Rust and OCaml, to compare them.
-/// - https://github.com/openmina/openmina/blob/8e68037aafddd43842a54c8439baeafee4c6e1eb/ledger/src/staged_ledger/staged_ledger.rs#L5959
+/// - <https://github.com/o1-labs/mina-rust/blob/8e68037aafddd43842a54c8439baeafee4c6e1eb/ledger/src/staged_ledger/staged_ledger.rs#L5959>
 /// - TODO: Find OCaml link, I remember having the same test in OCaml but I can't find where
 fn dump_application_to_file(
     staged_ledger: &StagedLedger,
@@ -1610,7 +1609,7 @@ fn dump_application_to_file(
         blocks: vec![(*block.block).clone()],
     };
 
-    let debug_dir = openmina_core::get_debug_dir();
+    let debug_dir = mina_core::get_debug_dir();
     let filename = debug_dir
         .join(format!("failed_application_ctx_{}.binprot", block_height))
         .to_string_lossy()

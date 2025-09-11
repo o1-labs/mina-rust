@@ -8,9 +8,10 @@ import {
   ViewChild,
 } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FeaturesConfig, FeatureType, MinaNode } from '@shared/types/core/environment/mina-env.type';
 import { AppActions } from '@app/app.actions';
+import { NgForOf, NgIf } from '@angular/common';
 
 const nodeNames: string[] = [
   'Crypto Hash',
@@ -53,6 +54,12 @@ type SubFeature = {
   styleUrls: ['./new-node.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex-column bg-surface-top popup-box-shadow-weak border-rad-8' },
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    NgForOf,
+    NgIf,
+  ],
 })
 export class NewNodeComponent extends StoreDispatcher implements OnInit {
 

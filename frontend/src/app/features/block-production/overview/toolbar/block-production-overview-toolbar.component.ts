@@ -13,11 +13,12 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 
 @Component({
-  selector: 'mina-block-production-overview-toolbar',
-  templateUrl: './block-production-overview-toolbar.component.html',
-  styleUrls: ['./block-production-overview-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'fx-row-vert-cent h-xl pl-12 f-600' },
+    selector: 'mina-block-production-overview-toolbar',
+    templateUrl: './block-production-overview-toolbar.component.html',
+    styleUrls: ['./block-production-overview-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'fx-row-vert-cent h-xl pl-12 f-600' },
+    standalone: false
 })
 export class BlockProductionOverviewToolbarComponent extends StoreDispatcher implements OnInit {
 

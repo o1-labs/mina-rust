@@ -1,0 +1,62 @@
+name: 'Push Docker Multi-Arch Manifest'
+description: 'Create and push multi-architecture Docker manifest from digests'
+inputs:
+  registry_image:
+    description: 'Docker registry image name (e.g., o1labs/mina-rust)'
+    required: true
+  git_commit:
+    description: 'Git commit or tag for image tagging'
+    required: true
+  digest_pattern:
+    description: 'Pattern to match digest artifacts'
+    required: true
+  dockerhub_username:
+    description: 'Docker Hub username'
+    required: true
+  dockerhub_token:
+    description: 'Docker Hub token'
+    required: true
+  additional_tags:
+    description: 'Additional tags to create (comma-separated, optional)'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Login to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ inputs.dockerhub_username }}
+        password: ${{ inputs.dockerhub_token }}
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Download image digests
+      uses: actions/download-artifact@v4
+      with:
+        path: /tmp/digests
+        pattern: ${{ inputs.digest_pattern }}
+        merge-multiple: true
+
+    - name: Create manifest list and push
+      shell: bash
+      working-directory: /tmp/digests
+      run: |
+        # Build primary tag
+        TAGS="--tag ${{ inputs.registry_image }}:${{ inputs.git_commit }}"
+
+        # Add additional tags if provided
+        if [[ -n "${{ inputs.additional_tags }}" ]]; then
+          IFS=',' read -ra ADDITIONAL_TAGS <<< "${{ inputs.additional_tags }}"
+          for tag in "${ADDITIONAL_TAGS[@]}"; do
+            tag=$(echo "$tag" | xargs)  # trim whitespace
+            if [[ -n "$tag" ]]; then
+              TAGS="$TAGS --tag ${{ inputs.registry_image }}:$tag"
+            fi
+          done
+        fi
+
+        docker buildx imagetools create \
+          $TAGS \
+          $(printf '${{ inputs.registry_image }}@sha256:%s ' *)

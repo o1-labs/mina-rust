@@ -8,8 +8,7 @@ use std::{
 
 use futures::StreamExt;
 use libp2p::{multiaddr::multiaddr, swarm::DialError, Multiaddr};
-use openmina_core::channels::mpsc;
-use openmina_core::{ChainId, Substate, DEVNET_CHAIN_ID};
+use mina_core::{channels::mpsc, ChainId, Substate, DEVNET_CHAIN_ID};
 use p2p::{
     connection::outgoing::{
         P2pConnectionOutgoingAction, P2pConnectionOutgoingInitLibp2pOpts,
@@ -23,8 +22,7 @@ use redux::SystemTime;
 use crate::{
     event::{event_mapper_effect, RustNodeEvent},
     libp2p_node::{create_swarm, Libp2pEvent, Libp2pNode, Libp2pNodeConfig, Libp2pNodeId},
-    redux::State,
-    redux::{log_action, Action},
+    redux::{log_action, Action, State},
     rust_node::{RustNode, RustNodeConfig, RustNodeId},
     service::ClusterService,
     stream::{ClusterStreamExt, MapErrors, TakeDuring},
@@ -78,8 +76,8 @@ impl PortsConfig {
     async fn ports(self) -> Result<Range<u16>> {
         match self {
             PortsConfig::Range(range) => Ok(range),
-            PortsConfig::Len(len) => PORTS.take(len).await,
-            PortsConfig::ExactLen(len) => PORTS.take_exact(len).await,
+            PortsConfig::Len(len) => GLOBAL_PORTS.take(len).await,
+            PortsConfig::ExactLen(len) => GLOBAL_PORTS.take_exact(len).await,
         }
     }
 }
@@ -165,7 +163,7 @@ impl ClusterBuilder {
         let last_idle_instant = idle_interval.tick().await.into_std();
         let is_error = self.is_error;
         let total_duration = self.total_duration;
-        openmina_core::info!(openmina_core::log::system_time(); "starting the cluster");
+        mina_core::info!(mina_core::log::system_time(); "starting the cluster");
         let next_poll = Default::default();
         Ok(Cluster {
             chain_id,
@@ -233,12 +231,12 @@ impl Default for Ports {
 /// Declares a shared storage for ports.
 ///
 /// ```
-/// ports_store!(PORTS);
+/// ports_store!(GLOBAL_PORTS);
 ///
 /// #[tokio::test]
 /// fn test1() {
 ///     let cluster = ClusterBuilder::default()
-///         .ports(PORTS.take(20).await.expect("enough ports"))
+///         .ports(GLOBAL_PORTS.take(20).await.expect("enough ports"))
 ///         .start()
 ///         .await;
 /// }
@@ -248,17 +246,17 @@ impl Default for Ports {
 macro_rules! ports_store {
     ($name:ident, $range:expr) => {
         $crate::lazy_static::lazy_static! {
-            static ref PORTS: $crate::cluster::Ports = $crate::cluster::Ports::new($range);
+            static ref $name: $crate::cluster::Ports = $crate::cluster::Ports::new($range);
         }
     };
     ($name:ident) => {
         $crate::lazy_static::lazy_static! {
-            static ref PORTS: $crate::cluster::Ports = $crate::cluster::Ports::default();
+            static ref $name: $crate::cluster::Ports = $crate::cluster::Ports::default();
         }
     };
 }
 
-ports_store!(PORTS);
+ports_store!(GLOBAL_PORTS);
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -399,7 +397,7 @@ impl Cluster {
                 };
 
                 if let Err(error) = result {
-                    openmina_core::warn!(time; "error = {error}");
+                    mina_core::warn!(time; "error = {error}");
                 }
             }),
             override_fn.unwrap_or(|store, action| {

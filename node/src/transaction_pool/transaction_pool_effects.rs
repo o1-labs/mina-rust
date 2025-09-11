@@ -1,7 +1,6 @@
 use std::collections::BTreeMap;
 
-use crate::ledger::LedgerService;
-use crate::snark::SnarkStore;
+use crate::{ledger::LedgerService, snark::SnarkStore};
 
 use super::TransactionPoolEffectfulAction;
 
@@ -19,8 +18,8 @@ impl TransactionPoolEffectfulAction {
                 pending_id,
                 from_source,
             } => {
-                openmina_core::log::info!(
-                    openmina_core::log::system_time();
+                mina_core::log::info!(
+                    mina_core::log::system_time();
                     kind = "TransactionPoolEffectfulFetchAccounts",
                     summary = "fetching accounts for tx pool");
                 // FIXME: the ledger ctx `get_accounts` function doesn't ensure that every account we
@@ -35,8 +34,8 @@ impl TransactionPoolEffectfulAction {
                 {
                     Ok(accounts) => accounts,
                     Err(err) => {
-                        openmina_core::log::error!(
-                                openmina_core::log::system_time();
+                        mina_core::log::error!(
+                                mina_core::log::system_time();
                                 kind = "Error",
                                 summary = "failed to fetch accounts for tx pool",
                                 error = format!("ledger {:?}, error: {:?}", ledger_hash, err));

@@ -7,11 +7,12 @@ import { MempoolSelectors } from '@app/features/mempool/mempool.state';
 import { MempoolActions } from '@app/features/mempool/mempool.actions';
 
 @Component({
-  selector: 'mina-mempool',
-  templateUrl: './mempool.component.html',
-  styleUrls: ['./mempool.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-mempool',
+    templateUrl: './mempool.component.html',
+    styleUrls: ['./mempool.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class MempoolComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

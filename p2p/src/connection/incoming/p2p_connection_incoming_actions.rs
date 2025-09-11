@@ -5,7 +5,7 @@ use crate::{
     connection::{P2pConnectionAction, P2pConnectionState},
     webrtc, P2pAction, P2pPeerStatus, P2pState, PeerId,
 };
-use openmina_core::{requests::RpcId, ActionEvent};
+use mina_core::{requests::RpcId, ActionEvent};
 use serde::{Deserialize, Serialize};
 use std::net::SocketAddr;
 

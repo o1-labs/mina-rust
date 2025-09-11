@@ -1,8 +1,8 @@
+use mina_core::requests::RpcId;
 use node::{
     p2p::connection::P2pConnectionResponse, rpc::RpcMessageProgressResponse,
     rpc_effectful::RespondError, service::RpcService, State,
 };
-use openmina_core::requests::RpcId;
 
 macro_rules! to_real {
     ($name:ident, $response:ty $(,)?) => {

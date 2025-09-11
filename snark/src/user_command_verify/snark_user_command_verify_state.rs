@@ -4,7 +4,7 @@ use ledger::scan_state::transaction_logic::{valid, verifiable, WithStatus};
 use redux::Callback;
 use serde::{Deserialize, Serialize};
 
-use openmina_core::{requests::PendingRequests, transaction::TransactionPoolMessageSource};
+use mina_core::{requests::PendingRequests, transaction::TransactionPoolMessageSource};
 
 use crate::{TransactionVerifier, VerifierSRS};
 

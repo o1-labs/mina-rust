@@ -1,18 +1,17 @@
-use ark_ec::AffineCurve;
-use ark_ec::ProjectiveCurve;
-use ark_ff::SquareRootField;
+use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::{Field, UniformRand};
-use ledger::generators::zkapp_command_builder::get_transaction_commitments;
-use ledger::proofs::field::GroupAffine;
-use ledger::proofs::transaction::InnerCurve;
-use ledger::scan_state::currency::TxnVersion;
-use ledger::scan_state::currency::{Magnitude, SlotSpan};
-use ledger::MutableFp;
-use ledger::VerificationKeyWire;
+use core::ops::Mul;
 use ledger::{
-    proofs::transaction::PlonkVerificationKeyEvals,
+    generators::zkapp_command_builder::get_transaction_commitments,
+    proofs::{
+        field::GroupAffine,
+        transaction::{InnerCurve, PlonkVerificationKeyEvals},
+    },
     scan_state::{
-        currency::{Amount, Balance, BlockTime, Fee, Length, MinMax, Nonce, Sgn, Signed, Slot},
+        currency::{
+            Amount, Balance, BlockTime, Fee, Length, Magnitude, MinMax, Nonce, Sgn, Signed, Slot,
+            SlotSpan, TxnVersion,
+        },
         transaction_logic::{
             signed_command::{
                 self, PaymentPayload, SignedCommand, SignedCommandPayload, StakeDelegationPayload,
@@ -26,20 +25,13 @@ use ledger::{
             Memo, Transaction, UserCommand,
         },
     },
-    Account, AuthRequired, Permissions, ProofVerified, TokenId, TokenSymbol, VerificationKey,
-    VotingFor, ZkAppUri,
+    Account, AuthRequired, MutableFp, Permissions, ProofVerified, SetVerificationKey, TokenId,
+    TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppUri, TXN_VERSION_CURRENT,
 };
-use ledger::{SetVerificationKey, TXN_VERSION_CURRENT};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
-use mina_p2p_messages::array::ArrayN;
-use mina_p2p_messages::list::List;
-use mina_p2p_messages::v2::{
-    PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonk,
-    PicklesWrapWireProofCommitmentsStableV1, PicklesWrapWireProofEvaluationsStableV1,
-    PicklesWrapWireProofStableV1, PicklesWrapWireProofStableV1Bulletproof,
-};
+use mina_curves::pasta::{Fp, Fq};
 use mina_p2p_messages::{
+    array::ArrayN,
+    list::List,
     number::Number,
     pseq::PaddedSeq,
     v2::{
@@ -62,20 +54,22 @@ use mina_p2p_messages::{
         PicklesProofProofsVerified2ReprStableV2StatementFp,
         PicklesProofProofsVerified2ReprStableV2StatementProofState,
         PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValues,
+        PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonk,
         PicklesProofProofsVerified2ReprStableV2StatementProofStateDeferredValuesPlonkFeatureFlags,
         PicklesProofProofsVerifiedMaxStableV2,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2A,
         PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge,
-        SgnStableV1, SignedAmount, TokenFeeExcess, TokenIdKeyHash, UnsignedExtendedUInt32StableV1,
+        PicklesWrapWireProofCommitmentsStableV1, PicklesWrapWireProofEvaluationsStableV1,
+        PicklesWrapWireProofStableV1, PicklesWrapWireProofStableV1Bulletproof, SgnStableV1,
+        SignedAmount, TokenFeeExcess, TokenIdKeyHash, UnsignedExtendedUInt32StableV1,
         UnsignedExtendedUInt64Int64ForVersionTagsStableV1,
     },
 };
 use mina_signer::{
     CompressedPubKey, CurvePoint, Keypair, NetworkId, ScalarField, SecKey, Signature, Signer,
 };
-use rand::seq::SliceRandom;
-use rand::Rng;
+use rand::{seq::SliceRandom, Rng};
 use std::{array, iter, ops::RangeInclusive, sync::Arc};
 use tuple_map::TupleMap2;
 
@@ -162,9 +156,7 @@ impl Generator<Keypair> for FuzzerCtx {
     fn gen(&mut self) -> Keypair {
         let sec_key: SecKey = self.gen();
         let scalar = sec_key.into_scalar();
-        let public: CurvePoint = CurvePoint::prime_subgroup_generator()
-            .mul(scalar)
-            .into_affine();
+        let public: CurvePoint = CurvePoint::generator().mul(scalar).into_affine();
 
         let keypair = Keypair::from_parts_unsafe(scalar, public);
 
@@ -206,7 +198,7 @@ impl Generator<Memo> for FuzzerCtx {
 
 pub struct CurvePointGenerator<F>(F, F);
 
-impl<F: Field + From<i32> + SquareRootField> Generator<CurvePointGenerator<F>> for FuzzerCtx {
+impl<F: Field + From<i32>> Generator<CurvePointGenerator<F>> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> CurvePointGenerator<F> {
         /*
@@ -230,10 +222,14 @@ impl<F: Field + From<i32> + SquareRootField> Generator<CurvePointGenerator<F>> f
 impl Generator<(Fp, Fp)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fp, Fp) {
+        use core::ops::Mul;
         if let Some((x, y)) = self.state.cache_curve_point_fp {
-            let p = GroupAffine::<Fp>::new(x, y, false);
-            let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fp> = p.mul(rand_scalar).into();
+            let p = GroupAffine::<Fp>::new(x, y);
+            let rand_scalar: u64 = self.r#gen.rng.gen();
+            let scalar_field_elem =
+                <Fp as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+
+            let new_p: GroupAffine<Fp> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fp> = self.gen();
@@ -247,9 +243,11 @@ impl Generator<(Fq, Fq)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fq, Fq) {
         if let Some((x, y)) = self.state.cache_curve_point_fq {
-            let p = GroupAffine::<Fq>::new(x, y, false);
+            let p = GroupAffine::<Fq>::new(x, y);
             let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fq> = p.mul(rand_scalar).into();
+            let scalar_field_elem =
+                <Fq as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+            let new_p: GroupAffine<Fq> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fq> = self.gen();
@@ -1889,7 +1887,7 @@ pub fn sign_account_updates(
                     true => full_txn_commitment,
                     false => txn_commitment,
                 };
-                Some(signer.sign(&kp, input))
+                Some(signer.sign(&kp, input, false))
             }
             _ => None,
         };
@@ -1925,7 +1923,7 @@ impl Generator<ZkAppCommand> for FuzzerCtx {
             Some(keypair) => keypair.clone(),
             None => self.gen(),
         };
-        zkapp_command.fee_payer.authorization = signer.sign(&keypair, &full_txn_commitment);
+        zkapp_command.fee_payer.authorization = signer.sign(&keypair, &full_txn_commitment, false);
 
         sign_account_updates(
             self,
@@ -1976,7 +1974,7 @@ impl Generator<StakeDelegationPayload> for FuzzerCtx {
 fn sign_payload(keypair: &Keypair, payload: &SignedCommandPayload) -> Signature {
     let tx = TransactionUnionPayload::of_user_command_payload(payload);
     let mut signer = mina_signer::create_legacy(NetworkId::TESTNET);
-    signer.sign(keypair, &tx)
+    signer.sign(keypair, &tx, false)
 }
 
 impl Generator<SignedCommandPayload> for FuzzerCtx {

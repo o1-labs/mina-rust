@@ -1,11 +1,11 @@
-@import 'openmina';
+@use 'openmina';
 
 :host {
   height: 100px;
 }
 
 .epoch {
-  border-left: 1px dashed $base-tertiary;
+  border-left: 1px dashed openmina.$base-tertiary;
   padding-left: 5px;
   padding-right: 4px;
   height: 100px;
@@ -17,19 +17,19 @@
 
     div {
       width: calc((100% - 15px) / 15);
-      background-color: $success-tertiary;
+      background-color: openmina.$success-tertiary;
       margin-right: 1px;
       transition: height 200ms ease-in;
 
       &:hover {
-        background-color: $success-primary;
+        background-color: openmina.$success-primary;
       }
 
       &.future {
-        background-color: $base-tertiary;
+        background-color: openmina.$base-tertiary;
 
         &:hover {
-          background-color: $base-primary;
+          background-color: openmina.$base-primary;
         }
       }
     }
@@ -47,19 +47,19 @@
         transition: height 200ms ease-in;
 
         &:first-child {
-          background-color: $special-selected-alt-1-tertiary;
+          background-color: openmina.$special-selected-alt-1-tertiary;
 
           &:hover {
-            background-color: $special-selected-alt-1-primary;
+            background-color: openmina.$special-selected-alt-1-primary;
           }
         }
 
         &:last-child {
           margin-top: 1px;
-          background-color: $warn-tertiary;
+          background-color: openmina.$warn-tertiary;
 
           &:hover {
-            background-color: $warn-primary;
+            background-color: openmina.$warn-primary;
           }
         }
       }
@@ -70,32 +70,32 @@
     top: 0;
     left: 0;
     z-index: -1;
-    border-right: 2px solid $base-primary;
+    border-right: 2px solid openmina.$base-primary;
   }
 
   &:hover .overlay:not(.bg-selected-container) {
-    background-color: $base-container;
+    background-color: openmina.$base-container;
   }
 
   &.active-epoch {
     .title {
-      color: $selected-primary !important;
+      color: openmina.$selected-primary !important;
     }
 
     .positive div:not(.future) {
-      background-color: $success-primary;
+      background-color: openmina.$success-primary;
     }
 
     .negative .bar div:first-child {
-      background-color: $special-selected-alt-1-primary;
+      background-color: openmina.$special-selected-alt-1-primary;
     }
 
     .negative .bar div:last-child {
-      background-color: $warn-primary;
+      background-color: openmina.$warn-primary;
     }
 
     .overlay {
-      border-right: 2px solid $selected-primary;
+      border-right: 2px solid openmina.$selected-primary;
     }
   }
 }

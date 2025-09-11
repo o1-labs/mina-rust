@@ -11,11 +11,12 @@ import { isSubFeatureEnabled } from '@shared/constants/config';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-network-node-dht-side-panel',
-  templateUrl: './network-node-dht-side-panel.component.html',
-  styleUrls: ['./network-node-dht-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column h-100' },
+    selector: 'mina-network-node-dht-side-panel',
+    templateUrl: './network-node-dht-side-panel.component.html',
+    styleUrls: ['./network-node-dht-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column h-100' },
+    standalone: false
 })
 export class NetworkNodeDhtSidePanelComponent extends StoreDispatcher implements OnInit {
 

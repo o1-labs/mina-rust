@@ -9,8 +9,7 @@ pub use block_producer_vrf_evaluator_actions::*;
 
 mod block_producer_vrf_evaluator_reducer;
 
-use std::collections::BTreeMap;
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
 use ledger::AccountIndex;
 use mina_p2p_messages::v2::{EpochSeed, LedgerHash};

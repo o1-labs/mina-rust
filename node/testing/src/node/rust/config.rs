@@ -1,11 +1,9 @@
-use std::fs::File;
-use std::path::Path;
-use std::sync::Arc;
+use std::{fs::File, path::Path, sync::Arc};
 
-use node::account::AccountSecretKey;
-use node::config::DEVNET_CONFIG;
-use node::transition_frontier::genesis::GenesisConfig;
-use node::{p2p::P2pTimeouts, BlockProducerConfig, SnarkerConfig};
+use node::{
+    account::AccountSecretKey, config::DEVNET_CONFIG, p2p::P2pTimeouts,
+    transition_frontier::genesis::GenesisConfig, BlockProducerConfig, SnarkerConfig,
+};
 use serde::{Deserialize, Serialize};
 
 use crate::scenario::ListenerNode;

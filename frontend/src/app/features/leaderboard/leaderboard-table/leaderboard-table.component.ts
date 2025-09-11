@@ -6,22 +6,23 @@ import { isDesktop, TooltipPosition } from '@openmina/shared';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
-  selector: 'mina-leaderboard-table',
-  templateUrl: './leaderboard-table.component.html',
-  styleUrl: './leaderboard-table.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column w-100 h-100' },
-  animations: [
-    trigger('fadeInOut', [
-      transition(':enter', [
-        style({ opacity: 0 }),
-        animate('400ms linear', style({ opacity: 1 })),
-      ]),
-      transition(':leave', [
-        animate('400ms linear', style({ opacity: 0 })),
-      ]),
-    ]),
-  ],
+    selector: 'mina-leaderboard-table',
+    templateUrl: './leaderboard-table.component.html',
+    styleUrl: './leaderboard-table.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'flex-column w-100 h-100' },
+    animations: [
+        trigger('fadeInOut', [
+            transition(':enter', [
+                style({ opacity: 0 }),
+                animate('400ms linear', style({ opacity: 1 })),
+            ]),
+            transition(':leave', [
+                animate('400ms linear', style({ opacity: 0 })),
+            ]),
+        ]),
+    ],
+    standalone: false
 })
 export class LeaderboardTableComponent extends StoreDispatcher implements OnInit {
 

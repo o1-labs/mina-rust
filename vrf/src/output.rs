@@ -1,7 +1,6 @@
-use ark_ec::short_weierstrass_jacobian::GroupAffine;
+use ark_ec::short_weierstrass::Affine;
 use ark_ff::{BigInteger, BigInteger256, PrimeField};
-use ledger::proofs::transaction::field_to_bits;
-use ledger::{AppendToInputs, ToInputs};
+use ledger::{proofs::transaction::field_to_bits, AppendToInputs, ToInputs};
 use mina_p2p_messages::v2::ConsensusVrfOutputTruncatedStableV1;
 use num::{BigInt, BigRational, One, ToPrimitive};
 use o1_utils::FieldHelpers;
@@ -13,8 +12,7 @@ use crate::{BaseField, BigInt2048, ScalarField};
 
 use super::serialize::{ark_deserialize, ark_serialize};
 
-use super::message::VrfMessage;
-use super::CurvePoint;
+use super::{message::VrfMessage, CurvePoint};
 
 #[derive(Clone, Debug)]
 pub struct VrfOutputHashInput {
@@ -32,7 +30,7 @@ impl ToInputs for VrfOutputHashInput {
     fn to_inputs(&self, inputs: &mut poseidon::hash::Inputs) {
         let Self {
             message,
-            g: GroupAffine { x, y, .. },
+            g: Affine { x, y, .. },
         } = self;
 
         inputs.append(message);
@@ -67,7 +65,7 @@ impl VrfOutput {
         let bits = field_to_bits::<_, 256>(hash);
 
         let repr = BigInteger256::from_bits_le(&bits[..bits.len() - 3]);
-        ScalarField::from_repr(repr).unwrap()
+        ScalarField::from_bigint(repr).unwrap()
     }
 
     pub fn truncated_with_prefix_and_checksum(&self) -> Vec<u8> {
@@ -93,7 +91,7 @@ impl VrfOutput {
 
         let vrf_out: BigInt2048 = BigInt2048::from_bytes_be(
             num::bigint::Sign::Plus,
-            &self.truncated().into_repr().to_bytes_be(),
+            &self.truncated().into_bigint().to_bytes_be(),
         );
 
         BigRational::new(vrf_out, two_tpo_256).to_f64().unwrap()

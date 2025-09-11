@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .header {
   height: 56px;
@@ -26,8 +26,8 @@
   }
 
   .learn-btn {
-    background-color: $base-background;
-    color: $base-primary;
+    background-color: openmina.$base-background;
+    color: openmina.$base-primary;
     max-width: 330px;
     margin: 0 12px;
     filter: invert(1);

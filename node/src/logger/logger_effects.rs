@@ -1,16 +1,22 @@
-use openmina_core::log::inner::field::{display, DisplayValue};
-use openmina_core::log::inner::Value;
-use openmina_core::log::{time_to_str, ActionEvent, EventContext};
-use p2p::connection::P2pConnectionEffectfulAction;
-use p2p::{P2pNetworkConnectionError, P2pNetworkSchedulerAction, PeerId};
+use mina_core::log::{
+    inner::{
+        field::{display, DisplayValue},
+        Value,
+    },
+    time_to_str, ActionEvent, EventContext,
+};
+use p2p::{
+    connection::P2pConnectionEffectfulAction, P2pNetworkConnectionError, P2pNetworkSchedulerAction,
+    PeerId,
+};
 
-use crate::p2p::channels::P2pChannelsAction;
-use crate::p2p::connection::P2pConnectionAction;
-use crate::p2p::network::P2pNetworkAction;
-use crate::p2p::P2pAction;
-use crate::snark::SnarkAction;
-use crate::transition_frontier::candidate::TransitionFrontierCandidateAction;
 use crate::{
+    p2p::{
+        channels::P2pChannelsAction, connection::P2pConnectionAction, network::P2pNetworkAction,
+        P2pAction,
+    },
+    snark::SnarkAction,
+    transition_frontier::candidate::TransitionFrontierCandidateAction,
     Action, ActionWithMetaRef, BlockProducerAction, Service, Store, TransitionFrontierAction,
 };
 
@@ -86,7 +92,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
                         error: P2pNetworkConnectionError::MioError(summary),
                         addr,
                     } => {
-                        openmina_core::action_debug!(
+                        mina_core::action_debug!(
                             context,
                             kind = "P2pNetworkSchedulerError",
                             summary = display(summary),
@@ -123,7 +129,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
             TransitionFrontierAction::Candidate(
                 TransitionFrontierCandidateAction::BlockReceived { block, chain_proof },
             ) => {
-                openmina_core::action_info!(
+                mina_core::action_info!(
                     context,
                     kind = action.kind().to_string(),
                     summary = "candidate block received",
@@ -136,7 +142,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
                 let tip = store.state().transition_frontier.best_tip().unwrap();
 
                 if store.state().block_producer.is_produced_by_me(tip) {
-                    openmina_core::action_info!(
+                    mina_core::action_info!(
                         context,
                         kind = "BlockProducerBlockIntegrated",
                         summary = "produced block integrated into frontier",
@@ -145,7 +151,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
                     );
                 }
 
-                openmina_core::action_info!(
+                mina_core::action_info!(
                     context,
                     kind = action.kind().to_string(),
                     summary = "transition frontier synced",
@@ -154,7 +160,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
                 );
             }
             TransitionFrontierAction::SyncFailed { best_tip, error } => {
-                openmina_core::action_error!(
+                mina_core::action_error!(
                     context,
                     kind = action.kind().to_string(),
                     summary = "transition frontier failed to sync",
@@ -168,7 +174,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
         Action::BlockProducer(a) => match a {
             BlockProducerAction::BlockProduced => {
                 let block = store.state().block_producer.produced_block().unwrap();
-                openmina_core::action_info!(
+                mina_core::action_info!(
                     context,
                     kind = action.kind().to_string(),
                     summary = "produced a block",
@@ -178,7 +184,7 @@ pub fn logger_effects<S: Service>(store: &Store<S>, action: ActionWithMetaRef<'_
             }
             BlockProducerAction::BlockInjected => {
                 let block = store.state().transition_frontier.sync.best_tip().unwrap();
-                openmina_core::action_info!(
+                mina_core::action_info!(
                     context,
                     kind = action.kind().to_string(),
                     summary = "produced block injected",

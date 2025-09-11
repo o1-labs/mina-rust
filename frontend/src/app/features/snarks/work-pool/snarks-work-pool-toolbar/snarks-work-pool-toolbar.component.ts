@@ -5,11 +5,12 @@ import { SnarksWorkPoolToggleFilter } from '@snarks/work-pool/snarks-work-pool.a
 import { WorkPool } from '@shared/types/snarks/work-pool/work-pool.type';
 
 @Component({
-  selector: 'mina-snarks-work-pool-toolbar',
-  templateUrl: './snarks-work-pool-toolbar.component.html',
-  styleUrls: ['./snarks-work-pool-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'fx-row-vert-cent h-lg border-bottom' },
+    selector: 'mina-snarks-work-pool-toolbar',
+    templateUrl: './snarks-work-pool-toolbar.component.html',
+    styleUrls: ['./snarks-work-pool-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'fx-row-vert-cent h-lg border-bottom' },
+    standalone: false
 })
 export class SnarksWorkPoolToolbarComponent extends StoreDispatcher implements OnInit {
 

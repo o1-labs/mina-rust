@@ -1,5 +1,5 @@
-use openmina_node_account::AccountSecretKey;
-use openmina_producer_dashboard::{
+use mina_node_account::AccountSecretKey;
+use mina_producer_dashboard::{
     archive::watchdog::ArchiveWatchdog,
     config,
     evaluator::{EpochInit, Evaluator},

@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
+use mina_core::ActionEvent;
 use mina_p2p_messages::v2::{ProverExtendBlockchainInputStableV2, StateHash};
-use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use crate::transition_frontier::genesis::GenesisConfig;

@@ -6,13 +6,12 @@ import { safelyExecuteInBrowser } from '@openmina/shared';
 const code = [1, 2, 3, 2];
 
 @Component({
-  selector: 'mina-web-node-not-supported',
-  standalone: true,
-  imports: [],
-  templateUrl: './web-node-not-supported.component.html',
-  styleUrl: './web-node-not-supported.component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100 flex-column align-center' },
+    selector: 'mina-web-node-not-supported',
+    imports: [],
+    templateUrl: './web-node-not-supported.component.html',
+    styleUrl: './web-node-not-supported.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100 flex-column align-center' }
 })
 export class WebNodeNotSupportedComponent {
 

@@ -7,10 +7,11 @@ import { NodesLiveClose, NodesLiveGetNodes, NodesLiveInit } from '@nodes/live/no
 import { selectNodesLiveOpenSidePanel } from '@nodes/live/nodes-live.state';
 
 @Component({
-  selector: 'mina-nodes-live',
-  templateUrl: './nodes-live.component.html',
-  styleUrls: ['./nodes-live.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-live',
+    templateUrl: './nodes-live.component.html',
+    styleUrls: ['./nodes-live.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesLiveComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

@@ -1,7 +1,7 @@
-use openmina_core::{snark::SnarkJobId, SubstateAccess};
+use mina_core::{snark::SnarkJobId, SubstateAccess};
 use serde::{Deserialize, Serialize};
 
-use openmina_core::{snark::Snark, ActionEvent};
+use mina_core::{snark::Snark, ActionEvent};
 
 use super::{SnarkWorkVerifyError, SnarkWorkVerifyId};
 

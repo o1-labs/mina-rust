@@ -25,6 +25,7 @@ import { Routes } from '@shared/enums/routes.enum';
 import { Router } from '@angular/router';
 import { NetworkBlocksState } from '@network/blocks/network-blocks.state';
 import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
+import { NetworkState } from '@network/network.state';
 
 @Injectable({
   providedIn: 'root',
@@ -49,12 +50,12 @@ export class NetworkBlocksEffects extends MinaRustBaseEffect<NetworkBlocksAction
 
     this.earliestBlock$ = createEffect(() => this.actions$.pipe(
       ofType(NETWORK_BLOCKS_GET_EARLIEST_BLOCK),
-      this.latestStateSlice<NetworkBlocksState, NetworkBlocksGetEarliestBlock>('network.blocks'),
-      switchMap((state: NetworkBlocksState) =>
+      this.latestActionState<NetworkBlocksGetEarliestBlock>(),
+      switchMap(({ state }) =>
         this.networkBlocksService.getEarliestBlockHeight().pipe(
           switchMap(height => {
             const actions: NetworkBlocksActions[] = [{ type: NETWORK_BLOCKS_SET_EARLIEST_BLOCK, payload: { height } }];
-            if (!state.activeBlock) {
+            if (!state.network.blocks.activeBlock) {
               this.router.navigate([Routes.NETWORK, Routes.BLOCKS, height ?? ''], { queryParamsHandling: 'merge' });
               actions.push({ type: NETWORK_BLOCKS_SET_ACTIVE_BLOCK, payload: { height } });
               actions.push({ type: NETWORK_BLOCKS_INIT });

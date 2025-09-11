@@ -15,9 +15,9 @@ services:
     # ports:
     #   - "127.0.0.1:3333:${PG_PORT}"
 
-  postgres-openmina:
+  postgres-mina-rust:
     image: postgres
-    container_name: postgres-openmina
+    container_name: postgres-mina-rust
     env_file:
       - .env
     healthcheck:
@@ -27,7 +27,7 @@ services:
       timeout: 10s
       retries: 10
     volumes:
-      - /tmp/archive-data-openmina:/var/lib/postgresql/data
+      - /tmp/archive-data-mina:/var/lib/postgresql/data
     # ports:
     #   - "127.0.0.1:4444:${PG_PORT}"
 
@@ -39,28 +39,28 @@ services:
     command: >
       bash -c '
       psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-ocaml:${PG_PORT} -c "CREATE DATABASE ${PG_DB};";
-      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-openmina:${PG_PORT} -c "CREATE DATABASE ${PG_DB};";
+      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-mina-rust:${PG_PORT} -c "CREATE DATABASE ${PG_DB};";
       psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-ocaml:${PG_PORT}/${PG_DB} -c "
       ALTER SYSTEM SET max_connections = 500;
       ALTER SYSTEM SET max_locks_per_transaction = 100;
       ALTER SYSTEM SET max_pred_locks_per_relation = 100;
       ALTER SYSTEM SET max_pred_locks_per_transaction = 5000;
       ";
-      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-openmina:${PG_PORT}/${PG_DB} -c "
+      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-mina-rust:${PG_PORT}/${PG_DB} -c "
       ALTER SYSTEM SET max_connections = 500;
       ALTER SYSTEM SET max_locks_per_transaction = 100;
       ALTER SYSTEM SET max_pred_locks_per_relation = 100;
       ALTER SYSTEM SET max_pred_locks_per_transaction = 5000;
       ";
       psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-ocaml:${PG_PORT}/${PG_DB} -f /sql/archive_schema.sql;
-      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-openmina:${PG_PORT}/${PG_DB} -f /sql/archive_schema.sql;
+      psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-mina-rust:${PG_PORT}/${PG_DB} -f /sql/archive_schema.sql;
       '
     volumes:
       - ./producer-dashboard/src/archive/sql:/sql
     depends_on:
       postgres-ocaml:
         condition: service_healthy
-      postgres-openmina:
+      postgres-mina-rust:
         condition: service_healthy
 
   archive-ocaml:
@@ -80,27 +80,27 @@ services:
       postgres-ocaml:
         condition: service_healthy
 
-  archive-openmina:
+  archive-mina-rust:
     image: adrnagy/mina-archive
-    container_name: archive-openmina
+    container_name: archive-mina-rust
     env_file:
       - .env
     volumes:
-      - /tmp/archive-outputs/openmina:/data
+      - /tmp/archive-outputs/mina:/data
     entrypoint: ["mina-archive"]
     command: >
       run
-      --postgres-uri postgres://postgres:${POSTGRES_PASSWORD}@postgres-openmina:${PG_PORT}/${PG_DB}
+      --postgres-uri postgres://postgres:${POSTGRES_PASSWORD}@postgres-mina-rust:${PG_PORT}/${PG_DB}
       --server-port 3087
       --output-dir /data
     ports:
       - 3087:3087
     depends_on:
-      postgres-openmina:
+      postgres-mina-rust:
         condition: service_healthy
 
   node-ocaml:
-    image: gcr.io/o1labs-192920/mina-daemon:3.0.4-alpha1-889607b-bullseye-devnet
+    image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
     container_name: node-ocaml
     environment:
       MINA_CLIENT_TRUSTLIST: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
@@ -113,15 +113,15 @@ services:
       --insecure-rest-server
       --rest-port 5000
       --enable-peer-exchange true
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40101/p2p/12D3KooWNGY3guz8pYHrVEqs8se4MSnnmpgguyQYDazMbVCyrMnS 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40102/p2p/12D3KooWSqZ4qtysb8Du4yVpcc5SYc3gsRuNqgMomggw6hekATWg 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40103/p2p/12D3KooWSHiGavQpamDPEc6rPaqT4PoS1Lr9aDfrfg5dKM2V6x3H 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40104/p2p/12D3KooWA3yPrTaLXsggVSCG4mr7c33YNdz5DSs87LszRUVt9vLT 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40105/p2p/12D3KooWCLcUWCdU4VstETztxE3feQyS57dVDdzBhmkj5tiCaha8 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40106/p2p/12D3KooWNZWqEoCuhMrc9tTMxtEsfxmeFhjh2agUcmzJFNKxQnNA 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40107/p2p/12D3KooWAMSP94SM3icSeAXeBmPUuZ5JvwrZ5w87fpRHVeJkdboe 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40108/p2p/12D3KooWL5gPf5CrARVPhBi6KsDHmB1gsJKZ4vWrcLweWyMjpB5e 
-      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40109/p2p/12D3KooWT1nNJLGE8jWcshPSq3FmSXmmNn2MzfmvJcWYZ1HrtHnZ 
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40101/p2p/12D3KooWNGY3guz8pYHrVEqs8se4MSnnmpgguyQYDazMbVCyrMnS
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40102/p2p/12D3KooWSqZ4qtysb8Du4yVpcc5SYc3gsRuNqgMomggw6hekATWg
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40103/p2p/12D3KooWSHiGavQpamDPEc6rPaqT4PoS1Lr9aDfrfg5dKM2V6x3H
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40104/p2p/12D3KooWA3yPrTaLXsggVSCG4mr7c33YNdz5DSs87LszRUVt9vLT
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40105/p2p/12D3KooWCLcUWCdU4VstETztxE3feQyS57dVDdzBhmkj5tiCaha8
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40106/p2p/12D3KooWNZWqEoCuhMrc9tTMxtEsfxmeFhjh2agUcmzJFNKxQnNA
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40107/p2p/12D3KooWAMSP94SM3icSeAXeBmPUuZ5JvwrZ5w87fpRHVeJkdboe
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40108/p2p/12D3KooWL5gPf5CrARVPhBi6KsDHmB1gsJKZ4vWrcLweWyMjpB5e
+      --peer /dns4/primary-tcp-proxy.hz.minaprotocol.network/tcp/40109/p2p/12D3KooWT1nNJLGE8jWcshPSq3FmSXmmNn2MzfmvJcWYZ1HrtHnZ
     # volumes:
     #   # - /tmp/ocaml-node-keys:/keys
     ports:
@@ -134,16 +134,16 @@ services:
       archive-ocaml:
         condition: service_started
 
-  node-openmina:
+  mina-rust-node:
     image: adrnagy/openmina:archive-test
-    container_name: node-openmina
+    container_name: mina-rust-node
     environment:
-      OPENMINA_ARCHIVE_ADDRESS: http://archive-openmina:3087
+      MINA_ARCHIVE_ADDRESS: http://archive-mina-rust:3087
     command: >
       node
       --archive-archiver-process
     ports:
       - "3000:3000"
     depends_on:
-      archive-openmina:
+      archive-mina-rust:
         condition: service_started

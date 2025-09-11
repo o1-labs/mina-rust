@@ -2,57 +2,62 @@ use std::str::FromStr;
 
 use juniper::{GraphQLInputObject, GraphQLObject};
 use ledger::{FpExt, VerificationKey};
-use mina_p2p_messages::bigint::BigInt;
-use mina_p2p_messages::list::List;
-use mina_p2p_messages::pseq::PaddedSeq;
-use mina_p2p_messages::string::{TokenSymbol, ZkAppUri};
-use mina_p2p_messages::v2::{
-    CurrencyAmountStableV1, CurrencyBalanceStableV1, CurrencyFeeStableV1,
-    MinaBaseAccountUpdateAccountPreconditionStableV1,
-    MinaBaseAccountUpdateAuthorizationKindStableV1, MinaBaseAccountUpdateBodyEventsStableV1,
-    MinaBaseAccountUpdateBodyFeePayerStableV1, MinaBaseAccountUpdateBodyStableV1,
-    MinaBaseAccountUpdateFeePayerStableV1, MinaBaseAccountUpdateMayUseTokenStableV1,
-    MinaBaseAccountUpdatePreconditionsStableV1, MinaBaseAccountUpdateTStableV1,
-    MinaBaseAccountUpdateUpdateStableV1, MinaBaseAccountUpdateUpdateStableV1AppStateA,
-    MinaBaseAccountUpdateUpdateStableV1Delegate, MinaBaseAccountUpdateUpdateStableV1Permissions,
-    MinaBaseAccountUpdateUpdateStableV1Timing, MinaBaseAccountUpdateUpdateStableV1TokenSymbol,
-    MinaBaseAccountUpdateUpdateStableV1VerificationKey,
-    MinaBaseAccountUpdateUpdateStableV1VotingFor, MinaBaseAccountUpdateUpdateStableV1ZkappUri,
-    MinaBaseAccountUpdateUpdateTimingInfoStableV1, MinaBaseControlStableV2,
-    MinaBasePermissionsStableV2, MinaBaseReceiptChainHashStableV1,
-    MinaBaseSignedCommandMemoStableV1, MinaBaseUserCommandStableV2,
-    MinaBaseVerificationKeyWireStableV1, MinaBaseZkappCommandTStableV1WireStableV1,
-    MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA,
-    MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesAA,
-    MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesAACallsA,
-    MinaBaseZkappPreconditionAccountStableV2, MinaBaseZkappPreconditionAccountStableV2Balance,
-    MinaBaseZkappPreconditionAccountStableV2BalanceA,
-    MinaBaseZkappPreconditionAccountStableV2Delegate,
-    MinaBaseZkappPreconditionAccountStableV2ProvedState,
-    MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash,
-    MinaBaseZkappPreconditionAccountStableV2StateA,
-    MinaBaseZkappPreconditionProtocolStateEpochDataStableV1,
-    MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochLedger,
-    MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed,
-    MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint,
-    MinaBaseZkappPreconditionProtocolStateStableV1,
-    MinaBaseZkappPreconditionProtocolStateStableV1Amount,
-    MinaBaseZkappPreconditionProtocolStateStableV1AmountA,
-    MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot,
-    MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlotA,
-    MinaBaseZkappPreconditionProtocolStateStableV1Length,
-    MinaBaseZkappPreconditionProtocolStateStableV1LengthA,
-    MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash,
-    MinaNumbersGlobalSlotSinceGenesisMStableV1, MinaNumbersGlobalSlotSpanStableV1,
-    MinaStateBlockchainStateValueStableV2SignedAmount, PicklesProofProofsVerifiedMaxStableV2,
-    StateHash,
+use mina_p2p_messages::{
+    bigint::BigInt,
+    list::List,
+    pseq::PaddedSeq,
+    string::{TokenSymbol, ZkAppUri},
+    v2::{
+        CurrencyAmountStableV1, CurrencyBalanceStableV1, CurrencyFeeStableV1,
+        MinaBaseAccountUpdateAccountPreconditionStableV1,
+        MinaBaseAccountUpdateAuthorizationKindStableV1, MinaBaseAccountUpdateBodyEventsStableV1,
+        MinaBaseAccountUpdateBodyFeePayerStableV1, MinaBaseAccountUpdateBodyStableV1,
+        MinaBaseAccountUpdateFeePayerStableV1, MinaBaseAccountUpdateMayUseTokenStableV1,
+        MinaBaseAccountUpdatePreconditionsStableV1, MinaBaseAccountUpdateTStableV1,
+        MinaBaseAccountUpdateUpdateStableV1, MinaBaseAccountUpdateUpdateStableV1AppStateA,
+        MinaBaseAccountUpdateUpdateStableV1Delegate,
+        MinaBaseAccountUpdateUpdateStableV1Permissions, MinaBaseAccountUpdateUpdateStableV1Timing,
+        MinaBaseAccountUpdateUpdateStableV1TokenSymbol,
+        MinaBaseAccountUpdateUpdateStableV1VerificationKey,
+        MinaBaseAccountUpdateUpdateStableV1VotingFor, MinaBaseAccountUpdateUpdateStableV1ZkappUri,
+        MinaBaseAccountUpdateUpdateTimingInfoStableV1, MinaBaseControlStableV2,
+        MinaBasePermissionsStableV2, MinaBaseReceiptChainHashStableV1,
+        MinaBaseSignedCommandMemoStableV1, MinaBaseUserCommandStableV2,
+        MinaBaseVerificationKeyWireStableV1, MinaBaseZkappCommandTStableV1WireStableV1,
+        MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA,
+        MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesAA,
+        MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesAACallsA,
+        MinaBaseZkappPreconditionAccountStableV2, MinaBaseZkappPreconditionAccountStableV2Balance,
+        MinaBaseZkappPreconditionAccountStableV2BalanceA,
+        MinaBaseZkappPreconditionAccountStableV2Delegate,
+        MinaBaseZkappPreconditionAccountStableV2ProvedState,
+        MinaBaseZkappPreconditionAccountStableV2ReceiptChainHash,
+        MinaBaseZkappPreconditionAccountStableV2StateA,
+        MinaBaseZkappPreconditionProtocolStateEpochDataStableV1,
+        MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochLedger,
+        MinaBaseZkappPreconditionProtocolStateEpochDataStableV1EpochSeed,
+        MinaBaseZkappPreconditionProtocolStateEpochDataStableV1StartCheckpoint,
+        MinaBaseZkappPreconditionProtocolStateStableV1,
+        MinaBaseZkappPreconditionProtocolStateStableV1Amount,
+        MinaBaseZkappPreconditionProtocolStateStableV1AmountA,
+        MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlot,
+        MinaBaseZkappPreconditionProtocolStateStableV1GlobalSlotA,
+        MinaBaseZkappPreconditionProtocolStateStableV1Length,
+        MinaBaseZkappPreconditionProtocolStateStableV1LengthA,
+        MinaBaseZkappPreconditionProtocolStateStableV1SnarkedLedgerHash,
+        MinaNumbersGlobalSlotSinceGenesisMStableV1, MinaNumbersGlobalSlotSpanStableV1,
+        MinaStateBlockchainStateValueStableV2SignedAmount, PicklesProofProofsVerifiedMaxStableV2,
+        StateHash,
+    },
 };
 
 use node::account::AccountPublicKey;
 use serde::Deserialize;
 
-use super::account::{GraphQLTiming, InputGraphQLTiming};
-use super::ConversionError;
+use super::{
+    account::{GraphQLTiming, InputGraphQLTiming},
+    ConversionError,
+};
 
 #[derive(GraphQLInputObject, Debug)]
 pub struct SendZkappInput {

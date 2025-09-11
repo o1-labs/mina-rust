@@ -1,6 +1,5 @@
 use std::sync::Arc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
     scan_state::{
         scan_state::transaction_snark::{SokDigest, Statement},
@@ -8,7 +7,7 @@ use ledger::{
     },
     transaction_pool::{TransactionError, TransactionPoolErrors},
 };
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use node::{
     core::{
         channels::mpsc,

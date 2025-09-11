@@ -1,0 +1,270 @@
+name: Documentation Scripts
+
+# This workflow tests the documentation setup scripts to ensure they work correctly.
+# It runs nightly and on-demand to avoid slowing down regular development workflow,
+# since documentation builds can take a long time to complete.
+on:
+  pull_request:
+    types: [labeled]
+    # Only runs when 'test-doc-scripts' label is added to a PR
+  schedule:
+    # Run nightly to catch environment drift and ensure scripts stay functional
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+
+jobs:
+  ubuntu:
+    name: Test System Setup Scripts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test system dependencies installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-system-deps.sh
+
+      - name: Test Node.js installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-nodejs.sh
+
+      - name: Test Rust installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-rust.sh
+
+      - name: Test WASM tools installation
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/install-wasm-tools.sh
+
+      - name: Test specialised builds
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/build-specialized.sh
+
+      - name: Test format and lint
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/format-and-lint.sh
+
+      - name: Verify installations
+        run: |
+          echo "Verifying installed tools..."
+          source ~/.cargo/env
+          rustc --version
+          cargo --version
+          node --version
+          npm --version
+          protoc --version
+          sqlite3 --version
+          wasm-pack --version
+          shellcheck --version
+
+  macos:
+    name: Test System Setup Scripts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test system dependencies installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-system-deps-macos.sh
+
+      - name: Test Node.js installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-nodejs-macos.sh
+
+      - name: Test Rust installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-rust.sh
+
+      - name: Test WASM tools installation
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/install-wasm-tools.sh
+
+      - name: Test specialised builds
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/build-specialized.sh
+
+      - name: Test format and lint
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          ./website/docs/developers/scripts/setup/format-and-lint.sh
+
+      - name: Verify installations
+        run: |
+          echo "Verifying installed tools..."
+          source ~/.cargo/env
+          rustc --version
+          cargo --version
+          node --version
+          npm --version
+          protoc --version
+          sqlite3 --version
+          wasm-pack --version
+          shellcheck --version
+
+  test-nix-setup:
+    name: Test Nix Setup (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@v19
+
+      - name: Setup Nix Cache
+        uses: DeterminateSystems/magic-nix-cache-action@v13
+
+      - name: Test nix develop succeeds
+        run: |
+          nix develop
+
+      - name: Test Rust installation
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/install-rust.sh
+
+      - name: Test WASM tools installation
+        run: |
+          # Source cargo environment first
+          source ~/.cargo/env
+          nix develop --command ./website/docs/developers/scripts/setup/install-wasm-tools.sh
+
+      - name: Test specialised builds
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/build-specialized.sh
+
+      - name: Test format and lint
+        run: |
+          nix develop --command ./website/docs/developers/scripts/setup/format-and-lint.sh
+
+      - name: Verify installations
+        run: |
+          echo "Verifying installed tools..."
+          nix develop --command bash -c "rustc --version && cargo --version && node --version && npm --version && protoc --version && sqlite3 --version && wasm-pack --version"
+
+
+  docker-ubuntu:
+    name: Test Docker Setup Script (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test Docker installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-docker.sh
+
+      - name: Verify Docker installation
+        run: |
+          sudo docker --version
+          sudo docker run hello-world
+
+  docker-macos:
+    name: Test Docker Setup Script (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts label
+    # This prevents long-running tests from blocking regular development workflow
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test Docker installation
+        run: |
+          ./website/docs/developers/scripts/setup/install-docker-macos.sh
+
+      - name: Verify Docker installation
+        run: |
+          # Docker Desktop needs to be started manually on macOS
+          # We'll just check if it was installed via Homebrew
+          docker --version || echo "Docker installed but not running (expected on macOS CI)"
+
+  test-update-ocaml-node-script:
+    name: Test Update OCaml Node Script
+    runs-on: ${{ matrix.os }}
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0 # Fetch all history
+
+      - name: Test update-ocaml-node script reproducibility
+        run: |
+          # Save the current script to use with the old commit state
+          cp ./website/docs/developers/scripts/update-ocaml-node.sh /tmp/update-ocaml-node.sh
+          chmod +x /tmp/update-ocaml-node.sh
+
+          # Check out the parent commit of the example update (cf67d94c)
+          git checkout cf67d94c
+
+          # Run the script from current branch with the same parameters as the example
+          /tmp/update-ocaml-node.sh 7f94ae0b 978866cd "3.2.0-alpha1" "3.2.0-beta1"
+
+          # Check if the changes match the expected diff from commit 31caeee6
+          git diff --name-only | sort > actual_files.txt
+          echo ".github/workflows/ci.yaml" > expected_files.txt
+          echo "docker-compose.archive.devnet.compare.yml" >> expected_files.txt
+          echo "node/testing/src/node/ocaml/config.rs" >> expected_files.txt
+          echo "node/testing/src/node/ocaml/mod.rs" >> expected_files.txt
+          echo "node/testing/src/scenarios/multi_node/basic_connectivity_peer_discovery.rs" >> expected_files.txt
+          echo "node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs" >> expected_files.txt
+          sort expected_files.txt > expected_files_sorted.txt
+
+          # Verify the same files were modified
+          if ! diff -q actual_files.txt expected_files_sorted.txt; then
+            echo "ERROR: Script modified different files than expected"
+            echo "Expected files:"
+            cat expected_files_sorted.txt
+            echo "Actual files:"
+            cat actual_files.txt
+            exit 1
+          fi
+
+          echo "SUCCESS: Script produced the expected file changes"

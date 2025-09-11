@@ -25,22 +25,22 @@ versioned_type = "crate::versioned::Versioned"
 phantom_type = "crate::phantom::Phantom"
 
 skip = [
-       "TransactionSnarkScanStateStableV1VersionedV1PolyV1PolyV1TreesArg0V1",
-       "TransactionSnarkScanStateStableV2TreesA",
-       "TransactionSnarkScanStateStableV2ScanStateTreesA",
-       "MinaBaseFeeExcessStableV1",
-       "MinaBaseFeeExcessStableV1Fee",
-       "MinaTransactionLogicZkappCommandLogicLocalStateValueStableV1SignedAmount",
-       "MinaBaseSignedCommandMemoStableV1",
+  "TransactionSnarkScanStateStableV1VersionedV1PolyV1PolyV1TreesArg0V1",
+  "TransactionSnarkScanStateStableV2TreesA",
+  "TransactionSnarkScanStateStableV2ScanStateTreesA",
+  "MinaBaseFeeExcessStableV1",
+  "MinaBaseFeeExcessStableV1Fee",
+  "MinaTransactionLogicZkappCommandLogicLocalStateValueStableV1SignedAmount",
+  "MinaBaseSignedCommandMemoStableV1",
 ]
 
 rec_tuple_type = 'PaddedSeq'
 
 [type_preambles]
-'Consensus_vrf.Output.Truncated.Stable.V1' =                     "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
+'Consensus_vrf.Output.Truncated.Stable.V1' = "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
 'Pickles__Proof.Proofs_verified_2.Repr.Stable.V2.statement.fp' = "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
-'Sgn.Stable.V1' =                                                "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
-'Protocol_version.Make_str.Stable.V1' =                          "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
+'Sgn.Stable.V1' = "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
+'Protocol_version.Make_str.Stable.V1' = "#[derive(Clone, Debug, PartialEq, BinProtRead, BinProtWrite)]"
 
 [base_types.float]
 rust_id = 'crate::number::Float64'

@@ -1,10 +1,10 @@
 use field::FieldWitness;
-use poly_commitment::evaluation_proof::OpeningProof;
+use poly_commitment::ipa::OpeningProof;
 
 pub mod accumulator_check;
 pub mod block;
 pub mod caching;
-mod circuit_blobs;
+pub mod circuit_blobs;
 pub mod constants;
 mod conv;
 pub mod field;
@@ -47,17 +47,20 @@ pub type ProverProof<F> = kimchi::proof::ProverProof<
 pub fn generate_tx_proof(
     params: transaction::TransactionParams,
 ) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_curves::pasta::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepTransactionProof>();
     transaction::generate_tx_proof(params, &mut w)
 }
 pub fn generate_merge_proof(params: merge::MergeParams) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_curves::pasta::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepMergeProof>();
     merge::generate_merge_proof(params, &mut w)
 }
 pub fn generate_block_proof(params: block::BlockParams) -> anyhow::Result<wrap::WrapProof> {
-    use {mina_hasher::Fp, witness::Witness};
+    use mina_curves::pasta::Fp;
+    use witness::Witness;
     let mut w: Witness<Fp> = Witness::new::<constants::StepBlockProof>();
     block::generate_block_proof(params, &mut w)
 }

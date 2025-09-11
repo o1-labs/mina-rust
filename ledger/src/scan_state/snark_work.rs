@@ -12,14 +12,16 @@ pub mod spec {
 
 #[cfg(test)]
 mod tests {
-    use mina_p2p_messages::binprot::{
-        self,
-        macros::{BinProtRead, BinProtWrite},
-    };
-    use mina_p2p_messages::v2::{
-        MinaBaseTransactionStatusStableV2, MinaTransactionTransactionStableV2,
-        SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponse,
-        SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponseA0Instances,
+    use mina_p2p_messages::{
+        binprot::{
+            self,
+            macros::{BinProtRead, BinProtWrite},
+        },
+        v2::{
+            MinaBaseTransactionStatusStableV2, MinaTransactionTransactionStableV2,
+            SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponse,
+            SnarkWorkerWorkerRpcsVersionedGetWorkV2TResponseA0Instances,
+        },
     };
 
     use binprot::{BinProtRead, BinProtWrite};

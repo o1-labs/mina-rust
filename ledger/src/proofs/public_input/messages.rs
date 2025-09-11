@@ -1,20 +1,21 @@
 use std::str::FromStr;
 
-use crate::proofs::to_field_elements::ToFieldElements;
-use crate::proofs::transaction::{checked_hash2, InnerCurve, PlonkVerificationKeyEvals};
-use crate::proofs::witness::Witness;
-use crate::proofs::VerifierIndex;
-use ark_ec::short_weierstrass_jacobian::GroupAffine;
+use crate::proofs::{
+    to_field_elements::ToFieldElements,
+    transaction::{checked_hash2, InnerCurve, PlonkVerificationKeyEvals},
+    witness::Witness,
+    VerifierIndex,
+};
+use ark_ec::short_weierstrass::Affine;
 use ark_ff::{BigInteger256, PrimeField};
-use mina_curves::{pasta::Fq, pasta::Pallas};
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq, Pallas};
 use poly_commitment::PolyComm;
 
 use poseidon::hash::hash_fields;
 
 impl<'a> From<&'a VerifierIndex<Fq>> for PlonkVerificationKeyEvals<Fp> {
     fn from(verifier_index: &'a VerifierIndex<Fq>) -> Self {
-        let to_curve = |v: &PolyComm<Pallas>| InnerCurve::of_affine(v.elems[0]);
+        let to_curve = |v: &PolyComm<Pallas>| InnerCurve::of_affine(v.chunks[0]);
 
         Self {
             sigma: verifier_index.sigma_comm.each_ref().map(to_curve),
@@ -52,21 +53,21 @@ pub struct MessagesForNextWrapProof {
 
 impl MessagesForNextWrapProof {
     /// Implementation of `hash_messages_for_next_wrap_proof`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L50
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L50>
     pub fn hash(&self) -> [u64; 4] {
         let fields: Vec<Fq> = self.to_fields();
         let field: Fq = hash_fields(&fields);
 
-        let bigint: BigInteger256 = field.into_repr();
-        bigint.to_64x4()
+        let bigint: BigInteger256 = field.into_bigint();
+        bigint.0
     }
 
     pub fn hash_checked(&self, w: &mut Witness<Fq>) -> [u64; 4] {
         let fields: Vec<Fq> = self.to_fields();
         let field: Fq = checked_hash2(&fields, w);
 
-        let bigint: BigInteger256 = field.into_repr();
-        bigint.to_64x4()
+        let bigint: BigInteger256 = field.into_bigint();
+        bigint.0
     }
 
     // TODO: De-duplicate with above
@@ -74,12 +75,12 @@ impl MessagesForNextWrapProof {
         let fields: Vec<Fq> = self.to_fields();
         let field: Fq = crate::proofs::transaction::checked_hash3(&fields, w);
 
-        let bigint: BigInteger256 = field.into_repr();
-        bigint.to_64x4()
+        let bigint: BigInteger256 = field.into_bigint();
+        bigint.0
     }
 
     /// Implementation of `to_field_elements`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L356
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L356>
     fn to_fields(&self) -> Vec<Fq> {
         const NFIELDS: usize = 32;
 
@@ -97,7 +98,7 @@ impl MessagesForNextWrapProof {
             fields.extend_from_slice(challenges);
         }
 
-        let GroupAffine { x, y, .. } = self.challenge_polynomial_commitment.to_affine();
+        let Affine { x, y, .. } = self.challenge_polynomial_commitment.to_affine();
         fields.extend([x, y]);
 
         assert_eq!(fields.len(), NFIELDS);
@@ -106,7 +107,7 @@ impl MessagesForNextWrapProof {
     }
 
     /// Value of `Dummy.Ipa.Wrap.challenges_computed` here:
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L37
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/wrap_hack.ml#L37>
     ///
     /// Those are constants but they are computed once at runtime in Mina.
     /// TODO: Compute them instead of hardcoded values
@@ -146,17 +147,17 @@ where
     AppState: ToFieldElements<Fp>,
 {
     /// Implementation of `hash_messages_for_next_step_proof`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/common.ml#L33>
     pub fn hash(&self) -> [u64; 4] {
         let fields: Vec<Fp> = self.to_fields();
         let field: Fp = hash_fields(&fields);
 
-        let bigint: BigInteger256 = field.into_repr();
-        bigint.to_64x4()
+        let bigint: BigInteger256 = field.into_bigint();
+        bigint.0
     }
 
     /// Implementation of `to_field_elements`
-    /// https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493
+    /// <https://github.com/MinaProtocol/mina/blob/32a91613c388a71f875581ad72276e762242f802/src/lib/pickles/composition_types/composition_types.ml#L493>
     fn to_fields(&self) -> Vec<Fp> {
         const NFIELDS: usize = 93; // TODO: This is bigger with transactions
 
@@ -176,30 +177,30 @@ where
                 endomul_scalar,
             } = &self.dlog_plonk_index;
 
-            for GroupAffine { x, y, .. } in sigma.iter().map(InnerCurve::to_affine) {
+            for Affine { x, y, .. } in sigma.iter().map(InnerCurve::to_affine) {
                 fields.extend([x, y]);
             }
 
-            for GroupAffine { x, y, .. } in coefficients.iter().map(InnerCurve::to_affine) {
+            for Affine { x, y, .. } in coefficients.iter().map(InnerCurve::to_affine) {
                 fields.extend([x, y]);
             }
 
-            let GroupAffine { x, y, .. } = generic.to_affine();
+            let Affine { x, y, .. } = generic.to_affine();
             fields.extend([x, y]);
 
-            let GroupAffine { x, y, .. } = psm.to_affine();
+            let Affine { x, y, .. } = psm.to_affine();
             fields.extend([x, y]);
 
-            let GroupAffine { x, y, .. } = complete_add.to_affine();
+            let Affine { x, y, .. } = complete_add.to_affine();
             fields.extend([x, y]);
 
-            let GroupAffine { x, y, .. } = mul.to_affine();
+            let Affine { x, y, .. } = mul.to_affine();
             fields.extend([x, y]);
 
-            let GroupAffine { x, y, .. } = emul.to_affine();
+            let Affine { x, y, .. } = emul.to_affine();
             fields.extend([x, y]);
 
-            let GroupAffine { x, y, .. } = endomul_scalar.to_affine();
+            let Affine { x, y, .. } = endomul_scalar.to_affine();
             fields.extend([x, y]);
         }
 
@@ -209,7 +210,7 @@ where
         let commitments = &self.challenge_polynomial_commitments;
         let old_challenges = &self.old_bulletproof_challenges;
         for (commitments, old) in commitments.iter().zip(old_challenges) {
-            let GroupAffine { x, y, .. } = commitments.to_affine();
+            let Affine { x, y, .. } = commitments.to_affine();
             fields.extend([x, y]);
             fields.extend_from_slice(old);
         }

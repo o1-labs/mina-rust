@@ -25,11 +25,12 @@ interface SSTree {
 }
 
 @Component({
-  selector: 'mina-scan-state-tree-chart',
-  templateUrl: './scan-state-tree-chart.component.html',
-  styleUrls: ['./scan-state-tree-chart.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'fx-col-full-cent w-100' },
+    selector: 'mina-scan-state-tree-chart',
+    templateUrl: './scan-state-tree-chart.component.html',
+    styleUrls: ['./scan-state-tree-chart.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'fx-col-full-cent w-100' },
+    standalone: false
 })
 export class ScanStateTreeChartComponent extends StoreDispatcher implements OnInit, OnChanges {
 

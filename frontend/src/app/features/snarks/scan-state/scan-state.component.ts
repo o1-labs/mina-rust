@@ -17,10 +17,11 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-  selector: 'mina-scan-state',
-  templateUrl: './scan-state.component.html',
-  styleUrls: ['./scan-state.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-scan-state',
+    templateUrl: './scan-state.component.html',
+    styleUrls: ['./scan-state.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class ScanStateComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

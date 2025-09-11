@@ -1,27 +1,31 @@
 use mina_p2p_messages::gossip::GossipNetMessageV2;
 use redux::Timestamp;
 
-use crate::block_producer::BlockProducerAction;
-use crate::ledger::LEDGER_DEPTH;
-use crate::p2p::channels::best_tip::P2pChannelsBestTipAction;
-use crate::p2p::P2pNetworkPubsubAction;
-use crate::snark_pool::{SnarkPoolAction, SnarkWork};
-use crate::stats::sync::SyncingLedger;
-use crate::{Store, TransactionPoolAction};
+use crate::{
+    block_producer::BlockProducerAction,
+    ledger::LEDGER_DEPTH,
+    p2p::{channels::best_tip::P2pChannelsBestTipAction, P2pNetworkPubsubAction},
+    snark_pool::{SnarkPoolAction, SnarkWork},
+    stats::sync::SyncingLedger,
+    Store, TransactionPoolAction,
+};
 
-use super::candidate::TransitionFrontierCandidateAction;
-use super::genesis::TransitionFrontierGenesisAction;
-use super::sync::ledger::snarked::{
-    TransitionFrontierSyncLedgerSnarkedAction, ACCOUNT_SUBTREE_HEIGHT,
+use super::{
+    candidate::TransitionFrontierCandidateAction,
+    genesis::TransitionFrontierGenesisAction,
+    sync::{
+        ledger::{
+            snarked::{TransitionFrontierSyncLedgerSnarkedAction, ACCOUNT_SUBTREE_HEIGHT},
+            staged::TransitionFrontierSyncLedgerStagedAction,
+            transition_frontier_sync_ledger_init_effects,
+            transition_frontier_sync_ledger_snarked_success_effects,
+            transition_frontier_sync_ledger_staged_success_effects,
+            TransitionFrontierSyncLedgerAction,
+        },
+        TransitionFrontierSyncAction, TransitionFrontierSyncState,
+    },
+    TransitionFrontierAction, TransitionFrontierActionWithMeta, TransitionFrontierState,
 };
-use super::sync::ledger::staged::TransitionFrontierSyncLedgerStagedAction;
-use super::sync::ledger::{
-    transition_frontier_sync_ledger_init_effects,
-    transition_frontier_sync_ledger_snarked_success_effects,
-    transition_frontier_sync_ledger_staged_success_effects, TransitionFrontierSyncLedgerAction,
-};
-use super::sync::{TransitionFrontierSyncAction, TransitionFrontierSyncState};
-use super::{TransitionFrontierAction, TransitionFrontierActionWithMeta, TransitionFrontierState};
 
 // TODO(refactor): all service accesses are for stats, how should that be handled?
 

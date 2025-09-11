@@ -1,6 +1,4 @@
-use std::cmp::Ord;
-use std::collections::BTreeMap;
-use std::ops::RangeBounds;
+use std::{cmp::Ord, collections::BTreeMap, ops::RangeBounds};
 
 use crate::bug_condition;
 
@@ -161,8 +159,7 @@ where
 
 mod ser {
     use super::*;
-    use serde::ser::SerializeStruct;
-    use serde::{Deserialize, Serialize};
+    use serde::{ser::SerializeStruct, Deserialize, Serialize};
 
     #[derive(Deserialize)]
     struct Pool<State> {

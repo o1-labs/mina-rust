@@ -1,0 +1,64 @@
+---
+title: Docker Installation
+description: Docker installation instructions and tested setup scripts
+---
+
+# Docker Installation Guide
+
+## Linux (Ubuntu/Debian)
+
+The following commands are tested on Ubuntu 22.04 and Ubuntu 24.04 in our CI
+pipeline:
+
+import CodeBlock from "@theme/CodeBlock";
+import DockerInstallLinux from "!!raw-loader!../developers/scripts/setup/install-docker.sh";
+
+<CodeBlock language="bash" title="install-docker.sh">
+  {DockerInstallLinux}
+</CodeBlock>
+
+After installation, you'll need to either log out and back in, or use
+`newgrp docker` to apply the group membership.
+
+## macOS
+
+The following commands are tested on macOS in our CI pipeline:
+
+import DockerInstallMacOS from "!!raw-loader!../developers/scripts/setup/install-docker-macos.sh";
+
+<CodeBlock language="bash" title="install-docker-macos.sh">
+  {DockerInstallMacOS}
+</CodeBlock>
+
+**Note**: After installation, you need to manually start Docker Desktop from
+Applications or Launchpad.
+
+## Windows
+
+For Windows, manually download and install
+[Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/).
+
+## Manual Verification
+
+After installation, verify Docker is working:
+
+```bash
+docker --version
+docker run hello-world
+```
+
+## Alternative Manual Installation
+
+If you prefer not to use the automated scripts, you can find manual installation
+instructions in Docker's official documentation:
+
+- [Docker on Ubuntu](https://docs.docker.com/engine/install/ubuntu/)
+- [Docker Desktop for Mac](https://docs.docker.com/desktop/setup/install/mac-install/)
+- [Docker Desktop for Windows](https://docs.docker.com/desktop/setup/install/windows-install/)
+
+## Testing
+
+These installation scripts are tested nightly and on-demand in our CI pipeline
+to ensure they remain functional across different environments. You can see the
+test results in the
+[Documentation Scripts workflow](https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-scripts.yaml).

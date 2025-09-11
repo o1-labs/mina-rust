@@ -21,7 +21,7 @@ use ledger::{
     Account, AuthRequired, MutableFp, Permissions, Timing, TokenId, TokenSymbol, VerificationKey,
     VerificationKeyWire,
 };
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
     array::ArrayN16,
     bigint::BigInt,
@@ -741,7 +741,7 @@ impl Mutator<ZkAppCommand> for FuzzerCtx {
 
         if self.gen.rng.gen_bool(0.9) {
             if let Some(keypair) = self.find_keypair(&t.fee_payer.body.public_key) {
-                t.fee_payer.authorization = signer.sign(keypair, &full_txn_commitment);
+                t.fee_payer.authorization = signer.sign(keypair, &full_txn_commitment, false);
             }
         }
 

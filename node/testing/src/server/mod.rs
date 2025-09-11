@@ -1,36 +1,44 @@
 pub mod simulator;
 pub mod webnode;
 
-use crate::cluster::{Cluster, ClusterConfig, ClusterNodeId};
-use crate::node::NodeTestingConfig;
-use crate::scenario::{event_details, Scenario, ScenarioId, ScenarioInfo, ScenarioStep};
-use crate::service::PendingEventId;
+use crate::{
+    cluster::{Cluster, ClusterConfig, ClusterNodeId},
+    node::NodeTestingConfig,
+    scenario::{event_details, Scenario, ScenarioId, ScenarioInfo, ScenarioStep},
+    service::PendingEventId,
+};
 
-use std::collections::BTreeSet;
-use std::path::PathBuf;
-use std::{collections::BTreeMap, sync::Arc, time::Duration};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    path::PathBuf,
+    sync::Arc,
+    time::Duration,
+};
 
-use axum::http::header;
-use axum::middleware;
-use axum::routing::get_service;
 use axum::{
     extract::{Path, State},
-    http::StatusCode,
-    routing::{get, post, put},
+    http::{header, StatusCode},
+    middleware,
+    routing::{get, get_service, post, put},
     Json, Router,
 };
-use node::account::AccountPublicKey;
-use node::p2p::connection::outgoing::P2pConnectionOutgoingInitOpts;
-use node::p2p::webrtc::{Host, Offer, P2pConnectionResponse, SignalingMethod};
-use node::transition_frontier::genesis::{GenesisConfig, PrebuiltGenesisConfig};
-use openmina_node_native::p2p::webrtc::webrtc_signal_send;
+use mina_node_native::p2p::webrtc::webrtc_signal_send;
+use node::{
+    account::AccountPublicKey,
+    p2p::{
+        connection::outgoing::P2pConnectionOutgoingInitOpts,
+        webrtc::{Host, Offer, P2pConnectionResponse, SignalingMethod},
+    },
+    transition_frontier::genesis::{GenesisConfig, PrebuiltGenesisConfig},
+};
 use rand::{rngs::StdRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
-use tokio::net::TcpListener;
-use tokio::runtime::Runtime;
-use tokio::sync::{oneshot, Mutex, MutexGuard, OwnedMutexGuard};
-use tower_http::cors::CorsLayer;
-use tower_http::services::ServeDir;
+use tokio::{
+    net::TcpListener,
+    runtime::Runtime,
+    sync::{oneshot, Mutex, MutexGuard, OwnedMutexGuard},
+};
+use tower_http::{cors::CorsLayer, services::ServeDir};
 
 pub fn server(rt: Runtime, host: Host, port: u16, ssl_port: Option<u16>) {
     let fe_dist_dir = PathBuf::from(env!("CARGO_MANIFEST_DIR"))

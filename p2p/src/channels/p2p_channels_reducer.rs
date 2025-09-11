@@ -28,7 +28,7 @@ use crate::{
     disconnection::{P2pDisconnectionAction, P2pDisconnectionReason},
     P2pState,
 };
-use openmina_core::{block::BlockWithHash, error, Substate};
+use mina_core::{block::BlockWithHash, error, Substate};
 use redux::{ActionWithMeta, Dispatcher};
 
 impl P2pChannelsState {

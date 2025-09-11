@@ -1,4 +1,4 @@
-@import 'openmina';
+@use 'openmina';
 
 .list-wrapper {
 
@@ -16,7 +16,7 @@
       right: 18px;
       width: 1px;
       height: 100%;
-      background-color: $base-tertiary;
+      background-color: openmina.$base-tertiary;
       z-index: 1;
     }
 
@@ -36,22 +36,22 @@
 
       &:first-child {
         &::before {
-          background-color: $special-selected-alt-2-primary;
+          background-color: openmina.$special-selected-alt-2-primary;
         }
 
         .arrow {
-          border: solid $special-selected-alt-2-primary;
+          border: solid openmina.$special-selected-alt-2-primary;
           border-width: 0 1px 1px 0;
         }
       }
 
       &:last-child {
         &::before {
-          background-color: $special-selected-alt-1-primary;
+          background-color: openmina.$special-selected-alt-1-primary;
         }
 
         .arrow {
-          border: solid $special-selected-alt-1-primary;
+          border: solid openmina.$special-selected-alt-1-primary;
           border-width: 0 1px 1px 0;
         }
       }
@@ -67,13 +67,13 @@
     }
 
     .root span {
-      color: $special-selected-alt-2-primary;
-      background-color: $special-selected-alt-2-container;
+      color: openmina.$special-selected-alt-2-primary;
+      background-color: openmina.$special-selected-alt-2-container;
     }
 
     .best-tip span {
-      color: $special-selected-alt-1-primary;
-      background-color: $special-selected-alt-1-container;
+      color: openmina.$special-selected-alt-1-primary;
+      background-color: openmina.$special-selected-alt-1-container;
     }
 
     .root span, .best-tip span {
@@ -103,36 +103,36 @@
     font-size: 0.75em;
 
     &.Missing {
-      background-color: $warn-container;
-      color: $warn-primary;
+      background-color: openmina.$warn-container;
+      color: openmina.$warn-primary;
     }
 
     &.Fetching {
-      background-color: $base-container;
-      color: $base-tertiary;
+      background-color: openmina.$base-container;
+      color: openmina.$base-tertiary;
     }
 
     &.Fetched {
-      background-color: $base-container;
-      color: $base-secondary;
+      background-color: openmina.$base-container;
+      color: openmina.$base-secondary;
     }
 
     &.Applying {
-      background-color: $selected-container;
-      color: $selected-primary;
+      background-color: openmina.$selected-container;
+      color: openmina.$selected-primary;
     }
 
     &.Applied {
-      background-color: $success-container;
-      color: $success-primary;
+      background-color: openmina.$success-container;
+      color: openmina.$success-primary;
     }
 
     &.root-block {
-      border-bottom: 4px solid $special-selected-alt-2-primary;
+      border-bottom: 4px solid openmina.$special-selected-alt-2-primary;
     }
 
     &.best-tip-block {
-      border-bottom: 4px solid $special-selected-alt-1-primary;
+      border-bottom: 4px solid openmina.$special-selected-alt-1-primary;
     }
   }
 }

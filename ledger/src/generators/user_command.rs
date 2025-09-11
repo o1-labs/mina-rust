@@ -200,7 +200,7 @@ fn zkapp_command_with_ledger(
     (user_command, fee_payer_keypair.clone(), keymap, ledger)
 }
 
-/// https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_generators/user_command_generators.ml#L146
+/// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_generators/user_command_generators.ml#L146>
 pub fn sequence_zkapp_command_with_ledger(
     max_account_updates: Option<usize>,
     max_token_updates: Option<usize>,

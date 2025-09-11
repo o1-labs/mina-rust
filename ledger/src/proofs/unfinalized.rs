@@ -1,8 +1,6 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use kimchi::proof::{PointEvaluations, ProofEvaluations};
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
-use mina_p2p_messages::v2;
+use mina_curves::pasta::{Fp, Fq};
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 
 use crate::proofs::{
     field::FieldWitness, public_input::plonk_checks::derive_plonk, step::FeatureFlags,
@@ -25,8 +23,7 @@ use super::{
 
 pub mod ro {
 
-    use mina_curves::pasta::Fq;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::{Fp, Fq};
 
     use crate::proofs::{
         field::FieldWitness, public_input::scalar_challenge::ScalarChallenge,
@@ -45,8 +42,10 @@ pub mod ro {
     }
 
     pub fn bits_random_oracle<const N: usize>(s: &str) -> [bool; N] {
-        use blake2::digest::{Update, VariableOutput};
-        use blake2::Blake2sVar;
+        use blake2::{
+            digest::{Update, VariableOutput},
+            Blake2sVar,
+        };
 
         let mut hasher = Blake2sVar::new(32).unwrap();
         hasher.update(s.as_bytes());
@@ -426,7 +425,7 @@ impl<F: FieldWitness> ToFieldElements<F> for Unfinalized {
         fields.extend(
             bulletproof_challenges
                 .iter()
-                .map(|c| two_u64_to_field::<F>(c)),
+                .map(|c| two_u64_to_field::<F, _>(c)),
         );
 
         // Bool

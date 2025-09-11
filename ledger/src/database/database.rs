@@ -4,7 +4,7 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 
 use crate::{
@@ -409,7 +409,7 @@ mod tests {
     fn test_hashing_tree_with_web_workers() {
         use web_sys::console;
 
-        use openmina_core::thread;
+        use mina_core::thread;
         use std::time::Duration;
 
         use crate::account;

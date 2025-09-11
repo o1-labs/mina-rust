@@ -1,37 +1,38 @@
 [package]
 name = "mina-p2p-messages"
-version = "0.6.4"
+version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-serde = { version = "1.0.142", features = ["derive"] }
-serde_json = { version = "1.0.83" }
-serde_bytes = "0.11"
-hex = "0.4.3"
+ark-serialize = { workspace = true }
+base64 = "0.22"
 binprot = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
 binprot_derive = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
-thiserror = "1.0.32"
-derive_more = "0.99.17"
-bs58 = { version = "0.4", features = ["check"] }
-base64 = "0.22"
-sha2 = { version = "0.10.2" }
 blake2 = { version = "0.10" }
-time = "0.3.36"
+bs58 = { version = "0.4", features = ["check"] }
+derive_more = "0.99.17"
+hex = "0.4.3"
+lazy_static = "1.4.0"
 num-bigint = "0.4.6"
+serde = { workspace = true }
+serde_bytes = "0.11"
+serde_json = { version = "1.0.83" }
+sha2 = { version = "0.10.2" }
 strum = "0.26.2"
 strum_macros = "0.26.4"
-lazy_static = "1.4.0"
+thiserror = "1.0.32"
+time = "0.3.36"
 
-openmina-macros = { path = "../macros" }
+mina-macros = { path = "../macros" }
 
-mina-hasher = { workspace = true }
 mina-curves = { workspace = true }
+mina-hasher = { workspace = true }
 mina-signer = { workspace = true }
-poseidon = { workspace = true }
 o1-utils = { workspace = true }
+poseidon = { workspace = true }
 
 ark-ff = { workspace = true }
 rsexp = "0.2.3"

@@ -1,11 +1,12 @@
 use mina_p2p_messages::v2::{self};
-use node::core::{channels::mpsc, thread};
-use node::ledger::write::BlockApplyResult;
-use std::env;
-use std::io::Write;
+use node::{
+    core::{channels::mpsc, thread},
+    ledger::write::BlockApplyResult,
+};
+use std::{env, io::Write};
 
+use mina_core::NetworkConfig;
 use mina_p2p_messages::v2::PrecomputedBlock;
-use openmina_core::NetworkConfig;
 use std::net::SocketAddr;
 
 use super::NodeService;
@@ -63,7 +64,7 @@ impl ArchiveServiceClients {
         };
 
         let local_path = if options.uses_local_precomputed_storage() {
-            let env_path = env::var("OPENMINA_LOCAL_PRECOMPUTED_STORAGE_PATH");
+            let env_path = env::var("MINA_LOCAL_PRECOMPUTED_STORAGE_PATH");
             let default = format!("{}/archive-precomputed", work_dir);
             Some(env_path.unwrap_or(default))
         } else {
@@ -71,8 +72,8 @@ impl ArchiveServiceClients {
         };
 
         let archiver_address = if options.uses_archiver_process() {
-            let address = std::env::var("OPENMINA_ARCHIVE_ADDRESS")
-                .expect("OPENMINA_ARCHIVE_ADDRESS is not set");
+            let address =
+                std::env::var("MINA_ARCHIVE_ADDRESS").expect("MINA_ARCHIVE_ADDRESS is not set");
             let address = reqwest::Url::parse(&address).expect("Invalid URL");
 
             // Convert URL to SocketAddr
@@ -275,7 +276,7 @@ impl ArchiveService {
             .unwrap();
 
         thread::Builder::new()
-            .name("openmina_archive".to_owned())
+            .name("mina_archive".to_owned())
             .spawn(move || {
                 runtime.block_on(Self::run(archive_receiver, options, work_dir));
             })
@@ -289,7 +290,7 @@ impl ArchiveService {
         work_dir: String,
     ) {
         thread::Builder::new()
-            .name("openmina_archive".to_owned())
+            .name("mina_archive".to_owned())
             .spawn(move || {
                 Self::run(archive_receiver, options, work_dir);
             })
@@ -315,8 +316,10 @@ impl node::transition_frontier::archive::archive_service::ArchiveService for Nod
 mod rpc {}
 
 fn write_to_local_storage(base_path: &str, key: &str, data: &[u8]) -> Result<(), Error> {
-    use std::fs::{create_dir_all, File};
-    use std::path::Path;
+    use std::{
+        fs::{create_dir_all, File},
+        path::Path,
+    };
 
     let path = Path::new(base_path).join(key);
     if let Some(parent) = path.parent() {

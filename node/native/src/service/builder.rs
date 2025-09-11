@@ -1,12 +1,12 @@
 use ledger::proofs::provers::BlockProver;
+pub use mina_node_common::NodeServiceCommonBuildError;
+use mina_node_common::{
+    archive::config::ArchiveStorageOptions, p2p::TaskSpawner, rpc::RpcSender, EventSender,
+    NodeServiceCommonBuilder,
+};
 use node::{
     account::AccountSecretKey, core::thread, p2p::identity::SecretKey as P2pSecretKey,
     service::Recorder,
-};
-pub use openmina_node_common::NodeServiceCommonBuildError;
-use openmina_node_common::{
-    archive::config::ArchiveStorageOptions, p2p::TaskSpawner, rpc::RpcSender, EventSender,
-    NodeServiceCommonBuilder,
 };
 
 use crate::{http_server, NodeService, P2pTaskSpawner};
@@ -94,7 +94,7 @@ impl NodeServiceBuilder {
             .build()
             .unwrap();
         thread::Builder::new()
-            .name("openmina_http_server".to_owned())
+            .name("mina_http_server".to_owned())
             .spawn(move || runtime.block_on(http_server::run(port, rpc_sender)))
             .unwrap();
         self

@@ -8,10 +8,11 @@ import { Routes } from '@shared/enums/routes.enum';
 import { filter } from 'rxjs';
 
 @Component({
-  selector: 'mina-nodes-overview-side-panel',
-  templateUrl: './nodes-overview-side-panel.component.html',
-  styleUrls: ['./nodes-overview-side-panel.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-nodes-overview-side-panel',
+    templateUrl: './nodes-overview-side-panel.component.html',
+    styleUrls: ['./nodes-overview-side-panel.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class NodesOverviewSidePanelComponent extends StoreDispatcher implements OnInit {
 

@@ -1,4 +1,4 @@
-use openmina_fuzzer::{FuzzerState, MutationStrategy};
+use mina_fuzzer::{FuzzerState, MutationStrategy};
 use rand::Rng;
 
 use crate::{Data, YamuxFlags};

@@ -1,10 +1,10 @@
 #![allow(clippy::type_complexity)]
 
-use ark_ec::short_weierstrass_jacobian::GroupAffine;
-use ark_ff::{fields::arithmetic::InvalidBigInt, Field, PrimeField};
-use mina_hasher::Fp;
+use ark_ec::short_weierstrass::Affine;
+use ark_ff::{Field, PrimeField};
+use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
-    bigint::BigInt,
+    bigint::{BigInt, InvalidBigInt},
     binprot,
     pseq::PaddedSeq,
     v2::{
@@ -82,7 +82,7 @@ where
     F: Field + Into<BigInt>,
 {
     fn from(fps: InnerCurve<F>) -> Self {
-        let GroupAffine { x, y, .. } = fps.to_affine();
+        let Affine { x, y, .. } = fps.to_affine();
         (x.into(), y.into())
     }
 }
@@ -106,7 +106,7 @@ where
     F: Field + Into<BigInt>,
 {
     fn from(fps: &InnerCurve<F>) -> Self {
-        let GroupAffine { x, y, .. } = fps.to_affine();
+        let Affine { x, y, .. } = fps.to_affine();
         (x.into(), y.into())
     }
 }
@@ -148,7 +148,7 @@ where
 }
 
 /// Note: Refactor when `core::array::try_map` is stable
-/// https://github.com/rust-lang/rust/issues/79711
+/// <https://github.com/rust-lang/rust/issues/79711>
 pub fn try_array_into_with<'a, T, E, U, F, const N: usize>(
     value: &'a [T; N],
     fun: F,
@@ -667,7 +667,7 @@ impl From<AccountIndex> for MinaBaseAccountIndexStableV1 {
 
 impl From<ReceiptChainHash> for mina_p2p_messages::v2::ReceiptChainHash {
     fn from(value: ReceiptChainHash) -> Self {
-        MinaBaseReceiptChainHashStableV1(value.0.into_repr().into()).into()
+        MinaBaseReceiptChainHashStableV1(value.0.into_bigint().into()).into()
     }
 }
 

@@ -88,7 +88,7 @@ macro_rules! error {
     };
 }
 
-pub const ACTION_TRACE_TARGET: &str = "openmina_core::log::action";
+pub const ACTION_TRACE_TARGET: &str = "mina_core::log::action";
 
 #[macro_export]
 macro_rules! action_event {
@@ -178,7 +178,7 @@ pub use crate::{debug, error, info, trace, warn};
 #[macro_export]
 macro_rules! bug_condition {
     ($($arg:tt)*) => {{
-        if std::env::var("OPENMINA_PANIC_ON_BUG")
+        if std::env::var("MINA_PANIC_ON_BUG")
         .map(|v| ["true", "1"].contains(&v.to_lowercase().as_str()))
         .unwrap_or(false) {
             panic!($($arg)*)

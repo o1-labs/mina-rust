@@ -5,7 +5,7 @@ use std::{
     sync::atomic::AtomicU64,
 };
 
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_signer::CompressedPubKey;
 use serde::{Deserialize, Serialize};
 
@@ -69,7 +69,7 @@ pub trait BaseLedger {
     where
         F: FnMut(B, &Account) -> B;
 
-    /// the set of [account_id]s are ledger elements to skip during the fold,
+    /// the set of `account_id`s are ledger elements to skip during the fold,
     /// because they're in a mask
     fn fold_with_ignored_accounts<B, F>(&self, ignoreds: HashSet<AccountId>, init: B, fun: F) -> B
     where
@@ -103,7 +103,7 @@ pub trait BaseLedger {
         account: Account,
     ) -> Result<GetOrCreated, DatabaseError>;
 
-    /// the ledger should not be used after calling [close]
+    /// the ledger should not be used after calling `close`
     fn close(&self);
 
     /// for account locations in the ledger, the last (rightmost) filled location
@@ -111,7 +111,7 @@ pub trait BaseLedger {
 
     fn get_uuid(&self) -> Uuid;
 
-    /// return Some [directory] for ledgers that use a file system, else None
+    /// return Some `directory` for ledgers that use a file system, else None
     fn get_directory(&self) -> Option<PathBuf>;
 
     fn get(&self, addr: Address) -> Option<Box<Account>>;
@@ -246,7 +246,7 @@ impl LedgerIntf for Mask {
         BaseLedger::set(self, addr.clone(), account)
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L311
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L311>
     fn get_or_create(
         &mut self,
         account_id: &AccountId,
@@ -271,7 +271,7 @@ impl LedgerIntf for Mask {
         Ok((action, account, addr))
     }
 
-    /// https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L304
+    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_ledger/ledger.ml#L304>
     fn create_new_account(&mut self, account_id: AccountId, account: Account) -> Result<(), ()> {
         match BaseLedger::get_or_create_account(self, account_id, account).unwrap() {
             GetOrCreated::Added(_) => {}
@@ -315,7 +315,7 @@ impl LedgerIntf for Mask {
 
     fn apply_mask(&mut self, mask: Self) {
         // ignore `self` here:
-        // https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L236-L246
+        // <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_ledger/ledger.ml#L236-L246>
         mask.commit()
     }
 

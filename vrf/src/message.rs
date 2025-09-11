@@ -1,4 +1,4 @@
-use ark_ff::{One, SquareRootField, Zero};
+use ark_ff::{Field, One, Zero};
 
 use ledger::{proofs::transaction::legacy_input::to_bits, ToInputs};
 use mina_curves::pasta::curves::pallas::Pallas as CurvePoint;
@@ -80,7 +80,7 @@ impl VrfMessage {
 
         for x in [x1, x2, x3] {
             if let Some(y) = get_y(x) {
-                return Ok(CurvePoint::new(x, y, false));
+                return Ok(CurvePoint::new(x, y));
             }
         }
 
@@ -94,7 +94,7 @@ impl ToInputs for VrfMessage {
             Ok(epoch_seed) => epoch_seed,
             Err(_) => {
                 // TODO: Return an error somehow
-                mina_hasher::Fp::zero()
+                mina_curves::pasta::Fp::zero()
             }
         };
         inputs.append_field(epoch_seed);

@@ -1,14 +1,14 @@
-use std::collections::BTreeMap;
-use std::sync::Arc;
+use std::{collections::BTreeMap, sync::Arc};
 
 use mina_p2p_messages::v2::{MinaStateProtocolStateValueStableV2, StateHash};
 use p2p::channels::rpc::StagedLedgerAuxAndPendingCoinbases;
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use crate::p2p::channels::rpc::P2pRpcId;
-use crate::p2p::PeerId;
-use crate::transition_frontier::sync::ledger::SyncLedgerTargetWithStaged;
+use crate::{
+    p2p::{channels::rpc::P2pRpcId, PeerId},
+    transition_frontier::sync::ledger::SyncLedgerTargetWithStaged,
+};
 
 use super::{
     PeerStagedLedgerPartsFetchError, StagedLedgerAuxAndPendingCoinbasesValid,

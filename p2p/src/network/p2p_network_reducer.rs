@@ -1,6 +1,6 @@
 use crate::P2pLimits;
 use identify::P2pNetworkIdentifyState;
-use openmina_core::Substate;
+use mina_core::Substate;
 
 use super::*;
 

@@ -7,11 +7,12 @@ import { BenchmarksWalletsZkService } from '@benchmarks/wallets/benchmarks-walle
 import { MinaNode } from '@shared/types/core/environment/mina-env.type';
 
 @Component({
-  selector: 'mina-benchmarks-wallets',
-  templateUrl: './benchmarks-wallets.component.html',
-  styleUrls: ['./benchmarks-wallets.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'h-100' },
+    selector: 'mina-benchmarks-wallets',
+    templateUrl: './benchmarks-wallets.component.html',
+    styleUrls: ['./benchmarks-wallets.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    host: { class: 'h-100' },
+    standalone: false
 })
 export class BenchmarksWalletsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

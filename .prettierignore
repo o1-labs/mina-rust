@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build outputs
+target/
+**/target/
+dist/
+build/
+
+# Generated files
+**/*.generated.md
+**/*.lock
+
+# Frontend specific
+frontend/src/assets/
+frontend/public/
+frontend/dist/
+
+# Test files
+**/test-output/
+**/coverage/
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+
+# Cargo.toml and other config files
+*.toml
+*.lock
+*.log
+
+# Binary files
+*.bin
+*.wasm
+*.so
+*.dylib
+
+# Documentation that should not be auto-formatted
+CHANGELOG.md

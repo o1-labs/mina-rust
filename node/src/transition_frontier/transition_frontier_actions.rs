@@ -1,15 +1,15 @@
-use std::collections::BTreeSet;
-use std::sync::Arc;
+use std::{collections::BTreeSet, sync::Arc};
 
+use mina_core::{block::ArcBlockWithHash, ActionEvent};
 use mina_p2p_messages::v2::StateHash;
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
-use super::candidate::TransitionFrontierCandidateAction;
-use super::genesis::TransitionFrontierGenesisAction;
-use super::genesis_effectful::TransitionFrontierGenesisEffectfulAction;
-use super::sync::{SyncError, TransitionFrontierSyncAction, TransitionFrontierSyncState};
+use super::{
+    candidate::TransitionFrontierCandidateAction,
+    genesis::TransitionFrontierGenesisAction,
+    genesis_effectful::TransitionFrontierGenesisEffectfulAction,
+    sync::{SyncError, TransitionFrontierSyncAction, TransitionFrontierSyncState},
+};
 
 pub type TransitionFrontierActionWithMeta = redux::ActionWithMeta<TransitionFrontierAction>;
 pub type TransitionFrontierActionWithMetaRef<'a> =

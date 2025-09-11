@@ -1,18 +1,18 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_curves::pasta::Vesta;
-use mina_hasher::Fp;
-use mina_p2p_messages::{bigint::BigInt, v2::PicklesProofProofsVerified2ReprStableV2};
-use poly_commitment::{commitment::CommitmentCurve, srs::SRS};
+use mina_curves::pasta::{Fp, Vesta};
+use mina_p2p_messages::{
+    bigint::{BigInt, InvalidBigInt},
+    v2::PicklesProofProofsVerified2ReprStableV2,
+};
+use poly_commitment::{commitment::CommitmentCurve, ipa::SRS};
 
-use super::public_input::scalar_challenge::ScalarChallenge;
-use super::urs_utils;
+use super::{public_input::scalar_challenge::ScalarChallenge, urs_utils};
 
 pub fn accumulator_check(
     urs: &SRS<Vesta>,
     proofs: &[&PicklesProofProofsVerified2ReprStableV2],
 ) -> Result<bool, InvalidBigInt> {
     // accumulator check
-    // https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/pickles/common.ml#L191-L204
+    // <https://github.com/MinaProtocol/mina/blob/fb1c3c0a408c344810140bdbcedacc532a11be91/src/lib/pickles/common.ml#L191-L204>
     // Note:
     // comms: statement.proof_state.messages_for_next_wrap_proof.challenge_polynomial_commitment
     //        Array.of_list_map comm_chals ~f:(fun (comm, _) -> Or_infinity.Finite comm )

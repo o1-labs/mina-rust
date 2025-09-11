@@ -7,11 +7,12 @@ import { AppSelectors } from '@app/app.state';
 import { untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
-  selector: 'mina-state-actions',
-  templateUrl: './state-actions.component.html',
-  styleUrls: ['./state-actions.component.scss'],
-  host: { class: 'flex-column h-100' },
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'mina-state-actions',
+    templateUrl: './state-actions.component.html',
+    styleUrls: ['./state-actions.component.scss'],
+    host: { class: 'flex-column h-100' },
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class StateActionsComponent extends StoreDispatcher implements OnInit, OnDestroy {
 

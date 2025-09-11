@@ -5,14 +5,14 @@ pub mod replay;
 pub mod snark;
 
 #[derive(Debug, clap::Parser)]
-#[command(name = "openmina", about = "Openmina Cli")]
-pub struct OpenminaCli {
+#[command(name = "mina", about = "Mina Cli")]
+pub struct MinaCli {
     #[arg(
         global = true,
         long,
         value_enum,
         default_value_t = Network::Devnet,
-        env = "OPENMINA_NETWORK"
+        env = "MINA_NETWORK"
     )]
     /// Select the network (devnet or mainnet)
     pub network: Network,
@@ -30,7 +30,7 @@ pub enum Network {
 #[derive(Debug, clap::Subcommand)]
 #[allow(clippy::large_enum_variant)]
 pub enum Command {
-    /// Openmina node.
+    /// Mina node.
     Node(node::Node),
     Snark(snark::Snark),
     /// Miscilaneous utilities.

@@ -13,6 +13,12 @@ import { Routes } from '@shared/enums/routes.enum';
 import { CONFIG } from '@shared/constants/config';
 import { LeaderboardService } from '@leaderboard/leaderboard.service';
 import { untilDestroyed } from '@ngneat/until-destroy';
+import { UptimePillComponent } from '@app/layout/uptime-pill/uptime-pill.component';
+import { ErrorPreviewComponent } from '@error-preview/error-preview.component';
+import { SubmenuTabsComponent } from '@app/layout/submenu-tabs/submenu-tabs.component';
+import { ServerStatusComponent } from '@app/layout/server-status/server-status.component';
+import { BlockProductionPillComponent } from '@app/layout/block-production-pill/block-production-pill.component';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'mina-toolbar',
@@ -20,6 +26,15 @@ import { untilDestroyed } from '@ngneat/until-destroy';
   styleUrls: ['./toolbar.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex-row align-center' },
+  standalone: true,
+  imports: [
+    UptimePillComponent,
+    ErrorPreviewComponent,
+    SubmenuTabsComponent,
+    ServerStatusComponent,
+    BlockProductionPillComponent,
+    NgClass,
+  ],
 })
 export class ToolbarComponent extends StoreDispatcher implements OnInit {
 

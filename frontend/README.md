@@ -1,6 +1,7 @@
 # Openmina Frontend
 
-This is a simple Angular application that will help you to see the behaviour of your local rust based mina node.
+This is a simple Angular application that will help you to see the behaviour of
+your local rust based mina node.
 
 ## Prerequisites
 
@@ -23,12 +24,13 @@ nvm install 23.1.0
 
 #### Windows
 
-Download [Node.js v23.1.0](https://nodejs.org/) from the official website, open the installer and follow the prompts to complete the installation.
+Download [Node.js v23.1.0](https://nodejs.org/) from the official website, open
+the installer and follow the prompts to complete the installation.
 
-### 2. Angular CLI v17.3.0
+### 2. Angular CLI v19.2.14
 
 ```bash
-npm install -g @angular/cli@17.3.0
+npm install -g @angular/cli@19.2.14
 ```
 
 ### 3. Installation
@@ -53,7 +55,10 @@ npm start
 
 # Using O1JS wrapper
 
-as of now, o1js is not prepared to work with Angular, therefore we need to use the wrapper that is provided in the `src/assets/o1js` folder. This wrapper is a simple javascript webpack based application that will allow us to use the o1js library in our Angular application.
+as of now, o1js is not prepared to work with Angular, therefore we need to use
+the wrapper that is provided in the `src/assets/o1js` folder. This wrapper is a
+simple javascript webpack based application that will allow us to use the o1js
+library in our Angular application.
 
 How to use it:
 
@@ -70,4 +75,5 @@ npm install
 npm run build-o1jswrapper
 ```
 
-4. That's it. Now you can use your code from o1js-wrapper inside the Angular application by using `BenchmarksWalletsZkService => o1jsInterface`
+4. That's it. Now you can use your code from o1js-wrapper inside the Angular
+   application by using `BenchmarksWalletsZkService => o1jsInterface`

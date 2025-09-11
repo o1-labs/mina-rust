@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, ComponentRef, ElementRef, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
 import { AppSelectors } from '@app/app.state';
 import { filter, take } from 'rxjs';
-import { isDesktop, isMobile, ONE_MILLION } from '@openmina/shared';
+import { isDesktop, isMobile, ONE_MILLION, OpenminaEagerSharedModule, PluralPipe } from '@openmina/shared';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { MinaNode } from '@shared/types/core/environment/mina-env.type';
 import { ComponentPortal, TemplatePortal } from '@angular/cdk/portal';
@@ -16,6 +16,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { Routes } from '@shared/enums/routes.enum';
 import { NavigationEnd, Router } from '@angular/router';
 import { untilDestroyed } from '@ngneat/until-destroy';
+import { NgClass } from '@angular/common';
 
 @Component({
   selector: 'mina-server-status',
@@ -36,6 +37,12 @@ import { untilDestroyed } from '@ngneat/until-destroy';
         })),
       ]),
     ]),
+  ],
+  standalone: true,
+  imports: [
+    NgClass,
+    PluralPipe,
+    OpenminaEagerSharedModule,
   ],
 })
 export class ServerStatusComponent extends StoreDispatcher implements OnInit {

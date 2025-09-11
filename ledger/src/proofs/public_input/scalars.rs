@@ -1,7 +1,7 @@
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field, FromBytes};
+use ark_ff::{BigInteger256, Field};
 use kimchi::proof::ProofEvaluations;
-use mina_curves::pasta::Fq;
-use mina_hasher::Fp;
+use mina_curves::pasta::{Fp, Fq};
+use o1_utils::field_helpers::FieldHelpers;
 
 use crate::proofs::field::FieldWitness;
 
@@ -39,25 +39,20 @@ where
 
 pub fn field_from_hex<F>(mut s: &str) -> F
 where
-    F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>,
+    F: Field + From<BigInteger256>,
 {
     if s.starts_with("0x") {
         s = &s[2..];
     }
 
-    let mut bytes = <[u8; 32]>::default();
-    hex::decode_to_slice(s, &mut bytes).unwrap();
-    bytes.reverse();
-
-    let bigint = BigInteger256::read(&bytes[..]).unwrap();
-    bigint.try_into().unwrap() // Never fail, we hardcode them with string literals
+    F::from_hex(s).expect("Must not fail")
 }
 
 fn field<F: FieldWitness>(s: &str) -> F {
     field_from_hex(s)
 }
 
-/// https://github.com/MinaProtocol/mina/blob/aebd4e552b8b4bcd78d1e24523169e8778794857/src/lib/pickles/plonk_checks/plonk_checks.ml#L97-L130
+/// <https://github.com/MinaProtocol/mina/blob/aebd4e552b8b4bcd78d1e24523169e8778794857/src/lib/pickles/plonk_checks/plonk_checks.ml#L97-L130>
 fn get_var<F>(evals: &ProofEvaluations<[F; 2]>) -> impl Fn(Column, CurrOrNext) -> F + '_
 where
     F: Field,
@@ -688,8 +683,7 @@ mod tests {
         circuits::expr::Linearization,
         linearization::{constraints_expr, linearization_columns},
     };
-    use mina_curves::pasta::Fq;
-    use mina_hasher::Fp;
+    use mina_curves::pasta::{Fp, Fq};
     use sha2::{Digest, Sha256};
     #[cfg(target_family = "wasm")]
     use wasm_bindgen_test::wasm_bindgen_test as test;
@@ -697,7 +691,7 @@ mod tests {
     /// Code originally used to generate OCaml code
     /// We use the same method to generate our Rust code
     ///
-    /// https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs#L11
+    /// <https://github.com/MinaProtocol/mina/blob/0b63498e271575dbffe2b31f3ab8be293490b1ac/src/lib/crypto/kimchi_bindings/stubs/src/linearization.rs#L11>
     // #[test]
     fn generate_plonk() {
         let lookup_configuration = None;

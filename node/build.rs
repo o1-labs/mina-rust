@@ -1,15 +1,16 @@
 // This build script will generate `node/src/action_kind.rs`.
 // See the top comment on that file for some context.
 
-use std::collections::btree_map::Entry as BTreeMapEntry;
-use std::collections::{BTreeMap, VecDeque};
-use std::error::Error;
-use std::fs::{self, DirEntry};
-use std::io::{self, BufRead, BufReader, Read};
-use std::path::{Path, PathBuf};
+use std::{
+    collections::{btree_map::Entry as BTreeMapEntry, BTreeMap, VecDeque},
+    error::Error,
+    fs::{self, DirEntry},
+    io::{self, BufRead, BufReader, Read},
+    path::{Path, PathBuf},
+};
 
 use regex::Regex;
-use rust_format::Formatter;
+use rust_format::{Edition, Formatter};
 
 fn visit_dirs(dir: &PathBuf, cb: &mut dyn FnMut(&DirEntry)) -> io::Result<()> {
     if dir.is_dir() {
@@ -354,7 +355,15 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     let tmp_path = PathBuf::from(std::env::var("OUT_DIR").unwrap()).join("action_kind.rs");
     fs::write(&tmp_path, contents)?;
-    rust_format::RustFmt::default()
+
+    // This should be same as `.rustfmt.toml`
+    let config = rust_format::Config::new_str()
+        .edition(Edition::Rust2021)
+        .option("indent_style", "Block")
+        .option("imports_granularity", "Crate")
+        .option("reorder_imports", "true");
+
+    rust_format::RustFmt::from_config(config)
         .format_file(&tmp_path)
         .expect("failed to format generated file");
 

@@ -1,15 +1,16 @@
 use std::sync::Arc;
 
 use ledger::scan_state::transaction_logic::valid;
+use mina_core::{block::ArcBlockWithHash, ActionEvent};
 use mina_p2p_messages::v2::MinaBaseProofStableV2;
-use openmina_core::block::ArcBlockWithHash;
-use openmina_core::ActionEvent;
 use serde::{Deserialize, Serialize};
 
 use crate::block_producer_effectful::StagedLedgerDiffCreateOutput;
 
-use super::vrf_evaluator::BlockProducerVrfEvaluatorAction;
-use super::{BlockProducerCurrentState, BlockProducerWonSlot, BlockProducerWonSlotDiscardReason};
+use super::{
+    vrf_evaluator::BlockProducerVrfEvaluatorAction, BlockProducerCurrentState,
+    BlockProducerWonSlot, BlockProducerWonSlotDiscardReason,
+};
 
 pub type BlockProducerActionWithMeta = redux::ActionWithMeta<BlockProducerAction>;
 pub type BlockProducerActionWithMetaRef<'a> = redux::ActionWithMeta<&'a BlockProducerAction>;
@@ -26,9 +27,9 @@ pub enum BlockProducerAction {
         level = info,
         fields(
             slot = won_slot.global_slot.slot_number.as_u32(),
-            slot_time = openmina_core::log::to_rfc_3339(won_slot.slot_time)
+            slot_time = mina_core::log::to_rfc_3339(won_slot.slot_time)
                 .unwrap_or_else(|_| "<error>".to_owned()),
-            current_time = openmina_core::log::to_rfc_3339(context.timestamp())
+            current_time = mina_core::log::to_rfc_3339(context.timestamp())
                 .unwrap_or_else(|_| "<error>".to_owned()),
         )
     )]

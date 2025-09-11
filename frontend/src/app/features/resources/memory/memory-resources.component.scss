@@ -1,7 +1,7 @@
-@import 'openmina';
+@use 'openmina';
 
 .breadcrumb {
-  color: $selected-primary;
+  color: openmina.$selected-primary;
 
   &:hover:not(:last-child) {
     cursor: pointer;
@@ -9,6 +9,6 @@
   }
 
   &:last-child {
-    color: $base-secondary;
+    color: openmina.$base-secondary;
   }
 }

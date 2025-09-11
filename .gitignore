@@ -1,4 +1,22 @@
 /target
 /node/testing/res/
+circuit-blobs
 .DS_Store
 *.profraw
+node_modules
+
+# Output of build-wasm
+pkg/
+
+# Outputs of build-tests-webrtc
+cargo-build-test.json
+tests.tsv
+
+# Generated API docs should not be committed
+website/static/api-docs/
+
+ledger/3.0.0devnet
+ledger/3.0.0mainnet
+ledger/3.0.1devnet
+ledger/berkeley_rc1
+mina-workdir

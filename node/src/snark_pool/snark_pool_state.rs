@@ -1,16 +1,13 @@
-use std::time::Duration;
-use std::{fmt, ops::RangeBounds};
+use std::{fmt, ops::RangeBounds, time::Duration};
 
 use ledger::scan_state::scan_state::{transaction_snark::OneOrTwo, AvailableJobMessage};
-use openmina_core::snark::{Snark, SnarkInfo, SnarkJobCommitment, SnarkJobId};
+use mina_core::snark::{Snark, SnarkInfo, SnarkJobCommitment, SnarkJobId};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 
-use crate::core::distributed_pool::DistributedPool;
-use crate::p2p::PeerId;
+use crate::{core::distributed_pool::DistributedPool, p2p::PeerId};
 
-use super::candidate::SnarkPoolCandidatesState;
-use super::SnarkPoolConfig;
+use super::{candidate::SnarkPoolCandidatesState, SnarkPoolConfig};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SnarkPoolState {

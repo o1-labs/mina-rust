@@ -1,5 +1,4 @@
-use openmina_core::snark::Snark;
-use openmina_core::ActionEvent;
+use mina_core::{snark::Snark, ActionEvent};
 use serde::{Deserialize, Serialize};
 
 use crate::{channels::P2pChannelsAction, P2pState, PeerId};

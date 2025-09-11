@@ -1,7 +1,7 @@
 use std::{collections::BTreeMap, sync::OnceLock};
 
 use identify::P2pNetworkIdentifyStreamAction;
-use openmina_core::{bug_condition, error, warn, Substate};
+use mina_core::{bug_condition, error, warn, Substate};
 use redux::Dispatcher;
 use request::{P2pNetworkKadRequestState, P2pNetworkKadRequestStatus};
 use token::{

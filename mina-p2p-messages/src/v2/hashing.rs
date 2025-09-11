@@ -1,9 +1,8 @@
 use std::{fmt, io, sync::Arc};
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use binprot::{BinProtRead, BinProtWrite};
 use generated::MinaStateBlockchainStateValueStableV2;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use poseidon::hash::{
     hash_with_kimchi,
     params::{MINA_PROTO_STATE, MINA_PROTO_STATE_BODY},
@@ -15,7 +14,11 @@ use sha2::{
     Digest, Sha256,
 };
 
-use crate::{bigint::BigInt, hash::MinaHash, hash_input::FailableToInputs};
+use crate::{
+    bigint::{BigInt, InvalidBigInt},
+    hash::MinaHash,
+    hash_input::FailableToInputs,
+};
 
 use super::{
     generated, ConsensusBodyReferenceStableV1, ConsensusGlobalSlotStableV1,
@@ -275,8 +278,7 @@ impl generated::MinaBaseZkappCommandTStableV1WireStableV1 {
 
 #[cfg(test)]
 mod tests {
-    use super::super::manual;
-    use super::*;
+    use super::{super::manual, *};
     use manual::MinaBaseSignedCommandMemoStableV1;
 
     fn pub_key(address: &str) -> manual::NonZeroCurvePoint {
@@ -298,8 +300,7 @@ mod tests {
         nonce: u32,
         valid_until: u32,
     ) -> String {
-        use crate::number::Number;
-        use crate::string::CharString;
+        use crate::{number::Number, string::CharString};
 
         let from = pub_key(from);
         let to = pub_key(to);
@@ -404,7 +405,7 @@ impl StateHash {
         body_hash: &MinaBaseStateBodyHashStableV1,
     ) -> Result<Self, InvalidBigInt> {
         Ok(Self::from_fp(fp_state_hash_from_fp_hashes(
-            pred_state_hash.to_field()?,
+            pred_state_hash.to_field().map_err(|_| InvalidBigInt)?,
             body_hash.to_field()?,
         )))
     }
@@ -456,7 +457,7 @@ impl generated::MinaBlockBlockStableV2 {
 }
 
 impl MinaHash for MinaStateProtocolStateBodyValueStableV2 {
-    fn try_hash(&self) -> Result<mina_hasher::Fp, InvalidBigInt> {
+    fn try_hash(&self) -> Result<mina_curves::pasta::Fp, InvalidBigInt> {
         let mut inputs = Inputs::new();
         self.to_input(&mut inputs)?;
         Ok(hash_with_kimchi(
@@ -467,9 +468,11 @@ impl MinaHash for MinaStateProtocolStateBodyValueStableV2 {
 }
 
 impl MinaHash for MinaStateProtocolStateValueStableV2 {
-    fn try_hash(&self) -> Result<mina_hasher::Fp, InvalidBigInt> {
+    fn try_hash(&self) -> Result<mina_curves::pasta::Fp, InvalidBigInt> {
         Ok(fp_state_hash_from_fp_hashes(
-            self.previous_state_hash.to_field()?,
+            self.previous_state_hash
+                .to_field()
+                .map_err(|_| InvalidBigInt)?,
             MinaHash::try_hash(&self.body)?,
         ))
     }

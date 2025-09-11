@@ -1,13 +1,13 @@
-@import 'openmina';
+@use 'openmina';
 
 .background-gradient {
-  background: linear-gradient(120deg, $base-background 0%, $base-background 20%, $base-background 40%, $success-container 50%, $base-surface 80%, $base-surface 100%);
+  background: linear-gradient(120deg, openmina.$base-background 0%, openmina.$base-background 20%, openmina.$base-background 40%, openmina.$success-container 50%, openmina.$base-surface 80%, openmina.$base-surface 100%);
   background-size: 500%;
   background-position: 0 50%;
   transition: background-position 0.7s ease;
 
   &.complete {
-    background-position: 100% 50%;
+    background-position: 80% 50%;
   }
 }
 

@@ -10,10 +10,11 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { TreemapView } from '@shared/types/resources/memory/treemap-view.type';
 
 @Component({
-  selector: 'app-memory-resources-toolbar',
-  templateUrl: './memory-resources-toolbar.component.html',
-  styleUrls: ['./memory-resources-toolbar.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-memory-resources-toolbar',
+    templateUrl: './memory-resources-toolbar.component.html',
+    styleUrls: ['./memory-resources-toolbar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
+    standalone: false
 })
 export class MemoryResourcesToolbarComponent extends StoreDispatcher implements OnInit {
 
