@@ -73,6 +73,14 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'APIs and Data',
+      items: [
+        'developers/graphql-api',
+        'developers/archive-database-queries',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Docker',
       items: [
         'developers/docker-images',
