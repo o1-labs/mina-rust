@@ -704,39 +704,7 @@ pub fn routes(
             .and(warp::path("playground"))
             .and(playground_filter))
         .or(warp::get().and(warp::path("graphiql")).and(graphiql_filter))
-
-    // warp::get()
-    //     .and(warp::path("graphiql"))
-    //     .and(juniper_warp::graphiql_filter("/graphql", None))
-    //     .or(warp::path("graphql").and(graphql_filter))
 }
-
-// let routes = (warp::post()
-//         .and(warp::path("graphql"))
-//         .and(juniper_warp::make_graphql_filter(
-//             schema.clone(),
-//             warp::any().map(|| Context),
-//         )))
-//     .or(
-//         warp::path("subscriptions").and(juniper_warp::subscriptions::make_ws_filter(
-//             schema,
-//             ConnectionConfig::new(Context),
-//         )),
-//     )
-//     .or(warp::get()
-//         .and(warp::path("playground"))
-//         .and(juniper_warp::playground_filter(
-//             "/graphql",
-//             Some("/subscriptions"),
-//         )))
-//     .or(warp::get()
-//         .and(warp::path("graphiql"))
-//         .and(juniper_warp::graphiql_filter(
-//             "/graphql",
-//             Some("/subscriptions"),
-//         )))
-//     .or(homepage)
-//     .with(log);
 
 /// Helper function used by [`Query::pooled_user_commands`] and [`Query::pooled_zkapp_commands`] to parse public key, transaction hashes and command ids
 fn parse_pooled_commands_query<ID, F>(
