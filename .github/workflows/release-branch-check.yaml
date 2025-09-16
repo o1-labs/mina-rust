@@ -63,7 +63,7 @@ jobs:
 
       - name: Comment PR on validation failure
         if: failure() && github.event_name == 'pull_request' && steps.check.outputs.valid == 'false'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const branch = '${{ steps.check.outputs.branch }}';
