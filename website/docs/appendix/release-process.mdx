@@ -281,14 +281,7 @@ git checkout main
 git pull origin main
 
 # Create and push annotated tag
-make release-create-tag TAG=v1.5.0 MESSAGE="Release v1.5.0
-
-## Highlights
-- Feature 1: Description
-- Feature 2: Description
-- Bug fix: Description
-
-See CHANGELOG.md for complete details."
+make release-create-tag TAG=v1.5.0 MESSAGE="Release v1.5.0. See CHANGELOG.md for complete details."
 ```
 
 <!-- prettier-ignore-start -->
@@ -400,17 +393,6 @@ make release-merge-back
 </details>
 
 This target includes safety confirmations since it pushes directly to develop.
-
-### Tag Docker Images as Latest (for major releases)
-
-For major releases, you may want to tag as `latest`:
-
-```bash
-# This would typically be done via additional CI job or manually
-docker pull o1labs/mina-rust:v2.0.0
-docker tag o1labs/mina-rust:v2.0.0 o1labs/mina-rust:latest
-docker push o1labs/mina-rust:latest
-```
 
 ## Hotfix Process
 
