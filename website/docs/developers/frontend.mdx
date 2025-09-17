@@ -1,0 +1,332 @@
+---
+title: Frontend Dashboard
+description: How to run and develop the Mina Rust frontend dashboard
+sidebar_position: 8
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import InstallNvm from "!!raw-loader!./scripts/frontend/install-nvm.sh";
+import InstallNodejs from "!!raw-loader!./scripts/frontend/install-nodejs.sh";
+import InstallAngularCli from "!!raw-loader!./scripts/frontend/install-angular-cli.sh";
+import InstallDependencies from "!!raw-loader!./scripts/frontend/install-dependencies.sh";
+import StartDevelopment from "!!raw-loader!./scripts/frontend/start-development.sh";
+import BuildProduction from "!!raw-loader!./scripts/frontend/build-production.sh";
+import DockerRun from "!!raw-loader!./scripts/frontend/docker-run.sh";
+import DockerBuild from "!!raw-loader!./scripts/frontend/docker-build.sh";
+import DockerComposeRun from "!!raw-loader!./scripts/frontend/docker-compose-run.sh";
+import BuildO1jsWrapper from "!!raw-loader!./scripts/frontend/build-o1js-wrapper.sh";
+
+# Frontend Dashboard
+
+The Mina Rust frontend is an Angular-based web dashboard that provides real-time
+monitoring and debugging capabilities for your Mina Rust node. It offers
+insights into node state, peer connections, block production, and more.
+
+## Quick start
+
+### Using Docker (recommended)
+
+The easiest way to run the frontend is using Docker:
+
+<CodeBlock language="bash" title="Run frontend with Docker">
+  {DockerRun}
+</CodeBlock>
+
+To connect the frontend to your node, use Docker Compose:
+
+<CodeBlock language="bash" title="Run with Docker Compose">
+  {DockerComposeRun}
+</CodeBlock>
+
+### Running locally
+
+#### Prerequisites
+
+First, install Node Version Manager (nvm):
+
+<CodeBlock language="bash" title="Install nvm">
+  {InstallNvm}
+</CodeBlock>
+
+Then install Node.js v23:
+
+<CodeBlock language="bash" title="Install Node.js">
+  {InstallNodejs}
+</CodeBlock>
+
+Install Angular CLI:
+
+<CodeBlock language="bash" title="Install Angular CLI">
+  {InstallAngularCli}
+</CodeBlock>
+
+#### Installation and setup
+
+Clone the repository and install dependencies:
+
+<CodeBlock language="bash" title="Install frontend dependencies">
+  {InstallDependencies}
+</CodeBlock>
+
+Start the development server:
+
+<CodeBlock language="bash" title="Start development server">
+  {StartDevelopment}
+</CodeBlock>
+
+## Development
+
+### Project structure
+
+```
+frontend/
+├── src/
+│   ├── app/              # Angular application components
+│   ├── assets/           # Static assets and o1js wrapper
+│   └── environments/     # Environment configurations
+├── docker/               # Docker-related files
+├── angular.json          # Angular configuration
+└── package.json          # Dependencies and scripts
+```
+
+### Available scripts
+
+```bash
+# Development server with hot reload
+npm run start
+
+# Production build
+npm run build
+
+# Run tests
+npm run tests
+
+# Build for specific environment
+npm run build -- --configuration=production
+npm run build -- --configuration=local
+npm run build -- --configuration=webnodelocal
+```
+
+### Environment configurations
+
+The frontend supports multiple environment configurations:
+
+- **development**:
+  [Default development configuration](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.ts)
+- **production**:
+  [Optimized production build](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.prod.ts)
+- **local**:
+  [For connecting to local node](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.local.ts)
+- **producer**:
+  [For block producer nodes](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.producer.ts)
+- **webnodelocal**:
+  [For WebNode development](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.webnodelocal.ts)
+- **fuzzing**:
+  [For fuzzing tests](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/environments/environment.fuzzing.ts)
+
+Configure by editing files in
+[`src/environments/`](https://github.com/o1-labs/mina-rust/tree/develop/frontend/src/environments).
+
+### Using the o1js wrapper
+
+The frontend includes an o1js wrapper for zkApp interactions:
+
+<CodeBlock language="bash" title="Build o1js wrapper">
+  {BuildO1jsWrapper}
+</CodeBlock>
+
+The wrapper is accessible via `BenchmarksWalletsZkService => o1jsInterface` in
+the Angular application.
+
+## Docker deployment
+
+### Building the Docker image
+
+Build the frontend Docker image locally:
+
+<CodeBlock language="bash" title="Build Docker image">
+  {DockerBuild}
+</CodeBlock>
+
+You can also build with a specific configuration:
+
+```bash
+# Build with development configuration
+docker build --build-arg BUILD_CONFIGURATION=development -t mina-frontend .
+
+# Build with webnode configuration
+docker build --build-arg BUILD_CONFIGURATION=webnodelocal -t mina-frontend .
+```
+
+### Production build
+
+For production deployment, build the optimized version:
+
+<CodeBlock language="bash" title="Build for production">
+  {BuildProduction}
+</CodeBlock>
+
+### Docker Compose setup
+
+The project includes a Docker Compose configuration for running the frontend
+with a node:
+
+```yaml
+services:
+  mina-node:
+    image: o1labs/mina-rust:latest
+    ports:
+      - "8302:8302"
+    volumes:
+      - ./mina-workdir:/root/.mina:rw
+
+  frontend:
+    image: o1labs/mina-rust-frontend:latest
+    ports:
+      - "8070:80"
+    environment:
+      MINA_FRONTEND_ENVIRONMENT: compose
+```
+
+### Environment variables
+
+The frontend Docker container supports these environment variables:
+
+- `MINA_FRONTEND_ENVIRONMENT`: Sets the environment configuration (`compose`,
+  `webnode`, etc.)
+- `MINA_SIGNALING_URL`: WebRTC signaling server URL (for WebNode)
+- `MINA_WASM_VERSION`: Version of WASM files to download (for WebNode)
+
+Example with custom environment variables:
+
+```bash
+docker run -d \
+  --name mina-frontend \
+  -p 8070:80 \
+  -e MINA_FRONTEND_ENVIRONMENT=webnode \
+  -e MINA_SIGNALING_URL=wss://signal.example.com \
+  o1labs/mina-rust-frontend:latest
+```
+
+## Features
+
+### Main dashboard views
+
+- **Overview**: Node status, sync state, and key metrics
+- **State**: Detailed state machine visualization
+- **Peers**: Active peer connections and network topology
+- **Blocks**: Block production and validation metrics
+- **Transactions**: Transaction pool monitoring
+- **SNARKs**: SNARK work and verification status
+- **Logs**: Real-time node logs and debugging
+
+### WebNode support
+
+The frontend includes WebNode support for running a Mina node directly in the
+browser:
+
+1. Circuit file downloads are handled automatically
+2. WASM binaries are cached for performance
+3. WebRTC signaling enables peer-to-peer connections
+
+To enable WebNode features, use the `webnode` environment configuration.
+
+## Troubleshooting
+
+### Common issues
+
+#### Port conflicts
+
+If port 8070 is already in use:
+
+```bash
+# Check what's using port 8070
+lsof -i :8070
+
+# Use a different port
+docker run -d -p 8080:80 mina-frontend
+```
+
+#### Connection issues
+
+Ensure the node is running and accessible:
+
+```bash
+# Check node status
+curl http://localhost:8302/node/status
+
+# Check Docker network connectivity
+docker network ls
+docker network inspect bridge
+```
+
+#### Build failures
+
+If the build fails, try these steps:
+
+```bash
+# Clear npm cache
+npm cache clean --force
+
+# Remove node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Update Angular CLI
+npm update @angular/cli
+
+# For Docker builds, rebuild without cache
+docker build --no-cache -t mina-frontend .
+```
+
+### Development tips
+
+1. **Hot reload**: The development server at `http://localhost:4200` supports
+   hot module replacement
+2. **Chrome DevTools**: Install the Angular DevTools extension for component
+   debugging
+3. **Network tab**: Monitor WebSocket connections to the node in browser
+   DevTools
+4. **Console logging**: Check browser console for detailed error messages
+5. **Source maps**: Development builds include source maps for easier debugging
+
+## API integration
+
+The frontend connects to the Mina Rust node through several APIs:
+
+- **REST API**: Node status and configuration at port 8302
+- **WebSocket**: Real-time state updates and logs
+- **GraphQL**: Query interface for blockchain data (when enabled)
+
+Default endpoints:
+
+- Local development: `http://localhost:8302`
+- Docker Compose: `http://mina-node:8302`
+- Production: Configure in environment files
+
+## Contributing
+
+When contributing to the frontend:
+
+1. Follow Angular style guide and best practices
+2. Write unit tests for new components and services
+3. Update this documentation for new features
+4. Test with both local and Docker deployments
+5. Ensure compatibility with latest node API changes
+6. Run linting before submitting PRs: `npm run lint`
+
+### Code style
+
+The project uses:
+
+- TypeScript for type safety
+- Angular CLI for consistent project structure
+- ESLint for code quality
+- Prettier for code formatting
+
+## Additional resources
+
+- [Angular Documentation](https://angular.io/docs)
+- [Docker Documentation](https://docs.docker.com/)
+- [Mina Protocol Documentation](https://docs.minaprotocol.com/)
+- [Frontend README](https://github.com/o1-labs/mina-rust/tree/main/frontend)
