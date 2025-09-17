@@ -27,7 +27,7 @@ RUN make build-testing && \
 
 # necessary for proof generation when running a block producer.
 RUN make download-circuits && \
-    rm -rf circuit-blobs/berkeley_rc1 circuit-blobs/*/tests
+    rm -rf circuit-blobs/*/tests
 
 FROM debian:bullseye
 # hadolint ignore=DL3008
