@@ -188,7 +188,7 @@ clean: ## Clean build artifacts
 .PHONY: download-circuits
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/openmina/circuit-blobs.git; \
+	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
 	else \

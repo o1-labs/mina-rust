@@ -46,7 +46,7 @@ Download `circuit-blobs`, from the root of project run:
 
 ```sh
 cd frontend/src/assets/webnode
-git clone --depth 1 https://github.com/openmina/circuit-blobs.git
+git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git
 ```
 
 And create `web-node-secrets.json` in `frontend/src/assets/webnode` it should be
