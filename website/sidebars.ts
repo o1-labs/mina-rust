@@ -92,6 +92,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Frontend',
+      items: [
+        'developers/frontend',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Docker',
       items: [
         'developers/docker-images',
