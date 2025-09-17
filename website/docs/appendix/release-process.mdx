@@ -401,17 +401,6 @@ make release-merge-back
 
 This target includes safety confirmations since it pushes directly to develop.
 
-### Tag Docker Images as Latest (for major releases)
-
-For major releases, you may want to tag as `latest`:
-
-```bash
-# This would typically be done via additional CI job or manually
-docker pull o1labs/mina-rust:v2.0.0
-docker tag o1labs/mina-rust:v2.0.0 o1labs/mina-rust:latest
-docker push o1labs/mina-rust:latest
-```
-
 ## Hotfix Process
 
 For urgent patches to released versions:
