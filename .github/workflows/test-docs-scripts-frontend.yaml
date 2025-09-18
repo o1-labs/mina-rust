@@ -1,0 +1,166 @@
+name: Frontend Documentation Scripts
+
+# This workflow tests the frontend documentation setup scripts to ensure they work correctly.
+# It runs nightly and on-demand to avoid slowing down regular development workflow.
+on:
+  pull_request:
+    types: [labeled]
+    # Only runs when 'test-doc-scripts' or 'test-frontend' label is added to a PR
+  schedule:
+    # Run nightly to catch environment drift and ensure scripts stay functional
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+
+jobs:
+  frontend-local-setup:
+    name: Test Frontend Local Setup (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts or test-frontend label
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'test-doc-scripts') ||
+      contains(github.event.pull_request.labels.*.name, 'test-frontend')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test nvm installation
+        run: |
+          # Execute the install-nvm.sh script as a user would
+          bash ./website/docs/developers/scripts/frontend/install-nvm.sh
+
+      - name: Test Node.js installation
+        run: |
+          # Load nvm environment and source the script in the same shell
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          source ./website/docs/developers/scripts/frontend/install-nodejs.sh
+
+      - name: Test Angular CLI installation
+        run: |
+          # Load nvm environment and source the script in the same shell
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          source ./website/docs/developers/scripts/frontend/install-angular-cli.sh
+
+      - name: Test frontend dependencies installation
+        run: |
+          # Load nvm environment
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          cd frontend
+          # Source the install-dependencies.sh script in the same shell
+          source ../website/docs/developers/scripts/frontend/install-dependencies.sh
+
+      - name: Test production build
+        run: |
+          # Load nvm environment
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          cd frontend
+          # Source the build-production.sh script in the same shell
+          source ../website/docs/developers/scripts/frontend/build-production.sh
+
+          # Verify build output
+          if [ -d "dist/frontend" ]; then
+            echo "✅ Production build successful"
+            ls -la dist/frontend/
+          else
+            echo "❌ Production build failed"
+            exit 1
+          fi
+
+      - name: Test o1js wrapper build
+        run: |
+          # Load nvm environment
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+          cd frontend
+          # Source the build-o1js-wrapper.sh script in the same shell
+          source ../website/docs/developers/scripts/frontend/build-o1js-wrapper.sh
+
+          echo "✅ o1js wrapper build completed"
+
+  verify-script-consistency:
+    name: Verify Script Consistency
+    runs-on: ubuntu-latest
+    # Always run this check on PRs that modify frontend scripts
+    if: |
+      github.event_name == 'pull_request' &&
+      (contains(github.event.pull_request.labels.*.name, 'test-doc-scripts') ||
+       contains(github.event.pull_request.labels.*.name, 'test-frontend'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Check script files exist
+        run: |
+          # Verify all referenced scripts exist
+          scripts=(
+            "website/docs/developers/scripts/frontend/install-nvm.sh"
+            "website/docs/developers/scripts/frontend/install-nodejs.sh"
+            "website/docs/developers/scripts/frontend/install-angular-cli.sh"
+            "website/docs/developers/scripts/frontend/install-dependencies.sh"
+            "website/docs/developers/scripts/frontend/build-production.sh"
+            "website/docs/developers/scripts/frontend/build-o1js-wrapper.sh"
+          )
+
+          missing=0
+          for script in "${scripts[@]}"; do
+            if [ ! -f "$script" ]; then
+              echo "❌ Missing script: $script"
+              missing=$((missing + 1))
+            else
+              echo "✅ Found: $script"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "ERROR: $missing script(s) missing"
+            exit 1
+          fi
+
+      - name: Verify scripts are referenced in documentation
+        run: |
+          # Check that all scripts are imported in the MDX file
+          mdx_file="website/docs/developers/frontend.mdx"
+
+          if [ ! -f "$mdx_file" ]; then
+            echo "❌ Frontend documentation file not found: $mdx_file"
+            exit 1
+          fi
+
+          # Check for script imports
+          scripts=(
+            "install-nvm.sh"
+            "install-nodejs.sh"
+            "install-angular-cli.sh"
+            "install-dependencies.sh"
+            "build-production.sh"
+            "build-o1js-wrapper.sh"
+          )
+
+          missing=0
+          for script in "${scripts[@]}"; do
+            if ! grep -q "$script" "$mdx_file"; then
+              echo "❌ Script not referenced in docs: $script"
+              missing=$((missing + 1))
+            else
+              echo "✅ Script referenced: $script"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "ERROR: $missing script(s) not referenced in documentation"
+            exit 1
+          fi
