@@ -96,6 +96,23 @@ This repository contains the complete Mina Rust Node implementation:
 - **[API Documentation](https://o1-labs.github.io/mina-rust/api-docs/)** -
   Comprehensive API reference
 
+## Supported Platforms
+
+[![CI Status][ci-badge]][ci-link]
+
+| Platform                                | Architecture  | Build Status                                                     |
+| --------------------------------------- | ------------- | ---------------------------------------------------------------- |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 22.04** | x64           | [![Ubuntu 22.04 x64][ubuntu-22-badge]][ubuntu-22-link]           |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 24.04** | x64           | [![Ubuntu 24.04 x64][ubuntu-24-badge]][ubuntu-24-link]           |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 24.04** | ARM64         | [![Ubuntu 24.04 ARM64][ubuntu-24-arm-badge]][ubuntu-24-arm-link] |
+| ![macOS][macos-icon] **macOS 13**       | Intel         | [![macOS 13 Intel][macos-13-badge]][macos-13-link]               |
+| ![macOS][macos-icon] **macOS 14**       | Apple Silicon | [![macOS 14 M1/M2][macos-14-badge]][macos-14-link]               |
+| ![macOS][macos-icon] **macOS 15**       | Apple Silicon | [![macOS 15 M1/M2/M3][macos-15-badge]][macos-15-link]            |
+| ![macOS][macos-icon] **macOS Latest**   | Apple Silicon | [![macOS Latest][macos-latest-badge]][macos-latest-link]         |
+
+> **Note**: Multi-platform builds run automatically on `develop` and `main`
+> branches. Pull requests run fast Ubuntu-only builds for quick feedback.
+
 [changelog]: ./CHANGELOG.md
 [beta-badge]: https://img.shields.io/badge/status-beta-yellow
 [changelog-badge]: https://img.shields.io/badge/changelog-Changelog-%23E05735
@@ -103,3 +120,47 @@ This repository contains the complete Mina Rust Node implementation:
 [release-link]: https://github.com/o1-labs/mina-rust/releases/latest
 [Apache licensed]: https://img.shields.io/badge/license-Apache_2.0-blue.svg
 [Apache link]: https://github.com/o1-labs/mina-rust/blob/master/LICENSE
+
+<!-- Platform support badges -->
+
+[ci-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml/badge.svg?branch=develop
+[ci-link]: https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml
+[ubuntu-icon]:
+  https://img.shields.io/badge/-Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white
+[macos-icon]:
+  https://img.shields.io/badge/-macOS-000000?style=flat&logo=apple&logoColor=white
+
+<!-- Individual platform badges -->
+
+[ubuntu-22-badge]:
+  https://img.shields.io/badge/Ubuntu%2022.04%20x64-passing-brightgreen?style=flat&logo=ubuntu
+[ubuntu-24-badge]:
+  https://img.shields.io/badge/Ubuntu%2024.04%20x64-passing-brightgreen?style=flat&logo=ubuntu
+[ubuntu-24-arm-badge]:
+  https://img.shields.io/badge/Ubuntu%2024.04%20ARM64-passing-brightgreen?style=flat&logo=ubuntu
+[macos-13-badge]:
+  https://img.shields.io/badge/macOS%2013%20Intel-passing-brightgreen?style=flat&logo=apple
+[macos-14-badge]:
+  https://img.shields.io/badge/macOS%2014%20M1%2FM2-passing-brightgreen?style=flat&logo=apple
+[macos-15-badge]:
+  https://img.shields.io/badge/macOS%2015%20M1%2FM2%2FM3-passing-brightgreen?style=flat&logo=apple
+[macos-latest-badge]:
+  https://img.shields.io/badge/macOS%20Latest-passing-brightgreen?style=flat&logo=apple
+
+<!-- Platform-specific build links -->
+
+[ubuntu-22-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-22.04%2C+4.14.2%29%22
+[ubuntu-24-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-24.04%2C+4.14.2%29%22
+[ubuntu-24-arm-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-24.04-arm%2C+4.14.2%29%22
+[macos-13-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-13%2C+4.14.2%29%22
+[macos-14-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-14%2C+4.14.2%29%22
+[macos-15-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-15%2C+4.14.2%29%22
+[macos-latest-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-latest%2C+4.14.2%29%22

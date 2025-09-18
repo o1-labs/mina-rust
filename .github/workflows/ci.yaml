@@ -174,7 +174,119 @@ jobs:
       - name: Test p2p crate
         run: make test-p2p
 
+  # Fast builds specifically for test artifacts - no cross-platform matrix
+  build-for-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: 4.14.2
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-for-tests-v0
+
+      - name: Release build
+        run: make build-release
+
+      - name: Verify build-info command
+        run: |
+          echo "Testing build-info command..."
+          ./target/release/mina build-info
+
+          # Verify required fields are present
+          ./target/release/mina build-info | grep -E "Version:|Build time:|Commit SHA:|Commit branch:|Rustc version:"
+
+          # Verify version format (should be a short commit hash)
+          VERSION=$(./target/release/mina build-info | grep "Version:" | awk '{print $2}')
+          if [[ ! "$VERSION" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Error: Version should be a 7-character commit hash, got: $VERSION"
+            exit 1
+          fi
+
+          echo "Build info verification passed!"
+
+      - name: Upload binaries
+        uses: actions/upload-artifact@v4
+        with:
+          name: bin-${{ github.sha }}
+          path: target/release/mina
+          retention-days: 7
+
+  build-tests-for-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: 4.14.2
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-tests-for-tests-v0
+
+      - name: Build tests
+        run: make build-tests
+
+      - name: Upload tests
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-${{ github.sha }}
+          path: target/release/tests
+          retention-days: 7
+
+  build-tests-webrtc-for-tests:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: 4.14.2
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-tests-webrtc-for-tests-v0
+
+      - name: Build tests
+        run: make build-tests-webrtc
+
+      - name: Upload tests
+        uses: actions/upload-artifact@v4
+        with:
+          name: tests-webrtc-${{ github.sha }}
+          path: target/release/tests
+          retention-days: 7
+
   build:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -222,15 +334,8 @@ jobs:
 
           echo "Build info verification passed!"
 
-      - name: Upload binaries
-        if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: bin-${{ github.sha }}
-          path: target/release/mina
-          retention-days: 7
-
   build-wasm:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -263,6 +368,7 @@ jobs:
           RUSTFLAGS: ""
 
   build-tests:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -293,15 +399,8 @@ jobs:
       - name: Build tests
         run: make build-tests
 
-      - name: Upload tests
-        if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests-${{ github.sha }}
-          path: target/release/tests
-          retention-days: 7
-
   build-tests-webrtc:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -332,16 +431,8 @@ jobs:
       - name: Build tests
         run: make build-tests-webrtc
 
-      - name: Upload tests
-        if: matrix.os == 'ubuntu-22.04'
-        uses: actions/upload-artifact@v4
-        with:
-          name: tests-webrtc-${{ github.sha }}
-          path: target/release/tests
-          retention-days: 7
-
   p2p-scenario-tests:
-    needs: [build-tests, build-tests-webrtc]
+    needs: [build-tests-for-tests, build-tests-webrtc-for-tests]
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     container:
@@ -412,8 +503,8 @@ jobs:
   scenario-tests:
     timeout-minutes: 60
     needs:
-      - build-tests
-      - build-tests-webrtc
+      - build-tests-for-tests
+      - build-tests-webrtc-for-tests
     runs-on: ubuntu-24.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
@@ -499,8 +590,8 @@ jobs:
   record-replay-tests:
     timeout-minutes: 30
     needs:
-      - build-tests
-      - build-tests-webrtc
+      - build-tests-for-tests
+      - build-tests-webrtc-for-tests
     runs-on: ubuntu-24.04
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
@@ -536,7 +627,7 @@ jobs:
 
   bootstrap-test:
     timeout-minutes: 10
-    needs: [build, build-tests]
+    needs: [build-for-tests, build-tests-for-tests]
     runs-on: ubuntu-24.04
     env:
       MINA_HOME: data

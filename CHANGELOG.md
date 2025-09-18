@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   is tested accordingly in the CI at every push.
 ### Changed
 
+- **CI**: Speed up CI by decoupling test runs from full build completion.
+  Created dedicated single-platform build jobs that run only on ubuntu-22.04
+  to produce artifacts needed for testing, allowing tests to start as soon as
+  those builds complete instead of waiting for all cross-platform matrix builds
+  ([#1427](https://github.com/o1-labs/mina-rust/issues/1427))
 - **CI**: Update CI to test on specific macOS versions (13, 14, 15) instead of
   only macos-latest, providing better coverage across macOS versions that
   developers are using ([#1421](https://github.com/o1-labs/mina-rust/pull/1421))

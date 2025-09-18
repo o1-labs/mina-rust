@@ -346,6 +346,45 @@ Example entry:
   ubuntu-latest ([#1249](https://github.com/o1-labs/openmina/pull/1249))
 ```
 
+### CI Optimization Guidelines
+
+When modifying CI workflows, especially for performance improvements:
+
+#### Build Job Dependencies
+
+- **Separate "builds for tests" from "builds for verification"**: Create
+  dedicated single-platform build jobs that produce only the artifacts needed
+  for testing. This allows tests to start as soon as required artifacts are
+  available, not waiting for all cross-platform builds to complete.
+
+- **Use selective dependencies**: Instead of depending on matrix build jobs
+  (which include all platforms), create specific build jobs that tests can
+  depend on. For example:
+
+  ```yaml
+  # Before: Tests wait for all platforms
+  needs: [build, build-tests]  # Matrix across 7 platforms
+
+  # After: Tests wait for specific artifact-producing builds
+  needs: [build-for-tests, build-tests-for-tests]  # Single platform
+  ```
+
+- **Maintain cross-platform coverage**: Keep matrix builds for platform
+  verification but don't let them block test execution. They should run in
+  parallel for verification purposes.
+
+- **Artifact consistency**: Ensure dedicated build jobs produce the same
+  artifact names that test jobs expect. Use patterns like
+  `bin-${{ github.sha }}` and `tests-${{ github.sha }}` consistently.
+
+#### Performance Considerations
+
+- Tests typically only need artifacts from ubuntu-22.04 builds (for container
+  compatibility)
+- macOS builds often take longest and shouldn't block Linux-based test execution
+- Use ubuntu-22.04 for artifact production to ensure GLIBC compatibility with
+  Debian-based test containers
+
 ### Critical Pre-Commit Requirements
 
 - **MANDATORY**: Run `make fix-trailing-whitespace` before every commit
