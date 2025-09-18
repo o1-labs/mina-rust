@@ -103,6 +103,7 @@ Copy and paste this checklist when announcing a release in progress:
 - [ ] Main branch merged back to develop
 - [ ] Documentation updated
 - [ ] Release announced in #announcements
+- [ ] Platform lead contacted for infrastructure updates
 - [ ] Known issues documented (if any)
 
 **Tracking:** [Link to PR/Issue] **Status:** 🟡 In Progress
@@ -172,7 +173,9 @@ Release branches **must** follow the format `release/vX.Y.Z` where:
 - `release/V1.5.0` ❌ (uppercase 'V')
 
 This naming convention is enforced by CI checks. Any push to a branch starting
-with `release/` that doesn't follow this format will fail validation. :::
+with `release/` that doesn't follow this format will fail validation.
+
+:::
 
 <!-- prettier-ignore-stop -->
 
@@ -186,11 +189,11 @@ git push -u origin release/v1.5.0
 
 <!-- prettier-ignore-start -->
 
-:::info Docker Images for Release Branches After pushing the release branch
+:::info Docker Images for Release Branches
 
-CI will automatically build and push Docker images tagged with the branch name.
-These images are available for local testing while the release PR is being
-reviewed.
+After pushing the release branch, CI will automatically build and push Docker
+images tagged with the branch name. These images are available for local testing
+while the release PR is being reviewed.
 
 **Images will be available as:**
 
@@ -393,6 +396,30 @@ make release-merge-back
 </details>
 
 This target includes safety confirmations since it pushes directly to develop.
+
+### Infrastructure Updates
+
+When releasing a new version of the Mina Rust node, o1Labs infrastructure must
+also be updated to use the new version.
+
+<!-- prettier-ignore-start -->
+
+:::important Contact Platform Lead
+
+After completing the release process, **contact the platform lead** to
+coordinate infrastructure updates. The platform team has specific procedures for
+deploying new node versions across o1Labs infrastructure.
+
+**Action Required:**
+
+- Notify platform lead of the new release version
+- Provide release notes and any deployment considerations
+- Coordinate timing of infrastructure rollout
+- Verify successful deployment across environments
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ## Hotfix Process
 
