@@ -1,0 +1,20 @@
+query RecentBlocks {
+  bestChain(maxLength: 10) {
+    stateHash
+    protocolState {
+      consensusState {
+        blockHeight
+        slotSinceGenesis
+      }
+      previousStateHash
+    }
+    transactions {
+      userCommands {
+        id
+        fee
+        amount
+        memo
+      }
+    }
+  }
+}

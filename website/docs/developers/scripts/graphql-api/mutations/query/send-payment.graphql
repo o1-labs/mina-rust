@@ -1,0 +1,15 @@
+mutation SendPayment(
+  $input: SendPaymentInput!
+  $signature: UserCommandSignature!
+) {
+  sendPayment(input: $input, signature: $signature) {
+    payment {
+      id
+      hash
+      amount
+      fee
+      from
+      to
+    }
+  }
+}

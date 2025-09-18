@@ -4,6 +4,93 @@ description: Complete reference for Mina Rust GraphQL API endpoints and queries
 sidebar_position: 6
 ---
 
+import CodeBlock from "@theme/CodeBlock"; import Tabs from "@theme/Tabs"; import
+TabItem from "@theme/TabItem"; import TestBasicConnectivity from
+"!!raw-loader!./scripts/graphql-api/queries/curl/basic-connectivity.sh"; import
+QuerySyncStatus from
+"!!raw-loader!./scripts/graphql-api/queries/curl/sync-status.sh"; import
+QueryNodeInfo from
+"!!raw-loader!./scripts/graphql-api/queries/curl/node-info.sh"; import
+QueryRecentActivity from
+"!!raw-loader!./scripts/graphql-api/queries/curl/recent-activity.sh"; import
+QueryAccountBalance from
+"!!raw-loader!./scripts/graphql-api/queries/curl/account-balance.sh"; import
+QueryBlock from "!!raw-loader!./scripts/graphql-api/queries/curl/block.sh";
+import QueryGenesisBlock from
+"!!raw-loader!./scripts/graphql-api/queries/curl/genesis-block.sh"; import
+QueryGenesisConstants from
+"!!raw-loader!./scripts/graphql-api/queries/curl/genesis-constants.sh"; import
+QueryPooledUserCommands from
+"!!raw-loader!./scripts/graphql-api/queries/curl/pooled-user-commands.sh";
+import QueryPooledZkappCommands from
+"!!raw-loader!./scripts/graphql-api/queries/curl/pooled-zkapp-commands.sh";
+import QueryTransactionStatus from
+"!!raw-loader!./scripts/graphql-api/queries/examples/transaction-status.sh";
+import QuerySnarkPool from
+"!!raw-loader!./scripts/graphql-api/queries/curl/snark-pool.sh"; import
+QueryPendingSnarkWork from
+"!!raw-loader!./scripts/graphql-api/queries/curl/pending-snark-work.sh"; import
+QueryCurrentSnarkWorker from
+"!!raw-loader!./scripts/graphql-api/queries/curl/current-snark-worker.sh";
+import QueryDaemonStatus from
+"!!raw-loader!./scripts/graphql-api/queries/curl/daemon-status.sh"; import
+QueryNetworkID from
+"!!raw-loader!./scripts/graphql-api/queries/curl/network-id.sh"; import
+QueryVersion from "!!raw-loader!./scripts/graphql-api/queries/curl/version.sh";
+import QueryBestChain from
+"!!raw-loader!./scripts/graphql-api/queries/curl/best-chain.sh"; import
+QueryAccount from "!!raw-loader!./scripts/graphql-api/queries/curl/account.sh";
+import BasicConnectivityQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/basic-connectivity.graphql";
+import SyncStatusQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/sync-status.graphql"; import
+NodeInfoQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/node-info.graphql"; import
+RecentActivityQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/recent-activity.graphql";
+import AccountBalanceQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/account-balance.graphql";
+import DaemonStatusQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/daemon-status.graphql"; import
+NetworkIDQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/network-id.graphql"; import
+VersionQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/version.graphql"; import
+BestChainQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/best-chain.graphql"; import
+BlockQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/block.graphql"; import
+GenesisBlockQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/genesis-block.graphql"; import
+GenesisConstantsQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/genesis-constants.graphql";
+import AccountQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/account.graphql"; import
+PooledUserCommandsQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/pooled-user-commands.graphql";
+import PooledZkappCommandsQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/pooled-zkapp-commands.graphql";
+import TransactionStatusQuery from
+"!!raw-loader!./scripts/graphql-api/queries/examples/transaction-status.graphql";
+import SnarkPoolQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/snark-pool.graphql"; import
+PendingSnarkWorkQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/pending-snark-work.graphql";
+import CurrentSnarkWorkerQuery from
+"!!raw-loader!./scripts/graphql-api/queries/query/current-snark-worker.graphql";
+import SendPaymentMutation from
+"!!raw-loader!./scripts/graphql-api/mutations/query/send-payment.graphql";
+import SendDelegationMutation from
+"!!raw-loader!./scripts/graphql-api/mutations/query/send-delegation.graphql";
+import SendZkappMutation from
+"!!raw-loader!./scripts/graphql-api/mutations/query/send-zkapp.graphql"; import
+MutationSendPayment from
+"!!raw-loader!./scripts/graphql-api/mutations/curl/send-payment.sh"; import
+MutationSendDelegation from
+"!!raw-loader!./scripts/graphql-api/mutations/curl/send-delegation.sh"; import
+MutationSendZkapp from
+"!!raw-loader!./scripts/graphql-api/mutations/curl/send-zkapp.sh";
+
 # GraphQL API Reference
 
 The Mina Rust node provides a comprehensive GraphQL API for querying blockchain
@@ -11,21 +98,51 @@ data, account information, transaction status, and network statistics. The API
 is built using [Juniper](https://github.com/graphql-rust/juniper) and is
 available at `http://localhost:3000/graphql` when running a node.
 
+You can also use one of the nodes deployed by o1Labs. See the
+[Infrastructure](../node-operators/infrastructure/plain-nodes) section for
+available nodes and connection details.
+
 ## Quick Start
 
 ### Testing the API
 
-```bash
-# Basic connectivity test
-curl -X POST http://localhost:3000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ __typename }"}'
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
 
-# Get sync status
-curl -X POST http://localhost:3000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{"query": "{ syncStatus }"}'
-```
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/basic-connectivity.graphql"
+
+> {BasicConnectivityQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/test-basic-connectivity.sh"
+
+> {TestBasicConnectivity} </CodeBlock>
+
+</TabItem>
+</Tabs>
+
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/sync-status.graphql"
+
+> {SyncStatusQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/sync-status.sh"
+
+> {QuerySyncStatus} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ### Interactive Exploration
 
@@ -54,40 +171,70 @@ query {
 
 Get comprehensive daemon status information.
 
-```graphql
-query {
-  daemonStatus {
-    blockchainLength
-    chainId
-    commitId
-    stateHash
-    numAccounts
-    globalSlotSinceGenesisBestTip
-    ledgerMerkleRoot
-    coinbaseReceiver
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/daemon-status.graphql"
+
+> {DaemonStatusQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/daemon-status.sh"
+
+> {QueryDaemonStatus} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `networkID`
 
 Get the network identifier.
 
-```graphql
-query {
-  networkID # Returns: "mina:devnet" or similar
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/network-id.graphql"
+
+> {NetworkIDQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/network-id.sh"
+
+> {QueryNetworkID} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `version`
 
 Get the node version (git commit hash).
 
-```graphql
-query {
-  version # Returns: git commit hash
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/version.graphql"
+
+> {VersionQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/version.sh"
+
+> {QueryVersion} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### Blockchain Data
 
@@ -95,85 +242,93 @@ query {
 
 Get the best chain blocks up to specified length.
 
-```graphql
-query RecentBlocks {
-  bestChain(maxLength: 10) {
-    stateHash
-    protocolState {
-      consensusState {
-        blockHeight
-        slotSinceGenesis
-      }
-      previousStateHash
-    }
-    transactions {
-      userCommands {
-        id
-        fee
-        amount
-        memo
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/best-chain.graphql"
+
+> {BestChainQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/best-chain.sh"
+
+> {QueryBestChain} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `block(height: Int, stateHash: String)`
 
 Get a specific block by height or state hash.
 
-```graphql
-query GetBlock {
-  block(height: 455450) {
-    stateHash
-    protocolState {
-      consensusState {
-        blockHeight
-      }
-    }
-    creator
-    transactions {
-      userCommands {
-        amount
-        fee
-        from
-        to
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/block.graphql"
+
+> {BlockQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/block.sh"
+
+> {QueryBlock} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `genesisBlock`
 
 Get the genesis block.
 
-```graphql
-query {
-  genesisBlock {
-    stateHash
-    protocolState {
-      consensusState {
-        blockHeight
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/genesis-block.graphql"
+
+> {GenesisBlockQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/genesis-block.sh"
+
+> {QueryGenesisBlock} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `genesisConstants`
 
 Get genesis constants and network parameters.
 
-```graphql
-query {
-  genesisConstants {
-    accountCreationFee
-    genesisTimestamp
-    coinbase
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/genesis-constants.graphql"
+
+> {GenesisConstantsQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/genesis-constants.sh"
+
+> {QueryGenesisConstants} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### Account Information
 
@@ -181,42 +336,24 @@ query {
 
 Get account information by public key.
 
-```graphql
-query GetAccount($publicKey: String!) {
-  account(publicKey: $publicKey) {
-    balance {
-      total
-      liquid
-      locked
-    }
-    nonce
-    delegateAccount {
-      publicKey
-    }
-    votingFor
-    receiptChainHash
-    publicKey
-    token
-    tokenSymbol
-    zkappUri
-    zkappState
-    permissions {
-      editState
-      send
-      receive
-      access
-      setDelegate
-      setPermissions
-      setVerificationKey
-      setZkappUri
-      editActionState
-      setTokenSymbol
-      incrementNonce
-      setVotingFor
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/account.graphql"
+
+> {AccountQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/account.sh"
+
+> {QueryAccount} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### Transaction Pool
 
@@ -224,50 +361,47 @@ query GetAccount($publicKey: String!) {
 
 Get pending user commands (payments/delegations) from the transaction pool.
 
-```graphql
-query PooledUserCommands($publicKey: String) {
-  pooledUserCommands(publicKey: $publicKey) {
-    id
-    amount
-    fee
-    from
-    to
-    nonce
-    memo
-    isDelegation
-    hash
-    kind
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/pooled-user-commands.graphql"
+
+> {PooledUserCommandsQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/pooled-user-commands.sh"
+
+> {QueryPooledUserCommands} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `pooledZkappCommands(publicKey: String, hashes: [String], ids: [String])`
 
 Get pending zkApp commands from the transaction pool.
 
-```graphql
-query PooledZkApps($publicKey: String) {
-  pooledZkappCommands(publicKey: $publicKey) {
-    id
-    hash
-    zkappCommand {
-      feePayer {
-        body {
-          publicKey
-          fee
-          nonce
-        }
-      }
-      accountUpdates {
-        body {
-          publicKey
-          balanceChange
-        }
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/pooled-zkapp-commands.graphql"
+
+> {PooledZkappCommandsQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/pooled-zkapp-commands.sh"
+
+> {QueryPooledZkappCommands} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### Transaction Status
 
@@ -275,11 +409,24 @@ query PooledZkApps($publicKey: String) {
 
 Get the status of a specific transaction.
 
-```graphql
-query TransactionStatus($transactionId: String!) {
-  transactionStatus(payment: $transactionId) # Returns: PENDING | INCLUDED | UNKNOWN
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/examples/transaction-status.graphql"
+
+> {TransactionStatusQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/examples/transaction-status.sh"
+
+> {QueryTransactionStatus} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 #### SNARK Work
 
@@ -287,51 +434,70 @@ query TransactionStatus($transactionId: String!) {
 
 Get completed SNARK work from the pool.
 
-```graphql
-query {
-  snarkPool {
-    fee
-    prover
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/snark-pool.graphql"
+
+> {SnarkPoolQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/snark-pool.sh"
+
+> {QuerySnarkPool} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `pendingSnarkWork`
 
 Get pending SNARK work that needs to be completed.
 
-```graphql
-query {
-  pendingSnarkWork {
-    workBundle {
-      sourceFirstPassLedgerHash
-      targetFirstPassLedgerHash
-      sourceSecondPassLedgerHash
-      targetSecondPassLedgerHash
-      workId
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/pending-snark-work.graphql"
+
+> {PendingSnarkWorkQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/pending-snark-work.sh"
+
+> {QueryPendingSnarkWork} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `currentSnarkWorker`
 
 Get information about the currently configured SNARK worker.
 
-```graphql
-query {
-  currentSnarkWorker {
-    key
-    fee
-    account {
-      publicKey
-      balance {
-        total
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/current-snark-worker.graphql"
+
+> {CurrentSnarkWorkerQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/current-snark-worker.sh"
+
+> {QueryCurrentSnarkWorker} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ### Mutation Endpoints
 
@@ -341,67 +507,70 @@ query {
 
 Submit a payment transaction.
 
-```graphql
-mutation SendPayment(
-  $input: SendPaymentInput!
-  $signature: UserCommandSignature!
-) {
-  sendPayment(input: $input, signature: $signature) {
-    payment {
-      id
-      hash
-      amount
-      fee
-      from
-      to
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Mutation" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/mutations/query/send-payment.graphql"
+
+> {SendPaymentMutation} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/mutations/curl/send-payment.sh"
+
+> {MutationSendPayment} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `sendDelegation`
 
 Submit a delegation transaction.
 
-```graphql
-mutation SendDelegation(
-  $input: SendDelegationInput!
-  $signature: UserCommandSignature!
-) {
-  sendDelegation(input: $input, signature: $signature) {
-    delegation {
-      id
-      hash
-      delegator
-      delegate
-      fee
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Mutation" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/mutations/query/send-delegation.graphql"
+
+> {SendDelegationMutation} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/mutations/curl/send-delegation.sh"
+
+> {MutationSendDelegation} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ##### `sendZkapp`
 
 Submit a zkApp transaction.
 
-```graphql
-mutation SendZkApp($input: SendZkAppInput!) {
-  sendZkapp(input: $input) {
-    zkapp {
-      id
-      hash
-      zkappCommand {
-        feePayer {
-          body {
-            publicKey
-            fee
-          }
-        }
-      }
-    }
-  }
-}
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Mutation" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/mutations/query/send-zkapp.graphql"
+
+> {SendZkappMutation} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/mutations/curl/send-zkapp.sh"
+
+> {MutationSendZkapp} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ## Implementation Details
 
@@ -489,72 +658,66 @@ query {
 
 ### Get Node Information
 
-```bash
-curl -X POST http://localhost:3000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "query NodeInfo {
-      syncStatus
-      networkID
-      version
-      daemonStatus {
-        blockchainLength
-        peers
-        uptimeSecs
-      }
-    }"
-  }'
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/node-info.graphql"
+
+> {NodeInfoQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/node-info.sh"
+
+> {QueryNodeInfo} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ### Get Recent Blockchain Activity
 
-```bash
-curl -X POST http://localhost:3000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "query RecentActivity {
-      bestChain(maxLength: 5) {
-        stateHash
-        protocolState {
-          consensusState {
-            blockHeight
-          }
-        }
-        transactions {
-          userCommands {
-            amount
-            fee
-            from
-            to
-          }
-        }
-      }
-    }"
-  }'
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/recent-activity.graphql"
+
+> {RecentActivityQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/recent-activity.sh"
+
+> {QueryRecentActivity} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ### Check Account Balance
 
-```bash
-curl -X POST http://localhost:3000/graphql \
-  -H "Content-Type: application/json" \
-  -d '{
-    "query": "query GetBalance($publicKey: String!) {
-      account(publicKey: $publicKey) {
-        balance {
-          total
-          liquid
-          locked
-        }
-        nonce
-        delegate
-      }
-    }",
-    "variables": {
-      "publicKey": "B62qp3B9VW1ir5qL1MWRwr6ecjC2NZbGr8vysGeme9vXGcFXTMNXb2t"
-    }
-  }'
-```
+<Tabs>
+<TabItem value="graphql" label="GraphQL Query" default>
+
+<CodeBlock language="graphql"
+title="website/docs/developers/scripts/graphql-api/queries/query/account-balance.graphql"
+
+> {AccountBalanceQuery} </CodeBlock>
+
+</TabItem>
+<TabItem value="curl" label="Curl Command">
+
+<CodeBlock language="bash"
+title="website/docs/developers/scripts/graphql-api/queries/curl/account-balance.sh"
+
+> {QueryAccountBalance} </CodeBlock>
+
+</TabItem>
+</Tabs>
 
 ## Development and Testing
 
