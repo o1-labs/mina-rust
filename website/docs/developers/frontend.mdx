@@ -15,6 +15,7 @@ import DockerRun from "!!raw-loader!./scripts/frontend/docker-run.sh";
 import DockerBuild from "!!raw-loader!./scripts/frontend/docker-build.sh";
 import DockerComposeRun from "!!raw-loader!./scripts/frontend/docker-compose-run.sh";
 import BuildO1jsWrapper from "!!raw-loader!./scripts/frontend/build-o1js-wrapper.sh";
+import DockerComposeFile from "!!raw-loader!./scripts/frontend/docker-compose.yml";
 
 # Frontend Dashboard
 
@@ -169,24 +170,30 @@ For production deployment, build the optimized version:
 ### Docker Compose setup
 
 The project includes a Docker Compose configuration for running the frontend
-with a node:
+with a node. The docker-compose.yml file supports environment variables to
+customize image sources:
 
-```yaml
-services:
-  mina-node:
-    image: o1labs/mina-rust:latest
-    ports:
-      - "8302:8302"
-    volumes:
-      - ./mina-workdir:/root/.mina:rw
+<CodeBlock language="yaml" title="docker-compose.yml">
+  {DockerComposeFile}
+</CodeBlock>
 
-  frontend:
-    image: o1labs/mina-rust-frontend:latest
-    ports:
-      - "8070:80"
-    environment:
-      MINA_FRONTEND_ENVIRONMENT: compose
+#### Using local images
+
+To use locally built Docker images instead of published ones:
+
+```bash
+# Build local frontend image
+cd frontend
+docker build -t mina-frontend:local .
+
+# Use local image with environment variables
+MINA_FRONTEND_IMAGE=mina-frontend MINA_FRONTEND_TAG=local docker compose up
 ```
+
+For a complete list of available environment variables and configuration
+options, see the
+[`.env.example`](https://github.com/o1-labs/mina-rust/blob/develop/.env.example)
+file in the repository root.
 
 ### Environment variables
 
