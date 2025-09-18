@@ -1,0 +1,43 @@
+# Docker Compose Configuration for Mina Rust Node and Frontend
+#
+# Environment Variables:
+#   MINA_RUST_IMAGE - Node Docker image name (default: o1labs/mina-rust)
+#   MINA_RUST_TAG - Node Docker image tag (default: latest)
+#   MINA_FRONTEND_IMAGE - Frontend Docker image name (default: o1labs/mina-rust-frontend)
+#   MINA_FRONTEND_TAG - Frontend Docker image tag (default: latest)
+#   MINA_LIBP2P_PORT - P2P port (default: 8302)
+#   MINA_LIBP2P_EXTERNAL_IP - External IP for P2P connections
+#   MINA_FRONTEND_ENVIRONMENT - Frontend environment config (default: compose)
+#
+# Usage with local images:
+#   # Build local frontend:
+#   cd frontend && docker build -t mina-frontend:local .
+#
+#   # Use local image:
+#   MINA_FRONTEND_IMAGE=mina-frontend MINA_FRONTEND_TAG=local docker compose up
+
+services:
+  mina-node:
+    image: ${MINA_RUST_IMAGE:-o1labs/mina-rust}:${MINA_RUST_TAG:-latest}
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "
+      ARGS='node --network devnet';
+      if [ -n \"$$MINA_LIBP2P_EXTERNAL_IP\" ]; then ARGS=\"$$ARGS --libp2p-external-ip $$MINA_LIBP2P_EXTERNAL_IP\"; fi;
+      if [ -n \"$$MINA_LIBP2P_PORT\" ]; then ARGS=\"$$ARGS --libp2p-port $$MINA_LIBP2P_PORT\"; fi;
+      exec mina $$ARGS
+      "
+    volumes:
+      - ./mina-workdir:/root/.mina:rw
+    ports:
+      - "${MINA_LIBP2P_PORT:-8302}:${MINA_LIBP2P_PORT:-8302}"
+    environment:
+      MINA_LIBP2P_EXTERNAL_IP: "${MINA_LIBP2P_EXTERNAL_IP:-}"
+      MINA_LIBP2P_PORT: "${MINA_LIBP2P_PORT:-8302}"
+
+  frontend:
+    image: ${MINA_FRONTEND_IMAGE:-o1labs/mina-rust-frontend}:${MINA_FRONTEND_TAG:-latest}
+    environment:
+      MINA_FRONTEND_ENVIRONMENT: ${MINA_FRONTEND_ENVIRONMENT:-compose}
+    ports:
+      - "8070:80"
