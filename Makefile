@@ -6,7 +6,7 @@
 # - ./github/workflows/docs.yaml
 # - ./github/workflows/fmt.yaml
 # - ./github/workflows/lint.yaml
-NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
+NIGHTLY_RUST_VERSION = "nightly"
 
 # Docker
 DOCKER_ORG ?= o1labs
