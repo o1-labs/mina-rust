@@ -1,0 +1,14 @@
+query PooledUserCommands($publicKey: String) {
+  pooledUserCommands(publicKey: $publicKey) {
+    id
+    amount
+    fee
+    from
+    to
+    nonce
+    memo
+    isDelegation
+    hash
+    kind
+  }
+}

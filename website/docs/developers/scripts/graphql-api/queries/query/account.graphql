@@ -1,0 +1,37 @@
+query GetAccount($publicKey: String!) {
+  account(publicKey: $publicKey) {
+    balance {
+      total
+      liquid
+      locked
+    }
+    nonce
+    delegateAccount {
+      publicKey
+    }
+    votingFor
+    receiptChainHash
+    publicKey
+    token
+    tokenSymbol
+    zkappUri
+    zkappState
+    permissions {
+      editState
+      send
+      receive
+      access
+      setDelegate
+      setPermissions
+      setVerificationKey {
+        auth
+        txnVersion
+      }
+      setZkappUri
+      editActionState
+      setTokenSymbol
+      incrementNonce
+      setVotingFor
+    }
+  }
+}

@@ -1,0 +1,152 @@
+---
+title: Plain Nodes
+description: o1Labs plain node infrastructure for network interaction
+sidebar_position: 2
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import PlainNodesList from "!!raw-loader!../../developers/scripts/infrastructure/plain-nodes.txt";
+import QueryDaemonStatus from "!!raw-loader!../../developers/scripts/infrastructure/query-daemon-status.sh";
+import QueryBlockHeight from "!!raw-loader!../../developers/scripts/infrastructure/query-block-height.sh";
+import QueryPeers from "!!raw-loader!../../developers/scripts/infrastructure/query-peers.sh";
+import TestConnectivity from "!!raw-loader!../../developers/scripts/infrastructure/test-connectivity.sh";
+import TestGraphQLEndpoint from "!!raw-loader!../../developers/scripts/infrastructure/test-graphql-endpoint.sh";
+
+# Plain Nodes
+
+o1Labs maintains plain node infrastructure that provides HTTP endpoints for
+interacting with the Mina Rust network. These nodes offer API access and network
+information without requiring direct peer-to-peer connections.
+
+## Available Plain Nodes
+
+The following plain nodes are officially maintained by o1Labs:
+
+<CodeBlock
+  language="text"
+  title="website/docs/developers/scripts/infrastructure/plain-nodes.txt"
+>
+  {PlainNodesList}
+</CodeBlock>
+
+## Node Information
+
+- **Availability**: Maintained 24/7 by o1Labs
+- **Purpose**: API access and network queries
+- **Location**: Google Cloud Platform (GCP)
+
+## Using Plain Nodes
+
+### GraphQL API Access
+
+Plain nodes provide GraphQL API endpoints for querying network state:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/infrastructure/query-daemon-status.sh"
+>
+  {QueryDaemonStatus}
+</CodeBlock>
+
+### Network Information
+
+You can query various network information:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/infrastructure/query-block-height.sh"
+>
+  {QueryBlockHeight}
+</CodeBlock>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/infrastructure/query-peers.sh"
+>
+  {QueryPeers}
+</CodeBlock>
+
+## API Capabilities
+
+### Blockchain Queries
+
+- **Block information**: Current and historical blocks
+- **Transaction data**: Transaction status and history
+- **Account balances**: Account information and balances
+- **Network state**: Consensus and sync status
+
+### Network Monitoring
+
+- **Peer connections**: Current peer list and status
+- **Sync progress**: Blockchain synchronization state
+- **Protocol information**: Network protocol version and chain ID
+
+<!-- prettier-ignore-start -->
+
+:::info API Documentation
+
+For complete API documentation, see the
+[GraphQL API](../../developers/graphql-api) documentation which provides
+detailed information about available queries and mutations.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Troubleshooting
+
+### Connection Issues
+
+If you cannot connect to plain nodes:
+
+1. **Check network connectivity**: Ensure internet access and HTTP traffic is
+   allowed
+2. **Verify URLs**: Confirm you're using the correct node URLs
+3. **Test manually**: Try accessing the URLs in a browser
+4. **Check node status**: Verify the node is responding to queries
+
+### API Errors
+
+Common API issues:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/infrastructure/test-connectivity.sh"
+>
+  {TestConnectivity}
+</CodeBlock>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/infrastructure/test-graphql-endpoint.sh"
+>
+  {TestGraphQLEndpoint}
+</CodeBlock>
+
+## Updates and Maintenance
+
+### Infrastructure Updates
+
+o1Labs maintains these plain nodes with:
+
+- **Regular updates**: Nodes are kept current with latest releases
+- **Monitoring**: 24/7 health monitoring and alerting
+- **Load balancing**: Multiple nodes ensure continuous availability
+- **Performance optimization**: Regular performance tuning
+
+### Communication
+
+Infrastructure maintenance and updates are communicated through:
+
+- GitHub release notes
+- Project documentation updates
+- Community announcements
+
+## Reference Information
+
+### Related Documentation
+
+- [Seed Nodes](./seed-nodes) - P2P network bootstrap nodes
+- [Archive Nodes](./archive-nodes) - Historical data access
+- [Frontend](./frontend) - Web interface deployment
+- [GraphQL API](../../developers/graphql-api) - Complete API documentation

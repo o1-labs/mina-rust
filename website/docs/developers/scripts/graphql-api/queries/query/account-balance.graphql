@@ -1,0 +1,13 @@
+query GetBalance($publicKey: String!) {
+  account(publicKey: $publicKey) {
+    balance {
+      total
+      liquid
+      locked
+    }
+    nonce
+    delegateAccount {
+      publicKey
+    }
+  }
+}

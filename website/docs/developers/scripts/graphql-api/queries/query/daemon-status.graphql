@@ -1,0 +1,12 @@
+query {
+  daemonStatus {
+    blockchainLength
+    chainId
+    commitId
+    stateHash
+    numAccounts
+    globalSlotSinceGenesisBestTip
+    ledgerMerkleRoot
+    coinbaseReceiver
+  }
+}
