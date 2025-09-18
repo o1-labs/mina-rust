@@ -286,6 +286,7 @@ jobs:
           retention-days: 7
 
   build:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -334,6 +335,7 @@ jobs:
           echo "Build info verification passed!"
 
   build-wasm:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -366,6 +368,7 @@ jobs:
           RUSTFLAGS: ""
 
   build-tests:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
@@ -397,6 +400,7 @@ jobs:
         run: make build-tests
 
   build-tests-webrtc:
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main'
     timeout-minutes: 60
     # NOTE: If you add or remove platforms from this matrix, make sure to update
     # the documentation at website/docs/developers/getting-started.mdx
