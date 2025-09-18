@@ -33,7 +33,7 @@ website:
 
 ### Quick Links
 
-- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-installation)**
+- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-usage)**
 - **[Building from Source](https://o1-labs.github.io/mina-rust/docs/node-operators/building-from-source)**
 - **[Block Producer Setup](https://o1-labs.github.io/mina-rust/docs/node-operators/block-producer)**
 - **[Archive Node](https://o1-labs.github.io/mina-rust/docs/node-operators/archive-node)**
