@@ -101,17 +101,6 @@ You can find available tags at:
 - [o1labs/mina-rust on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust/tags)
 - [o1labs/mina-rust-frontend on Docker Hub](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
 
-<!-- prettier-ignore-start -->
-
-:::info Frontend Status
-
-The frontend dashboard Docker image is available but currently being updated.
-Full functionality will be restored in a future release.
-
-:::
-
-<!-- prettier-ignore-stop -->
-
 ## Quick Start with Docker Compose
 
 The easiest way to get started is using the provided docker compose

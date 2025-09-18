@@ -145,19 +145,11 @@ Ensure Docker and Docker Compose are installed on your system -
    Visit [http://localhost:8070](http://localhost:8070) to monitor sync and
    block production.
 
-   <!-- prettier-ignore-start -->
-
-   :::note Frontend Status
-
-   The dashboard is currently being updated and may not work correctly in
-   v0.17.0. As an alternative, monitor your node using logs:
+   You can also monitor your node using logs:
 
    ```bash
    docker compose logs -f
    ```
-
-   :::
-   <!-- prettier-ignore-stop -->
 
 ## Using Make Command
 

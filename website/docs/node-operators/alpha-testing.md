@@ -46,21 +46,6 @@ Ensure you have **Docker** installed:
 
 4. **Access the Dashboard**: Open `http://localhost:8070` in your browser.
 
-   <!-- prettier-ignore-start -->
-
-   :::caution Frontend Status
-
-   The dashboard is currently being updated and may not display correctly in
-   v0.17.0. Use the logs to monitor syncing:
-
-   ```bash
-   docker compose logs -f
-   ```
-
-   :::
-
-   <!-- prettier-ignore-stop -->
-
    > **1. Connecting to Peers:** The node connects to peers. You'll see the
    > number of connected, connecting, and disconnected peers grow.
    >
