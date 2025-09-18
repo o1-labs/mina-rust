@@ -55,7 +55,7 @@ jobs:
           # - ./github/workflows/docs.yaml
           # - ./github/workflows/fmt.yaml
           # - ./github/workflows/lint.yaml
-        toolchain: [nightly-2025-08-18]
+        toolchain: [nightly]
         ocaml_version: [4.14.2]
     steps:
       - uses: actions/checkout@v5
