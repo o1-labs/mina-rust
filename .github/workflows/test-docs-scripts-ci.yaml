@@ -1,0 +1,125 @@
+name: CI Documentation Scripts
+
+# This workflow tests the CI documentation setup scripts to ensure they work correctly.
+# It runs nightly and on-demand to avoid slowing down regular development workflow.
+on:
+  pull_request:
+    types: [labeled]
+    # Only runs when 'test-doc-scripts' or 'test-ci' label is added to a PR
+  schedule:
+    # Run nightly to catch environment drift and ensure scripts stay functional
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+
+jobs:
+  test-act-installation:
+    name: Test Act Installation (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    # Only run if the event is scheduled, manual, or PR has test-doc-scripts or test-ci label
+    if: |
+      github.event_name == 'schedule' ||
+      github.event_name == 'workflow_dispatch' ||
+      contains(github.event.pull_request.labels.*.name, 'test-doc-scripts') ||
+      contains(github.event.pull_request.labels.*.name, 'test-ci')
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test GitHub CLI installation (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          # Execute the install-gh-cli-ubuntu.sh script as a user would
+          bash ./website/docs/developers/scripts/ci/install-gh-cli-ubuntu.sh
+
+      - name: Test GitHub CLI installation (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: |
+          # Execute the install-gh-cli-macos.sh script as a user would
+          bash ./website/docs/developers/scripts/ci/install-gh-cli-macos.sh
+
+      - name: Test act extension installation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Execute the install-act.sh script as a user would
+          bash ./website/docs/developers/scripts/ci/install-act.sh
+
+      - name: Test act functionality
+        run: |
+          # Execute the test-act-functionality.sh script as a user would
+          bash ./website/docs/developers/scripts/ci/test-act-functionality.sh
+
+  verify-ci-script-consistency:
+    name: Verify CI Script Consistency
+    runs-on: ubuntu-latest
+    # Always run this check on PRs that modify CI scripts
+    if: |
+      github.event_name == 'pull_request' &&
+      (contains(github.event.pull_request.labels.*.name, 'test-doc-scripts') ||
+       contains(github.event.pull_request.labels.*.name, 'test-ci'))
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Check CI script files exist
+        run: |
+          # Verify all referenced CI scripts exist
+          scripts=(
+            "website/docs/developers/scripts/ci/install-gh-cli-ubuntu.sh"
+            "website/docs/developers/scripts/ci/install-gh-cli-macos.sh"
+            "website/docs/developers/scripts/ci/install-act.sh"
+            "website/docs/developers/scripts/ci/test-act-functionality.sh"
+          )
+
+          missing=0
+          for script in "${scripts[@]}"; do
+            if [ ! -f "$script" ]; then
+              echo "❌ Missing script: $script"
+              missing=$((missing + 1))
+            else
+              echo "✅ Found: $script"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "ERROR: $missing script(s) missing"
+            exit 1
+          fi
+
+      - name: Verify CI scripts are referenced in documentation
+        run: |
+          # Check that all CI scripts are imported in the CI local MDX file
+          mdx_file="website/docs/developers/testing/ci-local.mdx"
+
+          if [ ! -f "$mdx_file" ]; then
+            echo "❌ CI local documentation file not found: $mdx_file"
+            exit 1
+          fi
+
+          # Check for script imports
+          scripts=(
+            "install-gh-cli-ubuntu.sh"
+            "install-gh-cli-macos.sh"
+            "install-act.sh"
+          )
+
+          missing=0
+          for script in "${scripts[@]}"; do
+            if ! grep -q "$script" "$mdx_file"; then
+              echo "❌ Script not referenced in docs: $script"
+              missing=$((missing + 1))
+            else
+              echo "✅ Script referenced: $script"
+            fi
+          done
+
+          if [ $missing -gt 0 ]; then
+            echo "ERROR: $missing script(s) not referenced in documentation"
+            exit 1
+          fi

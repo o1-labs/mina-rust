@@ -1,0 +1,313 @@
+---
+title: Running CI Locally
+description: How to run GitHub Actions CI jobs locally for testing
+sidebar_position: 8
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import InstallGhCliUbuntu from "!!raw-loader!../scripts/ci/install-gh-cli-ubuntu.sh";
+import InstallGhCliMacos from "!!raw-loader!../scripts/ci/install-gh-cli-macos.sh";
+import InstallAct from "!!raw-loader!../scripts/ci/install-act.sh";
+
+# Running CI Locally
+
+This guide explains how to run GitHub Actions CI jobs locally using `act` and
+the GitHub CLI. This is useful for testing CI changes before pushing to GitHub
+and debugging CI failures.
+
+## Prerequisites
+
+### Install GitHub CLI with act extension
+
+The recommended way is using the GitHub CLI with the act extension:
+
+<Tabs groupId="operating-systems">
+  <TabItem value="ubuntu" label="Ubuntu/Debian">
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/ci/install-gh-cli-ubuntu.sh"
+>
+  {InstallGhCliUbuntu}
+</CodeBlock>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/ci/install-act.sh"
+>
+  {InstallAct}
+</CodeBlock>
+
+  </TabItem>
+  <TabItem value="macos" label="macOS">
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/ci/install-gh-cli-macos.sh"
+>
+  {InstallGhCliMacos}
+</CodeBlock>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/ci/install-act.sh"
+>
+  {InstallAct}
+</CodeBlock>
+
+  </TabItem>
+</Tabs>
+
+### Docker requirement
+
+Act requires Docker to be installed and running, as it uses Docker containers to
+simulate GitHub Actions runners.
+
+## Basic usage
+
+### List available jobs
+
+To see all jobs in a workflow:
+
+```bash
+gh act -l -W .github/workflows/test-docs-scripts-frontend.yaml
+```
+
+### Run a specific job
+
+```bash
+# Run a single job
+gh act -j job-name -W .github/workflows/workflow-file.yaml
+
+# Example: Run frontend script consistency check
+gh act -j verify-script-consistency -W .github/workflows/test-docs-scripts-frontend.yaml
+```
+
+### Simulate pull request events
+
+Many CI jobs only run on pull requests with specific labels. Create an event
+file to simulate this:
+
+```bash
+# Create event file
+cat > /tmp/act-event.json << 'EOF'
+{
+  "pull_request": {
+    "labels": [
+      {"name": "test-frontend"}
+    ]
+  }
+}
+EOF
+
+# Run with the event
+gh act pull_request -j frontend-local-setup \
+  -W .github/workflows/test-docs-scripts-frontend.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+```
+
+## Frontend CI examples
+
+### Test frontend documentation scripts
+
+```bash
+# Script consistency verification
+gh act pull_request -j verify-script-consistency \
+  -W .github/workflows/test-docs-scripts-frontend.yaml \
+  --eventpath /tmp/act-event.json
+
+# Frontend local setup tests
+gh act pull_request -j frontend-local-setup \
+  -W .github/workflows/test-docs-scripts-frontend.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+
+# Test act installation
+gh act pull_request -j test-act-installation \
+  -W .github/workflows/test-docs-scripts-ci.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+```
+
+### Test CI documentation scripts
+
+```bash
+# Test act installation
+gh act pull_request -j test-act-installation \
+  -W .github/workflows/test-docs-scripts-ci.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+
+# CI script consistency verification
+gh act pull_request -j verify-ci-script-consistency \
+  -W .github/workflows/test-docs-scripts-ci.yaml \
+  --eventpath /tmp/act-event.json
+```
+
+### Test documentation scripts
+
+```bash
+# Test system setup scripts
+gh act pull_request -j ubuntu \
+  -W .github/workflows/test-docs-scripts.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+
+# Test Docker installation scripts
+gh act pull_request -j docker-ubuntu \
+  -W .github/workflows/test-docs-scripts.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-22.04
+```
+
+## Advanced options
+
+### Matrix testing
+
+Run jobs with specific matrix values:
+
+```bash
+# Test on specific Ubuntu version
+gh act pull_request -j frontend-local-setup \
+  -W .github/workflows/test-docs-scripts-frontend.yaml \
+  --eventpath /tmp/act-event.json \
+  --matrix os:ubuntu-24.04
+```
+
+### Verbose output
+
+For debugging CI issues:
+
+```bash
+# Verbose mode
+gh act -j job-name -W .github/workflows/workflow.yaml -v
+
+# Even more verbose
+gh act -j job-name -W .github/workflows/workflow.yaml -vv
+```
+
+### Dry run
+
+See what would run without executing:
+
+```bash
+gh act -j job-name -W .github/workflows/workflow.yaml -n
+```
+
+### Custom runner images
+
+By default, act uses its own runner images. You can specify different ones:
+
+```bash
+# Use specific Ubuntu version
+gh act -j job-name \
+  -P ubuntu-22.04=catthehacker/ubuntu:act-22.04 \
+  -P ubuntu-24.04=catthehacker/ubuntu:act-24.04
+```
+
+### Environment variables and secrets
+
+Pass environment variables and secrets to jobs:
+
+```bash
+# With environment variables
+gh act -j job-name --env MY_VAR=value
+
+# With secrets file
+echo "MY_SECRET=secret_value" > .secrets
+gh act -j job-name --secret-file .secrets
+```
+
+## Common workflows
+
+### Test all CI changes
+
+Before pushing CI changes, test them locally:
+
+```bash
+# 1. Create test event for PR with labels
+cat > /tmp/test-event.json << 'EOF'
+{
+  "pull_request": {
+    "labels": [
+      {"name": "test-doc-scripts"},
+      {"name": "test-frontend"}
+    ]
+  }
+}
+EOF
+
+# 2. Run affected workflows
+gh act pull_request -W .github/workflows/test-docs-scripts.yaml \
+  --eventpath /tmp/test-event.json
+
+gh act pull_request -W .github/workflows/test-docs-scripts-frontend.yaml \
+  --eventpath /tmp/test-event.json
+```
+
+### Debug failing jobs
+
+When a CI job fails on GitHub:
+
+```bash
+# 1. Run with verbose output
+gh act -j failing-job-name -W .github/workflows/workflow.yaml -v
+
+# 2. If still unclear, use interactive mode
+gh act -j failing-job-name -W .github/workflows/workflow.yaml \
+  --container-options "-it"
+```
+
+## Troubleshooting
+
+### Common issues
+
+**"Docker not found"**
+
+- Ensure Docker Desktop is running
+- On Linux, ensure your user is in the docker group:
+  `sudo usermod -aG docker $USER`
+
+**"Job skipped due to if condition"**
+
+- Check the job's `if:` condition in the workflow
+- Ensure your event file matches the condition requirements
+
+**"No space left on device"**
+
+- Act downloads runner images which can be large
+- Clean up old Docker images: `docker system prune -a`
+
+**"Permission denied"**
+
+- Some scripts may need execution permissions
+- Run: `chmod +x path/to/script.sh`
+
+### Performance tips
+
+1. **Use specific job names** - Don't run entire workflows if you only need one
+   job
+2. **Cache Docker images** - First runs download images, subsequent runs are
+   faster
+3. **Use matrix filters** - Test specific OS versions instead of all
+4. **Parallel execution** - Run multiple act commands in different terminals
+
+## Limitations
+
+Act has some limitations compared to GitHub Actions:
+
+- Some GitHub-specific features may not work (e.g., `github.token`)
+- Service containers may behave differently
+- Caching actions don't actually cache
+- Some marketplace actions may not be compatible
+
+For full CI validation, always create a pull request after local testing.
+
+## Additional resources
+
+- [act documentation](https://github.com/nektos/act)
+- [GitHub Actions documentation](https://docs.github.com/en/actions)
+- [act runner images](https://github.com/catthehacker/docker_images)
