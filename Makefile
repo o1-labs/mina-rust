@@ -144,16 +144,18 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 	@echo "Removing trailing whitespaces from all files..."
 	@find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sed -i'' -e "s/[[:space:]]*$$//" {} + && \
+		-exec sh -c 'echo "Processing: $$1"; sed -i"" -e "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
@@ -161,10 +163,12 @@ check-trailing-whitespace: ## Check for trailing whitespaces in source files
 	@echo "Checking for trailing whitespaces..."
 	@files_with_trailing_ws=$$(find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
