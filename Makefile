@@ -220,6 +220,9 @@ lint-bash: ## Check all shell scripts using shellcheck
 	@find . -name "*.sh" \
 		-not -path "*/target/*" \
 		-not -path "*/node_modules/*" \
+		-not -path "*/website/docs/developers/scripts/ci/*" \
+		-not -path "*/website/docs/developers/scripts/frontend/*" \
+		-not -path "*/website/docs/developers/scripts/release/*" \
 		-not -path "*/website/docs/developers/scripts/setup/*" \
 		-print0 | xargs -0 shellcheck
 	@echo "Shellcheck completed successfully!"
