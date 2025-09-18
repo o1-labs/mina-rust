@@ -20,3 +20,5 @@ ledger/3.0.0mainnet
 ledger/3.0.1devnet
 ledger/berkeley_rc1
 mina-workdir
+
+.env
