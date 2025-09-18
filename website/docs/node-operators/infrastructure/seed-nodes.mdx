@@ -1,0 +1,103 @@
+---
+title: Seed Nodes
+description: Official o1Labs seed nodes for reliable network connectivity
+sidebar_position: 1
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import SeedNodesList from "!!raw-loader!../../developers/scripts/infrastructure/seed-nodes.txt";
+
+# Seed Nodes
+
+o1Labs maintains official seed nodes that provide reliable entry points for
+connecting to the Mina Rust network. These nodes are recommended for use by node
+operators who want to ensure stable connectivity.
+
+## Available Seed Nodes
+
+The following seed nodes are officially maintained by o1Labs:
+
+<CodeBlock
+  language="text"
+  title="website/docs/developers/scripts/infrastructure/seed-nodes.txt"
+>
+  {SeedNodesList}
+</CodeBlock>
+
+## Configuration
+
+For information on how to configure your node to use these seed nodes, see the
+[Network Configuration](../network-configuration) page.
+
+<!-- prettier-ignore-start -->
+
+:::info Connectivity Testing
+
+These seed nodes are tested automatically by CI to ensure they remain
+accessible. If you experience connectivity issues, please check the project's
+GitHub Issues page for any known outages.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Troubleshooting
+
+### Connection Issues
+
+If you cannot connect to seed nodes:
+
+1. **Check network connectivity**: Ensure internet access and DNS resolution
+2. **Verify firewall settings**: Allow outbound HTTPS connections
+3. **Test manually**: Try `curl https://mina-rust-seed-1.gcp.o1test.net`
+4. **Check node logs**: Look for connection error messages
+
+### DNS Resolution Problems
+
+```bash
+# Test DNS resolution
+nslookup mina-rust-seed-1.gcp.o1test.net
+
+# Alternative DNS servers
+nslookup mina-rust-seed-1.gcp.o1test.net 8.8.8.8
+```
+
+### Certificate Issues
+
+If you encounter TLS/SSL certificate problems:
+
+```bash
+# Test certificate validity
+openssl s_client -connect mina-rust-seed-1.gcp.o1test.net:443 \
+  -servername mina-rust-seed-1.gcp.o1test.net
+```
+
+## Updates and Maintenance
+
+### Infrastructure Updates
+
+o1Labs maintains these seed nodes with:
+
+- **Regular updates**: Nodes are kept current with latest releases
+- **Monitoring**: 24/7 health monitoring and alerting
+- **Maintenance windows**: Scheduled updates with minimal downtime
+- **Redundancy**: Multiple nodes ensure continuous availability
+
+### Communication
+
+Infrastructure maintenance and updates are communicated through:
+
+- GitHub release notes
+- Project documentation updates
+- Community announcements
+
+## Reference Information
+
+For the most current seed node information, always refer to the
+[official seeds repository](https://github.com/o1-labs/seeds/blob/main/networks/devnet-webrtc.txt).
+
+### Related Documentation
+
+- [Plain Nodes](./plain-nodes) - Running standard Mina Rust nodes
+- [Archive Nodes](./archive-nodes) - Historical data archival infrastructure
+- [Frontend](./frontend) - Web interface deployment

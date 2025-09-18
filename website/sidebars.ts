@@ -42,6 +42,16 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'o1Labs Infrastructure',
+      items: [
+        'node-operators/infrastructure/seed-nodes',
+        'node-operators/infrastructure/plain-nodes',
+        'node-operators/infrastructure/archive-nodes',
+        'node-operators/infrastructure/frontend',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Advanced Topics',
       items: [
         'node-operators/local-demo',

@@ -1,0 +1,3 @@
+http://mina-rust-plain-1.gcp.o1test.net/
+http://mina-rust-plain-2.gcp.o1test.net/
+http://mina-rust-plain-3.gcp.o1test.net/
