@@ -1,6 +1,6 @@
-FROM node:23 AS BUILD_IMAGE
 # Doesn't matter what we put here - it get's overwritten by the docker \
 # build command
+FROM node:23 AS build_image
 ARG BUILD_CONFIGURATION=production
 WORKDIR /app
 COPY . .
