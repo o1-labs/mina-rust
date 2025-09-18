@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changed
+
+- **CI**: Update CI to test on specific macOS versions (13, 14, 15) instead of
+  only macos-latest, providing better coverage across macOS versions that
+  developers are using ([#1421](https://github.com/o1-labs/mina-rust/pull/1421))
+
 ## v0.17.0
 
 ### OCaml node
@@ -69,9 +75,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- **CI**: Update CI to test on specific macOS versions (13, 14, 15) instead of
-  only macos-latest, providing better coverage across macOS versions that
-  developers are using ([#1421](https://github.com/o1-labs/mina-rust/pull/1421))
 - **CI**: Generalized build jobs to support multiple platforms (Ubuntu 22.04,
   Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest), updated test execution to
   ubuntu-latest, and fixed GLIBC compatibility for scenario tests by using
