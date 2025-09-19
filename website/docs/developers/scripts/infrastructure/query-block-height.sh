@@ -1,6 +1,7 @@
 #!/bin/bash
 # Usage: $0 GRAPHQL_ENDPOINT
-# GRAPHQL_ENDPOINT: GraphQL endpoint URL (required)
+# GRAPHQL_ENDPOINT: GraphQL endpoint URL (required, must end with /graphql)
+# Example: https://mina-rust-plain-2.gcp.o1test.net/graphql
 
 if [ -z "$1" ]; then
     echo "Error: GRAPHQL_ENDPOINT is required"
