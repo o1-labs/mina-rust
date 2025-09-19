@@ -12,7 +12,9 @@ fi
 GRAPHQL_ENDPOINT="$1"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUERY=$(cat "$SCRIPT_DIR/queries/schema-introspection.graphql")
+# Read the query and create JSON payload using jq for proper escaping
+QUERY=$(< "$SCRIPT_DIR/queries/schema-introspection.graphql")
+JSON_PAYLOAD=$(echo "{}" | jq --arg query "$QUERY" '.query = $query')
 curl -s -X POST "$GRAPHQL_ENDPOINT" \
   -H "Content-Type: application/json" \
-  -d "{\"query\": \"$QUERY\"}"
+  -d "$JSON_PAYLOAD"
