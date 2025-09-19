@@ -1,6 +1,11 @@
 name: Test Documentation Scripts - GraphQL API
 
 # Test GraphQL API scripts and examples
+# This workflow validates:
+# 1. Script/query file consistency (test-script-query-consistency.sh)
+# 2. API functionality by executing scripts against live endpoints
+# (test-graphql-command-scripts.sh)
+# Scripts can be run locally for development and debugging
 on:
   schedule:
     # Run daily at 7 AM UTC to catch API issues early
@@ -33,133 +38,7 @@ jobs:
           fi
 
       - name: Test script and query file consistency
-        run: |
-          echo "🔍 Testing consistency between bash scripts and GraphQL query files..."
-
-          script_dir="website/docs/developers/scripts/graphql-api/queries/curl"
-          query_dir="website/docs/developers/scripts/graphql-api/queries/query"
-
-          inconsistent=0
-
-          # Check that each script that references a query file has a corresponding .graphql file
-          for script_file in "$script_dir"/*.sh; do
-            if [ ! -f "$script_file" ]; then
-              continue
-            fi
-
-            script_name=$(basename "$script_file" .sh)
-
-            # Look for query file references in the script
-            if grep -q "query/" "$script_file"; then
-              expected_query_file="$query_dir/$script_name.graphql"
-
-              if [ -f "$expected_query_file" ]; then
-                echo "✅ $script_name has corresponding query file"
-              else
-                echo "❌ $script_name missing query file: $expected_query_file"
-                inconsistent=$((inconsistent + 1))
-              fi
-            fi
-          done
-
-          # Check that each query file has a corresponding script
-          for query_file in "$query_dir"/*.graphql; do
-            if [ ! -f "$query_file" ]; then
-              continue
-            fi
-
-            query_name=$(basename "$query_file" .graphql)
-            expected_script_file="$script_dir/$query_name.sh"
-
-            if [ -f "$expected_script_file" ]; then
-              echo "✅ $query_name has corresponding script file"
-            else
-              echo "❌ $query_name query file has no corresponding script: $expected_script_file"
-              inconsistent=$((inconsistent + 1))
-            fi
-          done
-
-          if [ $inconsistent -gt 0 ]; then
-            echo "💥 $inconsistent script/query file inconsistencies found"
-            exit 1
-          else
-            echo "🎉 All scripts and query files are consistent"
-          fi
+        run: ./.github/scripts/test-script-query-consistency.sh
 
       - name: Test GraphQL command scripts
-        run: |
-          echo "🔍 Testing GraphQL API command scripts..."
-
-          # Dynamically discover all bash scripts in the queries/curl directory (only test queries, not mutations)
-          script_dir="website/docs/developers/scripts/graphql-api/queries/curl"
-
-          if [ ! -d "$script_dir" ]; then
-            echo "❌ Script directory not found: $script_dir"
-            exit 1
-          fi
-
-          # Get all .sh files in the curl directory
-          script_files=$(ls "$script_dir"/*.sh 2>/dev/null)
-
-          if [ -z "$script_files" ]; then
-            echo "❌ No bash scripts found in $script_dir"
-            exit 1
-          fi
-
-          failed=0
-
-          for script_file in $script_files; do
-            if [ ! -f "$script_file" ]; then
-              echo "❌ Script file not found: $script_file"
-              failed=$((failed + 1))
-              continue
-            fi
-
-            echo "Testing script: $script_file"
-
-            # Execute the script and capture output
-            if output=$(timeout 30 bash "$script_file" 2>&1); then
-              echo "✅ Script executed successfully"
-
-              # Check if this is a GraphQL script (contains JSON response)
-              if echo "$output" | grep -q "^{"; then
-                # Extract JSON response (skip curl progress output)
-                json_response=$(echo "$output" | grep "^{")
-
-                # Check if it's valid JSON
-                if echo "$json_response" | jq . > /dev/null 2>&1; then
-                  # Check for GraphQL errors
-                  if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
-                    echo "❌ Script returned GraphQL errors:"
-                    echo "$json_response" | jq '.errors'
-                    failed=$((failed + 1))
-                  else
-                    echo "✅ Script response contains valid JSON: $(echo "$json_response" | head -c 100)..."
-                  fi
-                else
-                  echo "❌ Script returned invalid JSON: $(echo "$json_response" | head -c 100)..."
-                  failed=$((failed + 1))
-                fi
-              else
-                # Non-JSON script validation (basic error checking)
-                if echo "$output" | grep -q "error\|Error\|ERROR"; then
-                  echo "⚠️  Script returned error response: $(echo "$output" | head -c 100)..."
-                else
-                  echo "✅ Script response looks valid: $(echo "$output" | head -c 100)..."
-                fi
-              fi
-            else
-              echo "❌ Script execution failed: $script_file"
-              failed=$((failed + 1))
-            fi
-
-            echo "---"
-          done
-
-          if [ $failed -gt 0 ]; then
-            echo "💥 $failed GraphQL script tests failed"
-            echo "Some GraphQL API scripts may need updates."
-            exit 1
-          else
-            echo "🎉 All GraphQL API command scripts are working"
-          fi
+        run: ./.github/scripts/test-graphql-command-scripts.sh

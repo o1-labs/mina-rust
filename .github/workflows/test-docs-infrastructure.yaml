@@ -1,6 +1,11 @@
 name: Test Documentation Scripts - Infrastructure
 
 # Test infrastructure connectivity and infrastructure scripts
+# This workflow validates:
+# 1. Seed node connectivity and format verification
+# 2. Plain node GraphQL endpoints and API capabilities
+# 3. Infrastructure script functionality
+# Scripts can be run locally for development and debugging
 on:
   schedule:
     # Run daily at 6 AM UTC to catch infrastructure issues early
@@ -15,6 +20,7 @@ on:
 jobs:
   test-seed-nodes:
     name: Test Seed Node Connectivity
+    timeout-minutes: 2
     runs-on: ubuntu-latest
 
     steps:
@@ -22,95 +28,14 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Test seed node connectivity
-        run: |
-          echo "🔍 Testing o1Labs seed node connectivity..."
-
-          # Read seed nodes from file
-          seed_file="website/docs/developers/scripts/infrastructure/seed-nodes.txt"
-
-          if [ ! -f "$seed_file" ]; then
-            echo "❌ Seed nodes file not found: $seed_file"
-            exit 1
-          fi
-
-          failed=0
-
-          # Extract hostnames from multiaddress format and test connectivity
-          while IFS= read -r seed_address; do
-            # Extract hostname from multiaddress: /peer-id/https/hostname/port
-            hostname=$(echo "$seed_address" | cut -d'/' -f4)
-
-            if [ -z "$hostname" ]; then
-              echo "❌ Could not extract hostname from: $seed_address"
-              failed=$((failed + 1))
-              continue
-            fi
-
-            echo "Testing connectivity to $hostname (from $seed_address)..."
-
-            # Test HTTPS connectivity (port 443)
-            if curl -s --connect-timeout 10 --max-time 30 "https://$hostname" > /dev/null 2>&1; then
-              echo "✅ $hostname is reachable via HTTPS"
-            else
-              echo "❌ $hostname is not reachable via HTTPS"
-              failed=$((failed + 1))
-            fi
-
-            # Test basic DNS resolution (non-fatal for now)
-            if nslookup "$hostname" > /dev/null 2>&1; then
-              echo "✅ $hostname DNS resolution successful"
-            else
-              echo "⚠️  $hostname DNS resolution failed (may be environment-specific)"
-            fi
-
-            echo "---"
-          done < "$seed_file"
-
-          if [ $failed -gt 0 ]; then
-            echo "💥 $failed connectivity tests failed"
-            echo "Infrastructure issues detected. Please check seed node status."
-            exit 1
-          else
-            echo "🎉 All seed nodes are healthy and reachable"
-          fi
+        run: ./.github/scripts/test-seed-node-connectivity.sh
 
       - name: Test seed node response headers
-        run: |
-          echo "🔍 Testing seed node HTTP response headers..."
-
-          # Read seed nodes from file
-          seed_file="website/docs/developers/scripts/infrastructure/seed-nodes.txt"
-
-          if [ ! -f "$seed_file" ]; then
-            echo "❌ Seed nodes file not found: $seed_file"
-            exit 1
-          fi
-
-          # Extract hostnames from multiaddress format and test headers
-          while IFS= read -r seed_address; do
-            # Extract hostname from multiaddress: /peer-id/https/hostname/port
-            hostname=$(echo "$seed_address" | cut -d'/' -f4)
-
-            if [ -z "$hostname" ]; then
-              echo "❌ Could not extract hostname from: $seed_address"
-              continue
-            fi
-
-            echo "Checking headers for $hostname (from $seed_address)..."
-
-            # Get response headers (ignore cert issues for now)
-            if headers=$(curl -s -I --connect-timeout 10 --max-time 30 "https://$hostname" 2>/dev/null); then
-              echo "✅ $hostname returned headers:"
-              echo "$headers" | head -5 | sed 's/^/  /'
-            else
-              echo "⚠️  $hostname did not return headers (may be expected for WebRTC endpoints)"
-            fi
-
-            echo "---"
-          done < "$seed_file"
+        run: ./.github/scripts/test-seed-node-headers.sh
 
   verify-seed-node-format:
     name: Verify Seed Node Address Format
+    timeout-minutes: 2
     runs-on: ubuntu-latest
 
     steps:
@@ -118,46 +43,11 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Verify seed nodes are subset of official seeds
-        run: |
-          echo "🔍 Verifying seed nodes are subset of official o1Labs seeds..."
-
-          # Download official seeds list
-          official_seeds_url="https://raw.githubusercontent.com/o1-labs/seeds/main/networks/devnet-webrtc.txt"
-          curl -s "$official_seeds_url" > /tmp/official-seeds.txt
-
-          if [ ! -s /tmp/official-seeds.txt ]; then
-            echo "❌ Failed to download official seeds list"
-            exit 1
-          fi
-
-          echo "Downloaded official seeds list"
-
-          # Read our seed nodes
-          seed_file="website/docs/developers/scripts/infrastructure/seed-nodes.txt"
-          our_seeds=$(cat "$seed_file")
-
-          # Check each of our seeds exists in official list
-          missing=0
-          while IFS= read -r seed; do
-            if grep -Fxq "$seed" /tmp/official-seeds.txt; then
-              echo "✅ Found in official list: $seed"
-            else
-              echo "❌ Missing from official list: $seed"
-              missing=$((missing + 1))
-            fi
-          done <<< "$our_seeds"
-
-          if [ $missing -gt 0 ]; then
-            echo "💥 $missing seed node(s) not found in official seeds"
-            echo "Official seeds list:"
-            cat /tmp/official-seeds.txt
-            exit 1
-          else
-            echo "🎉 All seed nodes are present in official seeds list"
-          fi
+        run: ./.github/scripts/test-seed-node-format.sh
 
   test-plain-nodes:
     name: Test Plain Node Connectivity
+    timeout-minutes: 2
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -168,200 +58,11 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Test plain node GraphQL endpoints
-        run: |
-          echo "🔍 Testing plain node GraphQL connectivity..."
-
-          # Read plain nodes from file
-          plain_nodes_file="website/docs/developers/scripts/infrastructure/plain-nodes.txt"
-
-          if [ ! -f "$plain_nodes_file" ]; then
-            echo "❌ Plain nodes file not found: $plain_nodes_file"
-            exit 1
-          fi
-
-          plain_nodes=$(cat "$plain_nodes_file")
-          failed=0
-
-          for node_url in $plain_nodes; do
-            echo "Testing GraphQL endpoint: $node_url"
-
-            # Test basic HTTP connectivity
-            if curl -s --connect-timeout 10 --max-time 30 "$node_url" > /dev/null 2>&1; then
-              echo "✅ $node_url is reachable via HTTP"
-            else
-              echo "❌ $node_url is not reachable via HTTP"
-              failed=$((failed + 1))
-              continue
-            fi
-
-            # Test GraphQL endpoint using website scripts
-            graphql_url="${node_url}graphql"
-
-            # Test daemon status query using the website script
-            if response=$(bash website/docs/developers/scripts/graphql-api/queries/curl/daemon-status.sh "$graphql_url" 2>/dev/null); then
-              # Extract JSON response (skip curl progress output)
-              json_response=$(echo "$response" | grep "^{")
-
-              # Check if it's valid JSON
-              if echo "$json_response" | jq . > /dev/null 2>&1; then
-                # Check for GraphQL errors
-                if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
-                  echo "⚠️  $graphql_url returned GraphQL error:"
-                  echo "$json_response" | jq '.errors'
-                # Check for valid data
-                elif echo "$json_response" | jq -e '.data.daemonStatus' > /dev/null 2>&1; then
-                  echo "✅ $graphql_url GraphQL query successful"
-                  sync_status=$(echo "$json_response" | jq -r '.data.daemonStatus.syncStatus // "unknown"')
-                  chain_id=$(echo "$json_response" | jq -r '.data.daemonStatus.chainId // "unknown"')
-                  echo "   Sync Status: $sync_status, Chain ID: ${chain_id:0:16}..."
-                else
-                  echo "⚠️  $graphql_url unexpected response format"
-                fi
-              else
-                echo "⚠️  $graphql_url did not return valid JSON: $(echo "$response" | head -c 100)..."
-              fi
-            else
-              echo "❌ $graphql_url GraphQL query failed"
-              failed=$((failed + 1))
-            fi
-
-            echo "---"
-          done
-
-          if [ $failed -gt 0 ]; then
-            echo "💥 $failed plain node tests failed"
-            echo "Infrastructure issues detected. Please check plain node status."
-            exit 1
-          else
-            echo "🎉 All plain nodes are healthy and responding"
-          fi
+        run: ./.github/scripts/test-plain-node-connectivity.sh
 
       - name: Test plain node API capabilities
-        run: |
-          echo "🔍 Testing plain node API capabilities..."
-
-          # Read plain nodes from file
-          plain_nodes_file="website/docs/developers/scripts/infrastructure/plain-nodes.txt"
-          plain_nodes=$(cat "$plain_nodes_file")
-
-          # Test with first available node
-          for node_url in $plain_nodes; do
-            graphql_url="${node_url}graphql"
-
-            echo "Testing API capabilities on: $graphql_url"
-
-            # Test network ID query using website script
-            network_success=false
-            if network_response=$(bash website/docs/developers/scripts/graphql-api/queries/curl/network-id.sh "$graphql_url" 2>/dev/null); then
-              network_json=$(echo "$network_response" | grep "^{")
-              if echo "$network_json" | jq -e '.data.networkID' > /dev/null 2>&1; then
-                network_id=$(echo "$network_json" | jq -r '.data.networkID')
-                echo "✅ Network ID query successful: $network_id"
-                network_success=true
-              else
-                echo "⚠️  Network ID query failed or unexpected response"
-              fi
-            else
-              echo "⚠️  Network ID query script failed"
-            fi
-
-            # Test best chain query using website script
-            chain_success=false
-            if chain_response=$(bash website/docs/developers/scripts/graphql-api/queries/curl/best-chain.sh "$graphql_url" 2>/dev/null); then
-              chain_json=$(echo "$chain_response" | grep "^{")
-              if echo "$chain_json" | jq -e '.data.bestChain[0].stateHash' > /dev/null 2>&1; then
-                state_hash=$(echo "$chain_json" | jq -r '.data.bestChain[0].stateHash')
-                echo "✅ Best chain query successful: ${state_hash:0:16}..."
-                chain_success=true
-              else
-                echo "⚠️  Best chain query failed or unexpected response"
-              fi
-            else
-              echo "⚠️  Best chain query script failed"
-            fi
-
-            # We only need to test one working node
-            if [ "$network_success" = true ] && [ "$chain_success" = true ]; then
-              echo "🎉 Plain node API capabilities verified"
-              break
-            fi
-          done
+        run: ./.github/scripts/test-plain-node-capabilities.sh
 
       - name: Test infrastructure scripts
-        run: |
-          echo "🔍 Testing infrastructure command scripts..."
-
-          # Dynamically discover all bash scripts in the infrastructure directory
-          script_dir="website/docs/developers/scripts/infrastructure"
-
-          if [ ! -d "$script_dir" ]; then
-            echo "❌ Script directory not found: $script_dir"
-            exit 1
-          fi
-
-          # Get all .sh files in the infrastructure directory
-          script_files=$(ls "$script_dir"/*.sh 2>/dev/null)
-
-          if [ -z "$script_files" ]; then
-            echo "❌ No bash scripts found in $script_dir"
-            exit 1
-          fi
-
-          failed=0
-
-          # Use first plain node for testing infrastructure scripts
-          plain_nodes_file="website/docs/developers/scripts/infrastructure/plain-nodes.txt"
-          test_endpoint=""
-          if [ -f "$plain_nodes_file" ]; then
-            first_node=$(head -n 1 "$plain_nodes_file")
-            test_endpoint="${first_node}graphql"
-          else
-            # Fallback endpoint if file not found
-            test_endpoint="http://mina-rust-plain-1.gcp.o1test.net/graphql"
-          fi
-
-          for script_file in $script_files; do
-            if [ ! -f "$script_file" ]; then
-              echo "❌ Script file not found: $script_file"
-              failed=$((failed + 1))
-              continue
-            fi
-
-            echo "Testing script: $script_file"
-
-            # Execute the script with test endpoint and capture output
-            if output=$(timeout 30 bash "$script_file" "$test_endpoint" 2>&1); then
-              echo "✅ Script executed successfully"
-
-              # Try to parse output as JSON using jq
-              if json_response=$(echo "$output" | jq . 2>/dev/null); then
-                # Valid JSON response - check for GraphQL errors
-                if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
-                  echo "❌ Script returned GraphQL errors:"
-                  echo "$json_response" | jq '.errors'
-                  failed=$((failed + 1))
-                elif echo "$json_response" | jq -e '.data' > /dev/null 2>&1; then
-                  echo "✅ Script response contains valid data: $(echo "$json_response" | head -c 100)..."
-                else
-                  echo "⚠️  Unexpected JSON response format: $(echo "$json_response" | head -c 100)..."
-                fi
-              else
-                # Non-JSON output - just validate it looks reasonable
-                echo "✅ Script response (non-JSON): $(echo "$output" | head -c 100)..."
-              fi
-            else
-              echo "❌ Script execution failed: $script_file"
-              failed=$((failed + 1))
-            fi
-
-            echo "---"
-          done
-
-          if [ $failed -gt 0 ]; then
-            echo "💥 $failed infrastructure script tests failed"
-            echo "Some infrastructure scripts may need updates."
-            exit 1
-          else
-            echo "🎉 All infrastructure command scripts are working"
-          fi
+        run: ./.github/scripts/test-infrastructure-scripts.sh
 

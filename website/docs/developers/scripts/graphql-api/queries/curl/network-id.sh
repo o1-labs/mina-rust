@@ -6,7 +6,9 @@ GRAPHQL_ENDPOINT="${1:-http://mina-rust-plain-1.gcp.o1test.net/graphql}"
 
 # Replace with your own node endpoint: http://localhost:3000/graphql
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUERY=$(tr '\n' ' ' < "$SCRIPT_DIR/../query/network-id.graphql" | sed 's/  */ /g')
-curl -X POST "$GRAPHQL_ENDPOINT" \
+# Read the query and create JSON payload using jq for proper escaping
+QUERY=$(< "$SCRIPT_DIR/../query/network-id.graphql")
+JSON_PAYLOAD=$(echo "{}" | jq --arg query "$QUERY" '.query = $query')
+curl -s -X POST "$GRAPHQL_ENDPOINT" \
   -H "Content-Type: application/json" \
-  -d "{\"query\": \"$QUERY\"}"
+  -d "$JSON_PAYLOAD"

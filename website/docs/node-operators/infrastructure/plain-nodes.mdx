@@ -9,7 +9,6 @@ import PlainNodesList from "!!raw-loader!../../developers/scripts/infrastructure
 import QueryDaemonStatus from "!!raw-loader!../../developers/scripts/infrastructure/query-daemon-status.sh";
 import QueryBlockHeight from "!!raw-loader!../../developers/scripts/infrastructure/query-block-height.sh";
 import QueryPeers from "!!raw-loader!../../developers/scripts/infrastructure/query-peers.sh";
-import TestConnectivity from "!!raw-loader!../../developers/scripts/infrastructure/test-connectivity.sh";
 import TestGraphQLEndpoint from "!!raw-loader!../../developers/scripts/infrastructure/test-graphql-endpoint.sh";
 
 # Plain Nodes
@@ -109,12 +108,21 @@ If you cannot connect to plain nodes:
 
 Common API issues:
 
-<CodeBlock
-  language="bash"
-  title="website/docs/developers/scripts/infrastructure/test-connectivity.sh"
->
-  {TestConnectivity}
-</CodeBlock>
+<!-- prettier-ignore-start -->
+
+:::caution GraphQL Endpoint URL Format
+
+When using plain node endpoints, **always include `/graphql` at the end of the
+URL**. The endpoint will return "HTTP method not allowed" if you omit the
+`/graphql` path.
+
+**Correct**: `https://mina-rust-plain-2.gcp.o1test.net/graphql`
+
+**Incorrect**: `https://mina-rust-plain-2.gcp.o1test.net/`
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 <CodeBlock
   language="bash"
