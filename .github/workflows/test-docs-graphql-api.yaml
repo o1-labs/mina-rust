@@ -119,34 +119,23 @@ jobs:
 
             # Execute the script and capture output
             if output=$(bash "$script_file" 2>&1); then
-              echo "✅ Script executed successfully"
+              echo "✅ Script executed successfully with output $output"
 
-              # Check if this is a GraphQL script (contains JSON response)
-              if echo "$output" | grep -q "^{"; then
-                # Extract JSON response (skip curl progress output)
-                json_response=$(echo "$output" | grep "^{")
-
-                # Check if it's valid JSON
-                if echo "$json_response" | jq . > /dev/null 2>&1; then
-                  # Check for GraphQL errors
-                  if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
-                    echo "❌ Script returned GraphQL errors:"
-                    echo "$json_response" | jq '.errors'
-                    failed=$((failed + 1))
-                  else
-                    echo "✅ Script response contains valid JSON: $(echo "$json_response" | head -c 100)..."
-                  fi
-                else
-                  echo "❌ Script returned invalid JSON: $(echo "$json_response" | head -c 100)..."
+              # Try to parse output as JSON using jq
+              if json_response=$(echo "$output" | jq . 2>/dev/null); then
+                # Valid JSON response - check for GraphQL errors
+                if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
+                  echo "❌ Script returned GraphQL errors:"
+                  echo "$json_response" | jq '.errors'
                   failed=$((failed + 1))
+                elif echo "$json_response" | jq -e '.data' > /dev/null 2>&1; then
+                  echo "✅ Script response contains valid data: $(echo "$json_response" | head -c 100)..."
+                else
+                  echo "⚠️  Unexpected JSON response format: $(echo "$json_response" | head -c 100)..."
                 fi
               else
-                # Non-JSON script validation (basic error checking)
-                if echo "$output" | grep -q "error\|Error\|ERROR"; then
-                  echo "⚠️  Script returned error response: $(echo "$output" | head -c 100)..."
-                else
-                  echo "✅ Script response looks valid: $(echo "$output" | head -c 100)..."
-                fi
+                echo "❌ Script did not return valid JSON"
+                failed=$((failed + 1))
               fi
             else
               echo "❌ Script execution failed: $script_file"
