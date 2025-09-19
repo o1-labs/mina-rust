@@ -348,8 +348,8 @@ jobs:
                   echo "⚠️  Unexpected JSON response format: $(echo "$json_response" | head -c 100)..."
                 fi
               else
-                # Non-JSON output - just validate it looks reasonable
-                echo "✅ Script response (non-JSON): $(echo "$output" | head -c 100)..."
+                echo "❌ Script did not return valid JSON"
+                failed=$((failed + 1))
               fi
             else
               echo "❌ Script execution failed: $script_file"
