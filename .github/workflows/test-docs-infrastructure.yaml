@@ -15,6 +15,7 @@ on:
 jobs:
   test-seed-nodes:
     name: Test Seed Node Connectivity
+    timeout-minutes: 2
     runs-on: ubuntu-latest
 
     steps:
@@ -111,6 +112,7 @@ jobs:
 
   verify-seed-node-format:
     name: Verify Seed Node Address Format
+    timeout-minutes: 2
     runs-on: ubuntu-latest
 
     steps:
@@ -158,6 +160,7 @@ jobs:
 
   test-plain-nodes:
     name: Test Plain Node Connectivity
+    timeout-minutes: 2
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -329,7 +332,7 @@ jobs:
             echo "Testing script: $script_file with the endpoint $test_endpoint"
 
             # Execute the script with test endpoint and capture output
-            if output=$(timeout 30 bash "$script_file" "$test_endpoint" 2>&1); then
+            if output=$(bash "$script_file" "$test_endpoint" 2>&1); then
               echo "✅ Script executed successfully"
 
               # Try to parse output as JSON using jq
