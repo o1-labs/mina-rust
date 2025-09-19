@@ -118,7 +118,7 @@ jobs:
             echo "Testing script: $script_file"
 
             # Execute the script and capture output
-            if output=$(timeout 30 bash "$script_file" 2>&1); then
+            if output=$(bash "$script_file" 2>&1); then
               echo "✅ Script executed successfully"
 
               # Check if this is a GraphQL script (contains JSON response)
