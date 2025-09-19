@@ -326,7 +326,7 @@ jobs:
               continue
             fi
 
-            echo "Testing script: $script_file"
+            echo "Testing script: $script_file with the endpoint $test_endpoint"
 
             # Execute the script with test endpoint and capture output
             if output=$(timeout 30 bash "$script_file" "$test_endpoint" 2>&1); then
