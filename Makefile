@@ -281,6 +281,15 @@ test-vrf: ## Run VRF tests, requires nightly Rust
 test-p2p-messages:
 	cargo test -p mina-p2p-messages --tests --release
 
+.PHONY: test-graphql
+test-graphql: ## Run GraphQL end-to-end tests (requires GRAPHQL_ENDPOINT)
+	@if [ -z "$(GRAPHQL_ENDPOINT)" ]; then \
+		echo "Error: GRAPHQL_ENDPOINT environment variable must be set"; \
+		echo "Usage: make test-graphql GRAPHQL_ENDPOINT=http://mina-rust-plain-3.gcp.o1test.net/graphql"; \
+		exit 1; \
+	fi
+	GRAPHQL_ENDPOINT=$(GRAPHQL_ENDPOINT) cargo test -p mina-node-native --test graphql --release
+
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
 	@cargo nextest run

@@ -44,6 +44,10 @@ node = { path = "../../node", features = ["replay"] }
 [dev-dependencies]
 mina-producer-dashboard = { workspace = true }
 
+[[test]]
+name = "graphql"
+path = "tests/graphql/mod.rs"
+
 [features]
 default = ["p2p-libp2p"]
 p2p-webrtc = ["mina-node-common/p2p-webrtc"]

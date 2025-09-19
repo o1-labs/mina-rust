@@ -1,0 +1,216 @@
+name: GraphQL Integration Tests
+
+on:
+  push:
+    branches: [develop, main]
+  pull_request:
+    branches: [develop, main]
+  workflow_dispatch:
+
+env:
+  RUST_BACKTRACE: 1
+  CARGO_TERM_COLOR: always
+
+jobs:
+  graphql-integration-test:
+    name: GraphQL Integration Test
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
+      - name: Build mina binary
+        run: |
+          echo "Building mina binary..."
+          cargo build --release --package cli --bin mina
+          echo "Binary built successfully"
+          ls -la target/release/mina
+
+      - name: Prepare node working directory
+        run: |
+          echo "Setting up node working directory..."
+          mkdir -p ~/.mina
+          echo "Working directory created"
+
+      - name: Start mina node in background
+        run: |
+          echo "Starting mina node..."
+          ./target/release/mina \
+            --network devnet \
+            --port 3085 \
+            --libp2p-port 8302 \
+            --work-dir ~/.mina \
+            --verbosity info \
+            node > node.log 2>&1 &
+
+          NODE_PID=$!
+          echo "NODE_PID=$NODE_PID" >> $GITHUB_ENV
+
+          # Wait for node to start
+          echo "Waiting for node to start..."
+          sleep 10
+
+          # Check if node is running
+          if ! kill -0 $NODE_PID 2>/dev/null; then
+            echo "Node failed to start. Log output:"
+            cat node.log
+            exit 1
+          fi
+
+          echo "Node started with PID: $NODE_PID"
+
+      - name: Wait for GraphQL endpoint to be ready
+        run: |
+          echo "Waiting for GraphQL endpoint to be ready..."
+
+          MAX_ATTEMPTS=30
+          ATTEMPT=0
+
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            if curl -s -X POST http://127.0.0.1:3085/graphql \
+              -H "Content-Type: application/json" \
+              -d '{"query":"{ networkID }"}' > /dev/null 2>&1; then
+              echo "GraphQL endpoint is ready!"
+              break
+            fi
+
+            ATTEMPT=$((ATTEMPT + 1))
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS - GraphQL not ready yet..."
+            sleep 2
+          done
+
+          if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+            echo "GraphQL endpoint failed to become ready"
+            echo "Node log:"
+            tail -n 100 node.log
+            exit 1
+          fi
+
+      - name: Test GraphQL sync status endpoint
+        run: |
+          echo "Testing GraphQL sync status endpoint..."
+
+          # Create script to check sync status
+          cat > check_sync.sh << 'EOF'
+          #!/bin/bash
+
+          response=$(curl -s -X POST http://127.0.0.1:3085/graphql \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ syncStatus }"}')
+
+          echo "Response: $response"
+
+          # Extract sync status using jq or grep
+          if echo "$response" | grep -q '"syncStatus"'; then
+            status=$(echo "$response" | grep -o '"syncStatus":"[^"]*"' | cut -d'"' -f4)
+            echo "Sync Status: $status"
+
+            # Check different statuses
+            case "$status" in
+              "SYNCED")
+                echo "✓ Node is fully synced"
+                exit 0
+                ;;
+              "CATCHUP"|"BOOTSTRAP")
+                echo "⟳ Node is syncing: $status"
+                exit 0
+                ;;
+              "CONNECTING"|"LISTENING")
+                echo "⟳ Node is connecting: $status"
+                exit 0
+                ;;
+              "OFFLINE")
+                echo "✗ Node is offline"
+                exit 1
+                ;;
+              *)
+                echo "? Unknown status: $status"
+                exit 1
+                ;;
+            esac
+          else
+            echo "Failed to get sync status"
+            exit 1
+          fi
+          EOF
+
+          chmod +x check_sync.sh
+          ./check_sync.sh
+
+      - name: Check node status via GraphQL
+        run: |
+          echo "Checking node status via GraphQL..."
+
+          # Check sync status
+          echo "Querying sync status..."
+          response=$(curl -s -X POST http://127.0.0.1:3085/graphql \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ syncStatus }"}')
+
+          echo "Response: $response"
+
+          if echo "$response" | grep -q '"syncStatus"'; then
+            status=$(echo "$response" | grep -o '"syncStatus":"[^"]*"' | cut -d'"' -f4)
+            echo "✓ Node sync status: $status"
+          else
+            echo "✗ Failed to get sync status"
+            exit 1
+          fi
+
+          # Check network ID
+          echo "Querying network ID..."
+          network_response=$(curl -s -X POST http://127.0.0.1:3085/graphql \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ networkID }"}')
+
+          echo "Network response: $network_response"
+
+          if echo "$network_response" | grep -q '"networkID"'; then
+            echo "✓ Network ID query successful"
+          else
+            echo "✗ Failed to get network ID"
+            exit 1
+          fi
+
+          echo "Node status check completed successfully"
+
+      - name: Stop node and collect logs
+        if: always()
+        run: |
+          if [ -n "$NODE_PID" ]; then
+            echo "Stopping node (PID: $NODE_PID)..."
+            kill $NODE_PID || true
+            sleep 2
+            kill -9 $NODE_PID 2>/dev/null || true
+          fi
+
+          echo "Node log (last 100 lines):"
+          tail -n 100 node.log || true
+
+      - name: Upload node logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: node-logs
+          path: |
+            node.log
+            *.json
+          retention-days: 7
