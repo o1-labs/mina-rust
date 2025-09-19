@@ -37,21 +37,18 @@ for node_url in $plain_nodes; do
   graphql_url="${node_url}graphql"
 
   # Test daemon status query using the website script
-  if response=$(bash website/docs/developers/scripts/graphql-api/queries/curl/daemon-status.sh "$graphql_url" 2>/dev/null); then
-    # Extract JSON response (skip curl progress output)
-    json_response=$(echo "$response" | grep "^{")
-
+  if response=$(bash website/docs/developers/scripts/graphql-api/queries/curl/daemon-status.sh "$graphql_url" 2>&1); then
     # Check if it's valid JSON
-    if echo "$json_response" | jq . > /dev/null 2>&1; then
+    if echo "$response" | jq . > /dev/null 2>&1; then
       # Check for GraphQL errors
-      if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
+      if echo "$response" | jq -e '.errors' > /dev/null 2>&1; then
         echo "⚠️  $graphql_url returned GraphQL error:"
-        echo "$json_response" | jq '.errors'
+        echo "$response" | jq '.errors'
       # Check for valid data
-      elif echo "$json_response" | jq -e '.data.daemonStatus' > /dev/null 2>&1; then
+      elif echo "$response" | jq -e '.data.daemonStatus' > /dev/null 2>&1; then
         echo "✅ $graphql_url GraphQL query successful"
-        sync_status=$(echo "$json_response" | jq -r '.data.daemonStatus.syncStatus // "unknown"')
-        chain_id=$(echo "$json_response" | jq -r '.data.daemonStatus.chainId // "unknown"')
+        sync_status=$(echo "$response" | jq -r '.data.daemonStatus.syncStatus // "unknown"')
+        chain_id=$(echo "$response" | jq -r '.data.daemonStatus.chainId // "unknown"')
         echo "   Sync Status: $sync_status, Chain ID: ${chain_id:0:16}..."
       else
         echo "⚠️  $graphql_url unexpected response format"

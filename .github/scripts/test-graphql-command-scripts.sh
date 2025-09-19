@@ -50,22 +50,22 @@ for script_file in $script_files; do
 
   # Execute the script and capture output
   if output=$(bash "$script_file" 2>&1); then
-    echo "✅ Script executed successfully with output $output"
+    echo "✅ Script executed successfully"
 
     # Try to parse output as JSON using jq
-    if json_response=$(echo "$output" | jq . 2>/dev/null); then
+    if echo "$output" | jq . > /dev/null 2>&1; then
       # Valid JSON response - check for GraphQL errors
-      if echo "$json_response" | jq -e '.errors' > /dev/null 2>&1; then
+      if echo "$output" | jq -e '.errors' > /dev/null 2>&1; then
         echo "❌ Script returned GraphQL errors:"
-        echo "$json_response" | jq '.errors'
+        echo "$output" | jq '.errors'
         failed=$((failed + 1))
-      elif echo "$json_response" | jq -e '.data' > /dev/null 2>&1; then
-        echo "✅ Script response contains valid data: $(echo "$json_response" | head -c 100)..."
+      elif echo "$output" | jq -e '.data' > /dev/null 2>&1; then
+        echo "✅ Script response contains valid data: $(echo "$output" | head -c 100)..."
       else
-        echo "⚠️  Unexpected JSON response format: $(echo "$json_response" | head -c 100)..."
+        echo "⚠️  Unexpected JSON response format: $(echo "$output" | head -c 100)..."
       fi
     else
-      echo "❌ Script did not return valid JSON"
+      echo "❌ Script did not return valid JSON: $(echo "$output" | head -c 100)..."
       failed=$((failed + 1))
     fi
   else
