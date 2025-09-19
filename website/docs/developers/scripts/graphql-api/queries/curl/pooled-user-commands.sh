@@ -10,6 +10,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 QUERY=$(< "$SCRIPT_DIR/../query/pooled-user-commands.graphql")
 VARIABLES='{"publicKey": "B62qmGtQ7kn6zbw4tAYomBJJri1gZSThfQZJaMG6eR3tyNP3RiCcEQZ"}'
 JSON_PAYLOAD=$(echo '{}' | jq --arg query "$QUERY" --argjson variables "$VARIABLES" '.query = $query | .variables = $variables')
-curl -X POST "$GRAPHQL_ENDPOINT" \
+curl -s -X POST "$GRAPHQL_ENDPOINT" \
   -H "Content-Type: application/json" \
   -d "$JSON_PAYLOAD"

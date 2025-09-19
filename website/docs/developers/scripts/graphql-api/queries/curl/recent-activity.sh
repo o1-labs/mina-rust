@@ -9,6 +9,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # Read the query and create JSON payload using jq for proper escaping
 QUERY=$(< "$SCRIPT_DIR/../query/recent-activity.graphql")
 JSON_PAYLOAD=$(echo "{}" | jq --arg query "$QUERY" '.query = $query')
-curl -X POST "$GRAPHQL_ENDPOINT" \
+curl -s -X POST "$GRAPHQL_ENDPOINT" \
   -H "Content-Type: application/json" \
   -d "$JSON_PAYLOAD"
