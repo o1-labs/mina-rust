@@ -316,8 +316,7 @@ jobs:
             first_node=$(head -n 1 "$plain_nodes_file")
             test_endpoint="${first_node}graphql"
           else
-            # Fallback endpoint if file not found
-            test_endpoint="http://mina-rust-plain-1.gcp.o1test.net/graphql"
+            exit 1
           fi
 
           for script_file in $script_files; do
