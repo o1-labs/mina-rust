@@ -7,7 +7,8 @@ GRAPHQL_ENDPOINT="${1:-http://mina-rust-plain-1.gcp.o1test.net/graphql}"
 # Replace with your own node endpoint: http://localhost:3000/graphql
 # WARNING: This mutation modifies the blockchain state
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-QUERY=$(tr '\n' ' ' < "$SCRIPT_DIR/../query/send-payment.graphql" | sed 's/  */ /g')
+# Read the query and create JSON payload using jq for proper escaping
+QUERY=$(< "$SCRIPT_DIR/../query/send-payment.graphql")
 
 # Example variables - replace with actual values
 VARIABLES='{
@@ -24,6 +25,7 @@ VARIABLES='{
   }
 }'
 
+JSON_PAYLOAD=$(echo '{}' | jq --arg query "$QUERY" --argjson variables "$VARIABLES" '.query = $query | .variables = $variables')
 curl -X POST "$GRAPHQL_ENDPOINT" \
   -H "Content-Type: application/json" \
-  -d "{\"query\": \"$QUERY\", \"variables\": $VARIABLES}"
+  -d "$JSON_PAYLOAD"
