@@ -241,7 +241,7 @@ are created and distributed using the original Mina codebase:
 
 :::warning Work in Progress
 
-This should be updated when new mina release happens that contains code to
+This should be updated when a release of the OCaml node happens that contains code to
 export circuits, and when command to export circuits is added, and CI is updated
 to check for latest circuits
 
