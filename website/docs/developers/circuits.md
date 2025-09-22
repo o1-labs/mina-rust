@@ -239,11 +239,13 @@ Since these constraint capabilities are missing, the Mina rust nodes require
 externally generated circuit data. The following process describes how circuits
 are created and distributed using the original Mina codebase:
 
-<!-- TODO:
-    Update this when new mina release happens that contains code to export circuits
-    And when command to export circuits is added
-    And CI is updated to check for latest circuits
- -->
+:::warning Work in Progress
+
+This should be updated when new mina release happens that contains code to
+export circuits, and when command to export circuits is added, and CI is updated
+to check for latest circuits
+
+:::
 
 1. Build mina <b>OCaml</b> node from source with commit after
    [`6961849`](https://github.com/MinaProtocol/mina/commit/6961849f17d564c39e7d45e01e3ddda9a09602a4)
@@ -252,14 +254,28 @@ are created and distributed using the original Mina codebase:
    - Launch the OCaml node which produces circuit cache data in
      `/tmp/coda_cache_dir`
    - The branch dumps the usual circuit data plus extra data specifically
-     required by the Mina rust nodes
-   - The process also dumps blocks for use in tests
+     required by the Mina rust nodes, see
+     [Circuit somponents](#circuit-components)
+   - The process also dumps blocks for use in tests, see
+     [Testing strategy](#testing-strategy)
    - Integration with mainline Mina would streamline future circuit generation
 
 3. The generated circuit blobs are then:
    - Committed to the dedicated repository:
      https://github.com/o1-labs/circuit-blobs
    - Released as GitHub releases for versioning and distribution
+
+### Circuit Components
+
+Each circuit consists of multiple components that are loaded and cached
+independently:
+
+- **Gates**: Circuit constraint definitions in JSON format (`*_gates.json`)
+- **Internal Variables**: Constraint variable mappings in binary format
+  (`*_internal_vars.bin`)
+- **Rows Reverse**: Row-wise constraint data in binary format (`*_rows_rev.bin`)
+- **Verifier Indices**: Pre-computed verification data with SHA256 integrity
+  checks
 
 ### Overview
 
