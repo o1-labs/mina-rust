@@ -245,7 +245,7 @@ are created and distributed using the original Mina codebase:
     And CI is updated to check for latest circuits
  -->
 
-1. Build mina <b>OCAML</b> node from source with commit after
+1. Build mina <b>OCaml</b> node from source with commit after
    [`6961849`](https://github.com/MinaProtocol/mina/commit/6961849f17d564c39e7d45e01e3ddda9a09602a4)
 
 2. Running the circuit generation process using the branch above
