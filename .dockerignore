@@ -18,11 +18,9 @@ tools/heartbeats-processor/*.db
 # circuit-blobs
 
 # GH workflows
+.claude
 .github
 .idea
-
-# Infrastructure
-helm
 
 # Output of build-wasm
 pkg
@@ -30,3 +28,8 @@ pkg
 # Outputs of build-tests-webrtc
 cargo-build-test.json
 tests.tsv
+
+# We do not use Nix to build the Docker images, therefore we can ignore the Nix
+# related files
+flake.lock
+flake.nix
