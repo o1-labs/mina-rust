@@ -170,8 +170,8 @@ The frontend Docker image is built with optimizations for webnode functionality 
 The frontend image includes pre-built WASM and circuit files for full webnode functionality:
 
 ```bash
-# Build frontend image with all webnode components
-docker build -t mina-frontend .
+# Build frontend image with all webnode components (from project root)
+docker build -t mina-frontend . -f frontend/Dockerfile
 docker pull o1labs/mina-rust-frontend:latest
 ```
 

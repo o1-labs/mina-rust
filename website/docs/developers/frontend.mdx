@@ -152,11 +152,11 @@ Build the frontend Docker image locally:
 You can also build with a specific configuration:
 
 ```bash
-# Build with development configuration
-docker build --build-arg BUILD_CONFIGURATION=development -t mina-frontend .
+# Build with development configuration (from project root)
+docker build --build-arg BUILD_CONFIGURATION=development -t mina-frontend . -f frontend/Dockerfile
 
-# Build with webnode configuration
-docker build --build-arg BUILD_CONFIGURATION=webnodelocal -t mina-frontend .
+# Build with webnode configuration (from project root)
+docker build --build-arg BUILD_CONFIGURATION=webnodelocal -t mina-frontend . -f frontend/Dockerfile
 ```
 
 ### Production build
@@ -182,9 +182,8 @@ customize image sources:
 To use locally built Docker images instead of published ones:
 
 ```bash
-# Build local frontend image
-cd frontend
-docker build -t mina-frontend:local .
+# Build local frontend image (from project root)
+docker build -t mina-frontend:local . -f frontend/Dockerfile
 
 # Use local image with environment variables
 MINA_FRONTEND_IMAGE=mina-frontend MINA_FRONTEND_TAG=local docker compose up
@@ -282,8 +281,8 @@ npm install
 # Update Angular CLI
 npm update @angular/cli
 
-# For Docker builds, rebuild without cache
-docker build --no-cache -t mina-frontend .
+# For Docker builds, rebuild without cache (from project root)
+docker build --no-cache -t mina-frontend . -f frontend/Dockerfile
 ```
 
 ### Development tips

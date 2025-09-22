@@ -10,8 +10,8 @@
 #   MINA_FRONTEND_ENVIRONMENT - Frontend environment config (default: compose)
 #
 # Usage with local images:
-#   # Build local frontend:
-#   cd frontend && docker build -t mina-frontend:local .
+#   # Build local frontend (from project root):
+#   docker build -t mina-frontend:local . -f frontend/Dockerfile
 #
 #   # Use local image:
 #   MINA_FRONTEND_IMAGE=mina-frontend MINA_FRONTEND_TAG=local docker compose up
