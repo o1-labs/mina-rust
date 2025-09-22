@@ -252,7 +252,7 @@ are created and distributed using the original Mina codebase:
    - Launch the OCaml node which produces circuit cache data in
      `/tmp/coda_cache_dir`
    - The branch dumps the usual circuit data plus extra data specifically
-     required by mina rust nodes
+     required by the Mina rust nodes
    - The process also dumps blocks for use in tests
    - Integration with mainline Mina would streamline future circuit generation
 
