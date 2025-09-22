@@ -65,3 +65,11 @@ website
 
 # NPM related
 node_modules
+
+# Frontend
+frontend/.editorconfig
+frontend/.gitignore
+frontend/.vscode
+frontend/dist/frontend
+frontend/Dockerfile
+frontend/node_modules
