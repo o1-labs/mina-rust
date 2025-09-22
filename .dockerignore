@@ -1,7 +1,24 @@
-target/
+# MISC
+.gitignore
+ARCHITECTURE.md
+CHANGELOG.md
+CLAUDE.md
+README.md
+status.md
+
+# Docker related
 Dockerfile
 docker-compose.yml
+docker-compose.block-producer.yml
+docker-compose.archive.devnet.compare.yml
+docker-compose.archive.devnet.yml
+docker-compose.archive.local.producers.yml
+docker/
+run-debugger-ocaml-node.yaml
+run.yaml
+
 .dockerignore
+
 cli/bin
 cli/tests
 !cli/bin/snark-worker
@@ -14,9 +31,6 @@ tools/heartbeats-processor/*.db
 # Ensure .sqlx files are included
 !tools/heartbeats-processor/.sqlx/
 
-# Will be copied on demand in the Docker image, if necessary
-# circuit-blobs
-
 # GH workflows
 .claude
 .github
@@ -25,11 +39,29 @@ tools/heartbeats-processor/*.db
 # Output of build-wasm
 pkg
 
-# Outputs of build-tests-webrtc
-cargo-build-test.json
-tests.tsv
 
 # We do not use Nix to build the Docker images, therefore we can ignore the Nix
 # related files
 flake.lock
 flake.nix
+
+# Environment files
+.env
+.env.example
+
+# Rust related files
+target/
+.rustfmt.toml
+clippy.toml
+taplo.toml
+
+## Outputs of build-tests-webrtc
+cargo-build-test.json
+tests.tsv
+
+
+# The website must not be included
+website
+
+# NPM related
+node_modules
