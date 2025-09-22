@@ -124,8 +124,8 @@ This repository contains the complete Mina Rust Node implementation:
 <!-- Platform support badges -->
 
 [ci-badge]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml/badge.svg?branch=develop
-[ci-link]: https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml
+  https://github.com/o1-labs/mina-rust/actions/workflows/tests.yaml/badge.svg?branch=develop
+[ci-link]: https://github.com/o1-labs/mina-rust/actions/workflows/tests.yaml
 [ubuntu-icon]:
   https://img.shields.io/badge/-Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white
 [macos-icon]:
@@ -134,33 +134,33 @@ This repository contains the complete Mina Rust Node implementation:
 <!-- Individual platform badges -->
 
 [ubuntu-22-badge]:
-  https://img.shields.io/badge/Ubuntu%2022.04%20x64-passing-brightgreen?style=flat&logo=ubuntu
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-22-04.yaml/badge.svg?branch=develop
 [ubuntu-24-badge]:
-  https://img.shields.io/badge/Ubuntu%2024.04%20x64-passing-brightgreen?style=flat&logo=ubuntu
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04.yaml/badge.svg?branch=develop
 [ubuntu-24-arm-badge]:
-  https://img.shields.io/badge/Ubuntu%2024.04%20ARM64-passing-brightgreen?style=flat&logo=ubuntu
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04-arm.yaml/badge.svg?branch=develop
 [macos-13-badge]:
-  https://img.shields.io/badge/macOS%2013%20Intel-passing-brightgreen?style=flat&logo=apple
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-13.yaml/badge.svg?branch=develop
 [macos-14-badge]:
-  https://img.shields.io/badge/macOS%2014%20M1%2FM2-passing-brightgreen?style=flat&logo=apple
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-14.yaml/badge.svg?branch=develop
 [macos-15-badge]:
-  https://img.shields.io/badge/macOS%2015%20M1%2FM2%2FM3-passing-brightgreen?style=flat&logo=apple
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-15.yaml/badge.svg?branch=develop
 [macos-latest-badge]:
-  https://img.shields.io/badge/macOS%20Latest-passing-brightgreen?style=flat&logo=apple
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-latest.yaml/badge.svg?branch=develop
 
 <!-- Platform-specific build links -->
 
 [ubuntu-22-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-22.04%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-22-04.yaml
 [ubuntu-24-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-24.04%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04.yaml
 [ubuntu-24-arm-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28ubuntu-24.04-arm%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04-arm.yaml
 [macos-13-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-13%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-13.yaml
 [macos-14-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-14%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-14.yaml
 [macos-15-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-15%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-15.yaml
 [macos-latest-link]:
-  https://github.com/o1-labs/mina-rust/actions/workflows/ci.yaml?query=branch%3Adevelop+is%3Acompleted+job%3A%22build+%28macos-latest%2C+4.14.2%29%22
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-latest.yaml

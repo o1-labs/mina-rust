@@ -1,0 +1,147 @@
+name: Reusable Build Workflow
+
+on:
+  workflow_call:
+    inputs:
+      os:
+        required: true
+        type: string
+        description: "Operating system to build on"
+      ocaml_version:
+        required: false
+        type: string
+        default: "4.14.2"
+        description: "OCaml version to use"
+      cache-prefix:
+        required: false
+        type: string
+        default: ""
+        description: "Cache prefix for the build"
+      build-wasm:
+        required: false
+        type: boolean
+        default: false
+        description: "Whether to build WASM targets"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+  MINA_PANIC_ON_BUG: true
+  CARGO_INCREMENTAL: 1
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
+
+jobs:
+  build:
+    timeout-minutes: 60
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ inputs.ocaml_version }}
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+
+      - name: Release build
+        run: make build-release
+
+      - name: Verify build-info command
+        run: |
+          echo "Testing build-info command..."
+          ./target/release/mina build-info
+
+          # Verify required fields are present
+          ./target/release/mina build-info | grep -E "Version:|Build time:|Commit SHA:|Commit branch:|Rustc version:"
+
+          # Verify version format (should be a short commit hash)
+          VERSION=$(./target/release/mina build-info | grep "Version:" | awk '{print $2}')
+          if [[ ! "$VERSION" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Error: Version should be a 7-character commit hash, got: $VERSION"
+            exit 1
+          fi
+
+          echo "Build info verification passed!"
+
+  build-tests:
+    timeout-minutes: 60
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ inputs.ocaml_version }}
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-tests-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+
+      - name: Build tests
+        run: make build-tests
+
+  build-tests-webrtc:
+    timeout-minutes: 60
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ inputs.ocaml_version }}
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-tests-webrtc-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+
+      - name: Build tests
+        run: make build-tests-webrtc
+
+  build-wasm:
+    if: ${{ inputs.build-wasm }}
+    timeout-minutes: 60
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ inputs.ocaml_version }}
+
+      - name: Setup WebAssembly environment
+        uses: ./.github/actions/setup-wasm
+        with:
+          cache-prefix: wasm-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+
+      - name: Release build
+        run: make build-wasm
+        env:
+          RUSTFLAGS: ""

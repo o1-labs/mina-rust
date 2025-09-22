@@ -1,0 +1,20 @@
+name: Build macOS 14
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    paths-ignore: ["frontend"]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    uses: ./.github/workflows/build-reusable.yaml
+    with:
+      os: macos-14
+      cache-prefix: macos-14-
+      build-wasm: true
