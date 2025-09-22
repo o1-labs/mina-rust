@@ -235,7 +235,7 @@ proof types:
 
 ### Circuit Generation Process
 
-Since these constraint capabilities are missing, mina rust nodes requires
+Since these constraint capabilities are missing, the Mina rust nodes require
 externally generated circuit data. The following process describes how circuits
 are created and distributed using the original Mina codebase:
 
