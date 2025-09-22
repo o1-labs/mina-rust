@@ -1,6 +1,5 @@
 target/
 Dockerfile
-Dockerfile_FE
 docker-compose.yml
 .dockerignore
 cli/bin
@@ -16,7 +15,7 @@ tools/heartbeats-processor/*.db
 !tools/heartbeats-processor/.sqlx/
 
 # Will be copied on demand in the Docker image, if necessary
-circuit-blobs
+# circuit-blobs
 
 # GH workflows
 .github

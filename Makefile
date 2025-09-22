@@ -2,10 +2,11 @@
 
 # Rust
 # This should be in line with the verison in:
-# - Makefile
-# - ./github/workflows/docs.yaml
-# - ./github/workflows/fmt.yaml
-# - ./github/workflows/lint.yaml
+# - Makefile (this file)
+# - .github/workflows/ci.yaml
+# - .github/workflows/fmt.yaml
+# - .github/workflows/lint.yaml
+# - frontend/Dockerfile
 NIGHTLY_RUST_VERSION = "nightly"
 
 # Docker

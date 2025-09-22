@@ -28,8 +28,8 @@ the latest updates and support.
 <!-- prettier-ignore-stop -->
 
 - **Main Node**: `o1labs/mina-rust` - The core Mina Rust node
-- **Frontend**: `o1labs/mina-rust-frontend` - Web dashboard and monitoring
-  interface
+- **Frontend**: `o1labs/mina-rust-frontend` - Web dashboard with pre-built WASM
+  and circuit files for webnode functionality
 
 ## Image Tags and Versioning
 
@@ -160,6 +160,58 @@ docker pull o1labs/mina-rust:latest
 - **No emulation overhead**: ARM users get native performance instead of x86
   emulation
 - **Faster startup**: Native images start faster than emulated ones
+
+## Frontend Docker Image
+
+The frontend Docker image is built with optimizations for webnode functionality and includes all necessary components:
+
+### Build Configuration
+
+The frontend image includes pre-built WASM and circuit files for full webnode functionality:
+
+```bash
+# Build frontend image with all webnode components
+docker build -t mina-frontend .
+docker pull o1labs/mina-rust-frontend:latest
+```
+
+### Environment Configuration
+
+The frontend supports multiple environment configurations:
+
+```bash
+# Standard frontend without webnode features
+docker run -p 80:80 o1labs/mina-rust-frontend:latest
+
+# Webnode environment with full functionality
+docker run -p 80:80 \
+  -e MINA_FRONTEND_ENVIRONMENT=webnode \
+  o1labs/mina-rust-frontend:latest
+
+# Custom WebRTC signaling URL (requires custom Apache configuration)
+docker run -p 80:80 \
+  -e MINA_FRONTEND_ENVIRONMENT=webnode \
+  o1labs/mina-rust-frontend:latest
+```
+
+### Circuit Files
+
+The frontend image includes pre-built zkSNARK circuit files for optimal performance:
+
+- **Pre-built circuits**: Always included in the Docker image
+- **No downloads required**: All circuit files are built into the image at build time
+- **Optimized performance**: Eliminates runtime downloads and potential network costs
+
+### Performance Optimizations
+
+The frontend image includes several performance optimizations:
+
+- **Pre-built WASM files**: WebAssembly components built during image creation
+- **Cache optimization**: Automatic file hashing and cache headers for web
+  assets
+- **Multi-stage builds**: Optimized image size with only necessary artifacts
+- **Circuit file caching**: zkSNARK circuit files included to avoid runtime
+  downloads
 
 ## For Node Operators
 
