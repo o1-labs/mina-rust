@@ -233,11 +233,33 @@ proof types:
 - Protocol compliance validation
 - Regression testing for circuit changes
 
-## Circuit Constraint Extraction
+### Circuit Generation Process
 
-For a comprehensive technical overview of circuit constraint extraction, see the
-[circuit_blobs module documentation](https://o1-labs.github.io/mina-rust/api-docs/ledger/proofs/circuit_blobs/index.html)
-in the ledger crate.
+Since these constraint capabilities are missing, mina rust nodes requires
+externally generated circuit data. The following process describes how circuits
+are created and distributed using the original Mina codebase:
+
+<!-- TODO:
+    Update this when new mina release happens that contains code to export circuits
+    And when command to export circuits is added
+    And CI is updated to check for latest circuits
+ -->
+
+1. Build mina <b>OCAML</b> node from source with commit after
+   [`6961849`](https://github.com/MinaProtocol/mina/commit/6961849f17d564c39e7d45e01e3ddda9a09602a4)
+
+2. Running the circuit generation process using the branch above
+   - Launch the OCaml node which produces circuit cache data in
+     `/tmp/coda_cache_dir`
+   - The branch dumps the usual circuit data plus extra data specifically
+     required by mina rust nodes
+   - The process also dumps blocks for use in tests
+   - Integration with mainline Mina would streamline future circuit generation
+
+3. The generated circuit blobs are then:
+   - Committed to the dedicated repository:
+     https://github.com/o1-labs/circuit-blobs
+   - Released as GitHub releases for versioning and distribution
 
 ### Overview
 
