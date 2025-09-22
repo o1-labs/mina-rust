@@ -15,12 +15,6 @@ use o1_utils::field_helpers::FieldHelpers;
 
 use super::zkapp::GraphQLFailureReason;
 
-// #[derive(GraphQLInputObject, Debug)]
-// pub struct InputGraphQLSendPayment {
-//     pub input: InputGraphQLPayment,
-//     pub signature: UserCommandSignature,
-// }
-
 #[derive(GraphQLInputObject, Debug)]
 pub struct InputGraphQLPayment {
     pub from: String,
