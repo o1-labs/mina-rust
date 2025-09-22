@@ -5,10 +5,6 @@ inputs:
     description: 'Rust toolchain version'
     required: false
     default: 'nightly'
-  wasm-bindgen-version:
-    description: 'wasm-bindgen-cli version'
-    required: false
-    default: '0.2.99'
   cache-prefix:
     description: 'Cache prefix key'
     required: false
@@ -20,13 +16,11 @@ runs:
       uses: dtolnay/rust-toolchain@stable
       with:
         toolchain: ${{ inputs.toolchain }}
-        components: rustfmt, rust-src
 
-    - name: Install wasm32 target and wasm-bindgen-cli
+    - name: Setup WASM toolchain using Makefile
       shell: bash
       run: |
-        rustup target add wasm32-unknown-unknown
-        cargo install -f wasm-bindgen-cli --version ${{ inputs.wasm-bindgen-version }}
+        make setup-wasm
 
     - name: Setup Rust Cache
       uses: Swatinem/rust-cache@v2

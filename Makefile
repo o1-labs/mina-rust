@@ -9,6 +9,9 @@
 # - frontend/Dockerfile
 NIGHTLY_RUST_VERSION = "nightly"
 
+# WebAssembly
+WASM_BINDGEN_CLI_VERSION = "0.2.99"
+
 # Docker
 DOCKER_ORG ?= o1labs
 
@@ -244,8 +247,8 @@ lint-dockerfiles: ## Check all Dockerfiles using hadolint
 		fi; \
 	fi
 
-.PHONY: setup-wasm-toolchain
-setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
+.PHONY: setup-wasm
+setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 		@ARCH=$$(uname -m); \
 		OS=$$(uname -s | tr A-Z a-z); \
 		case $$OS in \
@@ -260,8 +263,11 @@ setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
 			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
 		esac; \
 		TARGET="$$ARCH_PART-$$OS_PART"; \
-		echo "Installing rust-src and rustfmt for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
-		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET
+		echo "Installing components for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
+		rustup component add rust-src --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		cargo install wasm-bindgen-cli --version ${WASM_BINDGEN_CLI_VERSION}
 
 .PHONY: test
 test: ## Run tests
