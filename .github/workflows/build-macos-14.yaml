@@ -3,8 +3,6 @@ name: Build macOS 14
 on:
   push:
     branches: [main, develop]
-  pull_request:
-    paths-ignore: ["frontend"]
   workflow_dispatch:
 
 concurrency:
