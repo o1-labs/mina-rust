@@ -1,0 +1,20 @@
+name: Frontend macOS 15
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: macos-15
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Frontend build
+        uses: ./.github/actions/frontend-build
