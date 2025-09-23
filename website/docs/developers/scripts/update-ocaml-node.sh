@@ -38,6 +38,6 @@ sed -i'' -e "s/config_${old_hash}/config_${new_hash}/g" \
     "${base_dir}"/node/testing/src/scenarios/multi_node/basic_connectivity_peer_discovery.rs \
     "${base_dir}"/node/testing/src/scenarios/solo_node/basic_connectivity_accept_incoming.rs
 sed -i'' -e "s/${old_version}-${shorter_old_hash}/${new_version}-${shorter_new_hash}/g" \
-    "${base_dir}"/.github/workflows/ci.yaml \
+    "${base_dir}"/.github/workflows/tests.yaml \
     "${base_dir}"/docker-compose.archive.devnet.compare.yml \
     "${base_dir}"/node/testing/src/node/ocaml/config.rs
