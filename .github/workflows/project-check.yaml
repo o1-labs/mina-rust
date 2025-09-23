@@ -1,0 +1,128 @@
+name: Check PR Project Assignment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-project:
+    name: Verify PR is in project with iteration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check project assignment
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = 'o1-labs';
+            const projectNumber = 24;  // Rust node project number
+
+            // Get PR details
+            const pr = context.payload.pull_request;
+            console.log(`Checking PR #${pr.number}: ${pr.title}`);
+
+            // GraphQL query to check if PR is in project with iteration
+            const query = `
+              query($owner: String!, $number: Int!) {
+                organization(login: $owner) {
+                  projectV2(number: $number) {
+                    id
+                    title
+                    items(first: 100) {
+                      nodes {
+                        id
+                        content {
+                          ... on PullRequest {
+                            id
+                            number
+                            title
+                          }
+                        }
+                        fieldValues(first: 20) {
+                          nodes {
+                            ... on ProjectV2ItemFieldIterationValue {
+                              field {
+                                ... on ProjectV2IterationField {
+                                  name
+                                }
+                              }
+                              title
+                              startDate
+                              duration
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            `;
+
+            try {
+              const result = await github.graphql(query, {
+                owner: owner,
+                number: projectNumber
+              });
+
+              const project = result.organization.projectV2;
+              console.log(`Found project: ${project.title}`);
+
+              // Find this PR in the project
+              const projectItem = project.items.nodes.find(item =>
+                item.content &&
+                item.content.number === pr.number
+              );
+
+              if (!projectItem) {
+                core.setFailed(`❌ PR #${pr.number} is not added to the "${project.title}" project.\n\n` +
+                  `Please add this PR to the project at: https://github.com/orgs/${owner}/projects/${projectNumber}\n\n` +
+                  `Instructions:\n` +
+                  `1. Go to the project board\n` +
+                  `2. Click "Add item" button\n` +
+                  `3. Search for this PR (#${pr.number})\n` +
+                  `4. Add it to the project\n` +
+                  `5. Set an iteration for the PR`);
+                return;
+              }
+
+              console.log('PR found in project, checking for iteration...');
+
+              // Check if PR has an iteration assigned
+              const iterationField = projectItem.fieldValues.nodes.find(field =>
+                field.field && field.field.name === 'Iteration'
+              );
+
+              if (!iterationField || !iterationField.title) {
+                core.setFailed(`❌ PR #${pr.number} is in the project but has no iteration assigned.\n\n` +
+                  `Please assign an iteration to this PR in the project at: https://github.com/orgs/${owner}/projects/${projectNumber}\n\n` +
+                  `Instructions:\n` +
+                  `1. Go to the project board\n` +
+                  `2. Find this PR (#${pr.number})\n` +
+                  `3. Click on the Iteration field for this item\n` +
+                  `4. Select the appropriate iteration`);
+                return;
+              }
+
+              console.log(`✅ PR #${pr.number} is in project "${project.title}" with iteration: ${iterationField.title}`);
+              core.notice(`PR is properly assigned to project with iteration: ${iterationField.title}`);
+
+            } catch (error) {
+              console.error('Error checking project:', error);
+
+              // Check if it's a permission issue
+              if (error.message.includes('Bad credentials') || error.message.includes('401') || error.message.includes('403')) {
+                core.warning(`Cannot verify project assignment due to missing permissions.\n\n` +
+                  `Note: GITHUB_TOKEN may not have sufficient permissions to access organization projects.\n` +
+                  `This check requires organization-level project access which may not be available to the default token.`);
+                // Don't fail the check for permission issues
+                return;
+              }
+
+              core.setFailed(`Failed to check project assignment: ${error.message}\n\n` +
+                `This might happen if:\n` +
+                `- The GITHUB_TOKEN doesn't have sufficient permissions\n` +
+                `- The project number (${projectNumber}) is incorrect\n` +
+                `- There are API permission issues`);
+            }
