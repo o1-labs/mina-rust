@@ -19,7 +19,9 @@
     "sentry:sourcemaps": "sentry-cli sourcemaps inject --org openmina-uv --project openmina ./dist/frontend/browser && sentry-cli sourcemaps upload --org openmina-uv --project openmina ./dist/frontend/browser",
     "copy-env": "cp dist/frontend/browser/assets/environments/webnode.js dist/frontend/browser/assets/environments/env.js",
     "deploy": "npm run prebuild && npm run build:prod && npm run copy-env && firebase deploy",
-    "deploy:leaderboard": "npm run prebuild && npm run build:prod && cp dist/frontend/browser/assets/environments/leaderboard.js dist/frontend/browser/assets/environments/env.js && firebase deploy"
+    "deploy:leaderboard": "npm run prebuild && npm run build:prod && cp dist/frontend/browser/assets/environments/leaderboard.js dist/frontend/browser/assets/environments/env.js && firebase deploy",
+    "prettify": "make prettify",
+    "check-prettify": "make check-prettify"
   },
   "private": true,
   "dependencies": {
@@ -84,6 +86,7 @@
     "karma-coverage": "~2.2.0",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "prettier": "^3.6.2",
     "terser-webpack-plugin": "^5.3.10",
     "typescript": "~5.8.3",
     "webpack": "^5.88.2",
