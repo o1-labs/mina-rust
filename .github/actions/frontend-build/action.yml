@@ -1,0 +1,54 @@
+name: 'Frontend Build'
+description: 'Build and test frontend application'
+inputs:
+  run-prettier-check:
+    description: 'Whether to run prettier check'
+    required: false
+    default: 'false'
+  run-tests:
+    description: 'Whether to run Cypress tests'
+    required: false
+    default: 'false'
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '23'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: Install dependencies
+      run: npm ci
+      working-directory: frontend
+      shell: bash
+
+    - name: Verify prettier installation
+      if: inputs.run-prettier-check == 'true'
+      run: npx prettier --version
+      working-directory: frontend
+      shell: bash
+
+    - name: Check code formatting with Prettier
+      if: inputs.run-prettier-check == 'true'
+      run: make check-prettify
+      working-directory: frontend
+      shell: bash
+
+    - name: Build frontend
+      run: npm run build
+      working-directory: frontend
+      shell: bash
+
+    - name: Run tests
+      if: inputs.run-tests == 'true'
+      uses: cypress-io/github-action@v6
+      with:
+        working-directory: frontend
+        start: npm start
+        wait-on: http://localhost:4200
+        wait-on-timeout: 180s
