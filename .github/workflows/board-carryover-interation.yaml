@@ -4,6 +4,12 @@ on:
   schedule:
     # Runs every Monday at 05:00
     - cron: '0 5 * * 1'
+  workflow_dispatch: # Allow manual triggering
+
+permissions:
+  contents: read
+  issues: write
+  repository-projects: write
 
 jobs:
   move-to-next-iteration:
@@ -15,7 +21,7 @@ jobs:
         with:
           owner: "o1-labs"                    # Your GitHub org or user name
           number: 24                          # Project number (from the URL)
-          token: ${{ secrets.PROJECT_PAT }}   # Personal Access Token with 'project' scope
+          token: ${{ secrets.PROJECT_PAT || secrets.GITHUB_TOKEN }}  # Personal Access Token with project scope or GitHub token
           iteration-field: Iteration          # The name of your iteration field
           iteration: last                     # Which iteration to move from (last/current)
           new-iteration: current              # Which iteration to move to (current/next)
