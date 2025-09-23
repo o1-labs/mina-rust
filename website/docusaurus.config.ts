@@ -52,6 +52,8 @@ const config: Config = {
           versions: {
             current: {
               label: 'develop',
+              path: '/', // Current version at root path
+              badge: true,
             },
           },
           // Enable edit links to GitHub

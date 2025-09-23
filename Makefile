@@ -536,6 +536,40 @@ docs-clean: ## Clean documentation build artifacts
 	@rm -rf website/build website/.docusaurus website/static/api-docs target/doc
 	@echo "Documentation artifacts cleaned!"
 
+# Documentation versioning targets
+
+.PHONY: docs-version-create
+docs-version-create: docs-install ## Create a new documentation version (requires VERSION=x.y.z)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is required. Usage: make docs-version-create VERSION=1.2.3"; \
+		exit 1; \
+	fi
+	@echo "Creating documentation version $(VERSION)..."
+	@cd website && npx docusaurus docs:version "$(VERSION)"
+	@echo "Documentation version $(VERSION) created successfully!"
+	@echo "Files created in website/versioned_docs/version-$(VERSION)/"
+
+.PHONY: docs-version-list
+docs-version-list: docs-install ## List all documentation versions
+	@echo "Available documentation versions:"
+	@cd website && if [ -f versions.json ]; then cat versions.json | jq -r '.[]' | sed 's/^/  - /'; else echo "  No versions found. Current version only."; fi
+
+.PHONY: docs-version-clean
+docs-version-clean: ## Clean all versioned documentation (WARNING: destructive)
+	@echo "WARNING: This will remove all versioned documentation!"
+	@echo "Files to be removed:"
+	@echo "  - website/versioned_docs/"
+	@echo "  - website/versioned_sidebars/" 
+	@echo "  - website/versions.json"
+	@echo ""
+	@echo "Use 'make docs-version-clean-force' to proceed without confirmation"
+
+.PHONY: docs-version-clean-force
+docs-version-clean-force: ## Force clean all versioned documentation (no confirmation)
+	@echo "Removing all versioned documentation..."
+	@rm -rf website/versioned_docs website/versioned_sidebars website/versions.json
+	@echo "All versioned documentation removed!"
+
 # Release management targets
 
 .PHONY: release-validate
@@ -571,6 +605,14 @@ release-create-tag: ## Create and push git tag (requires TAG=version MESSAGE="de
 release-merge-back: ## Merge main back to develop after release
 	@website/docs/developers/scripts/release/merge-back.sh
 
+.PHONY: release-docs-version
+release-docs-version: ## Create documentation version for release (requires VERSION=x.y.z)
+	@if [ -z "$(VERSION)" ]; then \
+		echo "Error: VERSION is required. Usage: make release-docs-version VERSION=1.2.3"; \
+		exit 1; \
+	fi
+	@make docs-version-create VERSION="$(VERSION)"
+
 .PHONY: release-help
 release-help: ## Show release management commands
 	@echo "Release Management Commands:"
@@ -579,12 +621,21 @@ release-help: ## Show release management commands
 	@echo "  release-update-version    - Update Cargo.toml versions (requires VERSION=x.y.z)"
 	@echo "  release-create-tag        - Create and push git tag (requires TAG=vx.y.z MESSAGE='...')"
 	@echo "  release-docker-verify     - Verify Docker images (requires TAG=vx.y.z)"
+	@echo "  release-docs-version      - Create documentation version (requires VERSION=x.y.z)"
 	@echo "  release-merge-back        - Merge main back to develop"
+	@echo ""
+	@echo "Documentation Versioning Commands:"
+	@echo ""
+	@echo "  docs-version-create       - Create new docs version (requires VERSION=x.y.z)"
+	@echo "  docs-version-list         - List all documentation versions"
+	@echo "  docs-version-clean        - Show files that would be removed (safe)"
+	@echo "  docs-version-clean-force  - Remove all versioned docs (WARNING: destructive)"
 	@echo ""
 	@echo "Example workflow:"
 	@echo "  make release-validate"
 	@echo "  make release-update-version VERSION=1.2.3"
 	@echo "  # Create PR, get approval, merge to main"
 	@echo "  make release-create-tag TAG=v1.2.3 MESSAGE='Release v1.2.3'"
+	@echo "  make release-docs-version VERSION=1.2.3"
 	@echo "  make release-docker-verify TAG=v1.2.3"
 	@echo "  make release-merge-back"

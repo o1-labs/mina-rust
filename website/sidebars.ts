@@ -164,6 +164,7 @@ const sidebars: SidebarsConfig = {
       label: 'Development Processes',
       items: [
         'appendix/release-process',
+        'appendix/documentation-versioning',
       ],
     },
   ],

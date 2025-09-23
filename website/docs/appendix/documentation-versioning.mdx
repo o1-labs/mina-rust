@@ -1,0 +1,173 @@
+---
+title: Documentation Versioning
+description:
+  Guide to managing and using versioned documentation in the Mina Rust project
+sidebar_position: 3
+---
+
+# Documentation Versioning
+
+The Mina Rust documentation uses
+[Docusaurus versioning](https://docusaurus.io/docs/versioning) to maintain
+documentation for multiple releases. This allows users to access documentation
+for specific versions of the software.
+
+## How Versioning Works
+
+### Version Structure
+
+- **Current Version (`develop`)**: The latest development documentation,
+  available at the root path (`/docs/`)
+- **Released Versions**: Specific release versions (e.g., `1.0.0`), available at
+  versioned paths (`/docs/1.0.0/`)
+
+### Accessing Different Versions
+
+Users can switch between documentation versions using the version dropdown in
+the navigation bar. Each version maintains its own complete documentation tree.
+
+## Managing Documentation Versions
+
+### Creating a New Version
+
+Create a new documentation version during the release process:
+
+```bash
+# Create version for release 1.2.3
+make docs-version-create VERSION=1.2.3
+
+# Or as part of the release workflow
+make release-docs-version VERSION=1.2.3
+```
+
+This command:
+
+- Takes a snapshot of the current `docs/` directory
+- Creates versioned copies in `website/versioned_docs/version-1.2.3/`
+- Updates `website/versions.json` to include the new version
+- Makes the version available in the dropdown menu
+
+### Listing Available Versions
+
+```bash
+# List all available documentation versions
+make docs-version-list
+```
+
+### Cleaning Up Versions
+
+:::warning Destructive Operation This command permanently removes all versioned
+documentation. Use with caution. :::
+
+```bash
+# Remove all versioned documentation (interactive confirmation)
+make docs-version-clean
+```
+
+## Version Behavior
+
+### Current Version (develop)
+
+- Always shows the latest documentation from the `docs/` directory
+- Available at the root documentation path
+- Labeled as "develop" in the version dropdown
+- No version banners or warnings
+
+### Released Versions
+
+- Snapshot of documentation at the time of release
+- Available at `/docs/{version}/` paths
+- Shows a banner indicating the version is no longer actively maintained
+- Provides a link back to the current (develop) version
+
+### Version Dropdown
+
+The version dropdown in the navigation bar:
+
+- Lists all available versions
+- Shows the current selection
+- Allows quick switching between versions
+- Maintains the current page context when switching (if the page exists in the
+  target version)
+
+## Best Practices
+
+### When to Create Versions
+
+- **Always** create a documentation version as part of the release process
+- Create versions for major and minor releases
+- Consider creating versions for significant patch releases with documentation
+  changes
+- Do not create versions for minor documentation updates between releases
+
+### Maintaining Version Quality
+
+- Ensure documentation is complete and accurate before creating a version
+- Test all links and examples in the documentation before versioning
+- Update any version-specific information (installation instructions,
+  compatibility notes)
+
+### Documentation Updates
+
+- **Current documentation**: Edit files in `website/docs/`
+- **Versioned documentation**: Edit files in
+  `website/versioned_docs/version-{version}/`
+- **Sidebar configuration**: Versioned sidebars are stored in
+  `website/versioned_sidebars/`
+
+## File Structure
+
+```
+website/
+├── docs/                           # Current (develop) documentation
+├── versioned_docs/
+│   └── version-1.0.0/             # Versioned documentation
+├── versioned_sidebars/
+│   └── version-1.0.0-sidebars.json # Versioned sidebars
+└── versions.json                   # List of available versions
+```
+
+## Integration with Release Process
+
+Documentation versioning is integrated into the release workflow:
+
+1. **Version Creation**: Part of the release process after tag creation
+2. **Automated**: Uses the same version number as the software release
+3. **Consistent**: Ensures documentation versions match software versions
+4. **Preserved**: Maintains historical documentation for all releases
+
+For complete release process details, see the
+[Release Process](./release-process.mdx) guide.
+
+## Troubleshooting
+
+### Version Not Appearing in Dropdown
+
+1. Check that `website/versions.json` includes the version
+2. Verify files exist in `website/versioned_docs/version-{version}/`
+3. Rebuild the documentation site
+
+### Broken Links in Versioned Docs
+
+- Versioned documentation uses absolute paths within the version
+- Links between versions are not automatically updated
+- Test documentation thoroughly before creating versions
+
+### Large Repository Size
+
+- Versioned documentation duplicates content
+- Consider the trade-off between version history and repository size
+- Remove very old versions if repository size becomes problematic
+
+## Related Commands
+
+```bash
+# Documentation building and serving
+make docs-build          # Build with API docs
+make docs-serve          # Serve locally with hot reload
+make docs-clean          # Clean build artifacts
+
+# Release integration
+make release-help        # Show all release commands
+make release-docs-version VERSION=x.y.z  # Create docs version for release
+```
