@@ -113,6 +113,14 @@ This repository contains the complete Mina Rust Node implementation:
 > **Note**: Multi-platform builds run automatically on `develop` and `main`
 > branches. Pull requests run fast Ubuntu-only builds for quick feedback.
 
+## Nightly Status
+
+[![Documentation Scripts][doc-scripts-badge]][doc-scripts-link]
+[![GraphQL API Tests][graphql-api-badge]][graphql-api-link]
+[![Infrastructure Tests][infra-tests-badge]][infra-tests-link]
+[![Remote GraphQL][remote-graphql-badge]][remote-graphql-link]
+[![Board Carryover][board-carryover-badge]][board-carryover-link]
+
 [changelog]: ./CHANGELOG.md
 [beta-badge]: https://img.shields.io/badge/status-beta-yellow
 [changelog-badge]: https://img.shields.io/badge/changelog-Changelog-%23E05735
@@ -164,3 +172,26 @@ This repository contains the complete Mina Rust Node implementation:
   https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-15.yaml
 [macos-latest-link]:
   https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-latest.yaml
+
+<!-- Nightly workflow badges -->
+
+[doc-scripts-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-scripts.yaml/badge.svg?branch=develop
+[doc-scripts-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-scripts.yaml
+[graphql-api-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-graphql-api.yaml/badge.svg?branch=develop
+[graphql-api-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-graphql-api.yaml
+[infra-tests-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-infrastructure.yaml/badge.svg?branch=develop
+[infra-tests-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-infrastructure.yaml
+[remote-graphql-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-graphql-remote.yml/badge.svg?branch=develop
+[remote-graphql-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-graphql-remote.yml
+[board-carryover-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/board-carryover-interation.yaml/badge.svg?branch=develop
+[board-carryover-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/board-carryover-interation.yaml
