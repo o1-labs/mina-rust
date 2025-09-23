@@ -11,6 +11,28 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  frontend-prettier-check:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+        with:
+          sparse-checkout: |
+            frontend
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: frontend
+
+      - name: Check code formatting with Prettier
+        run: make check-prettify
+        working-directory: frontend
+
   frontend-test:
     runs-on: ubuntu-24.04
     steps:
