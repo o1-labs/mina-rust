@@ -11,6 +11,21 @@ on:
         required: false
         type: boolean
         default: false
+      os:
+        description: "Operating system to run on"
+        required: false
+        type: string
+        default: "ubuntu-24.04"
+      ocaml_version:
+        description: "OCaml version to use"
+        required: false
+        type: string
+        default: "4.14.2"
+      rust_toolchain:
+        description: "Rust toolchain version to use"
+        required: false
+        type: string
+        default: "1.84"
 
 env:
   CARGO_TERM_COLOR: always
@@ -26,23 +41,20 @@ concurrency:
 jobs:
   refresh-cache:
     if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.refresh_cache == 'true' }}
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     steps:
       - uses: actions/checkout@v5
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ inputs.rust_toolchain }}
           enable-cache: false
       - name: Clean cargo cache
         run: cargo clean
 
   ledger-tests:
     timeout-minutes: 20
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -53,7 +65,7 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ inputs.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -72,7 +84,7 @@ jobs:
 
   p2p-messages-tests:
     timeout-minutes: 20
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -127,10 +139,7 @@ jobs:
 
   vrf-tests:
     timeout-minutes: 20
-    runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -141,7 +150,7 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ inputs.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
@@ -157,7 +166,7 @@ jobs:
 
   p2p-tests:
     timeout-minutes: 15
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -168,7 +177,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ inputs.rust_toolchain }}
           cache-prefix: p2p-v0
 
       - name: Test p2p crate
@@ -177,7 +186,7 @@ jobs:
   # Fast builds specifically for test artifacts - no cross-platform matrix
   build:
     timeout-minutes: 60
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -188,12 +197,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ inputs.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ inputs.rust_toolchain }}
           cache-prefix: build-v0
 
       - name: Release build
@@ -225,7 +234,7 @@ jobs:
 
   build-tests:
     timeout-minutes: 60
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -236,12 +245,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ inputs.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ inputs.rust_toolchain }}
           cache-prefix: build-tests-v0
 
       - name: Build tests
@@ -256,7 +265,7 @@ jobs:
 
   build-tests-webrtc:
     timeout-minutes: 60
-    runs-on: ubuntu-22.04
+    runs-on: ${{ inputs.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -267,12 +276,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ inputs.ocaml_version }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ inputs.rust_toolchain }}
           cache-prefix: build-tests-webrtc-v0
 
       - name: Build tests
@@ -288,7 +297,7 @@ jobs:
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     timeout-minutes: 20
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.3.0-alpha1-6929a7e-noble-devnet
@@ -360,7 +369,7 @@ jobs:
     needs:
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.3.0-alpha1-6929a7e-noble-devnet
       options: --volume debugger_data:/tmp/db
@@ -447,7 +456,7 @@ jobs:
     needs:
       - build-tests
       - build-tests-webrtc
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     container:
       image: gcr.io/o1labs-192920/mina-daemon:3.3.0-alpha1-6929a7e-noble-devnet
     env:
@@ -483,7 +492,7 @@ jobs:
   bootstrap-test:
     timeout-minutes: 10
     needs: [build, build-tests]
-    runs-on: ubuntu-24.04
+    runs-on: ${{ inputs.os }}
     env:
       MINA_HOME: data
       BPF_ALIAS: /coda/0.0.1/29936104443aaf264a7f0192ac64b1c7173198c1ed404c1bcff5e562e05eb7f6-0.0.0.0
