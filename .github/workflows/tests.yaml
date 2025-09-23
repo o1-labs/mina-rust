@@ -294,6 +294,31 @@ jobs:
           path: target/release/tests
           retention-days: 7
 
+  build-wasm:
+    timeout-minutes: 60
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ inputs.ocaml_version }}
+
+      - name: Setup WebAssembly environment
+        uses: ./.github/actions/setup-wasm
+        with:
+          cache-prefix: wasm-v0
+
+      - name: Build WebAssembly
+        run: make build-wasm
+        env:
+          RUSTFLAGS: ""
+
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]
