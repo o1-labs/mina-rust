@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### OCaml node
+
+- Update the CI and code to compare with the latest release 3.3.0-alpha1-6929a7e
+  ([#1454](https://github.com/o1-labs/mina-rust/pull/1454))
+
 ### Added
 
 - **Website**: add o1Labs infrastructure entry, describing the nodes managed by
