@@ -40,5 +40,7 @@ jobs:
       - name: Test script and query file consistency
         run: ./.github/scripts/test-script-query-consistency.sh
 
-      - name: Test GraphQL command scripts
-        run: ./.github/scripts/test-graphql-command-scripts.sh
+      - name: Test GraphQL command scripts against Rust node
+        run: |
+          echo "Testing GraphQL scripts against Rust node (default endpoint)..."
+          ./.github/scripts/test-graphql-command-scripts.sh

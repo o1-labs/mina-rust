@@ -1,0 +1,94 @@
+name: GraphQL Compatibility Tests
+
+# This workflow tests GraphQL queries against both OCaml and Rust Mina nodes
+# to ensure compatibility between implementations.
+#
+# To run locally using act (installed via gh CLI):
+#   gh extension install https://github.com/nektos/gh-act
+#   gh act --workflows .github/workflows/test-graphql-compatibility.yml
+#
+# Or if act is installed directly:
+#   act -W .github/workflows/test-graphql-compatibility.yml
+#
+# To run a specific job:
+#   gh act --workflows .github/workflows/test-graphql-compatibility.yml --job test-ocaml-node-graphql
+#
+# Prerequisites for local runs:
+#   - Docker (for running OCaml node)
+#   - curl and jq (for GraphQL queries)
+#   - The website GraphQL scripts must be present
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Run daily at 02:00 UTC
+    - cron: "0 2 * * *"
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: full
+  # OCaml node configuration
+  OCAML_NODE_IMAGE: gcr.io/o1labs-192920/mina-daemon:3.3.0-alpha1-6929a7e-noble-devnet
+  PEER_LIST_URL: https://storage.googleapis.com/o1labs-gitops-infrastructure/devnet/seed-list-devnet.txt
+
+jobs:
+  test-ocaml-node-graphql:
+    name: Test GraphQL Queries Against OCaml Node
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+
+      - name: Start OCaml node
+        run: |
+          echo "Starting OCaml node using Docker..."
+
+          # Create a config directory
+          mkdir -p ocaml-node-config
+
+          # Use the specified Docker image
+          echo "Pulling OCaml node Docker image..."
+          docker pull $OCAML_NODE_IMAGE
+
+          # Run the OCaml node in Docker with GraphQL port exposed
+          docker run -d \
+            --name ocaml-mina-node \
+            -p 3085:3085 \
+            -v $(pwd)/ocaml-node-config:/root/.mina-config \
+            $OCAML_NODE_IMAGE \
+            daemon \
+            --rest-port 3085 \
+            --insecure-rest-server \
+            --file-log-level Debug \
+            --log-level Info \
+            --config-directory /root/.mina-config \
+            --peer-list-url $PEER_LIST_URL
+
+          # Wait for the node to start and sync (may take several minutes)
+          ./.github/scripts/test-graphql-remote/wait-for-graphql.sh "http://localhost:3085/graphql" 600 10
+
+          echo "OCAML_GRAPHQL_ENDPOINT=http://localhost:3085/graphql" >> $GITHUB_ENV
+
+      - name: Install jq for JSON processing
+        run: |
+          sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Test GraphQL command scripts against OCaml node
+        run: |
+          echo "Testing all GraphQL command scripts against OCaml node..."
+          GRAPHQL_ENDPOINT="$OCAML_GRAPHQL_ENDPOINT" ./.github/scripts/test-graphql-command-scripts.sh
+
+
+      - name: Cleanup
+        if: always()
+        run: |
+          echo "Stopping Docker container..."
+          docker stop ocaml-mina-node || true
+          docker rm ocaml-mina-node || true
+

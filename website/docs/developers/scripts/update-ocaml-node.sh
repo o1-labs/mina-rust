@@ -61,6 +61,7 @@ sed -i'' -e "s/config_${old_hash}/config_${new_hash}/g" "${config_files[@]}"
 # Check if version-hash pattern exists in the files
 version_files=(
     "${base_dir}/.github/workflows/tests.yaml"
+    "${base_dir}/.github/workflows/test-graphql-compatibility.yml"
     "${base_dir}/docker-compose.archive.devnet.compare.yml"
     "${base_dir}/node/testing/src/node/ocaml/config.rs"
 )
