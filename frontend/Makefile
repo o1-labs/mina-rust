@@ -17,6 +17,10 @@ build-dev: ## Build the frontend for development
 
 .PHONY: build-prod
 build-prod: ## Build the frontend for production
+	ng build --configuration production
+
+.PHONY: build-prod-sentry
+build-prod-sentry: ## Build the frontend for production with Sentry sourcemaps
 	ng build --configuration production && $(MAKE) sentry-sourcemaps
 
 .PHONY: check-prettify
@@ -34,19 +38,19 @@ copy-env: ## Copy webnode.js to env.js
 
 .PHONY: deploy
 deploy: ## Deploy the application
-	$(MAKE) prebuild && $(MAKE) build-prod && $(MAKE) copy-env && \
+	$(MAKE) prebuild && $(MAKE) build-prod-sentry && $(MAKE) copy-env && \
 		firebase deploy
 
 .PHONY: deploy-leaderboard
 deploy-leaderboard: ## Deploy the leaderboard application
-	$(MAKE) prebuild && $(MAKE) build-prod && \
+	$(MAKE) prebuild && $(MAKE) build-prod-sentry && \
 		cp dist/frontend/browser/assets/environments/leaderboard.js \
 		dist/frontend/browser/assets/environments/env.js && \
 		firebase deploy
 
 .PHONY: docker
 docker: ## Build and push Docker image
-	$(MAKE) build-prod && \
+	$(MAKE) build-prod-sentry && \
 		docker buildx build --platform linux/amd64 -t openmina/frontend:latest . && \
 		docker push openmina/frontend:latest
 

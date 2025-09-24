@@ -5,6 +5,7 @@
     "build": "make build",
     "build:dev": "make build-dev",
     "build:prod": "make build-prod",
+    "build:prod:sentry": "make build-prod-sentry",
     "check-prettify": "make check-prettify",
     "copy-env": "make copy-env",
     "deploy": "make deploy",
