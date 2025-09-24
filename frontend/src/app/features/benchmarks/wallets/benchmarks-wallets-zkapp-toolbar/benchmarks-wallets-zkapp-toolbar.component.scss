@@ -37,7 +37,8 @@
     color: openmina.$base-tertiary;
     box-sizing: border-box;
 
-    span:nth-child(2), span:nth-child(4):hover {
+    span:nth-child(2),
+    span:nth-child(4):hover {
       color: openmina.$base-primary;
     }
 
@@ -48,11 +49,14 @@
     &.active {
       background-color: openmina.$selected-container;
 
-      span:nth-child(1), span:nth-child(2), span:nth-child(4):hover {
+      span:nth-child(1),
+      span:nth-child(2),
+      span:nth-child(4):hover {
         color: openmina.$selected-primary;
       }
 
-      span:nth-child(3), span:nth-child(4) {
+      span:nth-child(3),
+      span:nth-child(4) {
         color: openmina.$selected-secondary;
       }
     }

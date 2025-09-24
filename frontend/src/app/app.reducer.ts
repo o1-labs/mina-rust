@@ -7,7 +7,9 @@ import { getLocalStorage } from '@openmina/shared';
 
 const initialState: AppState = {
   menu: {
-    collapsed: JSON.parse(getLocalStorage()?.getItem('menu_collapsed') ?? 'false') || false,
+    collapsed:
+      JSON.parse(getLocalStorage()?.getItem('menu_collapsed') ?? 'false') ||
+      false,
     isMobile: false,
     open: true,
   },
@@ -31,9 +33,19 @@ const initialState: AppState = {
 
 export const appReducer = createReducer(
   initialState,
-  on(AppActions.initSuccess, (state, { activeNode, nodes }) => ({ ...state, activeNode, nodes })),
-  on(AppActions.changeActiveNode, (state, { node }) => ({ ...state, activeNode: node })),
-  on(AppActions.getNodeDetailsSuccess, (state, { details }) => ({ ...state, activeNodeDetails: details })),
+  on(AppActions.initSuccess, (state, { activeNode, nodes }) => ({
+    ...state,
+    activeNode,
+    nodes,
+  })),
+  on(AppActions.changeActiveNode, (state, { node }) => ({
+    ...state,
+    activeNode: node,
+  })),
+  on(AppActions.getNodeDetailsSuccess, (state, { details }) => ({
+    ...state,
+    activeNodeDetails: details,
+  })),
   on(AppActions.changeMenuCollapsing, (state, { isCollapsing }) => {
     getLocalStorage()?.setItem('menu_collapsed', JSON.stringify(isCollapsing));
     return { ...state, menu: { ...state.menu, collapsed: isCollapsing } };
@@ -42,17 +54,38 @@ export const appReducer = createReducer(
     ...state,
     menu: { ...state.menu, isMobile, open: !isMobile },
   })),
-  on(AppActions.toggleMenuOpening, (state) => ({ ...state, menu: { ...state.menu, open: !state.menu.open } })),
+  on(AppActions.toggleMenuOpening, state => ({
+    ...state,
+    menu: { ...state.menu, open: !state.menu.open },
+  })),
   on(AppActions.addNode, (state, { node }) => {
-    const customNodes = JSON.parse(getLocalStorage()?.getItem('custom_nodes') ?? '[]');
-    getLocalStorage()?.setItem('custom_nodes', JSON.stringify([node, ...customNodes]));
+    const customNodes = JSON.parse(
+      getLocalStorage()?.getItem('custom_nodes') ?? '[]',
+    );
+    getLocalStorage()?.setItem(
+      'custom_nodes',
+      JSON.stringify([node, ...customNodes]),
+    );
     return { ...state, nodes: [node, ...state.nodes] };
   }),
   on(AppActions.deleteNode, (state, { node }) => {
-    const customNodes = JSON.parse(getLocalStorage()?.getItem('custom_nodes') ?? '[]');
-    getLocalStorage()?.setItem('custom_nodes', JSON.stringify(customNodes.filter((n: MinaNode) => n.name !== node.name)));
+    const customNodes = JSON.parse(
+      getLocalStorage()?.getItem('custom_nodes') ?? '[]',
+    );
+    getLocalStorage()?.setItem(
+      'custom_nodes',
+      JSON.stringify(customNodes.filter((n: MinaNode) => n.name !== node.name)),
+    );
     const nodes = state.nodes.filter(n => n.name !== node.name);
-    return { ...state, nodes, activeNode: state.activeNode?.name === node.name ? nodes[0] : state.activeNode };
+    return {
+      ...state,
+      nodes,
+      activeNode:
+        state.activeNode?.name === node.name ? nodes[0] : state.activeNode,
+    };
   }),
-  on(AppActions.getNodeEnvBuildSuccess, (state, { envBuild }) => ({ ...state, envBuild })),
+  on(AppActions.getNodeEnvBuildSuccess, (state, { envBuild }) => ({
+    ...state,
+    envBuild,
+  })),
 );

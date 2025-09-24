@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+} from '@angular/core';
 import { MinaErrorType } from '@shared/types/error-preview/mina-error-type.enum';
 import { MinaError } from '@shared/types/error-preview/mina-error.type';
 import { ManualDetection, OpenminaEagerSharedModule } from '@openmina/shared';
@@ -11,15 +17,9 @@ import { NgClass, NgForOf, NgIf } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'border-rad-6 border overflow-y-auto' },
   standalone: true,
-  imports: [
-    NgClass,
-    OpenminaEagerSharedModule,
-    NgForOf,
-    NgIf,
-  ],
+  imports: [NgClass, OpenminaEagerSharedModule, NgForOf, NgIf],
 })
 export class ErrorListComponent extends ManualDetection {
-
   readonly errorIconMap: any = {
     [MinaErrorType.RUST]: 'terminal',
     [MinaErrorType.GENERIC]: 'error',
@@ -29,7 +29,9 @@ export class ErrorListComponent extends ManualDetection {
   @Input() errors: MinaError[];
   @Output() onConfirm: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor() { super(); }
+  constructor() {
+    super();
+  }
 
   close(): void {
     this.onConfirm.emit();

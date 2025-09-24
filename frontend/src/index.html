@@ -1,95 +1,103 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <script type="module" defer>
-    async function loadEnvironment() {
-      const possiblePaths = [
-        '/environments/env.js',           // Production/CI path
-        '../public/environments/env.js'   // Development path
-      ];
+  <head>
+    <script type="module" defer>
+      async function loadEnvironment() {
+        const possiblePaths = [
+          '/environments/env.js', // Production/CI path
+          '../public/environments/env.js', // Development path
+        ];
 
-      for (const path of possiblePaths) {
-        try {
-          const env = await import(/* @vite-ignore */ path);
-          if (typeof window !== 'undefined') {
-            window['env'] = window.env || env.default || env;
-          }
-          return;
-        } catch (error) {
-          continue;
-        }
-      }
-
-      console.error('Failed to load environment configuration');
-    }
-
-    loadEnvironment();
-  </script>
-
-  <meta charset="utf-8">
-  <title>Open Mina</title>
-  <base href="/">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link href="https://fonts.gstatic.com" rel="preconnect">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=block"
-        rel="stylesheet">
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
-    rel="stylesheet"/>
-  <style id="table-style1"></style>
-  <style id="table-style2"></style>
-  <style id="table-style3"></style>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=block" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;500;600&display=block" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, minimal-ui">
-</head>
-
-<body class="f-base">
-<script>
-  const deployment = {
-    dateUTC: '2025-03-28T10:27:50.006Z',
-    deviceIp: '5.13.60.20',
-    deviceOS: 'macOS',
-    deviceOSVersion: '24.3.0',
-    version: '1.0.184',
-  };
-  window.deployment = deployment;
-
-  if (location.href.includes('webnode.minaprotocol')) {
-    document.body.style.backgroundColor = '#fff';
-  }
-
-</script>
-<script type="module" defer>
-  if (typeof window !== 'undefined') {
-    window.addEventListener('startWebNode', async () => {
-      const possiblePaths = [
-        '/webnode/pkg/openmina_node_web.js',      // Production/CI path
-        '../public/webnode/pkg/openmina_node_web.js' // Development path
-      ];
-
-      for (const path of possiblePaths) {
-        try {
-          // Check if file exists by attempting to fetch it
-          const response = await fetch(path, { method: 'HEAD' });
-          if (response.ok) {
-            /* @vite-ignore */
-            window.webnode = await import(/* @vite-ignore */ path);
-            window.dispatchEvent(new CustomEvent('webNodeLoaded'));
+        for (const path of possiblePaths) {
+          try {
+            const env = await import(/* @vite-ignore */ path);
+            if (typeof window !== 'undefined') {
+              window['env'] = window.env || env.default || env;
+            }
             return;
+          } catch (error) {
+            continue;
           }
-        } catch (error) {
-          continue;
         }
+
+        console.error('Failed to load environment configuration');
       }
 
-      // If we get here, none of the paths worked
-      if (window.env?.configs.some(c => c.isWebNode)) {
-        console.error('Failed to load Web Node: No valid path found');
+      loadEnvironment();
+    </script>
+
+    <meta charset="utf-8" />
+    <title>Open Mina</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700&display=block"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
+      rel="stylesheet"
+    />
+    <style id="table-style1"></style>
+    <style id="table-style2"></style>
+    <style id="table-style3"></style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&display=block"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;500;600&display=block"
+      rel="stylesheet"
+    />
+    <meta name="viewport" content="width=device-width, minimal-ui" />
+  </head>
+
+  <body class="f-base">
+    <script>
+      const deployment = {
+        dateUTC: '2025-03-28T10:27:50.006Z',
+        deviceIp: '5.13.60.20',
+        deviceOS: 'macOS',
+        deviceOSVersion: '24.3.0',
+        version: '1.0.184',
+      };
+      window.deployment = deployment;
+
+      if (location.href.includes('webnode.minaprotocol')) {
+        document.body.style.backgroundColor = '#fff';
       }
-    });
-  }
-</script>
-<app-root class="h-100"></app-root>
-</body>
+    </script>
+    <script type="module" defer>
+      if (typeof window !== 'undefined') {
+        window.addEventListener('startWebNode', async () => {
+          const possiblePaths = [
+            '/webnode/pkg/openmina_node_web.js', // Production/CI path
+            '../public/webnode/pkg/openmina_node_web.js', // Development path
+          ];
+
+          for (const path of possiblePaths) {
+            try {
+              // Check if file exists by attempting to fetch it
+              const response = await fetch(path, { method: 'HEAD' });
+              if (response.ok) {
+                /* @vite-ignore */
+                window.webnode = await import(/* @vite-ignore */ path);
+                window.dispatchEvent(new CustomEvent('webNodeLoaded'));
+                return;
+              }
+            } catch (error) {
+              continue;
+            }
+          }
+
+          // If we get here, none of the paths worked
+          if (window.env?.configs.some(c => c.isWebNode)) {
+            console.error('Failed to load Web Node: No valid path found');
+          }
+        });
+      }
+    </script>
+    <app-root class="h-100"></app-root>
+  </body>
 </html>

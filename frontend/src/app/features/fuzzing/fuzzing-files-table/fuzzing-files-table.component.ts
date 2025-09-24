@@ -1,25 +1,37 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FuzzingFile } from '@shared/types/fuzzing/fuzzing-file.type';
-import { selectFuzzingActiveDirectory, selectFuzzingActiveFile, selectFuzzingFiles, selectFuzzingFilesSorting } from '@fuzzing/fuzzing.state';
+import {
+  selectFuzzingActiveDirectory,
+  selectFuzzingActiveFile,
+  selectFuzzingFiles,
+  selectFuzzingFilesSorting,
+} from '@fuzzing/fuzzing.state';
 import { FuzzingGetFileDetails, FuzzingSort } from '@fuzzing/fuzzing.actions';
 import { filter, take, timer } from 'rxjs';
 import { Routes } from '@shared/enums/routes.enum';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { FuzzingDirectory } from '@shared/types/fuzzing/fuzzing-directory.type';
-import { getMergedRoute, MergedRoute, TableColumnList, TableSort } from '@openmina/shared';
+import {
+  getMergedRoute,
+  MergedRoute,
+  TableColumnList,
+  TableSort,
+} from '@openmina/shared';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-fuzzing-files-table',
-    templateUrl: './fuzzing-files-table.component.html',
-    styleUrls: ['./fuzzing-files-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100' },
-    standalone: false
+  selector: 'mina-fuzzing-files-table',
+  templateUrl: './fuzzing-files-table.component.html',
+  styleUrls: ['./fuzzing-files-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100' },
+  standalone: false,
 })
-export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile> implements OnInit {
-
+export class FuzzingFilesTableComponent
+  extends MinaTableRustWrapper<FuzzingFile>
+  implements OnInit
+{
   protected readonly tableHeads: TableColumnList<FuzzingFile> = [
     { name: 'coverage', sort: 'coverage' },
     { name: 'path', sort: 'path' },
@@ -32,7 +44,9 @@ export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile
   private pathFromRoute: string;
   private activeDirectory: FuzzingDirectory;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -60,11 +74,15 @@ export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['file'] && this.files.length === 0) {
-        this.pathFromRoute = route.params['file'];
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['file'] && this.files.length === 0) {
+          this.pathFromRoute = route.params['file'];
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToFiles(): void {
@@ -88,18 +106,26 @@ export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile
   }
 
   private listenToActiveFile(): void {
-    this.select(selectFuzzingActiveFile, (file: FuzzingFile) => {
-      this.activeFile = file;
-      this.table.activeRow = file;
-      this.table.detect();
-      this.detect();
-    }, filter(file => this.activeFile !== file));
+    this.select(
+      selectFuzzingActiveFile,
+      (file: FuzzingFile) => {
+        this.activeFile = file;
+        this.table.activeRow = file;
+        this.table.detect();
+        this.detect();
+      },
+      filter(file => this.activeFile !== file),
+    );
   }
 
   private listenToActiveDirectory(): void {
-    this.select(selectFuzzingActiveDirectory, (directory: FuzzingDirectory) => {
-      this.activeDirectory = directory;
-    }, filter(directory => this.activeDirectory !== directory));
+    this.select(
+      selectFuzzingActiveDirectory,
+      (directory: FuzzingDirectory) => {
+        this.activeDirectory = directory;
+      },
+      filter(directory => this.activeDirectory !== directory),
+    );
   }
 
   private listenToSortingChanges(): void {
@@ -113,8 +139,14 @@ export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile
     if (!this.pathFromRoute) {
       return;
     }
-    const topElements = Math.floor(this.table.virtualScroll.elementRef.nativeElement.offsetHeight / 2 / this.table.rowSize);
-    const index = this.files.findIndex(file => file.path === this.pathFromRoute) - topElements;
+    const topElements = Math.floor(
+      this.table.virtualScroll.elementRef.nativeElement.offsetHeight /
+        2 /
+        this.table.rowSize,
+    );
+    const index =
+      this.files.findIndex(file => file.path === this.pathFromRoute) -
+      topElements;
     this.table.virtualScroll.scrollToIndex(index);
   }
 
@@ -122,6 +154,10 @@ export class FuzzingFilesTableComponent extends MinaTableRustWrapper<FuzzingFile
     if (this.activeFile?.path !== file.path) {
       this.dispatch(FuzzingGetFileDetails, file);
     }
-    this.router.navigate([Routes.FUZZING, this.activeDirectory.fullName, file.path]);
+    this.router.navigate([
+      Routes.FUZZING,
+      this.activeDirectory.fullName,
+      file.path,
+    ]);
   }
 }

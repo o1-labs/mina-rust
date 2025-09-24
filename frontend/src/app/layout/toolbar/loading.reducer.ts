@@ -8,9 +8,21 @@ import {
   STATE_ACTIONS_GET_EARLIEST_SLOT,
   STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS,
 } from '@state/actions/state-actions.actions';
-import { NODES_OVERVIEW_CLOSE, NODES_OVERVIEW_GET_NODES_SUCCESS, NODES_OVERVIEW_INIT } from '@nodes/overview/nodes-overview.actions';
-import { NODES_BOOTSTRAP_CLOSE, NODES_BOOTSTRAP_GET_NODES_SUCCESS, NODES_BOOTSTRAP_INIT } from '@nodes/bootstrap/nodes-bootstrap.actions';
-import { NODES_LIVE_CLOSE, NODES_LIVE_GET_NODES_SUCCESS, NODES_LIVE_INIT } from '@nodes/live/nodes-live.actions';
+import {
+  NODES_OVERVIEW_CLOSE,
+  NODES_OVERVIEW_GET_NODES_SUCCESS,
+  NODES_OVERVIEW_INIT,
+} from '@nodes/overview/nodes-overview.actions';
+import {
+  NODES_BOOTSTRAP_CLOSE,
+  NODES_BOOTSTRAP_GET_NODES_SUCCESS,
+  NODES_BOOTSTRAP_INIT,
+} from '@nodes/bootstrap/nodes-bootstrap.actions';
+import {
+  NODES_LIVE_CLOSE,
+  NODES_LIVE_GET_NODES_SUCCESS,
+  NODES_LIVE_INIT,
+} from '@nodes/live/nodes-live.actions';
 import {
   SNARKS_WORK_POOL_CLOSE,
   SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL,
@@ -18,9 +30,21 @@ import {
   SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS,
   SNARKS_WORK_POOL_INIT,
 } from '@snarks/work-pool/snarks-work-pool.actions';
-import { SCAN_STATE_CLOSE, SCAN_STATE_GET_BLOCK_SUCCESS, SCAN_STATE_INIT } from '@snarks/scan-state/scan-state.actions';
-import { MEMORY_RESOURCES_CLOSE, MEMORY_RESOURCES_GET, MEMORY_RESOURCES_GET_SUCCESS } from '@resources/memory/memory-resources.actions';
-import { NETWORK_NODE_DHT_CLOSE, NETWORK_NODE_DHT_GET_PEERS_SUCCESS, NETWORK_NODE_DHT_INIT } from '@network/node-dht/network-node-dht.actions';
+import {
+  SCAN_STATE_CLOSE,
+  SCAN_STATE_GET_BLOCK_SUCCESS,
+  SCAN_STATE_INIT,
+} from '@snarks/scan-state/scan-state.actions';
+import {
+  MEMORY_RESOURCES_CLOSE,
+  MEMORY_RESOURCES_GET,
+  MEMORY_RESOURCES_GET_SUCCESS,
+} from '@resources/memory/memory-resources.actions';
+import {
+  NETWORK_NODE_DHT_CLOSE,
+  NETWORK_NODE_DHT_GET_PEERS_SUCCESS,
+  NETWORK_NODE_DHT_INIT,
+} from '@network/node-dht/network-node-dht.actions';
 import {
   NETWORK_BOOTSTRAP_STATS_CLOSE,
   NETWORK_BOOTSTRAP_STATS_GET_BOOTSTRAP_STATS_SUCCESS,
@@ -39,7 +63,10 @@ export type LoadingState = string[];
 
 const initialState: LoadingState = [];
 
-export function loadingReducer(state: LoadingState = initialState, action: FeatureAction<any>): LoadingState {
+export function loadingReducer(
+  state: LoadingState = initialState,
+  action: FeatureAction<any>,
+): LoadingState {
   switch (action.type) {
     /* ------------ ADD ------------ */
     case `[${APP_PREFIX}] Init`:
@@ -86,7 +113,10 @@ export function loadingReducer(state: LoadingState = initialState, action: Featu
     case STATE_ACTIONS_GET_ACTIONS_SUCCESS:
       return remove(state, STATE_ACTIONS_GET_ACTIONS);
     case STATE_ACTIONS_CLOSE:
-      return remove(state, [STATE_ACTIONS_GET_EARLIEST_SLOT, STATE_ACTIONS_GET_ACTIONS]);
+      return remove(state, [
+        STATE_ACTIONS_GET_EARLIEST_SLOT,
+        STATE_ACTIONS_GET_ACTIONS,
+      ]);
 
     case NODES_OVERVIEW_GET_NODES_SUCCESS:
       return remove(state, NODES_OVERVIEW_INIT);
@@ -106,7 +136,10 @@ export function loadingReducer(state: LoadingState = initialState, action: Featu
     case SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS:
       return remove(state, SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL);
     case SNARKS_WORK_POOL_CLOSE:
-      return remove(state, [SNARKS_WORK_POOL_INIT, SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL]);
+      return remove(state, [
+        SNARKS_WORK_POOL_INIT,
+        SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL,
+      ]);
 
     case SCAN_STATE_GET_BLOCK_SUCCESS:
       return remove(state, SCAN_STATE_INIT);
@@ -133,7 +166,10 @@ export function loadingReducer(state: LoadingState = initialState, action: Featu
     case BENCHMARKS_WALLETS_GET_ALL_TXS_SUCCESS:
       return remove(state, BENCHMARKS_WALLETS_GET_ALL_TXS);
     case BENCHMARKS_WALLETS_CLOSE:
-      return remove(state, [BENCHMARKS_WALLETS_GET_WALLETS, BENCHMARKS_WALLETS_GET_ALL_TXS]);
+      return remove(state, [
+        BENCHMARKS_WALLETS_GET_WALLETS,
+        BENCHMARKS_WALLETS_GET_ALL_TXS,
+      ]);
 
     default:
       return state;
@@ -151,4 +187,5 @@ function remove(state: LoadingState, type: string | string[]): LoadingState {
   return state.filter(t => t !== type);
 }
 
-export const selectLoadingStateLength = (state: MinaState): number => state.loading.length;
+export const selectLoadingStateLength = (state: MinaState): number =>
+  state.loading.length;

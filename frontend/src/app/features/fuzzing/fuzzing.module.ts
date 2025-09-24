@@ -9,9 +9,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { FuzzingEffects } from '@fuzzing/fuzzing.effects';
 import { FuzzingToolbarComponent } from '@fuzzing/fuzzing-toolbar/fuzzing-toolbar.component';
 import { FuzzingDirectoriesTableComponent } from '@fuzzing/fuzzing-directories-table/fuzzing-directories-table.component';
-import { CopyComponent, HorizontalResizableContainerComponent } from '@openmina/shared';
+import {
+  CopyComponent,
+  HorizontalResizableContainerComponent,
+} from '@openmina/shared';
 import { LoadingSpinnerComponent } from '@shared/loading-spinner/loading-spinner.component';
-
 
 @NgModule({
   declarations: [

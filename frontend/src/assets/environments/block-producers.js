@@ -9,9 +9,9 @@ export default {
   globalConfig: {
     features: {
       'block-production': ['won-slots'],
-      'mempool': [],
-      'benchmarks': ['wallets'],
-      'snarks': ['scan-state', 'work-pool'],
+      mempool: [],
+      benchmarks: ['wallets'],
+      snarks: ['scan-state', 'work-pool'],
     },
     graphQL: 'http://localhost:11010/graphql',
   },
@@ -29,4 +29,4 @@ export default {
       url: 'http://localhost:11014',
     },
   ],
-}
+};

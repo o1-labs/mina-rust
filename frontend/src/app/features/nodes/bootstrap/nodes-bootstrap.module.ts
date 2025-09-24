@@ -9,8 +9,11 @@ import { EffectsModule } from '@ngrx/effects';
 import { NodesBootstrapEffects } from '@nodes/bootstrap/nodes-bootstrap.effects';
 import { NodesBootstrapOverviewComponent } from '@nodes/bootstrap/nodes-bootstrap-overview/nodes-bootstrap-overview.component';
 import { NodesBootstrapBlocksComponent } from '@nodes/bootstrap/nodes-bootstrap-blocks/nodes-bootstrap-blocks.component';
-import { CopyComponent, HorizontalResizableContainerComponent, MinaJsonViewerComponent } from '@openmina/shared';
-
+import {
+  CopyComponent,
+  HorizontalResizableContainerComponent,
+  MinaJsonViewerComponent,
+} from '@openmina/shared';
 
 @NgModule({
   declarations: [

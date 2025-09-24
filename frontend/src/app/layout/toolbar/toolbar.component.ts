@@ -1,7 +1,20 @@
-import { ChangeDetectionStrategy, Component, ElementRef, HostBinding, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  HostBinding,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { catchError, filter, map, of, switchMap, timer } from 'rxjs';
 import { AppSelectors } from '@app/app.state';
-import { getMergedRoute, hasValue, MergedRoute, removeParamsFromURL, TooltipService } from '@openmina/shared';
+import {
+  getMergedRoute,
+  hasValue,
+  MergedRoute,
+  removeParamsFromURL,
+  TooltipService,
+} from '@openmina/shared';
 import { AppMenu } from '@shared/types/app/app-menu.type';
 import { AppActions } from '@app/app.actions';
 import { selectLoadingStateLength } from '@app/layout/toolbar/loading.reducer';
@@ -37,7 +50,6 @@ import { NgClass } from '@angular/common';
   ],
 })
 export class ToolbarComponent extends StoreDispatcher implements OnInit {
-
   title: string = 'Loading';
   isMobile: boolean;
   errors: MinaError[] = [];
@@ -49,10 +61,14 @@ export class ToolbarComponent extends StoreDispatcher implements OnInit {
 
   @ViewChild('loadingRef') private loadingRef: ElementRef<HTMLDivElement>;
 
-  constructor(private tooltipService: TooltipService) { super(); }
+  constructor(private tooltipService: TooltipService) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.isAllNodesPage = location.pathname.includes(Routes.NODES + '/' + Routes.OVERVIEW);
+    this.isAllNodesPage = location.pathname.includes(
+      Routes.NODES + '/' + Routes.OVERVIEW,
+    );
     this.listenToRouterChange();
     this.listenToMenuChange();
     this.listenToLoading();
@@ -81,17 +97,25 @@ export class ToolbarComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToNewErrors(): void {
-    this.select(selectErrorPreviewErrors, (errors: MinaError[]) => {
-      this.errors = errors;
-      this.detect();
-    }, filter(errors => !!errors.length));
+    this.select(
+      selectErrorPreviewErrors,
+      (errors: MinaError[]) => {
+        this.errors = errors;
+        this.detect();
+      },
+      filter(errors => !!errors.length),
+    );
   }
 
   private listenToMenuChange(): void {
-    this.select(AppSelectors.menu, (menu: AppMenu) => {
-      this.isMobile = menu.isMobile;
-      this.detect();
-    }, filter(menu => menu.isMobile !== this.isMobile));
+    this.select(
+      AppSelectors.menu,
+      (menu: AppMenu) => {
+        this.isMobile = menu.isMobile;
+        this.detect();
+      },
+      filter(menu => menu.isMobile !== this.isMobile),
+    );
   }
 
   toggleTooltips(): void {
@@ -103,9 +127,16 @@ export class ToolbarComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToRouterChange(): void {
-    this.select(getMergedRoute, (url: string) => {
-      this.title = removeParamsFromURL(url)?.split('/')[1]?.replace(/-/g, ' ');
-      this.detect();
-    }, filter(Boolean), map((route: MergedRoute) => route.url));
+    this.select(
+      getMergedRoute,
+      (url: string) => {
+        this.title = removeParamsFromURL(url)
+          ?.split('/')[1]
+          ?.replace(/-/g, ' ');
+        this.detect();
+      },
+      filter(Boolean),
+      map((route: MergedRoute) => route.url),
+    );
   }
 }

@@ -1,5 +1,14 @@
 import { Injectable } from '@angular/core';
-import { concatAll, delay, forkJoin, from, map, Observable, tap, toArray } from 'rxjs';
+import {
+  concatAll,
+  delay,
+  forkJoin,
+  from,
+  map,
+  Observable,
+  tap,
+  toArray,
+} from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { DashboardSplits } from '@shared/types/network/splits/dashboard-splits.type';
 import { CONFIG } from '@shared/constants/config';
@@ -8,21 +17,22 @@ import { DashboardSplitsLink } from '@shared/types/network/splits/dashboard-spli
 
 @Injectable({ providedIn: 'root' })
 export class DashboardSplitsService {
-
-  private readonly options = { headers: { 'Content-Type': 'application/json' } };
+  private readonly options = {
+    headers: { 'Content-Type': 'application/json' },
+  };
 
   private currentData: DashboardSplits;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getPeers(): Observable<DashboardSplits> {
     return from(
       [].map(node =>
         this.http
-          .post<{ data: GetPeersResponse }>(`${node.graphql}/graphql`, { query: peersQuery }, this.options)
-          .pipe(
-            map(response => ({ data: response.data, node: node.name })),
-          ),
+          .post<{
+            data: GetPeersResponse;
+          }>(`${node.graphql}/graphql`, { query: peersQuery }, this.options)
+          .pipe(map(response => ({ data: response.data, node: node.name }))),
       ),
     ).pipe(
       delay(100),
@@ -93,7 +103,10 @@ export class DashboardSplitsService {
          * @param connectionsPerPeer The number of random connections per peer (default: 5)
          * @returns A DashboardSplits object containing peers and their connections
          */
-        function generatePeerNetwork(peerCount: number = 100, connectionsPerPeer: number = 50): DashboardSplits {
+        function generatePeerNetwork(
+          peerCount: number = 100,
+          connectionsPerPeer: number = 50,
+        ): DashboardSplits {
           // Create array to hold our peers
           const peers: DashboardSplitsPeer[] = [];
 
@@ -117,7 +130,10 @@ export class DashboardSplitsService {
             let attempts = 0;
             const maxAttempts = peerCount * 2; // Prevent infinite loops
 
-            while (connectionsMade < connectionsPerPeer && attempts < maxAttempts) {
+            while (
+              connectionsMade < connectionsPerPeer &&
+              attempts < maxAttempts
+            ) {
               attempts++;
 
               // Choose a random target peer that is not the current peer
@@ -164,7 +180,7 @@ export class DashboardSplitsService {
         this.currentData = generatePeerNetwork();
         return this.currentData;
       }),
-      tap((d) => console.log(d)),
+      tap(d => console.log(d)),
     );
   }
 
@@ -208,11 +224,16 @@ export class DashboardSplitsService {
     // Filter out links that connect between the two subgroups
     const newLinks = this.currentData.links.filter(link => {
       // If both endpoints are in the group we're splitting...
-      if (groupToSplit.includes(link.source) && groupToSplit.includes(link.target)) {
+      if (
+        groupToSplit.includes(link.source) &&
+        groupToSplit.includes(link.target)
+      ) {
         // Keep only if both are in the same subgroup
         return (
-          (subgroup1Addresses.has(link.source) && subgroup1Addresses.has(link.target)) ||
-          (subgroup2Addresses.has(link.source) && subgroup2Addresses.has(link.target))
+          (subgroup1Addresses.has(link.source) &&
+            subgroup1Addresses.has(link.target)) ||
+          (subgroup2Addresses.has(link.source) &&
+            subgroup2Addresses.has(link.target))
         );
       }
       // Keep all links not related to the group we're splitting
@@ -288,7 +309,10 @@ export class DashboardSplitsService {
    * @param allPeers All peers in the network
    * @returns Array of new links needed to ensure connectivity
    */
-  private ensureGroupIsConnected(group: string[], allPeers: DashboardSplitsPeer[]): DashboardSplitsLink[] {
+  private ensureGroupIsConnected(
+    group: string[],
+    allPeers: DashboardSplitsPeer[],
+  ): DashboardSplitsLink[] {
     // If the group has fewer than 2 peers, it can't be connected
     if (group.length < 2) {
       return [];
@@ -298,8 +322,9 @@ export class DashboardSplitsService {
     const groupAddresses = new Set<string>(group);
 
     // Find existing links within this group
-    const groupLinks = this.currentData.links.filter(link =>
-      groupAddresses.has(link.source) && groupAddresses.has(link.target),
+    const groupLinks = this.currentData.links.filter(
+      link =>
+        groupAddresses.has(link.source) && groupAddresses.has(link.target),
     );
 
     // If there are already links, we need to check if the group is connected
@@ -348,9 +373,12 @@ export class DashboardSplitsService {
    * @param groupLinks Existing links within the group
    * @returns Object containing connectivity information
    */
-  private checkConnectivity(group: string[], groupLinks: DashboardSplitsLink[]): {
+  private checkConnectivity(
+    group: string[],
+    groupLinks: DashboardSplitsLink[],
+  ): {
     fullyConnected: boolean;
-    components: string[][]
+    components: string[][];
   } {
     // Create an adjacency map
     const adjacencyMap = new Map<string, Set<string>>();
@@ -401,35 +429,42 @@ export class DashboardSplitsService {
   }
 
   splitNodesOld(peers: DashboardSplitsPeer[]): Observable<void> {
-    const nodeName = (peer: DashboardSplitsPeer) => peer.node.toLowerCase().replace(' ', '');
+    const nodeName = (peer: DashboardSplitsPeer) =>
+      peer.node.toLowerCase().replace(' ', '');
     const lastChar = (str: string) => str[str.length - 1];
-    const leftList = peers.filter(p => p.node).filter(p => Number(lastChar(p.node)) % 2 === 0);
-    const rightList = peers.filter(p => p.node).filter(p => Number(lastChar(p.node)) % 2 !== 0);
+    const leftList = peers
+      .filter(p => p.node)
+      .filter(p => Number(lastChar(p.node)) % 2 === 0);
+    const rightList = peers
+      .filter(p => p.node)
+      .filter(p => Number(lastChar(p.node)) % 2 !== 0);
 
     const leftObs = from(
       leftList.map(node =>
-        this.http
-          .post<any>(CONFIG.configs.find(c => c.name === nodeName(node)).debugger + '/firewall/whitelist/enable', {
-            'ips': leftList.map(n => n.address.split(':')[0]),
-            'ports': [10909, 10001],
-          }, this.options),
+        this.http.post<any>(
+          CONFIG.configs.find(c => c.name === nodeName(node)).debugger +
+            '/firewall/whitelist/enable',
+          {
+            ips: leftList.map(n => n.address.split(':')[0]),
+            ports: [10909, 10001],
+          },
+          this.options,
+        ),
       ),
-    ).pipe(
-      concatAll(),
-      toArray(),
-    );
+    ).pipe(concatAll(), toArray());
     const rightObs = from(
       rightList.map(node =>
-        this.http
-          .post<any>(CONFIG.configs.find(c => c.name === nodeName(node)).debugger + '/firewall/whitelist/enable', {
-            'ips': rightList.map(n => n.address.split(':')[0]),
-            'ports': [10909, 10001],
-          }, this.options),
+        this.http.post<any>(
+          CONFIG.configs.find(c => c.name === nodeName(node)).debugger +
+            '/firewall/whitelist/enable',
+          {
+            ips: rightList.map(n => n.address.split(':')[0]),
+            ports: [10909, 10001],
+          },
+          this.options,
+        ),
       ),
-    ).pipe(
-      concatAll(),
-      toArray(),
-    );
+    ).pipe(concatAll(), toArray());
 
     return forkJoin([leftObs, rightObs]).pipe(map((): any => void 0));
   }
@@ -453,10 +488,12 @@ export class DashboardSplitsService {
     // Connect each component to the next one to form a "chain" of components
     for (let i = 0; i < components.length - 1; i++) {
       // Get a random node from the current component
-      const sourceNode = components[i][Math.floor(Math.random() * components[i].length)];
+      const sourceNode =
+        components[i][Math.floor(Math.random() * components[i].length)];
 
       // Get a random node from the next component
-      const targetNode = components[i + 1][Math.floor(Math.random() * components[i + 1].length)];
+      const targetNode =
+        components[i + 1][Math.floor(Math.random() * components[i + 1].length)];
 
       // Add a link between them
       newLinks.push({
@@ -473,14 +510,20 @@ export class DashboardSplitsService {
   }
 
   mergeNodesOld(peers: DashboardSplitsPeer[]): Observable<void> {
-    const nodeName = (peer: DashboardSplitsPeer) => peer.node.toLowerCase().replace(' ', '');
+    const nodeName = (peer: DashboardSplitsPeer) =>
+      peer.node.toLowerCase().replace(' ', '');
 
     return from(
-      peers.filter(p => p.node).map(node =>
-        this.http.post<void>(
-          CONFIG.configs.find(c => c.name === nodeName(node)).debugger + '/firewall/whitelist/disable', null, this.options,
+      peers
+        .filter(p => p.node)
+        .map(node =>
+          this.http.post<void>(
+            CONFIG.configs.find(c => c.name === nodeName(node)).debugger +
+              '/firewall/whitelist/disable',
+            null,
+            this.options,
+          ),
         ),
-      ),
     ).pipe(
       concatAll(),
       toArray(),
@@ -489,8 +532,12 @@ export class DashboardSplitsService {
   }
 
   private removeDuplicatedPeers(response: DashboardSplits): DashboardSplits {
-    response.peers = response.peers.filter((peer: DashboardSplitsPeer, index: number, peers: DashboardSplitsPeer[]) =>
-      index === peers.findIndex(p => p.address === peer.address),
+    response.peers = response.peers.filter(
+      (
+        peer: DashboardSplitsPeer,
+        index: number,
+        peers: DashboardSplitsPeer[],
+      ) => index === peers.findIndex(p => p.address === peer.address),
     );
     return response;
   }
@@ -514,7 +561,7 @@ interface DaemonStatus {
 interface AddrsAndPorts {
   externalIp: string;
   libp2pPort: number;
-  peer: { peerId: string; };
+  peer: { peerId: string };
 }
 
 const peersQuery = `

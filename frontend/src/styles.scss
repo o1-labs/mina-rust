@@ -3,7 +3,9 @@
 @use 'openmina';
 @use 'leaderboard-variables';
 
-$custom-typography: mat.m2-define-legacy-typography-config($font-family: '"Inter", sans-serif');
+$custom-typography: mat.m2-define-legacy-typography-config(
+  $font-family: '"Inter", sans-serif',
+);
 // TODO(v15): As of v15 mat.legacy-core no longer includes default typography styles.
 //  The following line adds:
 //    1. Default typography styles for all components
@@ -16,7 +18,8 @@ $custom-typography: mat.m2-define-legacy-typography-config($font-family: '"Inter
 @include mat.elevation-classes();
 @include mat.app-background();
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -54,7 +57,7 @@ p {
 }
 
 .openmina-backdrop {
-  background: rgba(13, 13, 13, 0.80);
+  background: rgba(13, 13, 13, 0.8);
 }
 
 /* User Select */

@@ -1,7 +1,10 @@
 import { createReducer, on } from '@ngrx/store';
 import { MempoolState } from '@app/features/mempool/mempool.state';
 import { MempoolActions } from '@app/features/mempool/mempool.actions';
-import { MempoolTransaction, MempoolTransactionKind } from '@shared/types/mempool/mempool-transaction.type';
+import {
+  MempoolTransaction,
+  MempoolTransactionKind,
+} from '@shared/types/mempool/mempool-transaction.type';
 import { MempoolFilters } from '@shared/types/mempool/mempool-filters.type';
 
 const initialState: MempoolState = {
@@ -32,19 +35,33 @@ export const mempoolReducer = createReducer(
     filters,
     txs: filterTxs(state.allTxs, filters),
   })),
-  on(MempoolActions.setActiveTx, (state, { tx }) => ({ ...state, activeTx: tx })),
+  on(MempoolActions.setActiveTx, (state, { tx }) => ({
+    ...state,
+    activeTx: tx,
+  })),
   on(MempoolActions.close, () => initialState),
 );
 
-function filterTxs(txs: MempoolTransaction[], filters: MempoolFilters): MempoolTransaction[] {
+function filterTxs(
+  txs: MempoolTransaction[],
+  filters: MempoolFilters,
+): MempoolTransaction[] {
   return txs.filter(tx => {
-    if (filters.delegation === false && tx.kind === MempoolTransactionKind.DELEGATION) return false;
-    if (filters.payment === false && tx.kind === MempoolTransactionKind.PAYMENT) return false;
-    if (filters.zkApp === false && tx.kind === MempoolTransactionKind.ZK_APP) return false;
+    if (
+      filters.delegation === false &&
+      tx.kind === MempoolTransactionKind.DELEGATION
+    )
+      return false;
+    if (filters.payment === false && tx.kind === MempoolTransactionKind.PAYMENT)
+      return false;
+    if (filters.zkApp === false && tx.kind === MempoolTransactionKind.ZK_APP)
+      return false;
 
     if (filters.search?.length > 2) {
       const searchTerm = filters.search.toLowerCase();
-      const searchMatch = tx.txHash.toLowerCase().includes(searchTerm) || tx.sender.toLowerCase().includes(searchTerm);
+      const searchMatch =
+        tx.txHash.toLowerCase().includes(searchTerm) ||
+        tx.sender.toLowerCase().includes(searchTerm);
       if (!searchMatch) return false;
     }
 

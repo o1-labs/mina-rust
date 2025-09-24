@@ -12,15 +12,17 @@ import { filter, take } from 'rxjs';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-network-connections-table',
-    templateUrl: './network-connections-table.component.html',
-    styleUrls: ['./network-connections-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100' },
-    standalone: false
+  selector: 'mina-network-connections-table',
+  templateUrl: './network-connections-table.component.html',
+  styleUrls: ['./network-connections-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100' },
+  standalone: false,
 })
-export class NetworkConnectionsTableComponent extends MinaTableRustWrapper<NetworkConnection> implements OnInit {
-
+export class NetworkConnectionsTableComponent
+  extends MinaTableRustWrapper<NetworkConnection>
+  implements OnInit
+{
   protected readonly tableHeads: TableColumnList<NetworkConnection> = [
     { name: 'ID' },
     { name: 'datetime' },
@@ -37,7 +39,9 @@ export class NetworkConnectionsTableComponent extends MinaTableRustWrapper<Netwo
   private activeRow: NetworkConnection;
   private idFromRoute: number;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -52,33 +56,47 @@ export class NetworkConnectionsTableComponent extends MinaTableRustWrapper<Netwo
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['id'] && this.connections.length === 0) {
-        this.idFromRoute = Number(route.params['id']);
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['id'] && this.connections.length === 0) {
+          this.idFromRoute = Number(route.params['id']);
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToNetworkConnectionsChanges(): void {
-    this.select(selectNetworkConnections, (connections: NetworkConnection[]) => {
-      this.connections = connections;
-      this.table.rows = connections;
-      this.table.detect();
-      this.scrollToElement();
-    }, filter(connections => connections.length > 0));
+    this.select(
+      selectNetworkConnections,
+      (connections: NetworkConnection[]) => {
+        this.connections = connections;
+        this.table.rows = connections;
+        this.table.detect();
+        this.scrollToElement();
+      },
+      filter(connections => connections.length > 0),
+    );
   }
 
   private listenToActiveRowChange(): void {
-    this.select(selectNetworkConnectionsActiveConnection, (connection: NetworkConnection) => {
-      this.activeRow = connection;
-      this.table.activeRow = connection;
-      this.table.detect();
-    });
+    this.select(
+      selectNetworkConnectionsActiveConnection,
+      (connection: NetworkConnection) => {
+        this.activeRow = connection;
+        this.table.activeRow = connection;
+        this.table.detect();
+      },
+    );
   }
 
   protected override onRowClick(row: NetworkConnection): void {
     if (row.connectionId !== this.activeRow?.connectionId) {
-      this.router.navigate([Routes.NETWORK, Routes.CONNECTIONS, row.connectionId], { queryParamsHandling: 'merge' });
+      this.router.navigate(
+        [Routes.NETWORK, Routes.CONNECTIONS, row.connectionId],
+        { queryParamsHandling: 'merge' },
+      );
       this.dispatch(NetworkConnectionsSelectConnection, row);
     }
   }

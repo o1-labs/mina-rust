@@ -12,7 +12,7 @@ const routes: Routes = [
         path: ':heightOrHash',
         component: ScanStateComponent,
         title: SNARKS_TITLE,
-      }
+      },
     ],
   },
   {
@@ -24,6 +24,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class ScanStateRouting {}

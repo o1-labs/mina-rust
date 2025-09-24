@@ -2,11 +2,18 @@ import { Injectable } from '@angular/core';
 import { MinaState, selectMinaState } from '@app/app.setup';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { Store } from '@ngrx/store';
-import { createNonDispatchableEffect, Effect, removeParamsFromURL } from '@openmina/shared';
+import {
+  createNonDispatchableEffect,
+  Effect,
+  removeParamsFromURL,
+} from '@openmina/shared';
 import { filter, map, mergeMap, of, switchMap, tap } from 'rxjs';
 import { AppActions } from '@app/app.actions';
 import { Router } from '@angular/router';
-import { FeatureType, MinaNode } from '@shared/types/core/environment/mina-env.type';
+import {
+  FeatureType,
+  MinaNode,
+} from '@shared/types/core/environment/mina-env.type';
 import { AppService } from '@app/app.service';
 import { getFirstFeature, isFeatureEnabled } from '@shared/constants/config';
 import { RustService } from '@core/services/rust.service';
@@ -18,7 +25,6 @@ import { AppNodeStatus } from '@shared/types/app/app-node-details.type';
 
 @Injectable()
 export class AppEffects extends BaseEffect {
-
   readonly init$: Effect;
   readonly initSuccess$: Effect;
   readonly onNodeChange$: Effect;
@@ -27,92 +33,121 @@ export class AppEffects extends BaseEffect {
 
   private requestInProgress: boolean = false;
 
-  constructor(private actions$: Actions,
-              private appService: AppService,
-              private rustNode: RustService,
-              private router: Router,
-              private webNodeService: WebNodeService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private appService: AppService,
+    private rustNode: RustService,
+    private router: Router,
+    private webNodeService: WebNodeService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.init$ = createEffect(() => this.actions$.pipe(
-      ofType(AppActions.init),
-      switchMap(() => this.appService.getNodes()),
-      switchMap((nodes: MinaNode[]) => this.appService.getActiveNode(nodes).pipe(
-        tap((activeNode: MinaNode) => this.rustNode.changeRustNode(activeNode)),
-        map((activeNode: MinaNode) => ({ activeNode, nodes })),
-      )),
-      map((payload: { activeNode: MinaNode, nodes: MinaNode[] }) => AppActions.initSuccess(payload)),
-    ));
+    this.init$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActions.init),
+        switchMap(() => this.appService.getNodes()),
+        switchMap((nodes: MinaNode[]) =>
+          this.appService.getActiveNode(nodes).pipe(
+            tap((activeNode: MinaNode) =>
+              this.rustNode.changeRustNode(activeNode),
+            ),
+            map((activeNode: MinaNode) => ({ activeNode, nodes })),
+          ),
+        ),
+        map((payload: { activeNode: MinaNode; nodes: MinaNode[] }) =>
+          AppActions.initSuccess(payload),
+        ),
+      ),
+    );
 
-    this.initSuccess$ = createEffect(() => this.actions$.pipe(
-      ofType(AppActions.initSuccess),
-      this.latestActionState(),
-      switchMap(({ state }) => {
-        if (state.app.activeNode.isWebNode) {
-          return this.webNodeService.loadWasm$().pipe(
-            switchMap(() => this.webNodeService.startWasm$()),
-          );
-        }
-        return of({});
-      }),
-      map(() => AppActions.getNodeEnvBuild()),
-    ));
+    this.initSuccess$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActions.initSuccess),
+        this.latestActionState(),
+        switchMap(({ state }) => {
+          if (state.app.activeNode.isWebNode) {
+            return this.webNodeService
+              .loadWasm$()
+              .pipe(switchMap(() => this.webNodeService.startWasm$()));
+          }
+          return of({});
+        }),
+        map(() => AppActions.getNodeEnvBuild()),
+      ),
+    );
 
-    this.onNodeChange$ = createNonDispatchableEffect(() => this.actions$.pipe(
-      ofType(AppActions.changeActiveNode),
-      this.latestActionState(),
-      tap(({ state }) => {
-        this.rustNode.changeRustNode(state.app.activeNode);
-        const activePage = removeParamsFromURL(this.router.url.split('/')[1]) as FeatureType;
-        this.router.navigate([], {
-          queryParams: { node: state.app.activeNode.name },
-          queryParamsHandling: 'merge',
-        });
-        if (!isFeatureEnabled(state.app.activeNode, activePage)) {
-          this.router.navigate([getFirstFeature(state.app.activeNode)]);
-        }
-      }),
-      switchMap(({ state }) => {
-        if (state.app.activeNode.isWebNode) {
-          return this.webNodeService.loadWasm$().pipe(
-            switchMap(() => this.webNodeService.startWasm$()),
-          );
-        }
-        return of({});
-      }),
-      switchMap(() => [AppActions.getNodeDetails(), AppActions.getNodeEnvBuild()]),
-    ));
+    this.onNodeChange$ = createNonDispatchableEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActions.changeActiveNode),
+        this.latestActionState(),
+        tap(({ state }) => {
+          this.rustNode.changeRustNode(state.app.activeNode);
+          const activePage = removeParamsFromURL(
+            this.router.url.split('/')[1],
+          ) as FeatureType;
+          this.router.navigate([], {
+            queryParams: { node: state.app.activeNode.name },
+            queryParamsHandling: 'merge',
+          });
+          if (!isFeatureEnabled(state.app.activeNode, activePage)) {
+            this.router.navigate([getFirstFeature(state.app.activeNode)]);
+          }
+        }),
+        switchMap(({ state }) => {
+          if (state.app.activeNode.isWebNode) {
+            return this.webNodeService
+              .loadWasm$()
+              .pipe(switchMap(() => this.webNodeService.startWasm$()));
+          }
+          return of({});
+        }),
+        switchMap(() => [
+          AppActions.getNodeDetails(),
+          AppActions.getNodeEnvBuild(),
+        ]),
+      ),
+    );
 
-    this.getNodeEnvBuild$ = createEffect(() => this.actions$.pipe(
-      ofType(AppActions.getNodeEnvBuild),
-      mergeMap(() => this.appService.getEnvBuild()),
-      map(envBuild => AppActions.getNodeEnvBuildSuccess({ envBuild })),
-      catchErrorAndRepeat2(MinaErrorType.RUST, AppActions.getNodeEnvBuildSuccess({ envBuild: undefined })),
-    ));
+    this.getNodeEnvBuild$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActions.getNodeEnvBuild),
+        mergeMap(() => this.appService.getEnvBuild()),
+        map(envBuild => AppActions.getNodeEnvBuildSuccess({ envBuild })),
+        catchErrorAndRepeat2(
+          MinaErrorType.RUST,
+          AppActions.getNodeEnvBuildSuccess({ envBuild: undefined }),
+        ),
+      ),
+    );
 
-    this.getNodeDetails$ = createEffect(() => this.actions$.pipe(
-      ofType(AppActions.getNodeDetails),
-      filter(() => !this.requestInProgress),
-      tap(() => this.requestInProgress = true),
-      switchMap(() => this.appService.getActiveNodeDetails()),
-      map(details => AppActions.getNodeDetailsSuccess({ details })),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, AppActions.getNodeDetailsSuccess({
-        details: {
-          status: AppNodeStatus.OFFLINE,
-          blockHeight: null,
-          blockTime: null,
-          peersConnected: 0,
-          peersDisconnected: 0,
-          peersConnecting: 0,
-          transactions: 0,
-          snarks: 0,
-          producingBlockAt: null,
-          producingBlockGlobalSlot: null,
-          producingBlockStatus: null,
-        },
-      })),
-      tap(() => this.requestInProgress = false),
-    ));
+    this.getNodeDetails$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(AppActions.getNodeDetails),
+        filter(() => !this.requestInProgress),
+        tap(() => (this.requestInProgress = true)),
+        switchMap(() => this.appService.getActiveNodeDetails()),
+        map(details => AppActions.getNodeDetailsSuccess({ details })),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          AppActions.getNodeDetailsSuccess({
+            details: {
+              status: AppNodeStatus.OFFLINE,
+              blockHeight: null,
+              blockTime: null,
+              peersConnected: 0,
+              peersDisconnected: 0,
+              peersConnecting: 0,
+              transactions: 0,
+              snarks: 0,
+              producingBlockAt: null,
+              producingBlockGlobalSlot: null,
+              producingBlockStatus: null,
+            },
+          }),
+        ),
+        tap(() => (this.requestInProgress = false)),
+      ),
+    );
   }
 }

@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import {
   SnarksWorkPoolClose,
@@ -9,18 +15,22 @@ import { selectSnarksWorkPoolOpenSidePanel } from '@snarks/work-pool/snarks-work
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-    selector: 'mina-snarks-work-pool',
-    templateUrl: './snarks-work-pool.component.html',
-    styleUrls: ['./snarks-work-pool.component.scss'],
-    host: { class: 'flex-column h-100' },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-snarks-work-pool',
+  templateUrl: './snarks-work-pool.component.html',
+  styleUrls: ['./snarks-work-pool.component.scss'],
+  host: { class: 'flex-column h-100' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class SnarksWorkPoolComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class SnarksWorkPoolComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   openSidePanel: boolean;
 
-  constructor(public el: ElementRef) { super(); }
+  constructor(public el: ElementRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.select(AppSelectors.activeNode, node => {

@@ -17,7 +17,8 @@
     &.active {
       background-color: openmina.$selected-container;
 
-      > span, a {
+      > span,
+      a {
         color: openmina.$selected-primary !important;
       }
     }
@@ -48,7 +49,9 @@
           @include openmina.flexRowVertCenter();
 
           .mina-icon.info {
-            font-variation-settings: 'FILL' 0, 'wght' 300;
+            font-variation-settings:
+              'FILL' 0,
+              'wght' 300;
             margin-left: 4px;
             font-size: 20px;
           }

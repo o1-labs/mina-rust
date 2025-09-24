@@ -10,11 +10,17 @@ export interface NodesOverviewState {
   sort: TableSort<NodesOverviewNode>;
 }
 
-const select = <T>(selector: (state: NodesOverviewState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectNodesDashboardState,
-  selector,
-);
+const select = <T>(
+  selector: (state: NodesOverviewState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectNodesDashboardState, selector);
 
-export const selectNodesOverviewNodes = select((state: NodesOverviewState): NodesOverviewNode[] => state.nodes);
-export const selectNodesOverviewSort = select((state: NodesOverviewState): TableSort<NodesOverviewNode> => state.sort);
-export const selectNodesOverviewActiveNode = select((state: NodesOverviewState): NodesOverviewNode => state.activeNode);
+export const selectNodesOverviewNodes = select(
+  (state: NodesOverviewState): NodesOverviewNode[] => state.nodes,
+);
+export const selectNodesOverviewSort = select(
+  (state: NodesOverviewState): TableSort<NodesOverviewNode> => state.sort,
+);
+export const selectNodesOverviewActiveNode = select(
+  (state: NodesOverviewState): NodesOverviewNode => state.activeNode,
+);

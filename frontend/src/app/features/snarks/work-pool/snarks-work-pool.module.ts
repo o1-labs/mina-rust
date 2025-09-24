@@ -10,20 +10,17 @@ import { SnarksWorkPoolEffects } from '@snarks/work-pool/snarks-work-pool.effect
 import { SnarksWorkPoolToolbarComponent } from '@snarks/work-pool/snarks-work-pool-toolbar/snarks-work-pool-toolbar.component';
 import { SnarksWorkPoolStatisticsComponent } from '@snarks/work-pool/snarks-work-pool-statistics/snarks-work-pool-statistics.component';
 import { SnarksWorkPoolDetailsComponent } from '@snarks/work-pool/snarks-work-pool-details/snarks-work-pool-details.component';
-import {
-  SnarksWorkPoolDetailsOverviewComponent
-} from '@snarks/work-pool/snarks-work-pool-details-overview/snarks-work-pool-details-overview.component';
+import { SnarksWorkPoolDetailsOverviewComponent } from '@snarks/work-pool/snarks-work-pool-details-overview/snarks-work-pool-details-overview.component';
 import { SnarksWorkPoolDetailsSpecsComponent } from '@snarks/work-pool/snarks-work-pool-details-specs/snarks-work-pool-details-specs.component';
-import {
-  SnarksWorkPoolDetailsAccountsComponent
-} from '@snarks/work-pool/snarks-work-pool-details-accounts/snarks-work-pool-details-accounts.component';
+import { SnarksWorkPoolDetailsAccountsComponent } from '@snarks/work-pool/snarks-work-pool-details-accounts/snarks-work-pool-details-accounts.component';
 import {
   CopyComponent,
   HorizontalMenuComponent,
-  HorizontalResizableContainerComponent, JsonConsoleComponent,
-  MinaJsonViewerComponent, MinaSidePanelStepperComponent
+  HorizontalResizableContainerComponent,
+  JsonConsoleComponent,
+  MinaJsonViewerComponent,
+  MinaSidePanelStepperComponent,
 } from '@openmina/shared';
-
 
 @NgModule({
   declarations: [

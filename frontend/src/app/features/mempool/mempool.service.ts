@@ -7,24 +7,33 @@ import {
   SignedCommand,
   ZkappCommand,
 } from '@shared/types/mempool/mempool-transaction.type';
-import { decodeMemo, removeUnicodeEscapes } from '@shared/helpers/transaction.helper';
+import {
+  decodeMemo,
+  removeUnicodeEscapes,
+} from '@shared/helpers/transaction.helper';
 import { getLocalStorage, ONE_BILLION } from '@openmina/shared';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MempoolService {
+  constructor(private rust: RustService) {}
 
-  constructor(private rust: RustService) { }
-
-  getTransactionPool(limit?: number, from?: number): Observable<{ txs: MempoolTransaction[] }> {
-    return this.rust.get<MempoolTransactionResponse[]>('/transaction-pool').pipe(
-      map(data => ({ txs: this.mapTxPoolResponse(data) })),
-      map(({ txs }: { txs: any }) => ({ txs: [...txs] })),
-    );
+  getTransactionPool(
+    limit?: number,
+    from?: number,
+  ): Observable<{ txs: MempoolTransaction[] }> {
+    return this.rust
+      .get<MempoolTransactionResponse[]>('/transaction-pool')
+      .pipe(
+        map(data => ({ txs: this.mapTxPoolResponse(data) })),
+        map(({ txs }: { txs: any }) => ({ txs: [...txs] })),
+      );
   }
 
-  private mapTxPoolResponse(response: MempoolTransactionResponse[]): MempoolTransaction[] {
+  private mapTxPoolResponse(
+    response: MempoolTransactionResponse[],
+  ): MempoolTransaction[] {
     return response.map((tx: MempoolTransactionResponse) => {
       switch (tx.data[0]) {
         case MempoolTransactionResponseKind.SignedCommand:
@@ -39,7 +48,9 @@ export class MempoolService {
             memo: removeUnicodeEscapes(memo),
             transactionData: tx.data[1],
             sentFromStressingTool: memo.includes('S.T.'),
-            sentByMyBrowser: memo.includes(getLocalStorage()?.getItem('browserId')),
+            sentByMyBrowser: memo.includes(
+              getLocalStorage()?.getItem('browserId'),
+            ),
           } as MempoolTransaction;
         case MempoolTransactionResponseKind.ZkappCommand:
           const zkapp = tx.data[1] as ZkappCommand;
@@ -54,13 +65,14 @@ export class MempoolService {
             memo: removeUnicodeEscapes(zkMemo),
             transactionData: tx.data[1],
             sentFromStressingTool: zkMemo.includes('S.T.'),
-            sentByMyBrowser: zkMemo.includes(getLocalStorage()?.getItem('browserId')),
+            sentByMyBrowser: zkMemo.includes(
+              getLocalStorage()?.getItem('browserId'),
+            ),
           } as MempoolTransaction;
       }
     });
   }
 }
-
 
 export interface MempoolTransactionResponse {
   data: [MempoolTransactionResponseKind, SignedCommand | ZkappCommand];

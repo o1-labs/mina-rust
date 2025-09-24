@@ -8,8 +8,17 @@ import {
   ViewChild,
 } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { FeaturesConfig, FeatureType, MinaNode } from '@shared/types/core/environment/mina-env.type';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import {
+  FeaturesConfig,
+  FeatureType,
+  MinaNode,
+} from '@shared/types/core/environment/mina-env.type';
 import { AppActions } from '@app/app.actions';
 import { NgForOf, NgIf } from '@angular/common';
 
@@ -36,7 +45,6 @@ const servers: string[] = [
   '127.0.0.1:5432',
 ];
 
-
 type Feature = {
   name: string;
   checked?: boolean;
@@ -53,16 +61,13 @@ type SubFeature = {
   templateUrl: './new-node.component.html',
   styleUrls: ['./new-node.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  host: { class: 'flex-column bg-surface-top popup-box-shadow-weak border-rad-8' },
+  host: {
+    class: 'flex-column bg-surface-top popup-box-shadow-weak border-rad-8',
+  },
   standalone: true,
-  imports: [
-    ReactiveFormsModule,
-    NgForOf,
-    NgIf,
-  ],
+  imports: [ReactiveFormsModule, NgForOf, NgIf],
 })
 export class NewNodeComponent extends StoreDispatcher implements OnInit {
-
   protected readonly features: Feature[] = [
     {
       name: 'Dashboard',
@@ -81,9 +86,7 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
     {
       name: 'State',
       checked: true,
-      subFeatures: [
-        { name: 'actions', checked: true },
-      ],
+      subFeatures: [{ name: 'actions', checked: true }],
     },
     {
       name: 'Network',
@@ -109,9 +112,7 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
     {
       name: 'Resources',
       checked: true,
-      subFeatures: [
-        { name: 'memory', checked: true },
-      ],
+      subFeatures: [{ name: 'memory', checked: true }],
     },
     {
       name: 'Mempool',
@@ -125,10 +126,14 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
     },
   ];
   readonly closeEmitter: EventEmitter<void> = new EventEmitter<void>();
-  readonly placeholder: string = nodeNames[Math.floor(Math.random() * nodeNames.length)];
-  readonly placeholder2: string = servers[Math.floor(Math.random() * servers.length)];
-  readonly placeholder3: string = servers[Math.floor(Math.random() * servers.length)];
-  readonly placeholder4: string = servers[Math.floor(Math.random() * servers.length)];
+  readonly placeholder: string =
+    nodeNames[Math.floor(Math.random() * nodeNames.length)];
+  readonly placeholder2: string =
+    servers[Math.floor(Math.random() * servers.length)];
+  readonly placeholder3: string =
+    servers[Math.floor(Math.random() * servers.length)];
+  readonly placeholder4: string =
+    servers[Math.floor(Math.random() * servers.length)];
   formGroup: FormGroup;
 
   @ViewChild('fg') private fgRef: ElementRef<HTMLFormElement>;
@@ -147,8 +152,12 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
     }
   }
 
-  constructor(private formBuilder: FormBuilder,
-              private el: ElementRef) { super(); }
+  constructor(
+    private formBuilder: FormBuilder,
+    private el: ElementRef,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -172,7 +181,9 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
 
   onSubFeatureCheck(subFeature: SubFeature, feature: Feature): void {
     subFeature.checked = !subFeature.checked;
-    feature.checked = feature.subFeatures.some(subFeature => subFeature.checked);
+    feature.checked = feature.subFeatures.some(
+      subFeature => subFeature.checked,
+    );
   }
 
   addNode(): void {
@@ -186,10 +197,14 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
     this.features
       .filter(f => f.checked)
       .forEach((feature: Feature) => {
-        const featureType = feature.name.toLowerCase().replace(' ', '-') as FeatureType;
+        const featureType = feature.name
+          .toLowerCase()
+          .replace(' ', '-') as FeatureType;
         featuresConfig[featureType] = feature.subFeatures
           .filter(f => f.checked)
-          .map((subFeature: SubFeature) => subFeature.name.toLowerCase().replace(' ', '-'));
+          .map((subFeature: SubFeature) =>
+            subFeature.name.toLowerCase().replace(' ', '-'),
+          );
       });
 
     const node: MinaNode = {

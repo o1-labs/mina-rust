@@ -1,10 +1,29 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  ViewChild,
+} from '@angular/core';
 import { MinaNode } from '@shared/types/core/environment/mina-env.type';
-import { debounceTime, distinctUntilChanged, filter, fromEvent, map } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  filter,
+  fromEvent,
+  map,
+} from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppActions } from '@app/app.actions';
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
 import { CONFIG } from '@shared/constants/config';
 import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { OpenminaEagerSharedModule } from '@openmina/shared';
@@ -17,28 +36,31 @@ import { OpenminaEagerSharedModule } from '@openmina/shared';
   host: { class: 'flex-column w-100' },
   animations: [
     trigger('fadeIn', [
-      state('void', style({
-        opacity: 0,
-        transform: 'translateY(-10px)',
-      })),
+      state(
+        'void',
+        style({
+          opacity: 0,
+          transform: 'translateY(-10px)',
+        }),
+      ),
       transition(':enter', [
-        animate('200ms ease-out', style({
-          opacity: 1,
-          transform: 'translateY(0)',
-        })),
+        animate(
+          '200ms ease-out',
+          style({
+            opacity: 1,
+            transform: 'translateY(0)',
+          }),
+        ),
       ]),
     ]),
   ],
   standalone: true,
-  imports: [
-    NgClass,
-    OpenminaEagerSharedModule,
-    NgIf,
-    NgForOf,
-  ],
+  imports: [NgClass, OpenminaEagerSharedModule, NgIf, NgForOf],
 })
-export class NodePickerComponent extends StoreDispatcher implements AfterViewInit {
-
+export class NodePickerComponent
+  extends StoreDispatcher
+  implements AfterViewInit
+{
   activeNode: MinaNode;
   nodes: MinaNode[] = [];
 
@@ -49,8 +71,9 @@ export class NodePickerComponent extends StoreDispatcher implements AfterViewIni
   @ViewChild('searchNode') searchInput: ElementRef<HTMLInputElement>;
   readonly canAddNodes: boolean = CONFIG.canAddNodes;
 
-
-  constructor(private elementRef: ElementRef<HTMLElement>) { super(); }
+  constructor(private elementRef: ElementRef<HTMLElement>) {
+    super();
+  }
 
   ngAfterViewInit(): void {
     this.listenToNodeSearch();
@@ -76,7 +99,11 @@ export class NodePickerComponent extends StoreDispatcher implements AfterViewIni
         map(() => this.searchInput.nativeElement.value.toLowerCase()),
       )
       .subscribe((value: string) => {
-        this.filteredNodes = this.nodes.filter(n => n.name.toLowerCase().includes(value) || n.url?.toLowerCase().includes(value));
+        this.filteredNodes = this.nodes.filter(
+          n =>
+            n.name.toLowerCase().includes(value) ||
+            n.url?.toLowerCase().includes(value),
+        );
         this.detect();
       });
   }

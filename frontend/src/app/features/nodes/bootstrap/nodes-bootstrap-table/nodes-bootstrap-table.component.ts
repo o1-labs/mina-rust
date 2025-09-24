@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import {
   getMergedRoute,
   hasValue,
@@ -25,14 +31,16 @@ import { NodesBootstrapNode } from '@shared/types/nodes/bootstrap/nodes-bootstra
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-nodes-bootstrap-table',
-    templateUrl: './nodes-bootstrap-table.component.html',
-    styleUrls: ['./nodes-bootstrap-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-nodes-bootstrap-table',
+  templateUrl: './nodes-bootstrap-table.component.html',
+  styleUrls: ['./nodes-bootstrap-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBootstrapNode> implements OnInit {
-
+export class NodesBootstrapTableComponent
+  extends MinaTableRustWrapper<NodesBootstrapNode>
+  implements OnInit
+{
   readonly secConfig: SecDurationConfig = {
     color: true,
     onlySeconds: false,
@@ -63,7 +71,9 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
 
   @ViewChild('thGroupsTemplate') private thGroupsTemplate: TemplateRef<void>;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -74,7 +84,9 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
   }
 
   protected override setupTable(): void {
-    this.table.gridTemplateColumns = [50, 100, 80, 140, 80, 65, 65, 80, 80, 65, 65, 80];
+    this.table.gridTemplateColumns = [
+      50, 100, 80, 140, 80, 65, 65, 80, 80, 65, 65, 80,
+    ];
     this.table.propertyForActiveCheck = 'index';
     this.table.thGroupsTemplate = this.thGroupsTemplate;
     this.table.sortClz = NodesBootstrapSortNodes;
@@ -82,22 +94,30 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['index'] && this.table.rows.length === 0) {
-        this.indexFromRoute = Number(route.params['index']);
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['index'] && this.table.rows.length === 0) {
+          this.indexFromRoute = Number(route.params['index']);
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToNodesChanges(): void {
-    this.select(selectNodesBootstrapNodes, (nodes: NodesBootstrapNode[]) => {
-      this.table.rows = nodes;
-      this.table.detect();
-      if (hasValue(this.indexFromRoute)) {
-        this.scrollToElement();
-      }
-      this.detect();
-    }, filter(nodes => nodes.length > 0));
+    this.select(
+      selectNodesBootstrapNodes,
+      (nodes: NodesBootstrapNode[]) => {
+        this.table.rows = nodes;
+        this.table.detect();
+        if (hasValue(this.indexFromRoute)) {
+          this.scrollToElement();
+        }
+        this.detect();
+      },
+      filter(nodes => nodes.length > 0),
+    );
   }
 
   private listenToActiveNodeChange(): void {
@@ -109,7 +129,8 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
   }
 
   private scrollToElement(): void {
-    const finder = (node: NodesBootstrapNode) => node.index === this.indexFromRoute;
+    const finder = (node: NodesBootstrapNode) =>
+      node.index === this.indexFromRoute;
     const i = this.table.rows.findIndex(finder);
     this.table.scrollToElement(finder);
     delete this.indexFromRoute;
@@ -119,7 +140,9 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
   protected override onRowClick(row: NodesBootstrapNode): void {
     if (this.table.activeRow?.index !== row?.index) {
       this.dispatch(NodesBootstrapSetActiveBlock, row);
-      this.router.navigate([Routes.NODES, Routes.BOOTSTRAP, row.index], { queryParamsHandling: 'merge' });
+      this.router.navigate([Routes.NODES, Routes.BOOTSTRAP, row.index], {
+        queryParamsHandling: 'merge',
+      });
     }
   }
 
@@ -128,9 +151,13 @@ export class NodesBootstrapTableComponent extends MinaTableRustWrapper<NodesBoot
   }
 
   private listenToSidePanelOpening(): void {
-    this.select(selectNodesBootstrapOpenSidePanel, (open: boolean) => {
-      this.openSidePanel = !!open;
-      this.detect();
-    }, mergeMap((open: boolean) => of(open).pipe(delay(open ? 0 : 250))));
+    this.select(
+      selectNodesBootstrapOpenSidePanel,
+      (open: boolean) => {
+        this.openSidePanel = !!open;
+        this.detect();
+      },
+      mergeMap((open: boolean) => of(open).pipe(delay(open ? 0 : 250))),
+    );
   }
 }

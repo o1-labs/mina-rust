@@ -33,7 +33,9 @@ mina-dashboard-blocks-sync {
 }
 
 .header {
-  transition: height .6s ease-in, opacity .4s .4s ease-in;
+  transition:
+    height 0.6s ease-in,
+    opacity 0.4s 0.4s ease-in;
 
   &.hide {
     height: 0 !important;
@@ -63,7 +65,14 @@ mina-dashboard-blocks-sync {
     top: 1px;
     left: -50px;
     width: 50px;
-    background: radial-gradient(openmina.$success-primary, openmina.$success-primary, openmina.$success-primary, openmina.$success-primary, transparent, transparent);
+    background: radial-gradient(
+      openmina.$success-primary,
+      openmina.$success-primary,
+      openmina.$success-primary,
+      openmina.$success-primary,
+      transparent,
+      transparent
+    );
     border-radius: 20px;
     animation: move 9s linear infinite;
   }

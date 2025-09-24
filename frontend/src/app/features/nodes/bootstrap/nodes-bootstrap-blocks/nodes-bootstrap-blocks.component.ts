@@ -4,20 +4,36 @@ import { NodesBootstrapNode } from '@shared/types/nodes/bootstrap/nodes-bootstra
 import { selectNodesBootstrapActiveNode } from '@nodes/bootstrap/nodes-bootstrap.state';
 import {
   NodesOverviewBlock,
-  NodesOverviewNodeBlockStatus
+  NodesOverviewNodeBlockStatus,
 } from '@shared/types/nodes/dashboard/nodes-overview-block.type';
-import { SEC_CONFIG_GRAY_PALETTE, SecDurationConfig, sort, SortDirection, TableSort } from '@openmina/shared';
+import {
+  SEC_CONFIG_GRAY_PALETTE,
+  SecDurationConfig,
+  sort,
+  SortDirection,
+  TableSort,
+} from '@openmina/shared';
 
 @Component({
-    selector: 'mina-nodes-bootstrap-blocks',
-    templateUrl: './nodes-bootstrap-blocks.component.html',
-    styleUrls: ['./nodes-bootstrap-blocks.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-nodes-bootstrap-blocks',
+  templateUrl: './nodes-bootstrap-blocks.component.html',
+  styleUrls: ['./nodes-bootstrap-blocks.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class NodesBootstrapBlocksComponent extends StoreDispatcher implements OnInit {
-
-  readonly secConfig: SecDurationConfig = { color: true, onlySeconds: false, colors: SEC_CONFIG_GRAY_PALETTE, severe: 10, warn: 1, default: 0.01, undefinedAlternative: '-'};
+export class NodesBootstrapBlocksComponent
+  extends StoreDispatcher
+  implements OnInit
+{
+  readonly secConfig: SecDurationConfig = {
+    color: true,
+    onlySeconds: false,
+    colors: SEC_CONFIG_GRAY_PALETTE,
+    severe: 10,
+    warn: 1,
+    default: 0.01,
+    undefinedAlternative: '-',
+  };
   activeNode: NodesBootstrapNode;
   fetchedBlocks: NodesOverviewBlock[] = [];
   appliedBlocks: NodesOverviewBlock[] = [];
@@ -28,18 +44,27 @@ export class NodesBootstrapBlocksComponent extends StoreDispatcher implements On
   }
 
   private listenToActiveNode(): void {
-    this.select(selectNodesBootstrapActiveNode, (activeNode: NodesBootstrapNode) => {
-      this.activeNode = activeNode;
-      this.fetchedBlocks = sortBlocks(
-        activeNode?.blocks.filter(b => b.status === NodesOverviewNodeBlockStatus.FETCHED || b.fetchDuration > 0) || [],
-        { sortBy: 'fetchDuration', sortDirection: SortDirection.DSC },
-      );
-      this.appliedBlocks = sortBlocks(
-        activeNode?.blocks.filter(b => b.status === NodesOverviewNodeBlockStatus.APPLIED) || [],
-        { sortBy: 'applyDuration', sortDirection: SortDirection.DSC },
-      );
-      this.detect();
-    });
+    this.select(
+      selectNodesBootstrapActiveNode,
+      (activeNode: NodesBootstrapNode) => {
+        this.activeNode = activeNode;
+        this.fetchedBlocks = sortBlocks(
+          activeNode?.blocks.filter(
+            b =>
+              b.status === NodesOverviewNodeBlockStatus.FETCHED ||
+              b.fetchDuration > 0,
+          ) || [],
+          { sortBy: 'fetchDuration', sortDirection: SortDirection.DSC },
+        );
+        this.appliedBlocks = sortBlocks(
+          activeNode?.blocks.filter(
+            b => b.status === NodesOverviewNodeBlockStatus.APPLIED,
+          ) || [],
+          { sortBy: 'applyDuration', sortDirection: SortDirection.DSC },
+        );
+        this.detect();
+      },
+    );
   }
 
   selectTab(tab: number): void {
@@ -47,6 +72,9 @@ export class NodesBootstrapBlocksComponent extends StoreDispatcher implements On
   }
 }
 
-function sortBlocks(blocks: NodesOverviewBlock[], tableSort: TableSort<NodesOverviewBlock>): NodesOverviewBlock[] {
+function sortBlocks(
+  blocks: NodesOverviewBlock[],
+  tableSort: TableSort<NodesOverviewBlock>,
+): NodesOverviewBlock[] {
   return sort<NodesOverviewBlock>(blocks, tableSort, ['hash']);
 }

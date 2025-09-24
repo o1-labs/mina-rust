@@ -23,16 +23,34 @@ export interface NetworkMessagesState {
   pages: number[];
 }
 
-const select = <T>(selector: (state: NetworkMessagesState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectNetworkMessagesState,
-  selector,
-);
+const select = <T>(
+  selector: (state: NetworkMessagesState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectNetworkMessagesState, selector);
 
-export const selectNetworkStream = select((network: NetworkMessagesState): boolean => network.stream);
-export const selectNetworkMessages = select((network: NetworkMessagesState): NetworkMessage[] => network.messages);
-export const selectNetworkActiveRow = select((network: NetworkMessagesState): NetworkMessage => network.activeRow);
-export const selectNetworkMessageHex = select((network: NetworkMessagesState): string => network.activeRowHex);
-export const selectNetworkFullMessage = select((network: NetworkMessagesState): any => network.activeRowFullMessage);
-export const selectNetworkConnection = select((network: NetworkMessagesState): NetworkMessageConnection => network.connection);
-export const selectNetworkActiveFilters = select((network: NetworkMessagesState): NetworkMessagesFilter[] => network.activeFilters);
-export const selectNetworkTimestampInterval = select((network: NetworkMessagesState): TimestampInterval => network.timestamp);
+export const selectNetworkStream = select(
+  (network: NetworkMessagesState): boolean => network.stream,
+);
+export const selectNetworkMessages = select(
+  (network: NetworkMessagesState): NetworkMessage[] => network.messages,
+);
+export const selectNetworkActiveRow = select(
+  (network: NetworkMessagesState): NetworkMessage => network.activeRow,
+);
+export const selectNetworkMessageHex = select(
+  (network: NetworkMessagesState): string => network.activeRowHex,
+);
+export const selectNetworkFullMessage = select(
+  (network: NetworkMessagesState): any => network.activeRowFullMessage,
+);
+export const selectNetworkConnection = select(
+  (network: NetworkMessagesState): NetworkMessageConnection =>
+    network.connection,
+);
+export const selectNetworkActiveFilters = select(
+  (network: NetworkMessagesState): NetworkMessagesFilter[] =>
+    network.activeFilters,
+);
+export const selectNetworkTimestampInterval = select(
+  (network: NetworkMessagesState): TimestampInterval => network.timestamp,
+);

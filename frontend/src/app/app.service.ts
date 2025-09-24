@@ -3,12 +3,13 @@ import { map, Observable, of, tap } from 'rxjs';
 import { MinaNode } from '@shared/types/core/environment/mina-env.type';
 import { CONFIG } from '@shared/constants/config';
 import { RustService } from '@core/services/rust.service';
-import { AppNodeDetails, AppNodeStatus } from '@shared/types/app/app-node-details.type';
+import {
+  AppNodeDetails,
+  AppNodeStatus,
+} from '@shared/types/app/app-node-details.type';
 import { getNetwork } from '@shared/helpers/mina.helper';
 import { getLocalStorage, nanOrElse, ONE_MILLION } from '@openmina/shared';
-import {
-  BlockProductionWonSlotsStatus,
-} from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
+import { BlockProductionWonSlotsStatus } from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
 import { AppEnvBuild } from '@shared/types/app/app-env-build.type';
 import { SentryService } from '@core/services/sentry.service';
 import { WebNodeService } from '@core/services/web-node.service';
@@ -17,13 +18,13 @@ import { WebNodeService } from '@core/services/web-node.service';
   providedIn: 'root',
 })
 export class AppService {
-
   private previousProducedBlock: BlockProductionAttempt;
 
-  constructor(private rust: RustService,
-              private sentryService: SentryService,
-              private webnodeService: WebNodeService) {
-  }
+  constructor(
+    private rust: RustService,
+    private sentryService: SentryService,
+    private webnodeService: WebNodeService,
+  ) {}
 
   getActiveNode(nodes: MinaNode[]): Observable<MinaNode> {
     const nodeName = new URL(location.href).searchParams.get('node');
@@ -44,25 +45,38 @@ export class AppService {
   }
 
   getActiveNodeDetails(): Observable<AppNodeDetails> {
-    return this.rust.get<NodeDetailsResponse>('/status')
-      .pipe(
-        tap((data: NodeDetailsResponse) => this.notifyPrevBlockChanged(data)),
-        map((data: NodeDetailsResponse): AppNodeDetails => ({
-          status: this.getStatus(data),
-          blockHeight: data.transition_frontier.best_tip?.height,
-          blockTime: data.transition_frontier.sync.time,
-          peersConnected: data.peers.filter(p => p.connection_status === 'Connected').length,
-          peersDisconnected: data.peers.filter(p => p.connection_status === 'Disconnected').length,
-          peersConnecting: data.peers.filter(p => p.connection_status === 'Connecting').length,
-          snarks: data.snark_pool.snarks,
-          transactions: data.transaction_pool.transactions,
-          chainId: data.chain_id,
-          network: getNetwork(data.chain_id),
-          producingBlockAt: nanOrElse(data.current_block_production_attempt?.won_slot.slot_time / ONE_MILLION, null),
-          producingBlockGlobalSlot: data.current_block_production_attempt?.won_slot.global_slot,
-          producingBlockStatus: data.current_block_production_attempt?.status,
-        } as AppNodeDetails)),
-      );
+    return this.rust.get<NodeDetailsResponse>('/status').pipe(
+      tap((data: NodeDetailsResponse) => this.notifyPrevBlockChanged(data)),
+      map(
+        (data: NodeDetailsResponse): AppNodeDetails =>
+          ({
+            status: this.getStatus(data),
+            blockHeight: data.transition_frontier.best_tip?.height,
+            blockTime: data.transition_frontier.sync.time,
+            peersConnected: data.peers.filter(
+              p => p.connection_status === 'Connected',
+            ).length,
+            peersDisconnected: data.peers.filter(
+              p => p.connection_status === 'Disconnected',
+            ).length,
+            peersConnecting: data.peers.filter(
+              p => p.connection_status === 'Connecting',
+            ).length,
+            snarks: data.snark_pool.snarks,
+            transactions: data.transaction_pool.transactions,
+            chainId: data.chain_id,
+            network: getNetwork(data.chain_id),
+            producingBlockAt: nanOrElse(
+              data.current_block_production_attempt?.won_slot.slot_time /
+                ONE_MILLION,
+              null,
+            ),
+            producingBlockGlobalSlot:
+              data.current_block_production_attempt?.won_slot.global_slot,
+            producingBlockStatus: data.current_block_production_attempt?.status,
+          }) as AppNodeDetails,
+      ),
+    );
   }
 
   private notifyPrevBlockChanged(data: NodeDetailsResponse): void {
@@ -78,10 +92,15 @@ export class AppService {
       ].includes(status);
 
     if (
-      this.previousProducedBlock && data.previous_block_production_attempt
-      && isInProduction(this.previousProducedBlock.status) !== isInProduction(data.previous_block_production_attempt.status)
+      this.previousProducedBlock &&
+      data.previous_block_production_attempt &&
+      isInProduction(this.previousProducedBlock.status) !==
+        isInProduction(data.previous_block_production_attempt.status)
     ) {
-      this.sentryService.updateProducedBlock(data.previous_block_production_attempt, this.webnodeService.publicKey);
+      this.sentryService.updateProducedBlock(
+        data.previous_block_production_attempt,
+        this.webnodeService.publicKey,
+      );
     }
     this.previousProducedBlock = data.previous_block_production_attempt;
   }
@@ -137,7 +156,6 @@ export interface Times {
   committed: any;
   discarded: any;
 }
-
 
 interface TransitionFrontier {
   best_tip: BestTip;

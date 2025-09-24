@@ -1,21 +1,30 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
-import { SEC_CONFIG_GRAY_PALETTE, SecDurationConfig, TableColumnList } from '@openmina/shared';
+import {
+  SEC_CONFIG_GRAY_PALETTE,
+  SecDurationConfig,
+  TableColumnList,
+} from '@openmina/shared';
 import { filter } from 'rxjs';
 import { NodesLiveBlockEvent } from '@shared/types/nodes/live/nodes-live-block-event.type';
 import { NodesLiveSortEvents } from '@nodes/live/nodes-live.actions';
-import { selectNodesLiveFilteredEvents, selectNodesLiveSort } from '@nodes/live/nodes-live.state';
+import {
+  selectNodesLiveFilteredEvents,
+  selectNodesLiveSort,
+} from '@nodes/live/nodes-live.state';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-nodes-live-events-table',
-    templateUrl: './nodes-live-events-table.component.html',
-    styleUrls: ['./nodes-live-events-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-minus-lg flex-column' },
-    standalone: false
+  selector: 'mina-nodes-live-events-table',
+  templateUrl: './nodes-live-events-table.component.html',
+  styleUrls: ['./nodes-live-events-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-minus-lg flex-column' },
+  standalone: false,
 })
-export class NodesLiveEventsTableComponent extends MinaTableRustWrapper<NodesLiveBlockEvent> implements OnInit {
-
+export class NodesLiveEventsTableComponent
+  extends MinaTableRustWrapper<NodesLiveBlockEvent>
+  implements OnInit
+{
   readonly secConfig: SecDurationConfig = {
     color: true,
     onlySeconds: false,
@@ -46,9 +55,13 @@ export class NodesLiveEventsTableComponent extends MinaTableRustWrapper<NodesLiv
   }
 
   private listenToNodesChanges(): void {
-    this.select(selectNodesLiveFilteredEvents, (events: NodesLiveBlockEvent[]) => {
-      this.table.rows = events;
-      this.table.detect();
-    }, filter(Boolean));
+    this.select(
+      selectNodesLiveFilteredEvents,
+      (events: NodesLiveBlockEvent[]) => {
+        this.table.rows = events;
+        this.table.detect();
+      },
+      filter(Boolean),
+    );
   }
 }

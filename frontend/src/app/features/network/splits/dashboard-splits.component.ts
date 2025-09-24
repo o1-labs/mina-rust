@@ -1,18 +1,28 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { DashboardSplitsClose, DashboardSplitsGetSplits } from '@network/splits/dashboard-splits.actions';
+import {
+  DashboardSplitsClose,
+  DashboardSplitsGetSplits,
+} from '@network/splits/dashboard-splits.actions';
 import { selectDashboardSplitsOpenSidePanel } from '@network/splits/dashboard-splits.state';
 
 @Component({
-    selector: 'mina-splits',
-    templateUrl: './dashboard-splits.component.html',
-    styleUrls: ['./dashboard-splits.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100 w-100' },
-    standalone: false
+  selector: 'mina-splits',
+  templateUrl: './dashboard-splits.component.html',
+  styleUrls: ['./dashboard-splits.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100 w-100' },
+  standalone: false,
 })
-export class DashboardSplitsComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class DashboardSplitsComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   show: boolean = true;
 
   ngOnInit(): void {

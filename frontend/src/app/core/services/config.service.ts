@@ -9,19 +9,20 @@ import { filter } from 'rxjs';
   providedIn: 'root',
 })
 export class ConfigService {
-
   private node: MinaNode;
 
-  constructor(private store: Store<MinaState>) { this.listenToNodeChanging(); }
+  constructor(private store: Store<MinaState>) {
+    this.listenToNodeChanging();
+  }
 
   private listenToNodeChanging(): void {
-    this.store.select(AppSelectors.activeNode)
+    this.store
+      .select(AppSelectors.activeNode)
       .pipe(filter(Boolean))
-      .subscribe((node: MinaNode) => this.node = node);
+      .subscribe((node: MinaNode) => (this.node = node));
   }
 
   get DEBUGGER(): string {
     return this.node.debugger;
   }
-
 }

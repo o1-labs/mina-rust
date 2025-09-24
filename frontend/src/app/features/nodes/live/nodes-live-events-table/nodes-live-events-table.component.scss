@@ -1,7 +1,6 @@
 @use 'openmina';
 
 span {
-
   &.Fetching {
     color: openmina.$base-tertiary;
   }

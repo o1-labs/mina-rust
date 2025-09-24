@@ -79,7 +79,6 @@ mat-sidenav-content {
     margin-bottom: 4px;
     border-top-right-radius: 6px;
 
-
     &.uptime {
       $toolbar: 130px;
       height: calc(100% - #{$toolbar} - #{$subMenus} - #{$tabs});

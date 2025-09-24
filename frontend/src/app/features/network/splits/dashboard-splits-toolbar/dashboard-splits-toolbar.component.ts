@@ -7,20 +7,27 @@ import { selectLoadingStateLength } from '@app/layout/toolbar/loading.reducer';
 import {
   selectDashboardSplitsNetworkMergeDetails,
   selectDashboardSplitsNetworkSplitsDetails,
-  selectDashboardSplitsNodeStats, selectDashboardSplitsSets,
+  selectDashboardSplitsNodeStats,
+  selectDashboardSplitsSets,
 } from '@network/splits/dashboard-splits.state';
-import { DashboardSplitsGetSplits, DashboardSplitsMergeNodes, DashboardSplitsSplitNodes } from '@network/splits/dashboard-splits.actions';
+import {
+  DashboardSplitsGetSplits,
+  DashboardSplitsMergeNodes,
+  DashboardSplitsSplitNodes,
+} from '@network/splits/dashboard-splits.actions';
 
 @Component({
-    selector: 'mina-dashboard-splits-toolbar',
-    templateUrl: './dashboard-splits-toolbar.component.html',
-    styleUrls: ['./dashboard-splits-toolbar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-xl' },
-    standalone: false
+  selector: 'mina-dashboard-splits-toolbar',
+  templateUrl: './dashboard-splits-toolbar.component.html',
+  styleUrls: ['./dashboard-splits-toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-xl' },
+  standalone: false,
 })
-export class DashboardSplitsToolbarComponent extends StoreDispatcher implements OnInit {
-
+export class DashboardSplitsToolbarComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   setsLength: number;
   sets: DashboardSplitsSet[] = [];
   networkSplitTime: string;
@@ -36,16 +43,24 @@ export class DashboardSplitsToolbarComponent extends StoreDispatcher implements 
   }
 
   private listenToSetsChanges(): void {
-    this.select(selectLoadingStateLength, (length: number) => {
-      this.fetching = length > 0;
-      this.detect();
-    }, filter((length: number) => this.fetching !== (length > 0)));
+    this.select(
+      selectLoadingStateLength,
+      (length: number) => {
+        this.fetching = length > 0;
+        this.detect();
+      },
+      filter((length: number) => this.fetching !== length > 0),
+    );
 
-    this.select(selectDashboardSplitsSets, (sets: DashboardSplitsSet[]) => {
-      this.setsLength = sets.length;
-      this.sets = sets;
-      this.detect();
-    }, filter(sets => sets.length > 0));
+    this.select(
+      selectDashboardSplitsSets,
+      (sets: DashboardSplitsSet[]) => {
+        this.setsLength = sets.length;
+        this.sets = sets;
+        this.detect();
+      },
+      filter(sets => sets.length > 0),
+    );
   }
 
   private listenToSplitTimeChanges(): void {

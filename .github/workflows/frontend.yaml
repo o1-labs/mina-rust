@@ -11,19 +11,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend-test:
+  frontend:
     runs-on: ubuntu-24.04
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
-        with:
-          sparse-checkout: |
-            frontend
 
-      - name: Run tests
-        uses: cypress-io/github-action@v6
+      - name: Frontend build and test
+        uses: ./.github/actions/frontend-build
         with:
-          working-directory: frontend
-          start: npm start
-          wait-on: http://localhost:4200
-          wait-on-timeout: 180s
+          run-prettier-check: 'true'
+          run-tests: 'true'

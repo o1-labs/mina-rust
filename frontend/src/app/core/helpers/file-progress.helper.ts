@@ -57,7 +57,8 @@ class AssetMonitor {
             }
 
             receivedLength += value.length;
-            downloadInfo.progress = (receivedLength / downloadInfo.totalSize) * 100;
+            downloadInfo.progress =
+              (receivedLength / downloadInfo.totalSize) * 100;
             self.emitProgress(downloadInfo);
           } catch (error) {
             downloadInfo.status = 'error';
@@ -88,7 +89,7 @@ class AssetMonitor {
       duration: downloadInfo.duration,
       startTime: downloadInfo.startTime,
       endTime: downloadInfo.endTime,
-      downloaded: downloadInfo.progress * downloadInfo.totalSize / 100,
+      downloaded: (downloadInfo.progress * downloadInfo.totalSize) / 100,
     });
   }
 }

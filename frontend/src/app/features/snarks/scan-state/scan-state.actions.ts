@@ -19,18 +19,26 @@ enum ScanStateActionTypes {
 }
 
 export const SCAN_STATE_INIT = ScanStateActionTypes.SCAN_STATE_INIT;
-export const SCAN_STATE_INIT_SUCCESS = ScanStateActionTypes.SCAN_STATE_INIT_SUCCESS;
+export const SCAN_STATE_INIT_SUCCESS =
+  ScanStateActionTypes.SCAN_STATE_INIT_SUCCESS;
 export const SCAN_STATE_CLOSE = ScanStateActionTypes.SCAN_STATE_CLOSE;
 export const SCAN_STATE_GET_BLOCK = ScanStateActionTypes.SCAN_STATE_GET_BLOCK;
-export const SCAN_STATE_GET_BLOCK_SUCCESS = ScanStateActionTypes.SCAN_STATE_GET_BLOCK_SUCCESS;
-export const SCAN_STATE_SET_ACTIVE_JOB_ID = ScanStateActionTypes.SCAN_STATE_SET_ACTIVE_JOB_ID;
-export const SCAN_STATE_SET_ACTIVE_LEAF = ScanStateActionTypes.SCAN_STATE_SET_ACTIVE_LEAF;
-export const SCAN_STATE_TOGGLE_SIDE_PANEL = ScanStateActionTypes.SCAN_STATE_TOGGLE_SIDE_PANEL;
-export const SCAN_STATE_SIDEBAR_RESIZED = ScanStateActionTypes.SCAN_STATE_SIDEBAR_RESIZED;
+export const SCAN_STATE_GET_BLOCK_SUCCESS =
+  ScanStateActionTypes.SCAN_STATE_GET_BLOCK_SUCCESS;
+export const SCAN_STATE_SET_ACTIVE_JOB_ID =
+  ScanStateActionTypes.SCAN_STATE_SET_ACTIVE_JOB_ID;
+export const SCAN_STATE_SET_ACTIVE_LEAF =
+  ScanStateActionTypes.SCAN_STATE_SET_ACTIVE_LEAF;
+export const SCAN_STATE_TOGGLE_SIDE_PANEL =
+  ScanStateActionTypes.SCAN_STATE_TOGGLE_SIDE_PANEL;
+export const SCAN_STATE_SIDEBAR_RESIZED =
+  ScanStateActionTypes.SCAN_STATE_SIDEBAR_RESIZED;
 export const SCAN_STATE_START = ScanStateActionTypes.SCAN_STATE_START;
 export const SCAN_STATE_PAUSE = ScanStateActionTypes.SCAN_STATE_PAUSE;
-export const SCAN_STATE_TOGGLE_TREE_VIEW = ScanStateActionTypes.SCAN_STATE_TOGGLE_TREE_VIEW;
-export const SCAN_STATE_HIGHLIGHT_SNARK_POOL = ScanStateActionTypes.SCAN_STATE_HIGHLIGHT_SNARK_POOL;
+export const SCAN_STATE_TOGGLE_TREE_VIEW =
+  ScanStateActionTypes.SCAN_STATE_TOGGLE_TREE_VIEW;
+export const SCAN_STATE_HIGHLIGHT_SNARK_POOL =
+  ScanStateActionTypes.SCAN_STATE_HIGHLIGHT_SNARK_POOL;
 
 export interface ScanStateAction extends FeatureAction<ScanStateActionTypes> {
   readonly type: ScanStateActionTypes;
@@ -109,5 +117,4 @@ export type ScanStateActions =
   | ScanStateStart
   | ScanStatePause
   | ScanStateToggleTreeView
-  | ScanStateHighlightSnarkPool
-  ;
+  | ScanStateHighlightSnarkPool;

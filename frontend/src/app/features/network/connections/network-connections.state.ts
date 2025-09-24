@@ -12,10 +12,14 @@ export interface NetworkConnectionsState {
   direction: NetworkMessagesDirection;
 }
 
-const select = <T>(selector: (state: NetworkConnectionsState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectNetworkConnectionsState,
-  selector,
-);
+const select = <T>(
+  selector: (state: NetworkConnectionsState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectNetworkConnectionsState, selector);
 
-export const selectNetworkConnections = select((state: NetworkConnectionsState): NetworkConnection[] => state.connections);
-export const selectNetworkConnectionsActiveConnection = select((state: NetworkConnectionsState): NetworkConnection => state.activeConnection);
+export const selectNetworkConnections = select(
+  (state: NetworkConnectionsState): NetworkConnection[] => state.connections,
+);
+export const selectNetworkConnectionsActiveConnection = select(
+  (state: NetworkConnectionsState): NetworkConnection => state.activeConnection,
+);

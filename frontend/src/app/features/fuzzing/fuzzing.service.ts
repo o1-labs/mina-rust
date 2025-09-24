@@ -10,8 +10,7 @@ import { noMillisFormat, toReadableDate } from '@openmina/shared';
 
 @Injectable({ providedIn: 'root' })
 export class FuzzingService {
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getRootDirectoryContent(): Observable<FuzzingDirectory[]> {
     // const url = CONFIG.server.includes(origin)
@@ -38,12 +37,16 @@ export class FuzzingService {
       }
       return {
         fullName: directory,
-        name: directory.includes('_') ? directory.split('_').slice(1).join('_') : directory,
+        name: directory.includes('_')
+          ? directory.split('_').slice(1).join('_')
+          : directory,
         date,
         dateNumber,
       };
     });
-    return directories.sort((a: FuzzingDirectory, b: FuzzingDirectory) => b.dateNumber - a.dateNumber);
+    return directories.sort(
+      (a: FuzzingDirectory, b: FuzzingDirectory) => b.dateNumber - a.dateNumber,
+    );
   }
 
   getFiles(activeDir: string): Observable<FuzzingFile[]> {
@@ -51,41 +54,56 @@ export class FuzzingService {
     //   ? `assets/reports/${activeDir}/${type}index.json`
     //   : `${CONFIG.server}/${type}index.json?path=${encodeURIComponent(CONFIG.parentDirectoryAbsolutePath + '/' + activeDir)}`;
     const url = `assets/reports/${activeDir}/rustindex.json`;
-    return this.http.get<any[]>(url).pipe(delay(100))
+    return this.http
+      .get<any[]>(url)
+      .pipe(delay(100))
       .pipe(
-        map((files: any[]) => files.map((file: any) => ({
-          name: file[0],
-          coverage: file[1],
-          path: file[2],
-        }))),
+        map((files: any[]) =>
+          files.map((file: any) => ({
+            name: file[0],
+            coverage: file[1],
+            path: file[2],
+          })),
+        ),
       );
   }
 
-  getFileDetails(activeDir: string, name: string): Observable<FuzzingFileDetails> {
+  getFileDetails(
+    activeDir: string,
+    name: string,
+  ): Observable<FuzzingFileDetails> {
     // const url = CONFIG.server.includes(origin)
     //   ? `assets/reports/${activeDir}/${name}`
     //   : `${CONFIG.server}/${name}?path=${encodeURIComponent(CONFIG.parentDirectoryAbsolutePath + '/' + activeDir)}`;
     const url = `assets/reports/${activeDir}/${name}`;
-    return this.http.get<any>(url).pipe(delay(100))
+    return this.http
+      .get<any>(url)
+      .pipe(delay(100))
       .pipe(
-        map((file: any) => ({
-          filename: file.filename,
-          executedLines: file.lines.filter((line: any) => line.counters[0]).length,
-          lines: file.lines.map((line: any) => {
-            const counters = line.counters.map((counter: any) => ({
-              colStart: counter.col_start,
-              colEnd: counter.col_end,
-              count: Math.abs(counter.count),
-            }));
-            return {
-              line: line.line,
-              lineColor: this.getLineColor(line),
-              html: this.colorLineCounters(line.line, counters),
-              lineHits: counters.length ? Math.max(...counters.map((counter: any) => counter.count)) : undefined,
-              counters,
-            };
-          }),
-        } as FuzzingFileDetails)),
+        map(
+          (file: any) =>
+            ({
+              filename: file.filename,
+              executedLines: file.lines.filter((line: any) => line.counters[0])
+                .length,
+              lines: file.lines.map((line: any) => {
+                const counters = line.counters.map((counter: any) => ({
+                  colStart: counter.col_start,
+                  colEnd: counter.col_end,
+                  count: Math.abs(counter.count),
+                }));
+                return {
+                  line: line.line,
+                  lineColor: this.getLineColor(line),
+                  html: this.colorLineCounters(line.line, counters),
+                  lineHits: counters.length
+                    ? Math.max(...counters.map((counter: any) => counter.count))
+                    : undefined,
+                  counters,
+                };
+              }),
+            }) as FuzzingFileDetails,
+        ),
       );
   }
 
@@ -114,7 +132,10 @@ export class FuzzingService {
     return lineColor;
   }
 
-  private colorLineCounters(line: string, counters: FuzzingLineCounter[]): string {
+  private colorLineCounters(
+    line: string,
+    counters: FuzzingLineCounter[],
+  ): string {
     let result = '';
     if (counters.length === 0) {
       return line.replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -123,14 +144,18 @@ export class FuzzingService {
     for (let i = 0; i < line.length; i++) {
       const column = i;
       const c = line.charAt(i);
-      const counter = counters.find((counter: FuzzingLineCounter) => counter.colStart <= column && counter.colEnd >= column);
+      const counter = counters.find(
+        (counter: FuzzingLineCounter) =>
+          counter.colStart <= column && counter.colEnd >= column,
+      );
 
       if (counter && column === counter.colStart) {
         const colorCode: string = `var(--${counter.count === 0 ? 'warn' : 'success'}-secondary)`;
         result += `<span style="color:var(--base-primary);background:${colorCode}" h="${counter.count}">`;
       }
 
-      result += c === ' ' ? '&nbsp;' : (c === '<' ? '&lt;' : c === '>' ? '&gt;' : c);
+      result +=
+        c === ' ' ? '&nbsp;' : c === '<' ? '&lt;' : c === '>' ? '&gt;' : c;
 
       if (counter && column === counter.colEnd) {
         result += '</span>';

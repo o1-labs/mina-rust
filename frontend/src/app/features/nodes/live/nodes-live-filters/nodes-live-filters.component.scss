@@ -1,7 +1,6 @@
 @use 'openmina';
 
 .filter {
-
   &:hover:not(.active) {
     background-color: openmina.$base-divider;
     color: openmina.$base-secondary !important;

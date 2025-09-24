@@ -16,7 +16,9 @@
 }
 
 :host ::ng-deep svg {
-  text, rect.child-bg, path.chevron {
+  text,
+  rect.child-bg,
+  path.chevron {
     visibility: hidden;
     opacity: 0;
     transition: opacity 200ms;

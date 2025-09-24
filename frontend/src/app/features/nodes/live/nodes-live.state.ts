@@ -14,14 +14,26 @@ export interface NodesLiveState {
   filters: string[];
 }
 
-const select = <T>(selector: (state: NodesLiveState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectNodesLiveState,
-  selector,
-);
+const select = <T>(
+  selector: (state: NodesLiveState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectNodesLiveState, selector);
 
-export const selectNodesLiveNodes = select((state: NodesLiveState): NodesLiveNode[] => state.nodes);
-export const selectNodesLiveSort = select((state: NodesLiveState): TableSort<NodesLiveBlockEvent> => state.sort);
-export const selectNodesLiveActiveNode = select((state: NodesLiveState): NodesLiveNode => state.activeNode);
-export const selectNodesLiveOpenSidePanel = select((state: NodesLiveState): boolean => state.openSidePanel);
-export const selectNodesLiveFilters = select((state: NodesLiveState): string[] => state.filters);
-export const selectNodesLiveFilteredEvents = select((state: NodesLiveState): NodesLiveBlockEvent[] => state.filteredEvents);
+export const selectNodesLiveNodes = select(
+  (state: NodesLiveState): NodesLiveNode[] => state.nodes,
+);
+export const selectNodesLiveSort = select(
+  (state: NodesLiveState): TableSort<NodesLiveBlockEvent> => state.sort,
+);
+export const selectNodesLiveActiveNode = select(
+  (state: NodesLiveState): NodesLiveNode => state.activeNode,
+);
+export const selectNodesLiveOpenSidePanel = select(
+  (state: NodesLiveState): boolean => state.openSidePanel,
+);
+export const selectNodesLiveFilters = select(
+  (state: NodesLiveState): string[] => state.filters,
+);
+export const selectNodesLiveFilteredEvents = select(
+  (state: NodesLiveState): NodesLiveBlockEvent[] => state.filteredEvents,
+);

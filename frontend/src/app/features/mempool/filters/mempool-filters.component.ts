@@ -10,23 +10,25 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime, distinctUntilChanged, filter } from 'rxjs';
 
 @Component({
-    selector: 'mina-mempool-filters',
-    templateUrl: './mempool-filters.component.html',
-    styleUrls: ['./mempool-filters.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-mempool-filters',
+  templateUrl: './mempool-filters.component.html',
+  styleUrls: ['./mempool-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
 export class MempoolFiltersComponent extends StoreDispatcher implements OnInit {
-
   protected readonly isMobile = isMobile();
-  protected readonly formGroup: FormGroup<{ search: FormControl<string> }> = this.fb.group({ search: [''] });
+  protected readonly formGroup: FormGroup<{ search: FormControl<string> }> =
+    this.fb.group({ search: [''] });
 
   filters: MempoolFilters;
   zkApps: number = 0;
   payments: number = 0;
   delegations: number = 0;
 
-  constructor(private fb: FormBuilder) { super(); }
+  constructor(private fb: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToFilters();
@@ -35,20 +37,23 @@ export class MempoolFiltersComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToSearchChanges(): void {
-    this.formGroup.get('search').valueChanges.pipe(
-      distinctUntilChanged(),
-      debounceTime(200),
-      filter((value: string) => {
-        if (value.length <= 2) {
-          this.changeFilter('search', value.trim());
-          return false;
-        }
-        return true;
-      }),
-      untilDestroyed(this),
-    ).subscribe((value: string) => {
-      this.changeFilter('search', value.trim());
-    });
+    this.formGroup
+      .get('search')
+      .valueChanges.pipe(
+        distinctUntilChanged(),
+        debounceTime(200),
+        filter((value: string) => {
+          if (value.length <= 2) {
+            this.changeFilter('search', value.trim());
+            return false;
+          }
+          return true;
+        }),
+        untilDestroyed(this),
+      )
+      .subscribe((value: string) => {
+        this.changeFilter('search', value.trim());
+      });
   }
 
   private listenToFilters(): void {
@@ -64,15 +69,24 @@ export class MempoolFiltersComponent extends StoreDispatcher implements OnInit {
 
   private listenToActiveEpoch(): void {
     this.select(MempoolSelectors.allTxs, txs => {
-      this.zkApps = txs.filter(tx => tx.kind === MempoolTransactionKind.ZK_APP).length;
-      this.payments = txs.filter(tx => tx.kind === MempoolTransactionKind.PAYMENT).length;
-      this.delegations = txs.filter(tx => tx.kind === MempoolTransactionKind.DELEGATION).length;
+      this.zkApps = txs.filter(
+        tx => tx.kind === MempoolTransactionKind.ZK_APP,
+      ).length;
+      this.payments = txs.filter(
+        tx => tx.kind === MempoolTransactionKind.PAYMENT,
+      ).length;
+      this.delegations = txs.filter(
+        tx => tx.kind === MempoolTransactionKind.DELEGATION,
+      ).length;
       this.detect();
     });
   }
 
   changeFilter(filter: keyof MempoolFilters, value: boolean | string): void {
-    this.dispatch2(MempoolActions.changeFilters({ filters: { ...this.filters, [filter]: value } }));
+    this.dispatch2(
+      MempoolActions.changeFilters({
+        filters: { ...this.filters, [filter]: value },
+      }),
+    );
   }
-
 }

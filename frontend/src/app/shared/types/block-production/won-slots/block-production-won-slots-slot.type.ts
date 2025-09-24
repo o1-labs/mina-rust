@@ -48,7 +48,7 @@ export interface BlockProductionWonSlotTimes {
 }
 
 export type BlockProductionWonSlotsDiscardReason =
-  'BestTipStakingLedgerDifferent'
+  | 'BestTipStakingLedgerDifferent'
   | 'BestTipGlobalSlotHigher'
   | 'BestTipSuperior';
 

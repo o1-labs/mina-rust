@@ -1,4 +1,11 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import {
   NetworkBlocksClose,
   NetworkBlocksGetEarliestBlock,
@@ -12,20 +19,24 @@ import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-    selector: 'mina-network-blocks',
-    templateUrl: './network-blocks.component.html',
-    styleUrls: ['./network-blocks.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-100 w-100' },
-    standalone: false
+  selector: 'mina-network-blocks',
+  templateUrl: './network-blocks.component.html',
+  styleUrls: ['./network-blocks.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-100 w-100' },
+  standalone: false,
 })
-export class NetworkBlocksComponent extends StoreDispatcher implements OnInit, AfterViewInit, OnDestroy {
-
+export class NetworkBlocksComponent
+  extends StoreDispatcher
+  implements OnInit, AfterViewInit, OnDestroy
+{
   isSidePanelOpen: boolean;
 
   private blockHeight: number;
 
-  constructor(public el: ElementRef) { super(); }
+  constructor(public el: ElementRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToRouteChange();
@@ -37,17 +48,28 @@ export class NetworkBlocksComponent extends StoreDispatcher implements OnInit, A
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      this.blockHeight = Number(route.params['height']);
-      this.dispatch(NetworkBlocksSetActiveBlock, { height: this.blockHeight });
-      this.dispatch(NetworkBlocksInit);
-    }, take(1), filter(route => route.params['height']));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        this.blockHeight = Number(route.params['height']);
+        this.dispatch(NetworkBlocksSetActiveBlock, {
+          height: this.blockHeight,
+        });
+        this.dispatch(NetworkBlocksInit);
+      },
+      take(1),
+      filter(route => route.params['height']),
+    );
   }
 
   private listenToActiveBlockChangeFromNode(): void {
-    this.select(AppSelectors.activeNode, () => {
-      this.dispatch(NetworkBlocksGetEarliestBlock);
-    }, filter(Boolean));
+    this.select(
+      AppSelectors.activeNode,
+      () => {
+        this.dispatch(NetworkBlocksGetEarliestBlock);
+      },
+      filter(Boolean),
+    );
   }
 
   private listenToSidePanelOpeningChange(): void {

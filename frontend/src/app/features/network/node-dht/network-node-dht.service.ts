@@ -11,19 +11,22 @@ import { NetworkNodeDhtBucket } from '@shared/types/network/node-dht/network-nod
   providedIn: 'root',
 })
 export class NetworkNodeDhtService {
+  constructor(private rust: RustService) {}
 
-  constructor(private rust: RustService) { }
-
-  getDhtPeers(): Observable<{ peers: NetworkNodeDhtPeer[], thisKey: string, buckets: NetworkNodeDhtBucket[] }> {
-    return this.rust.get<DhtPeersResponse>('/discovery/routing_table').pipe(
-      map((response: DhtPeersResponse) => this.mapDhtPeers(response)),
-    );
+  getDhtPeers(): Observable<{
+    peers: NetworkNodeDhtPeer[];
+    thisKey: string;
+    buckets: NetworkNodeDhtBucket[];
+  }> {
+    return this.rust
+      .get<DhtPeersResponse>('/discovery/routing_table')
+      .pipe(map((response: DhtPeersResponse) => this.mapDhtPeers(response)));
   }
 
   private mapDhtPeers(response: DhtPeersResponse): {
-    peers: NetworkNodeDhtPeer[],
-    thisKey: string,
-    buckets: NetworkNodeDhtBucket[]
+    peers: NetworkNodeDhtPeer[];
+    thisKey: string;
+    buckets: NetworkNodeDhtBucket[];
   } {
     const peers = response.buckets.reduce((acc, bucket) => {
       const nodes = bucket.entries.map(entry => {
@@ -38,7 +41,10 @@ export class NetworkNodeDhtService {
           libp2p: entry.libp2p,
           binaryDistance,
           bucketIndex: response.buckets.indexOf(bucket),
-          xorDistance: entry.key === response.this_key ? '-' : this.getNumberOfZerosUntilFirst1(binaryDistance),
+          xorDistance:
+            entry.key === response.this_key
+              ? '-'
+              : this.getNumberOfZerosUntilFirst1(binaryDistance),
           bucketMaxHex: bucket.max_dist,
         } as NetworkNodeDhtPeer;
       });
@@ -46,7 +52,9 @@ export class NetworkNodeDhtService {
     }, []);
 
     // placing origin peer at the beginning of the list
-    const indexOfOriginPeer = peers.findIndex(peer => peer.key === response.this_key);
+    const indexOfOriginPeer = peers.findIndex(
+      peer => peer.key === response.this_key,
+    );
     if (indexOfOriginPeer > 0) {
       const originPeer = peers.splice(indexOfOriginPeer, 1)[0];
       peers.unshift(originPeer);
@@ -55,11 +63,14 @@ export class NetworkNodeDhtService {
     return {
       peers,
       thisKey: response.this_key,
-      buckets: response.buckets.map(bucket => ({
-        peers: bucket.entries.length,
-        bucketMaxHex: bucket.max_dist,
-        maxCapacity: 20,
-      }) as NetworkNodeDhtBucket),
+      buckets: response.buckets.map(
+        bucket =>
+          ({
+            peers: bucket.entries.length,
+            bucketMaxHex: bucket.max_dist,
+            maxCapacity: 20,
+          }) as NetworkNodeDhtBucket,
+      ),
     };
   }
 
@@ -81,7 +92,9 @@ export class NetworkNodeDhtService {
     return leadingZeros;
   }
 
-  private convertConnectionType(connection: ConnectionType): NetworkNodeDhtPeerConnectionType {
+  private convertConnectionType(
+    connection: ConnectionType,
+  ): NetworkNodeDhtPeerConnectionType {
     const connectionString = connection.replace(/([A-Z])/g, ' $1').trim();
     return connectionString as NetworkNodeDhtPeerConnectionType;
   }

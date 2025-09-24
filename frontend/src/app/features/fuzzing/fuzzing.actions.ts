@@ -19,13 +19,19 @@ enum FuzzingActionTypes {
 
 export const FUZZING_INIT = FuzzingActionTypes.FUZZING_INIT;
 export const FUZZING_CLOSE = FuzzingActionTypes.FUZZING_CLOSE;
-export const FUZZING_GET_DIRECTORIES = FuzzingActionTypes.FUZZING_GET_DIRECTORIES;
-export const FUZZING_GET_DIRECTORIES_SUCCESS = FuzzingActionTypes.FUZZING_GET_DIRECTORIES_SUCCESS;
-export const FUZZING_SET_ACTIVE_DIRECTORY = FuzzingActionTypes.FUZZING_SET_ACTIVE_DIRECTORY;
+export const FUZZING_GET_DIRECTORIES =
+  FuzzingActionTypes.FUZZING_GET_DIRECTORIES;
+export const FUZZING_GET_DIRECTORIES_SUCCESS =
+  FuzzingActionTypes.FUZZING_GET_DIRECTORIES_SUCCESS;
+export const FUZZING_SET_ACTIVE_DIRECTORY =
+  FuzzingActionTypes.FUZZING_SET_ACTIVE_DIRECTORY;
 export const FUZZING_GET_FILES = FuzzingActionTypes.FUZZING_GET_FILES;
-export const FUZZING_GET_FILES_SUCCESS = FuzzingActionTypes.FUZZING_GET_FILES_SUCCESS;
-export const FUZZING_GET_FILE_DETAILS = FuzzingActionTypes.FUZZING_GET_FILE_DETAILS;
-export const FUZZING_GET_FILE_DETAILS_SUCCESS = FuzzingActionTypes.FUZZING_GET_FILE_DETAILS_SUCCESS;
+export const FUZZING_GET_FILES_SUCCESS =
+  FuzzingActionTypes.FUZZING_GET_FILES_SUCCESS;
+export const FUZZING_GET_FILE_DETAILS =
+  FuzzingActionTypes.FUZZING_GET_FILE_DETAILS;
+export const FUZZING_GET_FILE_DETAILS_SUCCESS =
+  FuzzingActionTypes.FUZZING_GET_FILE_DETAILS_SUCCESS;
 export const FUZZING_SORT = FuzzingActionTypes.FUZZING_SORT;
 export const FUZZING_FILTER = FuzzingActionTypes.FUZZING_FILTER;
 
@@ -48,13 +54,13 @@ export class FuzzingGetDirectories implements FuzzingAction {
 export class FuzzingGetDirectoriesSuccess implements FuzzingAction {
   readonly type = FUZZING_GET_DIRECTORIES_SUCCESS;
 
-  constructor(public payload: FuzzingDirectory[]) { }
+  constructor(public payload: FuzzingDirectory[]) {}
 }
 
 export class FuzzingSetActiveDirectory implements FuzzingAction {
   readonly type = FUZZING_SET_ACTIVE_DIRECTORY;
 
-  constructor(public payload: FuzzingDirectory) { }
+  constructor(public payload: FuzzingDirectory) {}
 }
 
 export class FuzzingGetFiles implements FuzzingAction {
@@ -64,31 +70,31 @@ export class FuzzingGetFiles implements FuzzingAction {
 export class FuzzingGetFilesSuccess implements FuzzingAction {
   readonly type = FUZZING_GET_FILES_SUCCESS;
 
-  constructor(public payload: FuzzingFile[]) { }
+  constructor(public payload: FuzzingFile[]) {}
 }
 
 export class FuzzingGetFileDetails implements FuzzingAction {
   readonly type = FUZZING_GET_FILE_DETAILS;
 
-  constructor(public payload: FuzzingFile) { }
+  constructor(public payload: FuzzingFile) {}
 }
 
 export class FuzzingGetFileDetailsSuccess implements FuzzingAction {
   readonly type = FUZZING_GET_FILE_DETAILS_SUCCESS;
 
-  constructor(public payload: FuzzingFileDetails) { }
+  constructor(public payload: FuzzingFileDetails) {}
 }
 
 export class FuzzingSort implements FuzzingAction {
   readonly type = FUZZING_SORT;
 
-  constructor(public payload: TableSort<FuzzingFile>) { }
+  constructor(public payload: TableSort<FuzzingFile>) {}
 }
 
 export class FuzzingFilterFiles implements FuzzingAction {
   readonly type = FUZZING_FILTER;
 
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export type FuzzingActions =
@@ -102,5 +108,4 @@ export type FuzzingActions =
   | FuzzingGetFileDetails
   | FuzzingGetFileDetailsSuccess
   | FuzzingSort
-  | FuzzingFilterFiles
-  ;
+  | FuzzingFilterFiles;

@@ -1,12 +1,13 @@
 <mina-state-actions-toolbar></mina-state-actions-toolbar>
 <div class="h-minus-xl">
-  <mina-horizontal-resizable-container [leftTemplate]="left"
-                                       [rightTemplate]="right"
-                                       [show]="show"
-                                       [minWidth]="400"
-                                       [maxWidthElement]="el.nativeElement"
-                                       localStorageKey="state-actions-spw">
-  </mina-horizontal-resizable-container>
+  <mina-horizontal-resizable-container
+    [leftTemplate]="left"
+    [rightTemplate]="right"
+    [show]="show"
+    [minWidth]="400"
+    [maxWidthElement]="el.nativeElement"
+    localStorageKey="state-actions-spw"
+  ></mina-horizontal-resizable-container>
 </div>
 
 <ng-template #left>

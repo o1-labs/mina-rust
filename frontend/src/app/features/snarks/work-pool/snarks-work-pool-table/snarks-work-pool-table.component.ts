@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { getMergedRoute, MergedRoute, SecDurationConfig, TableColumnList } from '@openmina/shared';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import {
+  getMergedRoute,
+  MergedRoute,
+  SecDurationConfig,
+  TableColumnList,
+} from '@openmina/shared';
 import { Router } from '@angular/router';
 import { take } from 'rxjs';
 import { Routes } from '@shared/enums/routes.enum';
@@ -7,31 +18,33 @@ import { WorkPool } from '@shared/types/snarks/work-pool/work-pool.type';
 import {
   SnarksWorkPoolSetActiveWorkPool,
   SnarksWorkPoolSortWorkPool,
-  SnarksWorkPoolToggleSidePanel
+  SnarksWorkPoolToggleSidePanel,
 } from '@snarks/work-pool/snarks-work-pool.actions';
 import {
   selectSnarksWorkPoolActiveWorkPool,
   selectSnarksWorkPoolOpenSidePanel,
   selectSnarksWorkPools,
-  selectSnarksWorkPoolSort
+  selectSnarksWorkPoolSort,
 } from '@snarks/work-pool/snarks-work-pool.state';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-snarks-work-pool-table',
-    templateUrl: './snarks-work-pool-table.component.html',
-    styleUrls: ['./snarks-work-pool-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-snarks-work-pool-table',
+  templateUrl: './snarks-work-pool-table.component.html',
+  styleUrls: ['./snarks-work-pool-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool> implements OnInit {
-
+export class SnarksWorkPoolTableComponent
+  extends MinaTableRustWrapper<WorkPool>
+  implements OnInit
+{
   readonly secConfig: SecDurationConfig = {
     color: true,
     undefinedAlternative: '-',
     default: 100,
     warn: 500,
-    severe: 1000
+    severe: 1000,
   };
   protected readonly tableHeads: TableColumnList<WorkPool> = [
     { name: 'datetime', sort: 'timestamp' },
@@ -51,7 +64,9 @@ export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool>
 
   private wpFromRoute: string;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -62,7 +77,9 @@ export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool>
   }
 
   protected override setupTable(): void {
-    this.table.gridTemplateColumns = [165, 140, 110, 150, 150, 100, 110, 150, 100];
+    this.table.gridTemplateColumns = [
+      165, 140, 110, 150, 150, 100, 110, 150, 100,
+    ];
     this.table.propertyForActiveCheck = 'id';
     this.table.thGroupsTemplate = this.thGroupsTemplate;
     this.table.sortClz = SnarksWorkPoolSortWorkPool;
@@ -74,11 +91,15 @@ export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool>
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['id'] && this.table.rows.length === 0) {
-        this.wpFromRoute = route.params['id'];
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['id'] && this.table.rows.length === 0) {
+          this.wpFromRoute = route.params['id'];
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToNodesChanges(): void {
@@ -114,7 +135,9 @@ export class SnarksWorkPoolTableComponent extends MinaTableRustWrapper<WorkPool>
     }
     if (this.table.activeRow?.id !== row?.id) {
       this.dispatch(SnarksWorkPoolSetActiveWorkPool, { id: row.id });
-      this.router.navigate([Routes.SNARKS, Routes.WORK_POOL, row.id], { queryParamsHandling: 'merge' });
+      this.router.navigate([Routes.SNARKS, Routes.WORK_POOL, row.id], {
+        queryParamsHandling: 'merge',
+      });
     }
   }
 

@@ -17,17 +17,27 @@ enum SnarksWorkPoolTypes {
 }
 
 export const SNARKS_WORK_POOL_INIT = SnarksWorkPoolTypes.SNARKS_WORK_POOL_INIT;
-export const SNARKS_WORK_POOL_GET_WORK_POOL = SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL;
-export const SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS = SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS;
-export const SNARKS_WORK_POOL_SORT_WORK_POOL = SnarksWorkPoolTypes.SNARKS_WORK_POOL_SORT_WORK_POOL;
-export const SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL = SnarksWorkPoolTypes.SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL;
-export const SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL = SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL;
-export const SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS = SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS;
-export const SNARKS_WORK_POOL_TOGGLE_SIDE_PANEL = SnarksWorkPoolTypes.SNARKS_WORK_POOL_TOGGLE_SIDE_PANEL;
-export const SNARKS_WORK_POOL_TOGGLE_FILTER = SnarksWorkPoolTypes.SNARKS_WORK_POOL_TOGGLE_FILTER;
-export const SNARKS_WORK_POOL_CLOSE = SnarksWorkPoolTypes.SNARKS_WORK_POOL_CLOSE;
+export const SNARKS_WORK_POOL_GET_WORK_POOL =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL;
+export const SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS;
+export const SNARKS_WORK_POOL_SORT_WORK_POOL =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_SORT_WORK_POOL;
+export const SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL;
+export const SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL;
+export const SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS;
+export const SNARKS_WORK_POOL_TOGGLE_SIDE_PANEL =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_TOGGLE_SIDE_PANEL;
+export const SNARKS_WORK_POOL_TOGGLE_FILTER =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_TOGGLE_FILTER;
+export const SNARKS_WORK_POOL_CLOSE =
+  SnarksWorkPoolTypes.SNARKS_WORK_POOL_CLOSE;
 
-export interface SnarksWorkPoolAction extends FeatureAction<SnarksWorkPoolTypes> {
+export interface SnarksWorkPoolAction
+  extends FeatureAction<SnarksWorkPoolTypes> {
   readonly type: SnarksWorkPoolTypes;
 }
 
@@ -38,37 +48,39 @@ export class SnarksWorkPoolInit implements SnarksWorkPoolAction {
 export class SnarksWorkPoolGetWorkPool implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_GET_WORK_POOL;
 
-  constructor(public payload?: { force?: boolean }) { }
+  constructor(public payload?: { force?: boolean }) {}
 }
 
 export class SnarksWorkPoolGetWorkPoolSuccess implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS;
 
-  constructor(public payload: WorkPool[]) { }
+  constructor(public payload: WorkPool[]) {}
 }
 
 export class SnarksWorkPoolSortWorkPool implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_SORT_WORK_POOL;
 
-  constructor(public payload: TableSort<WorkPool>) { }
+  constructor(public payload: TableSort<WorkPool>) {}
 }
 
 export class SnarksWorkPoolSetActiveWorkPool implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL;
 
-  constructor(public payload: { id: string }) { }
+  constructor(public payload: { id: string }) {}
 }
 
 export class SnarksWorkPoolGetWorkPoolDetail implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL;
 
-  constructor(public payload: { id: string }) { }
+  constructor(public payload: { id: string }) {}
 }
 
-export class SnarksWorkPoolGetWorkPoolDetailSuccess implements SnarksWorkPoolAction {
+export class SnarksWorkPoolGetWorkPoolDetailSuccess
+  implements SnarksWorkPoolAction
+{
   readonly type = SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS;
 
-  constructor(public payload: [WorkPoolSpecs, WorkPoolDetail]) { }
+  constructor(public payload: [WorkPoolSpecs, WorkPoolDetail]) {}
 }
 
 export class SnarksWorkPoolToggleSidePanel implements SnarksWorkPoolAction {
@@ -78,7 +90,7 @@ export class SnarksWorkPoolToggleSidePanel implements SnarksWorkPoolAction {
 export class SnarksWorkPoolToggleFilter implements SnarksWorkPoolAction {
   readonly type = SNARKS_WORK_POOL_TOGGLE_FILTER;
 
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class SnarksWorkPoolClose implements SnarksWorkPoolAction {
@@ -95,5 +107,4 @@ export type SnarksWorkPoolActions =
   | SnarksWorkPoolGetWorkPoolDetailSuccess
   | SnarksWorkPoolToggleSidePanel
   | SnarksWorkPoolToggleFilter
-  | SnarksWorkPoolClose
-  ;
+  | SnarksWorkPoolClose;

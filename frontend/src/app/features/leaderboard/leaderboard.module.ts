@@ -19,7 +19,6 @@ import { LeaderboardImpressumComponent } from '@leaderboard/leaderboard-impressu
 import { LeaderboardPrivacyPolicyComponent } from '@leaderboard/leaderboard-privacy-policy/leaderboard-privacy-policy.component';
 import { LeaderboardApplyComponent } from '@leaderboard/leaderboard-apply/leaderboard-apply.component';
 
-
 @NgModule({
   declarations: [
     LeaderboardPageComponent,
@@ -43,8 +42,6 @@ import { LeaderboardApplyComponent } from '@leaderboard/leaderboard-apply/leader
     LoadingSpinnerComponent,
     EffectsModule.forFeature(LeaderboardEffects),
   ],
-  exports: [
-    LeaderboardLandingPageComponent,
-  ],
+  exports: [LeaderboardLandingPageComponent],
 })
 export class LeaderboardModule {}

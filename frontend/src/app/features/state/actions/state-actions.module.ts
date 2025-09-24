@@ -12,9 +12,8 @@ import {
   CopyComponent,
   FlameTimeGraphComponent,
   HorizontalMenuComponent,
-  HorizontalResizableContainerComponent
+  HorizontalResizableContainerComponent,
 } from '@openmina/shared';
-
 
 @NgModule({
   declarations: [

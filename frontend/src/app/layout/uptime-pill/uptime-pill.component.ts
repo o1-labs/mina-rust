@@ -8,38 +8,42 @@ import { sendSentryEvent } from '@shared/helpers/webnode.helper';
 @UntilDestroy()
 @Component({
   selector: 'mina-uptime-pill',
-  imports: [
-    OpenminaEagerSharedModule,
-  ],
+  imports: [OpenminaEagerSharedModule],
   templateUrl: './uptime-pill.component.html',
   styleUrl: './uptime-pill.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
 })
 export class UptimePillComponent extends ManualDetection implements OnInit {
+  uptime: { uptimePercentage: number; uptimeTime: string } = {
+    uptimePercentage: 0,
+    uptimeTime: '',
+  };
 
-  uptime: { uptimePercentage: number, uptimeTime: string } = { uptimePercentage: 0, uptimeTime: '' };
-
-  constructor(private leaderboardService: LeaderboardService) { super(); }
+  constructor(private leaderboardService: LeaderboardService) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToUptime();
   }
 
   private listenToUptime(): void {
-    timer(0, 60000).pipe(
-      mergeMap(() => this.leaderboardService.getUptime()),
-      catchError(err => {
-        sendSentryEvent(err.message);
-        return of({
-          uptimePercentage: 0,
-          uptimeTime: '',
-        });
-      }),
-      untilDestroyed(this),
-    ).subscribe(uptime => {
-      this.uptime = uptime;
-      this.detect();
-    });
+    timer(0, 60000)
+      .pipe(
+        mergeMap(() => this.leaderboardService.getUptime()),
+        catchError(err => {
+          sendSentryEvent(err.message);
+          return of({
+            uptimePercentage: 0,
+            uptimeTime: '',
+          });
+        }),
+        untilDestroyed(this),
+      )
+      .subscribe(uptime => {
+        this.uptime = uptime;
+        this.detect();
+      });
   }
 }

@@ -57,11 +57,29 @@ declare var AOS: any;
   ],
 })
 export class AppComponent extends StoreDispatcher implements OnInit {
-
   readonly menu$: Observable<AppMenu> = this.select$(AppSelectors.menu);
-  readonly showLandingPage$: Observable<boolean> = this.select$(getMergedRoute).pipe(filter(Boolean), map((route: MergedRoute) => route.url === '/' || route.url.startsWith('/?')));
-  readonly showLoadingWebNodePage$: Observable<boolean> = this.select$(getMergedRoute).pipe(filter(Boolean), map((route: MergedRoute) => route.url.startsWith(`/${Routes.LOADING_WEB_NODE}`)));
-  readonly showLeaderboardPage$: Observable<boolean> = this.select$(getMergedRoute).pipe(filter(Boolean), map((route: MergedRoute) => route.url.startsWith(`/${Routes.LEADERBOARD}`)));
+  readonly showLandingPage$: Observable<boolean> = this.select$(
+    getMergedRoute,
+  ).pipe(
+    filter(Boolean),
+    map(
+      (route: MergedRoute) => route.url === '/' || route.url.startsWith('/?'),
+    ),
+  );
+  readonly showLoadingWebNodePage$: Observable<boolean> = this.select$(
+    getMergedRoute,
+  ).pipe(
+    filter(Boolean),
+    map((route: MergedRoute) =>
+      route.url.startsWith(`/${Routes.LOADING_WEB_NODE}`),
+    ),
+  );
+  readonly showLeaderboardPage$: Observable<boolean> = this.select$(
+    getMergedRoute,
+  ).pipe(
+    filter(Boolean),
+    map((route: MergedRoute) => route.url.startsWith(`/${Routes.LEADERBOARD}`)),
+  );
   subMenusLength: number = 0;
   hideToolbar: boolean = CONFIG.hideToolbar;
   showLeaderboard: boolean = CONFIG.showLeaderboard;
@@ -70,9 +88,11 @@ export class AppComponent extends StoreDispatcher implements OnInit {
 
   private nodeUpdateSubscription: Subscription | null = null;
 
-  constructor(private breakpointObserver: BreakpointObserver,
-              private router: Router,
-              private webNodeService: WebNodeService) {
+  constructor(
+    private breakpointObserver: BreakpointObserver,
+    private router: Router,
+    private webNodeService: WebNodeService,
+  ) {
     AOS.init();
 
     super();
@@ -91,17 +111,28 @@ export class AppComponent extends StoreDispatcher implements OnInit {
         localStorage.setItem('webnodeArgs', args);
       }
     }
-    this.select(getMergedRoute, () => {
-      this.loaded = true;
-      this.detect();
-    }, filter(Boolean), take(1));
+    this.select(
+      getMergedRoute,
+      () => {
+        this.loaded = true;
+        this.detect();
+      },
+      filter(Boolean),
+      take(1),
+    );
 
     if (CONFIG.showLeaderboard && CONFIG.showWebNodeLandingPage) {
       /* frontend with some landing page */
-      this.select(getMergedRoute, () => {
-        this.initAppFunctionalities();
-      }, filter((route: MergedRoute) => route?.url.startsWith('/loading-web-node')), take(1));
-
+      this.select(
+        getMergedRoute,
+        () => {
+          this.initAppFunctionalities();
+        },
+        filter((route: MergedRoute) =>
+          route?.url.startsWith('/loading-web-node'),
+        ),
+        take(1),
+      );
     } else if (!CONFIG.showLeaderboard && !CONFIG.showWebNodeLandingPage) {
       /* normal frontend (no landing pages) */
       this.initAppFunctionalities();
@@ -114,9 +145,14 @@ export class AppComponent extends StoreDispatcher implements OnInit {
   }
 
   private initAppFunctionalities(): void {
-    if (this.webNodeService.hasWebNodeConfig() && !this.webNodeService.isWebNodeLoaded()) {
+    if (
+      this.webNodeService.hasWebNodeConfig() &&
+      !this.webNodeService.isWebNodeLoaded()
+    ) {
       if (!getWindow()?.location.href.includes(`/${Routes.LOADING_WEB_NODE}`)) {
-        this.router.navigate([Routes.LOADING_WEB_NODE], { queryParamsHandling: 'preserve' });
+        this.router.navigate([Routes.LOADING_WEB_NODE], {
+          queryParamsHandling: 'preserve',
+        });
       }
     }
     this.dispatch2(AppActions.init());

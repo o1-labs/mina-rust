@@ -19,9 +19,11 @@ const initialState: NetworkConnectionsState = {
   direction: NetworkMessagesDirection.REVERSE,
 };
 
-export function networkConnectionsReducer(state: NetworkConnectionsState = initialState, action: NetworkConnectionsActions): NetworkConnectionsState {
+export function networkConnectionsReducer(
+  state: NetworkConnectionsState = initialState,
+  action: NetworkConnectionsActions,
+): NetworkConnectionsState {
   switch (action.type) {
-
     case NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS: {
       return {
         ...state,
