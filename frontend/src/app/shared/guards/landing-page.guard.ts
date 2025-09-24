@@ -9,7 +9,6 @@ import { Routes } from '@shared/enums/routes.enum';
 let isFirstLoad = true;
 
 export const landingPageGuard: CanActivateFn = (route, state) => {
-
   if (!isFirstLoad || !CONFIG.showWebNodeLandingPage) {
     return true;
   }
@@ -36,7 +35,11 @@ export const landingPageGuard: CanActivateFn = (route, state) => {
         });
       }
 
-      if (!startsWith('/') && !startsWith('/?') && !startsWith('/leaderboard')) {
+      if (
+        !startsWith('/') &&
+        !startsWith('/?') &&
+        !startsWith('/leaderboard')
+      ) {
         return router.createUrlTree(['']);
       }
 

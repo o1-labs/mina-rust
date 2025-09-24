@@ -21,22 +21,32 @@ const initialState: ScanStateState = {
   openSidePanel: isDesktop(),
   sideBarResized: 0,
   stream: true,
-  treeView: JSON.parse(getLocalStorage()?.getItem('scan_state_tree_view') ?? 'false') || false,
+  treeView:
+    JSON.parse(getLocalStorage()?.getItem('scan_state_tree_view') ?? 'false') ||
+    false,
   highlightSnarkPool: true,
 };
 
-export function reducer(state: ScanStateState = initialState, action: ScanStateActions): ScanStateState {
+export function reducer(
+  state: ScanStateState = initialState,
+  action: ScanStateActions,
+): ScanStateState {
   switch (action.type) {
-
     case SCAN_STATE_GET_BLOCK_SUCCESS: {
       return {
         ...state,
         block: action.payload,
         activeLeaf: state.activeJobId
           ? {
-            ...action.payload.trees.reduce((acc, t) => [...acc, ...t.leafs.filter(l => l.bundle_job_id === state.activeJobId)], [])[0],
-            scrolling: !state.activeLeaf,
-          }
+              ...action.payload.trees.reduce(
+                (acc, t) => [
+                  ...acc,
+                  ...t.leafs.filter(l => l.bundle_job_id === state.activeJobId),
+                ],
+                [],
+              )[0],
+              scrolling: !state.activeLeaf,
+            }
           : undefined,
       };
     }
@@ -90,7 +100,10 @@ export function reducer(state: ScanStateState = initialState, action: ScanStateA
     }
 
     case SCAN_STATE_TOGGLE_TREE_VIEW: {
-      getLocalStorage()?.setItem('scan_state_tree_view', JSON.stringify(!state.treeView));
+      getLocalStorage()?.setItem(
+        'scan_state_tree_view',
+        JSON.stringify(!state.treeView),
+      );
 
       return {
         ...state,

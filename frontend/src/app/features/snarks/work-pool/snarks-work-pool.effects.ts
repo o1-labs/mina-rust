@@ -29,63 +29,98 @@ import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
   providedIn: 'root',
 })
 export class SnarksWorkPoolEffects extends MinaRustBaseEffect<SnarksWorkPoolActions> {
-
   readonly getWorkPool$: Effect;
   readonly selectActiveWorkPool$: Effect;
   readonly getActiveWorkPoolDetail$: Effect;
 
   private pendingRequest: boolean;
 
-  constructor(private actions$: Actions,
-              private snarksWorkPoolService: SnarksWorkPoolService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private snarksWorkPoolService: SnarksWorkPoolService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getWorkPool$ = createEffect(() => this.actions$.pipe(
-      ofType(SNARKS_WORK_POOL_GET_WORK_POOL, SNARKS_WORK_POOL_CLOSE),
-      this.latestActionState<SnarksWorkPoolGetWorkPool | SnarksWorkPoolClose>(),
-      filter(({ action }) => {
-        return (action.type === SNARKS_WORK_POOL_GET_WORK_POOL && !this.pendingRequest) || action.type === SNARKS_WORK_POOL_CLOSE;
-      }),
-      tap(({ action }) => {
-        if (action.type === SNARKS_WORK_POOL_GET_WORK_POOL) {
-          this.pendingRequest = true;
-        }
-      }),
-      switchMap(({ action, state }) =>
-        action.type === SNARKS_WORK_POOL_CLOSE
-          ? EMPTY
-          : this.snarksWorkPoolService.getWorkPool(),
+    this.getWorkPool$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(SNARKS_WORK_POOL_GET_WORK_POOL, SNARKS_WORK_POOL_CLOSE),
+        this.latestActionState<
+          SnarksWorkPoolGetWorkPool | SnarksWorkPoolClose
+        >(),
+        filter(({ action }) => {
+          return (
+            (action.type === SNARKS_WORK_POOL_GET_WORK_POOL &&
+              !this.pendingRequest) ||
+            action.type === SNARKS_WORK_POOL_CLOSE
+          );
+        }),
+        tap(({ action }) => {
+          if (action.type === SNARKS_WORK_POOL_GET_WORK_POOL) {
+            this.pendingRequest = true;
+          }
+        }),
+        switchMap(({ action, state }) =>
+          action.type === SNARKS_WORK_POOL_CLOSE
+            ? EMPTY
+            : this.snarksWorkPoolService.getWorkPool(),
+        ),
+        map((payload: WorkPool[]) => ({
+          type: SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS,
+          payload,
+        })),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS,
+          [],
+        ),
+        tap(() => (this.pendingRequest = false)),
       ),
-      map((payload: WorkPool[]) => ({ type: SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS, payload })),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS, []),
-      tap(() => this.pendingRequest = false),
-    ));
+    );
 
-    this.selectActiveWorkPool$ = createEffect(() => this.actions$.pipe(
-      ofType(SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL),
-      this.latestActionState<SnarksWorkPoolSetActiveWorkPool>(),
-      filter(({ action }) => hasValue(action.payload?.id)),
-      map(({ action }) => ({ type: SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL, payload: action.payload })),
-    ));
-
-    this.getActiveWorkPoolDetail$ = createEffect(() => this.actions$.pipe(
-      ofType(SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL, SNARKS_WORK_POOL_CLOSE),
-      this.latestActionState<SnarksWorkPoolGetWorkPoolDetail | SnarksWorkPoolClose>(),
-      filter(({ action }) => hasValue((action as SnarksWorkPoolGetWorkPoolDetail).payload?.id)),
-      switchMap(({ action, state }) =>
-        action.type === SNARKS_WORK_POOL_CLOSE
-          ? EMPTY
-          : forkJoin([
-            this.snarksWorkPoolService.getWorkPoolSpecs(state.snarks.workPool.activeWorkPool.id),
-            this.snarksWorkPoolService.getWorkPoolDetail(state.snarks.workPool.activeWorkPool.id),
-          ]),
+    this.selectActiveWorkPool$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(SNARKS_WORK_POOL_SET_ACTIVE_WORK_POOL),
+        this.latestActionState<SnarksWorkPoolSetActiveWorkPool>(),
+        filter(({ action }) => hasValue(action.payload?.id)),
+        map(({ action }) => ({
+          type: SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL,
+          payload: action.payload,
+        })),
       ),
-      map((payload: [WorkPoolSpecs, WorkPoolDetail]) => ({
-        type: SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS,
-        payload,
-      })),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS, []),
-    ));
+    );
+
+    this.getActiveWorkPoolDetail$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL, SNARKS_WORK_POOL_CLOSE),
+        this.latestActionState<
+          SnarksWorkPoolGetWorkPoolDetail | SnarksWorkPoolClose
+        >(),
+        filter(({ action }) =>
+          hasValue((action as SnarksWorkPoolGetWorkPoolDetail).payload?.id),
+        ),
+        switchMap(({ action, state }) =>
+          action.type === SNARKS_WORK_POOL_CLOSE
+            ? EMPTY
+            : forkJoin([
+                this.snarksWorkPoolService.getWorkPoolSpecs(
+                  state.snarks.workPool.activeWorkPool.id,
+                ),
+                this.snarksWorkPoolService.getWorkPoolDetail(
+                  state.snarks.workPool.activeWorkPool.id,
+                ),
+              ]),
+        ),
+        map((payload: [WorkPoolSpecs, WorkPoolDetail]) => ({
+          type: SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS,
+          payload,
+        })),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          SNARKS_WORK_POOL_GET_WORK_POOL_DETAIL_SUCCESS,
+          [],
+        ),
+      ),
+    );
   }
 }

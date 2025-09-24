@@ -4,14 +4,8 @@ import { StateRouting } from './state.routing';
 import { StateComponent } from './state.component';
 import { SharedModule } from '@shared/shared.module';
 
-
 @NgModule({
-  declarations: [
-    StateComponent
-  ],
-  imports: [
-    SharedModule,
-    StateRouting
-  ]
+  declarations: [StateComponent],
+  imports: [SharedModule, StateRouting],
 })
-export class StateModule { }
+export class StateModule {}

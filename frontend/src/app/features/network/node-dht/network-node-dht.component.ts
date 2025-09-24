@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { tap, timer } from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
@@ -11,17 +17,21 @@ import { selectNetworkNodeDhtActivePeer } from '@network/node-dht/network-node-d
 import { NetworkNodeDhtPeer } from '@shared/types/network/node-dht/network-node-dht.type';
 
 @Component({
-    selector: 'mina-network-node-dht',
-    templateUrl: './network-node-dht.component.html',
-    styleUrls: ['./network-node-dht.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-network-node-dht',
+  templateUrl: './network-node-dht.component.html',
+  styleUrls: ['./network-node-dht.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class NetworkNodeDhtComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class NetworkNodeDhtComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   openSidePanel: boolean;
 
-  constructor(public el: ElementRef<HTMLElement>) { super(); }
+  constructor(public el: ElementRef<HTMLElement>) {
+    super();
+  }
 
   ngOnInit(): void {
     this.dispatch(NetworkNodeDhtInit);
@@ -39,15 +49,18 @@ export class NetworkNodeDhtComponent extends StoreDispatcher implements OnInit, 
   }
 
   private listenToSidePanelChange(): void {
-    this.select(selectNetworkNodeDhtActivePeer, (activePeer: NetworkNodeDhtPeer) => {
-      if (activePeer && !this.openSidePanel) {
-        this.openSidePanel = true;
-        this.detect();
-      } else if (!activePeer && this.openSidePanel) {
-        this.openSidePanel = false;
-        this.detect();
-      }
-    });
+    this.select(
+      selectNetworkNodeDhtActivePeer,
+      (activePeer: NetworkNodeDhtPeer) => {
+        if (activePeer && !this.openSidePanel) {
+          this.openSidePanel = true;
+          this.detect();
+        } else if (!activePeer && this.openSidePanel) {
+          this.openSidePanel = false;
+          this.detect();
+        }
+      },
+    );
   }
 
   override ngOnDestroy(): void {

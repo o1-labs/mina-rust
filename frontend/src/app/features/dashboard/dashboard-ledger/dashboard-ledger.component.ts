@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { selectDashboardNodesAndRpcStats } from '@dashboard/dashboard.state';
 import {
@@ -19,17 +27,17 @@ import { take } from 'rxjs';
 import { WebNodeService } from '@core/services/web-node.service';
 
 type LedgerConfigMap = {
-  stakingEpoch: SecDurationConfig,
-  nextEpoch: SecDurationConfig,
-  rootSnarked: SecDurationConfig,
-  rootStaged: SecDurationConfig,
+  stakingEpoch: SecDurationConfig;
+  nextEpoch: SecDurationConfig;
+  rootSnarked: SecDurationConfig;
+  rootStaged: SecDurationConfig;
 };
 
 type DetailsProgress = {
-  staking: { fetchHashes: number, fetchAccounts: number },
-  next: { fetchHashes: number, fetchAccounts: number },
-  rootSnarked: { fetchHashes: number, fetchAccounts: number },
-  rootStaged: { fetchParts: number, reconstruct: number },
+  staking: { fetchHashes: number; fetchAccounts: number };
+  next: { fetchHashes: number; fetchAccounts: number };
+  rootSnarked: { fetchHashes: number; fetchAccounts: number };
+  rootStaged: { fetchParts: number; reconstruct: number };
 };
 
 const initialSnarked: NodesOverviewLedgerEpochStep = {
@@ -63,14 +71,16 @@ const initialStaged: NodesOverviewRootStagedLedgerStep = {
 };
 
 @Component({
-    selector: 'mina-dashboard-ledger',
-    templateUrl: './dashboard-ledger.component.html',
-    styleUrls: ['./dashboard-ledger.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-dashboard-ledger',
+  templateUrl: './dashboard-ledger.component.html',
+  styleUrls: ['./dashboard-ledger.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class DashboardLedgerComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class DashboardLedgerComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   ledgers: NodesOverviewLedger = {
     stakingEpoch: initialSnarked,
     nextEpoch: initialSnarked,
@@ -91,7 +101,7 @@ export class DashboardLedgerComponent extends StoreDispatcher implements OnInit,
   totalProgress: number;
   isWebNode: boolean;
 
-  fetchedParts: { current: number, total: number } = { current: 0, total: 0 };
+  fetchedParts: { current: number; total: number } = { current: 0, total: 0 };
 
   remainingStakingLedger: number;
   private previousStakingLedgerDownloaded: number;
@@ -104,13 +114,20 @@ export class DashboardLedgerComponent extends StoreDispatcher implements OnInit,
   remainingReconstruct: number = 20;
   private reconstructTimer: any;
 
-  @ViewChild('tooltipRef') private tooltipRef: TemplateRef<{ start: number, end: number }>;
+  @ViewChild('tooltipRef') private tooltipRef: TemplateRef<{
+    start: number;
+    end: number;
+  }>;
   private overlayRef: OverlayRef;
 
-  constructor(private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef,
-              private sentryService: SentryService,
-              private webNodeService: WebNodeService) { super() }
+  constructor(
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+    private sentryService: SentryService,
+    private webNodeService: WebNodeService,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToActiveNode();
@@ -124,135 +141,210 @@ export class DashboardLedgerComponent extends StoreDispatcher implements OnInit,
   }
 
   private listenToNodesChanges(): void {
-    this.select(selectDashboardNodesAndRpcStats, ([nodes, rpcStats]: [NodesOverviewNode[], DashboardRpcStats]) => {
-      if (nodes.length === 0) {
-        this.ledgers = {
-          stakingEpoch: initialSnarked,
-          nextEpoch: initialSnarked,
-          rootSnarked: initialSnarked,
-          rootStaged: initialStaged,
-        };
-        this.configMap = {
-          stakingEpoch: this.emptyConfig,
-          nextEpoch: this.emptyConfig,
-          rootSnarked: this.emptyConfig,
-          rootStaged: this.emptyConfig,
-        };
-        this.progress = undefined;
-        this.stakingProgress = 0;
-        this.nextProgress = 0;
-        this.rootSnarkedProgress = 0;
-        this.rootStagedProgress = 0;
-        this.totalProgress = 0;
-        this.fetchedParts = { current: 0, total: 0 };
-      } else {
-        this.ledgers = nodes[0].ledgers;
+    this.select(
+      selectDashboardNodesAndRpcStats,
+      ([nodes, rpcStats]: [NodesOverviewNode[], DashboardRpcStats]) => {
+        if (nodes.length === 0) {
+          this.ledgers = {
+            stakingEpoch: initialSnarked,
+            nextEpoch: initialSnarked,
+            rootSnarked: initialSnarked,
+            rootStaged: initialStaged,
+          };
+          this.configMap = {
+            stakingEpoch: this.emptyConfig,
+            nextEpoch: this.emptyConfig,
+            rootSnarked: this.emptyConfig,
+            rootStaged: this.emptyConfig,
+          };
+          this.progress = undefined;
+          this.stakingProgress = 0;
+          this.nextProgress = 0;
+          this.rootSnarkedProgress = 0;
+          this.rootStagedProgress = 0;
+          this.totalProgress = 0;
+          this.fetchedParts = { current: 0, total: 0 };
+        } else {
+          this.ledgers = nodes[0].ledgers;
 
-        const getConfig = (state: NodesOverviewLedgerStepState): SecDurationConfig =>
-          state === NodesOverviewLedgerStepState.LOADING ? this.undefinedConfig : this.emptyConfig;
+          const getConfig = (
+            state: NodesOverviewLedgerStepState,
+          ): SecDurationConfig =>
+            state === NodesOverviewLedgerStepState.LOADING
+              ? this.undefinedConfig
+              : this.emptyConfig;
 
-        this.configMap = {
-          stakingEpoch: getConfig(this.ledgers.stakingEpoch.state),
-          nextEpoch: getConfig(this.ledgers.nextEpoch.state),
-          rootSnarked: getConfig(this.ledgers.rootSnarked.state),
-          rootStaged: getConfig(this.ledgers.rootStaged.state),
-        };
-        this.setProgressTime();
+          this.configMap = {
+            stakingEpoch: getConfig(this.ledgers.stakingEpoch.state),
+            nextEpoch: getConfig(this.ledgers.nextEpoch.state),
+            rootSnarked: getConfig(this.ledgers.rootSnarked.state),
+            rootStaged: getConfig(this.ledgers.rootStaged.state),
+          };
+          this.setProgressTime();
 
-        const stakingLedgerStartTime = this.ledgers.stakingEpoch.snarked.fetchHashesStart / ONE_MILLION;
-        const currentStakingLedgerDownloaded = rpcStats.stakingLedger?.fetched;
-        if (
-          this.previousStakingLedgerDownloaded && currentStakingLedgerDownloaded &&
-          stakingLedgerStartTime < Date.now()
-        ) {
-          const timeSinceDownloadStarted = Date.now() - stakingLedgerStartTime;
-          const remaining = rpcStats.stakingLedger?.estimation - currentStakingLedgerDownloaded;
-          const remainingTime = (remaining / currentStakingLedgerDownloaded) * timeSinceDownloadStarted;
-          this.remainingStakingLedger = Math.floor(remainingTime / 1000);
-        }
-        this.previousStakingLedgerDownloaded = currentStakingLedgerDownloaded;
-
-        const nextLedgerStartTime = this.ledgers.nextEpoch.snarked.fetchHashesStart / ONE_MILLION;
-        const currentNextLedgerDownloaded = rpcStats.nextLedger?.fetched;
-        if (
-          this.previousNextLedgerDownloaded && currentNextLedgerDownloaded &&
-          nextLedgerStartTime < Date.now()
-        ) {
-          const timeSinceDownloadStarted = Date.now() - nextLedgerStartTime;
-          const remaining = rpcStats.nextLedger?.estimation - currentNextLedgerDownloaded;
-          const remainingTime = (remaining / currentNextLedgerDownloaded) * timeSinceDownloadStarted;
-          this.remainingNextLedger = Math.floor(remainingTime / 1000);
-        }
-        this.previousNextLedgerDownloaded = currentNextLedgerDownloaded;
-
-        const rootSnarkedLedgerStartTime = this.ledgers.rootSnarked.snarked.fetchHashesStart / ONE_MILLION;
-        const currentRootSnarkedLedgerDownloaded = rpcStats.snarkedRootLedger?.fetched;
-        if (
-          this.previousRootSnarkedLedgerDownloaded && currentRootSnarkedLedgerDownloaded &&
-          rootSnarkedLedgerStartTime < Date.now()
-        ) {
-          const timeSinceDownloadStarted = Date.now() - rootSnarkedLedgerStartTime;
-          const remaining = rpcStats.snarkedRootLedger?.estimation - currentRootSnarkedLedgerDownloaded;
-          const remainingTime = (remaining / currentRootSnarkedLedgerDownloaded) * timeSinceDownloadStarted;
-          this.remainingRootSnarkedLedger = Math.floor(remainingTime / 1000);
-        }
-        this.previousRootSnarkedLedgerDownloaded = currentRootSnarkedLedgerDownloaded;
-
-        if (this.isWebNode) {
-          const rootStagedLedgerStartTime = this.ledgers.rootStaged.staged.fetchPartsStart / ONE_MILLION;
-          const currentRootStagedLedgerDownloaded = rpcStats.stagedRootLedger?.fetched;
+          const stakingLedgerStartTime =
+            this.ledgers.stakingEpoch.snarked.fetchHashesStart / ONE_MILLION;
+          const currentStakingLedgerDownloaded =
+            rpcStats.stakingLedger?.fetched;
           if (
-            this.previousRootStagedLedgerDownloaded && currentRootStagedLedgerDownloaded &&
-            rootStagedLedgerStartTime < Date.now()
+            this.previousStakingLedgerDownloaded &&
+            currentStakingLedgerDownloaded &&
+            stakingLedgerStartTime < Date.now()
           ) {
-            const timeSinceDownloadStarted = Date.now() - rootStagedLedgerStartTime;
-            const remaining = rpcStats.stagedRootLedger?.estimation - currentRootStagedLedgerDownloaded;
-            const remainingTime = (remaining / currentRootStagedLedgerDownloaded) * timeSinceDownloadStarted;
-            this.remainingRootStagedLedgerFetchParts = Math.floor(remainingTime / 1000);
+            const timeSinceDownloadStarted =
+              Date.now() - stakingLedgerStartTime;
+            const remaining =
+              rpcStats.stakingLedger?.estimation -
+              currentStakingLedgerDownloaded;
+            const remainingTime =
+              (remaining / currentStakingLedgerDownloaded) *
+              timeSinceDownloadStarted;
+            this.remainingStakingLedger = Math.floor(remainingTime / 1000);
           }
-          this.previousRootStagedLedgerDownloaded = currentRootStagedLedgerDownloaded;
-        }
+          this.previousStakingLedgerDownloaded = currentStakingLedgerDownloaded;
 
-        this.stakingProgress = rpcStats.stakingLedger?.fetched / rpcStats.stakingLedger?.estimation * 100 || 0;
-        this.nextProgress = rpcStats.nextLedger?.fetched / rpcStats.nextLedger?.estimation * 100 || 0;
-        this.rootSnarkedProgress = rpcStats.snarkedRootLedger?.fetched / rpcStats.snarkedRootLedger?.estimation * 100 || 0;
+          const nextLedgerStartTime =
+            this.ledgers.nextEpoch.snarked.fetchHashesStart / ONE_MILLION;
+          const currentNextLedgerDownloaded = rpcStats.nextLedger?.fetched;
+          if (
+            this.previousNextLedgerDownloaded &&
+            currentNextLedgerDownloaded &&
+            nextLedgerStartTime < Date.now()
+          ) {
+            const timeSinceDownloadStarted = Date.now() - nextLedgerStartTime;
+            const remaining =
+              rpcStats.nextLedger?.estimation - currentNextLedgerDownloaded;
+            const remainingTime =
+              (remaining / currentNextLedgerDownloaded) *
+              timeSinceDownloadStarted;
+            this.remainingNextLedger = Math.floor(remainingTime / 1000);
+          }
+          this.previousNextLedgerDownloaded = currentNextLedgerDownloaded;
 
-        if (rpcStats.stagedRootLedger?.estimation) {
-          this.fetchedParts = { current: rpcStats.stagedRootLedger?.fetched, total: rpcStats.stagedRootLedger?.estimation };
-        }
+          const rootSnarkedLedgerStartTime =
+            this.ledgers.rootSnarked.snarked.fetchHashesStart / ONE_MILLION;
+          const currentRootSnarkedLedgerDownloaded =
+            rpcStats.snarkedRootLedger?.fetched;
+          if (
+            this.previousRootSnarkedLedgerDownloaded &&
+            currentRootSnarkedLedgerDownloaded &&
+            rootSnarkedLedgerStartTime < Date.now()
+          ) {
+            const timeSinceDownloadStarted =
+              Date.now() - rootSnarkedLedgerStartTime;
+            const remaining =
+              rpcStats.snarkedRootLedger?.estimation -
+              currentRootSnarkedLedgerDownloaded;
+            const remainingTime =
+              (remaining / currentRootSnarkedLedgerDownloaded) *
+              timeSinceDownloadStarted;
+            this.remainingRootSnarkedLedger = Math.floor(remainingTime / 1000);
+          }
+          this.previousRootSnarkedLedgerDownloaded =
+            currentRootSnarkedLedgerDownloaded;
 
-        this.rootStagedProgress = 0;
-        if (this.ledgers.rootStaged.staged.fetchPartsEnd) {
-          this.rootStagedProgress += 50;
-        }
-        if (this.ledgers.rootStaged.staged.reconstructEnd) {
-          this.rootStagedProgress += 50;
-        }
-        if (this.rootStagedProgress < 100 && this.isWebNode && this.ledgers.rootStaged.staged.fetchPartsEnd && !this.reconstructTimer) {
-          this.startTimerForReconstruct();
-        } else if (this.rootStagedProgress === 100) {
-          clearTimeout(this.reconstructTimer);
-        }
+          if (this.isWebNode) {
+            const rootStagedLedgerStartTime =
+              this.ledgers.rootStaged.staged.fetchPartsStart / ONE_MILLION;
+            const currentRootStagedLedgerDownloaded =
+              rpcStats.stagedRootLedger?.fetched;
+            if (
+              this.previousRootStagedLedgerDownloaded &&
+              currentRootStagedLedgerDownloaded &&
+              rootStagedLedgerStartTime < Date.now()
+            ) {
+              const timeSinceDownloadStarted =
+                Date.now() - rootStagedLedgerStartTime;
+              const remaining =
+                rpcStats.stagedRootLedger?.estimation -
+                currentRootStagedLedgerDownloaded;
+              const remainingTime =
+                (remaining / currentRootStagedLedgerDownloaded) *
+                timeSinceDownloadStarted;
+              this.remainingRootStagedLedgerFetchParts = Math.floor(
+                remainingTime / 1000,
+              );
+            }
+            this.previousRootStagedLedgerDownloaded =
+              currentRootStagedLedgerDownloaded;
+          }
 
-        if (this.ledgers.stakingEpoch.state === NodesOverviewLedgerStepState.SUCCESS) {
-          this.stakingProgress = 100;
-        }
-        if (this.ledgers.nextEpoch.state === NodesOverviewLedgerStepState.SUCCESS) {
-          this.nextProgress = 100;
-        }
-        if (this.ledgers.rootSnarked.state === NodesOverviewLedgerStepState.SUCCESS) {
-          this.rootSnarkedProgress = 100;
-        }
-        if (this.ledgers.rootStaged.state === NodesOverviewLedgerStepState.SUCCESS) {
-          this.rootStagedProgress = 100;
+          this.stakingProgress =
+            (rpcStats.stakingLedger?.fetched /
+              rpcStats.stakingLedger?.estimation) *
+              100 || 0;
+          this.nextProgress =
+            (rpcStats.nextLedger?.fetched / rpcStats.nextLedger?.estimation) *
+              100 || 0;
+          this.rootSnarkedProgress =
+            (rpcStats.snarkedRootLedger?.fetched /
+              rpcStats.snarkedRootLedger?.estimation) *
+              100 || 0;
 
-        }
-        this.totalProgress = (this.stakingProgress + this.nextProgress + this.rootSnarkedProgress + this.rootStagedProgress) / 4;
+          if (rpcStats.stagedRootLedger?.estimation) {
+            this.fetchedParts = {
+              current: rpcStats.stagedRootLedger?.fetched,
+              total: rpcStats.stagedRootLedger?.estimation,
+            };
+          }
 
-        this.sentryService.updateLedgerSyncStatus(this.ledgers, this.webNodeService.publicKey);
-      }
-      this.detect();
-    });
+          this.rootStagedProgress = 0;
+          if (this.ledgers.rootStaged.staged.fetchPartsEnd) {
+            this.rootStagedProgress += 50;
+          }
+          if (this.ledgers.rootStaged.staged.reconstructEnd) {
+            this.rootStagedProgress += 50;
+          }
+          if (
+            this.rootStagedProgress < 100 &&
+            this.isWebNode &&
+            this.ledgers.rootStaged.staged.fetchPartsEnd &&
+            !this.reconstructTimer
+          ) {
+            this.startTimerForReconstruct();
+          } else if (this.rootStagedProgress === 100) {
+            clearTimeout(this.reconstructTimer);
+          }
+
+          if (
+            this.ledgers.stakingEpoch.state ===
+            NodesOverviewLedgerStepState.SUCCESS
+          ) {
+            this.stakingProgress = 100;
+          }
+          if (
+            this.ledgers.nextEpoch.state ===
+            NodesOverviewLedgerStepState.SUCCESS
+          ) {
+            this.nextProgress = 100;
+          }
+          if (
+            this.ledgers.rootSnarked.state ===
+            NodesOverviewLedgerStepState.SUCCESS
+          ) {
+            this.rootSnarkedProgress = 100;
+          }
+          if (
+            this.ledgers.rootStaged.state ===
+            NodesOverviewLedgerStepState.SUCCESS
+          ) {
+            this.rootStagedProgress = 100;
+          }
+          this.totalProgress =
+            (this.stakingProgress +
+              this.nextProgress +
+              this.rootSnarkedProgress +
+              this.rootStagedProgress) /
+            4;
+
+          this.sentryService.updateLedgerSyncStatus(
+            this.ledgers,
+            this.webNodeService.publicKey,
+          );
+        }
+        this.detect();
+      },
+    );
   }
 
   startTimerForReconstruct(): void {
@@ -273,22 +365,27 @@ export class DashboardLedgerComponent extends StoreDispatcher implements OnInit,
 
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(event.target as HTMLElement)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: 35,
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'top',
+            offsetY: 35,
+          },
+        ]),
     });
     event.stopPropagation();
 
-    const context = this.tooltipRef
-      .createEmbeddedView({ start, end })
-      .context;
-    const portal = new TemplatePortal(this.tooltipRef, this.viewContainerRef, context);
+    const context = this.tooltipRef.createEmbeddedView({ start, end }).context;
+    const portal = new TemplatePortal(
+      this.tooltipRef,
+      this.viewContainerRef,
+      context,
+    );
     this.overlayRef.attach(portal);
   }
 
@@ -317,10 +414,18 @@ export class DashboardLedgerComponent extends StoreDispatcher implements OnInit,
     if (!this.ledgers.stakingEpoch.snarked.fetchHashesStart) {
       return;
     }
-    if (this.ledgers.rootStaged.state === NodesOverviewLedgerStepState.SUCCESS) {
-      this.progress = this.calculateProgressTime(this.ledgers.rootStaged.staged.reconstructEnd, 'finished');
+    if (
+      this.ledgers.rootStaged.state === NodesOverviewLedgerStepState.SUCCESS
+    ) {
+      this.progress = this.calculateProgressTime(
+        this.ledgers.rootStaged.staged.reconstructEnd,
+        'finished',
+      );
     } else {
-      this.progress = this.calculateProgressTime(this.ledgers.stakingEpoch.snarked.fetchHashesStart, 'started');
+      this.progress = this.calculateProgressTime(
+        this.ledgers.stakingEpoch.snarked.fetchHashesStart,
+        'started',
+      );
     }
   }
 

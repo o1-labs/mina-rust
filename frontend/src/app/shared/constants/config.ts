@@ -1,6 +1,16 @@
-import { FeaturesConfig, FeatureType, MinaEnv, MinaNode } from '@shared/types/core/environment/mina-env.type';
+import {
+  FeaturesConfig,
+  FeatureType,
+  MinaEnv,
+  MinaNode,
+} from '@shared/types/core/environment/mina-env.type';
 import { environment } from '@environment/environment';
-import { getOrigin, hasValue, isBrowser, safelyExecuteInBrowser } from '@openmina/shared';
+import {
+  getOrigin,
+  hasValue,
+  isBrowser,
+  safelyExecuteInBrowser,
+} from '@openmina/shared';
 
 export const CONFIG: Readonly<MinaEnv> = {
   ...environment,
@@ -8,12 +18,14 @@ export const CONFIG: Readonly<MinaEnv> = {
     ...environment.globalConfig,
     graphQL: getURL(environment.globalConfig?.graphQL),
   },
-  configs: !isBrowser() ? [] : environment.configs.map((config) => ({
-    ...config,
-    url: getURL(config.url),
-    memoryProfiler: getURL(config.memoryProfiler),
-    debugger: getURL(config.debugger),
-  })),
+  configs: !isBrowser()
+    ? []
+    : environment.configs.map(config => ({
+        ...config,
+        url: getURL(config.url),
+        memoryProfiler: getURL(config.memoryProfiler),
+        debugger: getURL(config.debugger),
+      })),
 };
 
 safelyExecuteInBrowser(() => {
@@ -24,7 +36,9 @@ export function getAvailableFeatures(config: MinaNode): FeatureType[] {
   return Object.keys(getFeaturesConfig(config)) as FeatureType[];
 }
 
-export function getFirstFeature(config: MinaNode = CONFIG.configs[0]): FeatureType {
+export function getFirstFeature(
+  config: MinaNode = CONFIG.configs[0],
+): FeatureType {
   if (!isBrowser()) {
     return '' as FeatureType;
   }
@@ -35,7 +49,10 @@ export function getFirstFeature(config: MinaNode = CONFIG.configs[0]): FeatureTy
   return Object.keys(getFeaturesConfig(config))[0] as FeatureType;
 }
 
-export function isFeatureEnabled(config: MinaNode, feature: FeatureType): boolean {
+export function isFeatureEnabled(
+  config: MinaNode,
+  feature: FeatureType,
+): boolean {
   if (Array.isArray(config.features)) {
     return hasValue(config.features[0]);
   }
@@ -50,7 +67,11 @@ export function getFeaturesConfig(config: MinaNode): FeaturesConfig {
   return config?.features || CONFIG.globalConfig?.features;
 }
 
-export function isSubFeatureEnabled(config: MinaNode, feature: FeatureType, subFeature: string): boolean {
+export function isSubFeatureEnabled(
+  config: MinaNode,
+  feature: FeatureType,
+  subFeature: string,
+): boolean {
   const features = getFeaturesConfig(config);
   return hasValue(features[feature]) && features[feature].includes(subFeature);
 }

@@ -1,25 +1,36 @@
-<div *ngIf="menu"
-     class="menu flex-column" [class.collapsed]="menu.collapsed && !menu.isMobile">
-  <button class="menu-toggle f-big h-xl primary pointer flex-row align-center f-400"
-          [class.flex-between]="menu.isMobile"
-          (click)="toggleMenu()">
-    <span class="fx-row-vert-cent mina-rust-node">
-      The Mina Rust Node
+<div
+  *ngIf="menu"
+  class="menu flex-column"
+  [class.collapsed]="menu.collapsed && !menu.isMobile"
+>
+  <button
+    class="menu-toggle f-big h-xl primary pointer flex-row align-center f-400"
+    [class.flex-between]="menu.isMobile"
+    (click)="toggleMenu()"
+  >
+    <span class="fx-row-vert-cent mina-rust-node">The Mina Rust Node</span>
+    <span
+      [class.flipped]="menu.isMobile ? false : menu.collapsed"
+      class="mina-icon f-20"
+    >
+      {{ !menu.isMobile ? 'first_page' : 'close' }}
     </span>
-    <span [class.flipped]="menu.isMobile ? false : menu.collapsed"
-          class="mina-icon f-20">{{ !menu.isMobile ? 'first_page' : 'close' }}</span>
   </button>
-  <a *ngFor="let item of menuItems"
-     [routerLink]="'/' + item.name.toLowerCase().split(' ').join('-')"
-     [queryParams]="activeNode ? { node: activeNode.name } : null"
-     [tooltip]="item.tooltip || item.name"
-     [globalTooltip]="false"
-     [tooltipDisabled]="!menu.collapsed || menu.isMobile"
-     [position]="TooltipPosition.RIGHT"
-     [class.active]="activeRoute === item.name.toLowerCase().split(' ').join('-')"
-     [class.border-bottom]="menu.isMobile"
-     (click)="showHideMenu()"
-     class="item h-lg">
+  <a
+    *ngFor="let item of menuItems"
+    [routerLink]="'/' + item.name.toLowerCase().split(' ').join('-')"
+    [queryParams]="activeNode ? { node: activeNode.name } : null"
+    [tooltip]="item.tooltip || item.name"
+    [globalTooltip]="false"
+    [tooltipDisabled]="!menu.collapsed || menu.isMobile"
+    [position]="TooltipPosition.RIGHT"
+    [class.active]="
+      activeRoute === item.name.toLowerCase().split(' ').join('-')
+    "
+    [class.border-bottom]="menu.isMobile"
+    (click)="showHideMenu()"
+    class="item h-lg"
+  >
     <span class="item-content h-sm">
       <span class="mina-icon">{{ item.icon }}</span>
       <span class="text-nowrap">{{ item.name }}</span>
@@ -29,51 +40,81 @@
 
 <div class="flex-column">
   <div class="flex-row align-center p-relative">
-    <button class="switcher fx-row-full-cent w-md h-md p-0 ml-5"
-            (click)="changeTheme()">
-      <span class="mina-icon f-18">{{ currentTheme === 'light' ? 'dark_mode' : 'wb_sunny' }}</span>
+    <button
+      class="switcher fx-row-full-cent w-md h-md p-0 ml-5"
+      (click)="changeTheme()"
+    >
+      <span class="mina-icon f-18">
+        {{ currentTheme === 'light' ? 'dark_mode' : 'wb_sunny' }}
+      </span>
     </button>
-    <div *ngIf="appIdentifier"
-         [class.collapsed]="menu.collapsed && !menu.isMobile"
-         [style.width.px]="menu.isMobile ? 170 : 110"
-         class="identifier tertiary p-absolute flex-row align-stretch h-md">
-    <span class="border border-rad-4 pl-5 pr-5 fx-row-vert-cent">
-      <span class="truncate">{{ appIdentifier }}</span>
-    </span>
+    <div
+      *ngIf="appIdentifier"
+      [class.collapsed]="menu.collapsed && !menu.isMobile"
+      [style.width.px]="menu.isMobile ? 170 : 110"
+      class="identifier tertiary p-absolute flex-row align-stretch h-md"
+    >
+      <span class="border border-rad-4 pl-5 pr-5 fx-row-vert-cent">
+        <span class="truncate">{{ appIdentifier }}</span>
+      </span>
     </div>
   </div>
 
   @if (!hideNodeStats) {
     <div class="w-100 pl-8 pr-8 mb-5 mt-8">
-      <div class="bottom-btn-action w-100 flex-row align-center flex-between p-relative h-sm border-rad-6 pointer"
-           (click)="openEnvBuildModal()">
+      <div
+        class="bottom-btn-action w-100 flex-row align-center flex-between p-relative h-sm border-rad-6 pointer"
+        (click)="openEnvBuildModal()"
+      >
         <div class="fx-row-vert-cent">
           <span class="mina-icon f-18 secondary">commit</span>
-          <span [class.hid]="menu.collapsed && !menu.isMobile"
-                class="network text-capitalize ml-5">Build</span>
+          <span
+            [class.hid]="menu.collapsed && !menu.isMobile"
+            class="network text-capitalize ml-5"
+          >
+            Build
+          </span>
         </div>
-        <div class="chain-id tertiary fx-row-vert-cent"
-             [class.hid]="menu.collapsed && !menu.isMobile">
-          <span>{{ envBuild ? envBuild.git.commit_hash.slice(0, 6) : '' }}..</span>
+        <div
+          class="chain-id tertiary fx-row-vert-cent"
+          [class.hid]="menu.collapsed && !menu.isMobile"
+        >
+          <span>
+            {{ envBuild ? envBuild.git.commit_hash.slice(0, 6) : '' }}..
+          </span>
           <span class="mina-icon icon-200 f-18">open_in_full</span>
         </div>
       </div>
     </div>
     <div class="w-100 pl-8 pr-8 mb-8 mt-5">
-      <div class="bottom-btn-action w-100 flex-row align-center flex-between p-relative h-sm border-rad-6 pointer"
-           [copyToClipboard]="chainId"
-           [position]="TooltipPosition.RIGHT"
-           [html]="true"
-           [maxWidth]="1500"
-           [cancelFormatting]="true"
-           [tooltip]="'Copy ' + network + ' ID<span class=\'tertiary ml-10\'>' + chainId + '</span>'">
+      <div
+        class="bottom-btn-action w-100 flex-row align-center flex-between p-relative h-sm border-rad-6 pointer"
+        [copyToClipboard]="chainId"
+        [position]="TooltipPosition.RIGHT"
+        [html]="true"
+        [maxWidth]="1500"
+        [cancelFormatting]="true"
+        [tooltip]="
+          'Copy ' +
+          network +
+          ' ID<span class=\'tertiary ml-10\'>' +
+          chainId +
+          '</span>'
+        "
+      >
         <div class="fx-row-vert-cent">
           <span class="mina-icon f-18 secondary">wifi_tethering</span>
-          <span [class.hid]="menu.collapsed && !menu.isMobile"
-                class="network text-capitalize ml-5">{{ network }}</span>
+          <span
+            [class.hid]="menu.collapsed && !menu.isMobile"
+            class="network text-capitalize ml-5"
+          >
+            {{ network }}
+          </span>
         </div>
-        <div class="chain-id tertiary fx-row-vert-cent"
-             [class.hid]="menu.collapsed && !menu.isMobile">
+        <div
+          class="chain-id tertiary fx-row-vert-cent"
+          [class.hid]="menu.collapsed && !menu.isMobile"
+        >
           <span>{{ chainId?.slice(0, 6) }}..</span>
           <span class="mina-icon icon-200 f-18">content_copy</span>
         </div>

@@ -1,4 +1,8 @@
-import { createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
+import {
+  createFeatureSelector,
+  createSelector,
+  MemoizedSelector,
+} from '@ngrx/store';
 import { MinaState } from '@app/app.setup';
 import { MempoolTransaction } from '@shared/types/mempool/mempool-transaction.type';
 import { MempoolFilters } from '@shared/types/mempool/mempool-filters.type';
@@ -13,11 +17,10 @@ export interface MempoolState {
   isLoading: boolean;
 }
 
-
-const select = <T>(selector: (state: MempoolState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  createFeatureSelector<MempoolState>(MEMPOOL_KEY),
-  selector,
-);
+const select = <T>(
+  selector: (state: MempoolState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(createFeatureSelector<MempoolState>(MEMPOOL_KEY), selector);
 
 const filteredTxs = select(state => state.txs);
 const allTxs = select(state => state.allTxs);

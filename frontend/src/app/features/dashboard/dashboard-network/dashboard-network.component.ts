@@ -5,15 +5,17 @@ import { skip } from 'rxjs';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-    selector: 'mina-dashboard-network',
-    templateUrl: './dashboard-network.component.html',
-    styleUrls: ['./dashboard-network.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column' },
-    standalone: false
+  selector: 'mina-dashboard-network',
+  templateUrl: './dashboard-network.component.html',
+  styleUrls: ['./dashboard-network.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column' },
+  standalone: false,
 })
-export class DashboardNetworkComponent extends StoreDispatcher implements OnInit {
-
+export class DashboardNetworkComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   stats: DashboardPeersStats = {
     connected: 0,
     disconnected: 0,
@@ -25,9 +27,13 @@ export class DashboardNetworkComponent extends StoreDispatcher implements OnInit
   }
 
   private listenToPeersChanges(): void {
-    this.select(selectDashboardPeersStats, (stats: DashboardPeersStats) => {
-      this.stats = stats;
-      this.detect();
-    }, skip(1));
+    this.select(
+      selectDashboardPeersStats,
+      (stats: DashboardPeersStats) => {
+        this.stats = stats;
+        this.detect();
+      },
+      skip(1),
+    );
   }
 }

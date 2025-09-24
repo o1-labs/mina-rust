@@ -12,13 +12,23 @@ export interface MemoryResourcesState {
   treemapView: TreemapView;
 }
 
-const select = <T>(selector: (state: MemoryResourcesState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectMemoryResourcesState,
-  selector,
-);
+const select = <T>(
+  selector: (state: MemoryResourcesState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectMemoryResourcesState, selector);
 
-export const selectMemoryResources = select((state: MemoryResourcesState): MemoryResource => state.resource);
-export const selectMemoryResourcesActiveResource = select((state: MemoryResourcesState): MemoryResource => state.activeResource);
-export const selectMemoryResourcesBreadcrumbs = select((state: MemoryResourcesState): MemoryResource[] => state.breadcrumbs);
-export const selectMemoryResourcesGranularity = select((state: MemoryResourcesState): number => state.granularity);
-export const selectMemoryResourcesTreemapView = select((state: MemoryResourcesState): TreemapView => state.treemapView);
+export const selectMemoryResources = select(
+  (state: MemoryResourcesState): MemoryResource => state.resource,
+);
+export const selectMemoryResourcesActiveResource = select(
+  (state: MemoryResourcesState): MemoryResource => state.activeResource,
+);
+export const selectMemoryResourcesBreadcrumbs = select(
+  (state: MemoryResourcesState): MemoryResource[] => state.breadcrumbs,
+);
+export const selectMemoryResourcesGranularity = select(
+  (state: MemoryResourcesState): number => state.granularity,
+);
+export const selectMemoryResourcesTreemapView = select(
+  (state: MemoryResourcesState): TreemapView => state.treemapView,
+);

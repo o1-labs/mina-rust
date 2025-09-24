@@ -45,7 +45,9 @@ $white: #000000;
 }
 
 .welcome-container {
-  background: linear-gradient(180deg, transparent 75%, openmina.$base-background), url('../../../assets/images/web-node-demo/Hero BG.jpg');
+  background:
+    linear-gradient(180deg, transparent 75%, openmina.$base-background),
+    url('../../../assets/images/web-node-demo/Hero BG.jpg');
   background-size: cover;
   background-position: top;
 
@@ -148,7 +150,7 @@ $white: #000000;
       margin-right: 24px;
 
       .bar {
-        background: rgba(255, 255, 255, 0.20);
+        background: rgba(255, 255, 255, 0.2);
         position: absolute;
         width: 1px;
         left: 16px;
@@ -177,7 +179,7 @@ $white: #000000;
   }
 
   .f-description {
-    font-size: 5.556vw
+    font-size: 5.556vw;
   }
 
   .f-body {
@@ -215,7 +217,7 @@ $white: #000000;
     font-size: 5.556vw;
     height: 15.556vw !important;
     margin-bottom: 17.778vw;
-    width: 100% ! important;
+    width: 100% !important;
   }
 
   .images .step .step-text {

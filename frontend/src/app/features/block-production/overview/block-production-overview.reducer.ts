@@ -31,18 +31,24 @@ export const blockProductionOverviewReducer = createReducer(
       ...epochs.find(e => e.epochNumber === state.activeEpochNumber),
     },
   })),
-  on(BlockProductionOverviewActions.getEpochDetails, (state, { epochNumber }) => ({
-    ...state,
-    activeEpochNumber: epochNumber,
-  })),
-  on(BlockProductionOverviewActions.getEpochDetailsSuccess, (state, { details }) => ({
-    ...state,
-    activeEpoch: {
-      ...state.activeEpoch,
-      details,
-    },
-    activeEpochNumber: state.activeEpochNumber || details?.epochNumber,
-  })),
+  on(
+    BlockProductionOverviewActions.getEpochDetails,
+    (state, { epochNumber }) => ({
+      ...state,
+      activeEpochNumber: epochNumber,
+    }),
+  ),
+  on(
+    BlockProductionOverviewActions.getEpochDetailsSuccess,
+    (state, { details }) => ({
+      ...state,
+      activeEpoch: {
+        ...state.activeEpoch,
+        details,
+      },
+      activeEpochNumber: state.activeEpochNumber || details?.epochNumber,
+    }),
+  ),
   on(BlockProductionOverviewActions.getSlotsSuccess, (state, { slots }) => ({
     ...state,
     activeEpoch: {
@@ -57,10 +63,13 @@ export const blockProductionOverviewReducer = createReducer(
     ...state,
     filters,
   })),
-  on(BlockProductionOverviewActions.getRewardsStatsSuccess, (state, { stats }) => ({
-    ...state,
-    allTimeStats: stats,
-  })),
+  on(
+    BlockProductionOverviewActions.getRewardsStatsSuccess,
+    (state, { stats }) => ({
+      ...state,
+      allTimeStats: stats,
+    }),
+  ),
   on(BlockProductionOverviewActions.changeScale, (state, { scale }) => ({
     ...state,
     scale,

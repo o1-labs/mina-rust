@@ -111,7 +111,6 @@
 }
 
 .node-status {
-
   @media (min-width: 768px) {
     &.can-add-nodes {
       .chip,
@@ -154,7 +153,18 @@
       height: 1100%;
       width: 405%;
       transform: rotate(-45deg);
-      background: linear-gradient(to right, transparent 20%, transparent 40%, openmina.$base-container 45%, openmina.$base-divider 46%, openmina.$aware-tertiary 50%, openmina.$base-divider 54%, openmina.$base-container 55%, transparent 55%, transparent 100%);
+      background: linear-gradient(
+        to right,
+        transparent 20%,
+        transparent 40%,
+        openmina.$base-container 45%,
+        openmina.$base-divider 46%,
+        openmina.$aware-tertiary 50%,
+        openmina.$base-divider 54%,
+        openmina.$base-container 55%,
+        transparent 55%,
+        transparent 100%
+      );
       background-size: 200% auto;
       animation: shine 5s linear infinite;
     }

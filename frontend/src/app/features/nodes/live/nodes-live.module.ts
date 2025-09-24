@@ -10,8 +10,10 @@ import { NodesLiveFiltersComponent } from '@nodes/live/nodes-live-filters/nodes-
 import { NodesLiveBlocksMapComponent } from '@nodes/live/nodes-live-blocks-map/nodes-live-blocks-map.component';
 import { NodesLiveEventsTableComponent } from '@nodes/live/nodes-live-events-table/nodes-live-events-table.component';
 import { NodesLiveStatusCountsComponent } from '@nodes/live/nodes-live-status-counts/nodes-live-status-counts.component';
-import { CopyComponent, HorizontalResizableContainerComponent } from '@openmina/shared';
-
+import {
+  CopyComponent,
+  HorizontalResizableContainerComponent,
+} from '@openmina/shared';
 
 @NgModule({
   declarations: [

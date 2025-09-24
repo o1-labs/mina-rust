@@ -107,34 +107,34 @@ export interface MinaNode {
  */
 export type FeaturesConfig = Partial<{
   /** Main dashboard view */
-  'dashboard': string[];
+  dashboard: string[];
 
   /** Node management and monitoring features */
-  'nodes': string[];
+  nodes: string[];
 
   /** State machine and action tracking */
-  'state': string[];
+  state: string[];
 
   /** Network topology, messages, and peer connections */
-  'network': string[];
+  network: string[];
 
   /** SNARK proof generation and verification */
-  'snarks': string[];
+  snarks: string[];
 
   /** System resource monitoring (memory, CPU) */
-  'resources': string[];
+  resources: string[];
 
   /** Block production and slot tracking */
   'block-production': string[];
 
   /** Transaction mempool monitoring */
-  'mempool': string[];
+  mempool: string[];
 
   /** Performance benchmarking tools */
-  'benchmarks': string[];
+  benchmarks: string[];
 
   /** Fuzzing and testing tools */
-  'fuzzing': string[];
+  fuzzing: string[];
 }>;
 
 /**

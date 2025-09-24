@@ -52,8 +52,10 @@ interface TransactionForm {
   host: { class: 'flex-column h-xl border-bottom' },
   standalone: false,
 })
-export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection implements OnInit {
-
+export class BenchmarksWalletsZkappToolbarComponent
+  extends ManualDetection
+  implements OnInit
+{
   protected readonly updates$ = this.zkService.updates$;
 
   formGroup: FormGroup<TransactionForm>;
@@ -68,13 +70,18 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
   private overlayRef: OverlayRef;
 
   @ViewChild('walletDropdown') private walletDropdown: TemplateRef<any>;
-  @ViewChild('dropdownTrigger') private dropdownTrigger: ElementRef<HTMLDivElement>;
+  @ViewChild('dropdownTrigger')
+  private dropdownTrigger: ElementRef<HTMLDivElement>;
 
-  constructor(private store: Store<MinaState>,
-              private formBuilder: FormBuilder,
-              private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef,
-              private zkService: BenchmarksWalletsZkService) { super(); }
+  constructor(
+    private store: Store<MinaState>,
+    private formBuilder: FormBuilder,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+    private zkService: BenchmarksWalletsZkService,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -85,14 +92,16 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
   }
 
   private listenToWalletsChanges(): void {
-    this.store.select(selectBenchmarksWallets)
+    this.store
+      .select(selectBenchmarksWallets)
       .pipe(untilDestroyed(this))
       .subscribe(wallets => {
         this.wallets = wallets;
         this.walletsLength = wallets.length;
         this.detect();
       });
-    this.store.select(selectBenchmarksActiveWallet)
+    this.store
+      .select(selectBenchmarksActiveWallet)
       .pipe(untilDestroyed(this))
       .subscribe(activeWallet => {
         this.activeWallet = activeWallet;
@@ -101,7 +110,8 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
   }
 
   private listenToBatchChange(): void {
-    this.store.select(selectBenchmarksZkappsSendingBatch)
+    this.store
+      .select(selectBenchmarksZkappsSendingBatch)
       .pipe(untilDestroyed(this))
       .subscribe(batch => {
         this.currentBatch = batch;
@@ -111,7 +121,8 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
   }
 
   private listenToFeeChange(): void {
-    this.store.select(selectBenchmarksSendingFeeZkapps)
+    this.store
+      .select(selectBenchmarksSendingFeeZkapps)
       .pipe(untilDestroyed(this))
       .subscribe(fee => {
         this.formGroup.get('fee').setValue(Math.abs(fee));
@@ -120,13 +131,15 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
   }
 
   private listenToStressingSendStreaming(): void {
-    this.store.select(selectBenchmarksBlockSending)
+    this.store
+      .select(selectBenchmarksBlockSending)
       .pipe(untilDestroyed(this))
       .subscribe(streamSending => {
         this.streamSending = streamSending;
         this.detect();
       });
-    this.store.select(selectBenchmarksRandomWallet)
+    this.store
+      .select(selectBenchmarksRandomWallet)
       .pipe(untilDestroyed(this))
       .subscribe(randomWallet => {
         this.randomWallet = randomWallet;
@@ -140,9 +153,9 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
       fee: new FormControl(0),
     });
 
-    this.formGroup.get('batch')
-      .valueChanges
-      .pipe(
+    this.formGroup
+      .get('batch')
+      .valueChanges.pipe(
         distinctUntilChanged(),
         filter(v => v !== null),
         untilDestroyed(this),
@@ -150,7 +163,9 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
       .subscribe((value: number) => {
         let payload = Math.ceil(value || 1);
         if (payload > this.walletsLength) {
-          payload = this.randomWallet ? this.walletsLength : (this.walletsLength - 1);
+          payload = this.randomWallet
+            ? this.walletsLength
+            : this.walletsLength - 1;
         }
         this.formGroup.get('batch').patchValue(payload);
         if (this.currentBatch !== payload) {
@@ -160,9 +175,9 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
           });
         }
       });
-    this.formGroup.get('fee')
-      .valueChanges
-      .pipe(
+    this.formGroup
+      .get('fee')
+      .valueChanges.pipe(
         distinctUntilChanged(),
         filter(v => v !== null),
         untilDestroyed(this),
@@ -177,16 +192,23 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
 
   send(): void {
     if (!this.streamSending) {
-      this.store.dispatch<BenchmarksWalletsSendZkApps>({ type: BENCHMARKS_WALLETS_SEND_ZKAPPS });
+      this.store.dispatch<BenchmarksWalletsSendZkApps>({
+        type: BENCHMARKS_WALLETS_SEND_ZKAPPS,
+      });
     }
   }
 
   toggleRandomWallet(): void {
-    this.store.dispatch<BenchmarksWalletsToggleRandomWallet>({ type: BENCHMARKS_WALLETS_TOGGLE_RANDOM_WALLET });
+    this.store.dispatch<BenchmarksWalletsToggleRandomWallet>({
+      type: BENCHMARKS_WALLETS_TOGGLE_RANDOM_WALLET,
+    });
   }
 
   changeWallet(wallet: BenchmarksWallet) {
-    this.store.dispatch<BenchmarksWalletsSelectWallet>({ type: BENCHMARKS_WALLETS_SELECT_WALLET, payload: wallet });
+    this.store.dispatch<BenchmarksWalletsSelectWallet>({
+      type: BENCHMARKS_WALLETS_SELECT_WALLET,
+      payload: wallet,
+    });
     this.detachOverlay();
   }
 
@@ -200,19 +222,25 @@ export class BenchmarksWalletsZkappToolbarComponent extends ManualDetection impl
       hasBackdrop: false,
       width: isMobile() ? '100%' : undefined,
       height: isMobile() ? '100%' : '350px',
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(this.dropdownTrigger.nativeElement)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: 35,
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'top',
+            offsetY: 35,
+          },
+        ]),
     });
     event.stopPropagation();
 
-    const portal = new TemplatePortal(this.walletDropdown, this.viewContainerRef);
+    const portal = new TemplatePortal(
+      this.walletDropdown,
+      this.viewContainerRef,
+    );
     this.overlayRef.attach(portal);
   }
 

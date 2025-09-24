@@ -13,41 +13,48 @@ enum StateActionsActionTypes {
   STATE_ACTIONS_SEARCH = 'STATE_ACTIONS_SEARCH',
 }
 
-export const STATE_ACTIONS_GET_EARLIEST_SLOT = StateActionsActionTypes.STATE_ACTIONS_GET_EARLIEST_SLOT;
-export const STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS = StateActionsActionTypes.STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS;
-export const STATE_ACTIONS_GET_ACTIONS = StateActionsActionTypes.STATE_ACTIONS_GET_ACTIONS;
-export const STATE_ACTIONS_GET_ACTIONS_SUCCESS = StateActionsActionTypes.STATE_ACTIONS_GET_ACTIONS_SUCCESS;
+export const STATE_ACTIONS_GET_EARLIEST_SLOT =
+  StateActionsActionTypes.STATE_ACTIONS_GET_EARLIEST_SLOT;
+export const STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS =
+  StateActionsActionTypes.STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS;
+export const STATE_ACTIONS_GET_ACTIONS =
+  StateActionsActionTypes.STATE_ACTIONS_GET_ACTIONS;
+export const STATE_ACTIONS_GET_ACTIONS_SUCCESS =
+  StateActionsActionTypes.STATE_ACTIONS_GET_ACTIONS_SUCCESS;
 export const STATE_ACTIONS_CLOSE = StateActionsActionTypes.STATE_ACTIONS_CLOSE;
-export const STATE_ACTIONS_TOGGLE_SIDE_PANEL = StateActionsActionTypes.STATE_ACTIONS_TOGGLE_SIDE_PANEL;
+export const STATE_ACTIONS_TOGGLE_SIDE_PANEL =
+  StateActionsActionTypes.STATE_ACTIONS_TOGGLE_SIDE_PANEL;
 export const STATE_ACTIONS_SORT = StateActionsActionTypes.STATE_ACTIONS_SORT;
-export const STATE_ACTIONS_SEARCH = StateActionsActionTypes.STATE_ACTIONS_SEARCH;
+export const STATE_ACTIONS_SEARCH =
+  StateActionsActionTypes.STATE_ACTIONS_SEARCH;
 
-export interface StateActionsAction extends FeatureAction<StateActionsActionTypes> {
+export interface StateActionsAction
+  extends FeatureAction<StateActionsActionTypes> {
   readonly type: StateActionsActionTypes;
 }
 
 export class StateActionsGetEarliestSlot implements StateActionsAction {
   readonly type = STATE_ACTIONS_GET_EARLIEST_SLOT;
 
-  constructor(public payload: { force: boolean }) { }
+  constructor(public payload: { force: boolean }) {}
 }
 
 export class StateActionsGetEarliestSlotSuccess implements StateActionsAction {
   readonly type = STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS;
 
-  constructor(public payload: number) { }
+  constructor(public payload: number) {}
 }
 
 export class StateActionsGetActions implements StateActionsAction {
   readonly type = STATE_ACTIONS_GET_ACTIONS;
 
-  constructor(public payload: { slot: number }) { }
+  constructor(public payload: { slot: number }) {}
 }
 
 export class StateActionsGetActionsSuccess implements StateActionsAction {
   readonly type = STATE_ACTIONS_GET_ACTIONS_SUCCESS;
 
-  constructor(public payload: [StateActionsStats, StateActionGroup[]]) { }
+  constructor(public payload: [StateActionsStats, StateActionGroup[]]) {}
 }
 
 export class StateActionsClose implements StateActionsAction {
@@ -61,13 +68,13 @@ export class StateActionsToggleSidePanel implements StateActionsAction {
 export class StateActionsSort implements StateActionsAction {
   readonly type = STATE_ACTIONS_SORT;
 
-  constructor(public payload: TableSort<StateActionGroup>) { }
+  constructor(public payload: TableSort<StateActionGroup>) {}
 }
 
 export class StateActionsSearch implements StateActionsAction {
   readonly type = STATE_ACTIONS_SEARCH;
 
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export type StateActionsActions =
@@ -78,5 +85,4 @@ export type StateActionsActions =
   | StateActionsClose
   | StateActionsToggleSidePanel
   | StateActionsSort
-  | StateActionsSearch
-  ;
+  | StateActionsSearch;

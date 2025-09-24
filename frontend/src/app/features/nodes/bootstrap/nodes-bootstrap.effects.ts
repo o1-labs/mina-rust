@@ -22,33 +22,46 @@ import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
   providedIn: 'root',
 })
 export class NodesBootstrapEffects extends MinaRustBaseEffect<NodesBootstrapActions> {
-
   readonly getNodes$: Effect;
 
   private pendingRequest: boolean;
 
-  constructor(private actions$: Actions,
-              private nodesBootstrapService: NodesBootstrapService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private nodesBootstrapService: NodesBootstrapService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getNodes$ = createEffect(() => this.actions$.pipe(
-      ofType(NODES_BOOTSTRAP_GET_NODES, NODES_BOOTSTRAP_CLOSE),
-      this.latestActionState<NodesBootstrapGetNodes | NodesBootstrapClose>(),
-      filter(({ action }) => (action as any).payload?.force || !this.pendingRequest),
-      tap(({ action }) => {
-        if (action.type === NODES_BOOTSTRAP_GET_NODES) {
-          this.pendingRequest = true;
-        }
-      }),
-      switchMap(({ action, state }) =>
-        action.type === NODES_BOOTSTRAP_CLOSE
-          ? EMPTY
-          : this.nodesBootstrapService.getBootstrapNodeTips(),
+    this.getNodes$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(NODES_BOOTSTRAP_GET_NODES, NODES_BOOTSTRAP_CLOSE),
+        this.latestActionState<NodesBootstrapGetNodes | NodesBootstrapClose>(),
+        filter(
+          ({ action }) =>
+            (action as any).payload?.force || !this.pendingRequest,
+        ),
+        tap(({ action }) => {
+          if (action.type === NODES_BOOTSTRAP_GET_NODES) {
+            this.pendingRequest = true;
+          }
+        }),
+        switchMap(({ action, state }) =>
+          action.type === NODES_BOOTSTRAP_CLOSE
+            ? EMPTY
+            : this.nodesBootstrapService.getBootstrapNodeTips(),
+        ),
+        map((payload: NodesBootstrapNode[]) => ({
+          type: NODES_BOOTSTRAP_GET_NODES_SUCCESS,
+          payload,
+        })),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          NODES_BOOTSTRAP_GET_NODES_SUCCESS,
+          { blocks: [] },
+        ),
+        tap(() => (this.pendingRequest = false)),
       ),
-      map((payload: NodesBootstrapNode[]) => ({ type: NODES_BOOTSTRAP_GET_NODES_SUCCESS, payload })),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, NODES_BOOTSTRAP_GET_NODES_SUCCESS, { blocks: [] }),
-      tap(() => this.pendingRequest = false),
-    ));
+    );
   }
 }

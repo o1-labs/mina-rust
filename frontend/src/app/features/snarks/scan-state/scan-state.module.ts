@@ -11,14 +11,14 @@ import { ScanStateToolbarComponent } from './scan-state-toolbar/scan-state-toolb
 import {
   CopyComponent,
   HorizontalMenuComponent,
-  HorizontalResizableContainerComponent, JsonConsoleComponent,
+  HorizontalResizableContainerComponent,
+  JsonConsoleComponent,
   MinaJsonViewerComponent,
-  MinaSidePanelStepperComponent
+  MinaSidePanelStepperComponent,
 } from '@openmina/shared';
 import { ScanStateSidePanelComponent } from './scan-state-side-panel/scan-state-side-panel.component';
 import { ScanStateDetailsComponent } from './scan-state-details/scan-state-details.component';
 import { ScanStateJobDetailsComponent } from './scan-state-job-details/scan-state-job-details.component';
-
 
 @NgModule({
   declarations: [
@@ -39,7 +39,7 @@ import { ScanStateJobDetailsComponent } from './scan-state-job-details/scan-stat
     HorizontalResizableContainerComponent,
     MinaSidePanelStepperComponent,
     MinaJsonViewerComponent,
-    JsonConsoleComponent
-  ]
+    JsonConsoleComponent,
+  ],
 })
 export class ScanStateModule {}

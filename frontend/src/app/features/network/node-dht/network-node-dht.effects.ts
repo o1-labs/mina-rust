@@ -12,14 +12,17 @@ import {
   NETWORK_NODE_DHT_GET_PEERS,
   NETWORK_NODE_DHT_GET_PEERS_SUCCESS,
   NETWORK_NODE_DHT_INIT,
-  NetworkNodeDhtActions, NetworkNodeDhtClose, NetworkNodeDhtGetPeers,
+  NetworkNodeDhtActions,
+  NetworkNodeDhtClose,
+  NetworkNodeDhtGetPeers,
 } from '@network/node-dht/network-node-dht.actions';
 import { NetworkNodeDhtService } from '@network/node-dht/network-node-dht.service';
 import { NetworkNodeDhtPeer } from '@shared/types/network/node-dht/network-node-dht.type';
 import { NetworkNodeDhtBucket } from '@shared/types/network/node-dht/network-node-dht-bucket.type';
 import {
   DASHBOARD_SPLITS_CLOSE,
-  DASHBOARD_SPLITS_GET_SPLITS, DashboardSplitsClose,
+  DASHBOARD_SPLITS_GET_SPLITS,
+  DashboardSplitsClose,
   DashboardSplitsGetSplits,
 } from '@network/splits/dashboard-splits.actions';
 import {
@@ -33,44 +36,62 @@ import {
   providedIn: 'root',
 })
 export class NetworkNodeDhtEffects extends MinaRustBaseEffect<NetworkNodeDhtActions> {
-
   readonly init$: Effect;
   readonly getPeers$: Effect;
 
   private pendingRequest: boolean;
 
-  constructor(private actions$: Actions,
-              private nodeDhtService: NetworkNodeDhtService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private nodeDhtService: NetworkNodeDhtService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.init$ = createEffect(() => this.actions$.pipe(
-      ofType(NETWORK_NODE_DHT_INIT),
-      map(() => ({ type: NETWORK_NODE_DHT_GET_PEERS })),
-    ));
-
-    this.getPeers$ = createEffect(() => this.actions$.pipe(
-      ofType(NETWORK_NODE_DHT_GET_PEERS, NETWORK_NODE_DHT_CLOSE),
-      this.latestActionState<NetworkNodeDhtGetPeers | NetworkNodeDhtClose>(),
-      filter(({ action }) => action.type === NETWORK_NODE_DHT_CLOSE || !this.pendingRequest),
-      tap(({ action }) => {
-        this.pendingRequest = action.type === NETWORK_NODE_DHT_GET_PEERS;
-      }),
-      switchMap(({ action }) =>
-        action.type === NETWORK_NODE_DHT_CLOSE
-          ? EMPTY
-          : this.nodeDhtService.getDhtPeers(),
+    this.init$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(NETWORK_NODE_DHT_INIT),
+        map(() => ({ type: NETWORK_NODE_DHT_GET_PEERS })),
       ),
-      map((payload: { peers: NetworkNodeDhtPeer[], thisKey: string, buckets: NetworkNodeDhtBucket[] }) => ({
-        type: NETWORK_NODE_DHT_GET_PEERS_SUCCESS,
-        payload,
-      })),
-      tap(() => this.pendingRequest = false),
-      catchErrorAndRepeat(MinaErrorType.RUST, NETWORK_NODE_DHT_GET_PEERS_SUCCESS, {
-        peers: [],
-        thisKey: '',
-        buckets: [],
-      }),
-    ));
+    );
+
+    this.getPeers$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(NETWORK_NODE_DHT_GET_PEERS, NETWORK_NODE_DHT_CLOSE),
+        this.latestActionState<NetworkNodeDhtGetPeers | NetworkNodeDhtClose>(),
+        filter(
+          ({ action }) =>
+            action.type === NETWORK_NODE_DHT_CLOSE || !this.pendingRequest,
+        ),
+        tap(({ action }) => {
+          this.pendingRequest = action.type === NETWORK_NODE_DHT_GET_PEERS;
+        }),
+        switchMap(({ action }) =>
+          action.type === NETWORK_NODE_DHT_CLOSE
+            ? EMPTY
+            : this.nodeDhtService.getDhtPeers(),
+        ),
+        map(
+          (payload: {
+            peers: NetworkNodeDhtPeer[];
+            thisKey: string;
+            buckets: NetworkNodeDhtBucket[];
+          }) => ({
+            type: NETWORK_NODE_DHT_GET_PEERS_SUCCESS,
+            payload,
+          }),
+        ),
+        tap(() => (this.pendingRequest = false)),
+        catchErrorAndRepeat(
+          MinaErrorType.RUST,
+          NETWORK_NODE_DHT_GET_PEERS_SUCCESS,
+          {
+            peers: [],
+            thisKey: '',
+            buckets: [],
+          },
+        ),
+      ),
+    );
   }
 }

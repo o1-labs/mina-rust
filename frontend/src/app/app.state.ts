@@ -13,10 +13,10 @@ export interface AppState {
   envBuild: AppEnvBuild | undefined;
 }
 
-const select = <T>(selector: (state: AppState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  (state: MinaState): AppState => state.app,
-  selector,
-);
+const select = <T>(
+  selector: (state: AppState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector((state: MinaState): AppState => state.app, selector);
 
 const menu = select(state => state.menu);
 const nodes = select(state => state.nodes);

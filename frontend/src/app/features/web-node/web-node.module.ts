@@ -3,12 +3,8 @@ import { CommonModule } from '@angular/common';
 
 import { WebNodeRouting } from './web-node.routing';
 
-
 @NgModule({
   declarations: [],
-  imports: [
-    CommonModule,
-    WebNodeRouting,
-  ],
+  imports: [CommonModule, WebNodeRouting],
 })
 export class WebNodeModule {}

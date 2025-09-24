@@ -40,9 +40,11 @@ const initialState: NetworkMessagesState = {
   activeTab: 1,
 };
 
-export function networkMessagesReducer(state: NetworkMessagesState = initialState, action: NetworkMessagesActions): NetworkMessagesState {
+export function networkMessagesReducer(
+  state: NetworkMessagesState = initialState,
+  action: NetworkMessagesActions,
+): NetworkMessagesState {
   switch (action.type) {
-
     case NETWORK_GET_MESSAGES: {
       return {
         ...state,
@@ -87,12 +89,17 @@ export function networkMessagesReducer(state: NetworkMessagesState = initialStat
 
     case NETWORK_TOGGLE_FILTER:
     case NETWORK_GET_SPECIFIC_MESSAGE: {
-      const activeFilters = action.payload.type === 'add'
-        ? [
-          ...state.activeFilters,
-          ...action.payload.filters.filter(f => !state.activeFilters.some(fi => fi.value === f.value)),
-        ]
-        : state.activeFilters.filter(f => !action.payload.filters.some(fi => fi.value === f.value));
+      const activeFilters =
+        action.payload.type === 'add'
+          ? [
+              ...state.activeFilters,
+              ...action.payload.filters.filter(
+                f => !state.activeFilters.some(fi => fi.value === f.value),
+              ),
+            ]
+          : state.activeFilters.filter(
+              f => !action.payload.filters.some(fi => fi.value === f.value),
+            );
       return {
         ...state,
         activeFilters,
@@ -104,11 +111,17 @@ export function networkMessagesReducer(state: NetworkMessagesState = initialStat
           firstPageIdWithTimestamp: null,
           lastPageIdWithTimestamp: -1,
         },
-        direction: action.payload.direction ?? (!activeFilters.length && !state.timestamp.from) ? NetworkMessagesDirection.REVERSE : state.direction,
-        timestamp: !action.payload.timestamp ? state.timestamp : {
-          from: action.payload.timestamp.from,
-          to: action.payload.timestamp.to,
-        },
+        direction:
+          (action.payload.direction ??
+          (!activeFilters.length && !state.timestamp.from))
+            ? NetworkMessagesDirection.REVERSE
+            : state.direction,
+        timestamp: !action.payload.timestamp
+          ? state.timestamp
+          : {
+              from: action.payload.timestamp.from,
+              to: action.payload.timestamp.to,
+            },
         pages: [],
       };
     }
@@ -149,8 +162,14 @@ export function networkMessagesReducer(state: NetworkMessagesState = initialStat
         direction: action.payload.direction,
         activePage: {
           ...state.activePage,
-          firstPageIdWithFilters: action.payload.id === 0 ? -1 : state.activePage.firstPageIdWithFilters,
-          lastPageIdWithTimestamp: action.payload.timestamp?.to && action.payload.timestamp?.from ? null : -1,
+          firstPageIdWithFilters:
+            action.payload.id === 0
+              ? -1
+              : state.activePage.firstPageIdWithFilters,
+          lastPageIdWithTimestamp:
+            action.payload.timestamp?.to && action.payload.timestamp?.from
+              ? null
+              : -1,
         },
       };
     }
@@ -189,7 +208,10 @@ export function networkMessagesReducer(state: NetworkMessagesState = initialStat
   }
 }
 
-function setActivePage(messages: NetworkMessage[], state: NetworkMessagesState): VirtualScrollActivePage<NetworkMessage> {
+function setActivePage(
+  messages: NetworkMessage[],
+  state: NetworkMessagesState,
+): VirtualScrollActivePage<NetworkMessage> {
   if (!messages.length) {
     return {};
   }
@@ -198,14 +220,29 @@ function setActivePage(messages: NetworkMessage[], state: NetworkMessagesState):
     start: messages[0],
     end: messages[messages.length - 1],
     numberOfRecords: messages.length,
-    firstPageIdWithFilters: state.activePage.firstPageIdWithFilters === -1 ? messages[0].id : state.activePage.firstPageIdWithFilters,
-    lastPageIdWithFilters: state.activePage.lastPageIdWithFilters === null ? messages[messages.length - 1].id : state.activePage.lastPageIdWithFilters,
-    firstPageIdWithTimestamp: state.timestamp.from && !state.activePage.firstPageIdWithTimestamp ? messages[0].id : state.activePage.firstPageIdWithTimestamp,
-    lastPageIdWithTimestamp: state.timestamp.from && !state.activePage.lastPageIdWithTimestamp ? messages[messages.length - 1].id : state.activePage.lastPageIdWithTimestamp,
+    firstPageIdWithFilters:
+      state.activePage.firstPageIdWithFilters === -1
+        ? messages[0].id
+        : state.activePage.firstPageIdWithFilters,
+    lastPageIdWithFilters:
+      state.activePage.lastPageIdWithFilters === null
+        ? messages[messages.length - 1].id
+        : state.activePage.lastPageIdWithFilters,
+    firstPageIdWithTimestamp:
+      state.timestamp.from && !state.activePage.firstPageIdWithTimestamp
+        ? messages[0].id
+        : state.activePage.firstPageIdWithTimestamp,
+    lastPageIdWithTimestamp:
+      state.timestamp.from && !state.activePage.lastPageIdWithTimestamp
+        ? messages[messages.length - 1].id
+        : state.activePage.lastPageIdWithTimestamp,
   };
 }
 
-function setPages(activePage: VirtualScrollActivePage<NetworkMessage>, state: NetworkMessagesState): number[] {
+function setPages(
+  activePage: VirtualScrollActivePage<NetworkMessage>,
+  state: NetworkMessagesState,
+): number[] {
   const currentPages = state.pages;
 
   if (currentPages.includes(activePage.id)) {

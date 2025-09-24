@@ -1,10 +1,11 @@
-<mina-horizontal-resizable-container [leftTemplate]="left"
-                                     [rightTemplate]="right"
-                                     [show]="openSidePanel"
-                                     [minWidth]="360"
-                                     [maxWidthElement]="el.nativeElement"
-                                     localStorageKey="nb-bootstrap-spw">
-</mina-horizontal-resizable-container>
+<mina-horizontal-resizable-container
+  [leftTemplate]="left"
+  [rightTemplate]="right"
+  [show]="openSidePanel"
+  [minWidth]="360"
+  [maxWidthElement]="el.nativeElement"
+  localStorageKey="nb-bootstrap-spw"
+></mina-horizontal-resizable-container>
 
 <ng-template #left>
   <mina-nodes-bootstrap-table></mina-nodes-bootstrap-table>

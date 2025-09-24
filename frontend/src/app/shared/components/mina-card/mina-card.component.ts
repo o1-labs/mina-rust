@@ -1,15 +1,14 @@
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 @Component({
-    selector: 'mina-card',
-    templateUrl: './mina-card.component.html',
-    styleUrls: ['./mina-card.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column flex-between pt-8 pb-8 pl-12 border-rad-8' },
-    standalone: false
+  selector: 'mina-card',
+  templateUrl: './mina-card.component.html',
+  styleUrls: ['./mina-card.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column flex-between pt-8 pb-8 pl-12 border-rad-8' },
+  standalone: false,
 })
 export class MinaCardComponent {
-
   @Input() color: string = 'var(--base-primary)';
   @Input() labelColor: string = 'var(--base-primary)';
   @Input() hintColor: string = 'var(--base-tertiary)';
@@ -18,5 +17,4 @@ export class MinaCardComponent {
   @Input() value: string | number;
   @Input() hint: string | number;
   @Input() tooltipText: string;
-
 }

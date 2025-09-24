@@ -1,7 +1,15 @@
 @use 'openmina';
 
 .background-gradient {
-  background: linear-gradient(120deg, openmina.$base-background 0%, openmina.$base-background 20%, openmina.$base-background 40%, openmina.$success-container 50%, openmina.$base-surface 80%, openmina.$base-surface 100%);
+  background: linear-gradient(
+    120deg,
+    openmina.$base-background 0%,
+    openmina.$base-background 20%,
+    openmina.$base-background 40%,
+    openmina.$success-container 50%,
+    openmina.$base-surface 80%,
+    openmina.$base-surface 100%
+  );
   background-size: 500%;
   background-position: 0 50%;
   transition: background-position 0.7s ease;
@@ -12,5 +20,7 @@
 }
 
 .mina-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 300 !important;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 300 !important;
 }

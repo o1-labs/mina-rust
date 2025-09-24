@@ -14,30 +14,38 @@ import { MempoolService } from '@app/features/mempool/mempool.service';
   providedIn: 'root',
 })
 export class MempoolEffects extends BaseEffect {
-
   readonly init$: Effect;
   readonly getTxs$: Effect;
 
-  constructor(private actions$: Actions,
-              private mempoolService: MempoolService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private mempoolService: MempoolService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.init$ = createEffect(() => this.actions$.pipe(
-      ofType(MempoolActions.init),
-      map(() => MempoolActions.getTxs()),
-    ));
-
-    this.getTxs$ = createEffect(() => this.actions$.pipe(
-      ofType(MempoolActions.getTxs, MempoolActions.close),
-      this.latestActionState(),
-      switchMap(({ action }) =>
-        action.type === MempoolActions.close.type
-          ? EMPTY
-          : this.mempoolService.getTransactionPool(),
+    this.init$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(MempoolActions.init),
+        map(() => MempoolActions.getTxs()),
       ),
-      map(data => MempoolActions.getTxsSuccess(data)),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, MempoolActions.getTxsSuccess({ txs: [] })),
-    ));
+    );
+
+    this.getTxs$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(MempoolActions.getTxs, MempoolActions.close),
+        this.latestActionState(),
+        switchMap(({ action }) =>
+          action.type === MempoolActions.close.type
+            ? EMPTY
+            : this.mempoolService.getTransactionPool(),
+        ),
+        map(data => MempoolActions.getTxsSuccess(data)),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          MempoolActions.getTxsSuccess({ txs: [] }),
+        ),
+      ),
+    );
   }
 }

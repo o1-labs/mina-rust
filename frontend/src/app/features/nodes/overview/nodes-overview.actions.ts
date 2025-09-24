@@ -14,15 +14,23 @@ enum NodesOverviewActionTypes {
 }
 
 export const NODES_OVERVIEW_INIT = NodesOverviewActionTypes.NODES_OVERVIEW_INIT;
-export const NODES_OVERVIEW_GET_NODES = NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODES;
-export const NODES_OVERVIEW_GET_NODES_SUCCESS = NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODES_SUCCESS;
-export const NODES_OVERVIEW_GET_NODE_STATUS = NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODE_STATUS;
-export const NODES_OVERVIEW_GET_NODE_STATUS_SUCCESS = NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODE_STATUS_SUCCESS;
-export const NODES_OVERVIEW_SORT_NODES = NodesOverviewActionTypes.NODES_OVERVIEW_SORT_NODES;
-export const NODES_OVERVIEW_SET_ACTIVE_NODE = NodesOverviewActionTypes.NODES_OVERVIEW_SET_ACTIVE_NODE;
-export const NODES_OVERVIEW_CLOSE = NodesOverviewActionTypes.NODES_OVERVIEW_CLOSE;
+export const NODES_OVERVIEW_GET_NODES =
+  NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODES;
+export const NODES_OVERVIEW_GET_NODES_SUCCESS =
+  NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODES_SUCCESS;
+export const NODES_OVERVIEW_GET_NODE_STATUS =
+  NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODE_STATUS;
+export const NODES_OVERVIEW_GET_NODE_STATUS_SUCCESS =
+  NodesOverviewActionTypes.NODES_OVERVIEW_GET_NODE_STATUS_SUCCESS;
+export const NODES_OVERVIEW_SORT_NODES =
+  NodesOverviewActionTypes.NODES_OVERVIEW_SORT_NODES;
+export const NODES_OVERVIEW_SET_ACTIVE_NODE =
+  NodesOverviewActionTypes.NODES_OVERVIEW_SET_ACTIVE_NODE;
+export const NODES_OVERVIEW_CLOSE =
+  NodesOverviewActionTypes.NODES_OVERVIEW_CLOSE;
 
-export interface NodesOverviewAction extends FeatureAction<NodesOverviewActionTypes> {
+export interface NodesOverviewAction
+  extends FeatureAction<NodesOverviewActionTypes> {
   readonly type: NodesOverviewActionTypes;
 }
 
@@ -37,7 +45,7 @@ export class NodesOverviewGetNodes implements NodesOverviewAction {
 export class NodesOverviewGetNodesSuccess implements NodesOverviewAction {
   readonly type = NODES_OVERVIEW_GET_NODES_SUCCESS;
 
-  constructor(public payload: NodesOverviewNode[]) { }
+  constructor(public payload: NodesOverviewNode[]) {}
 }
 
 export class NodesOverviewGetNodeStatus implements NodesOverviewAction {
@@ -49,19 +57,19 @@ export class NodesOverviewGetNodeStatus implements NodesOverviewAction {
 export class NodesOverviewGetNodeStatusSuccess implements NodesOverviewAction {
   readonly type = NODES_OVERVIEW_GET_NODE_STATUS_SUCCESS;
 
-  constructor(public payload: NodesOverviewNode) { }
+  constructor(public payload: NodesOverviewNode) {}
 }
 
 export class NodesOverviewSortNodes implements NodesOverviewAction {
   readonly type = NODES_OVERVIEW_SORT_NODES;
 
-  constructor(public payload: TableSort<NodesOverviewNode>) { }
+  constructor(public payload: TableSort<NodesOverviewNode>) {}
 }
 
 export class NodesOverviewSetActiveNode implements NodesOverviewAction {
   readonly type = NODES_OVERVIEW_SET_ACTIVE_NODE;
 
-  constructor(public payload: NodesOverviewNode) { }
+  constructor(public payload: NodesOverviewNode) {}
 }
 
 export class NodesOverviewClose implements NodesOverviewAction {
@@ -76,5 +84,4 @@ export type NodesOverviewActions =
   | NodesOverviewGetNodeStatusSuccess
   | NodesOverviewSortNodes
   | NodesOverviewSetActiveNode
-  | NodesOverviewClose
-  ;
+  | NodesOverviewClose;

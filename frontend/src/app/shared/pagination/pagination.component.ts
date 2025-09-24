@@ -10,15 +10,14 @@ import {
 import { SharedModule } from '@shared/shared.module';
 
 @Component({
-    selector: 'mina-pagination',
-    imports: [SharedModule],
-    templateUrl: './pagination.component.html',
-    styleUrls: ['./pagination.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'fx-row-vert-cent' }
+  selector: 'mina-pagination',
+  imports: [SharedModule],
+  templateUrl: './pagination.component.html',
+  styleUrls: ['./pagination.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'fx-row-vert-cent' },
 })
 export class PaginationComponent implements OnChanges {
-
   @Input({ required: true }) activePage: number;
   /**
    * @description if provided, will be used as display instead of activePage
@@ -50,8 +49,14 @@ export class PaginationComponent implements OnChanges {
   computedMinWidth: number;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['activePage'] || changes['activePageText'] || changes['minWidth']) {
-      this.computedMinWidth = this.activePageText ? this.minWidth : this.activePage?.toString().length * 10;
+    if (
+      changes['activePage'] ||
+      changes['activePageText'] ||
+      changes['minWidth']
+    ) {
+      this.computedMinWidth = this.activePageText
+        ? this.minWidth
+        : this.activePage?.toString().length * 10;
     }
   }
 }

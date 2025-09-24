@@ -5,17 +5,12 @@ import { MemoryResourcesComponent } from '@resources/memory/memory-resources.com
 import { SharedModule } from '@shared/shared.module';
 import { EffectsModule } from '@ngrx/effects';
 import { MemoryResourcesEffects } from '@resources/memory/memory-resources.effects';
-import {
-  MemoryResourcesTableComponent,
-} from '@resources/memory/memory-resources-table/memory-resources-table.component';
+import { MemoryResourcesTableComponent } from '@resources/memory/memory-resources-table/memory-resources-table.component';
 import { HorizontalMenuComponent } from '@openmina/shared';
 import { ResourcesSizePipe } from '@resources/memory/memory-resources.pipe';
-import {
-  MemoryResourcesTreemapComponent,
-} from '@resources/memory/memory-resources-treemap/memory-resources-treemap.component';
+import { MemoryResourcesTreemapComponent } from '@resources/memory/memory-resources-treemap/memory-resources-treemap.component';
 import { MemoryResourcesToolbarComponent } from './memory-resources-toolbar/memory-resources-toolbar.component';
 import { MemoryResourcesService } from '@resources/memory/memory-resources.service';
-
 
 @NgModule({
   declarations: [

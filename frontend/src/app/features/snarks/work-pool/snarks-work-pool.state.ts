@@ -17,15 +17,29 @@ export interface SnarksWorkPoolState {
   activeWorkPoolDetail: WorkPoolDetail;
 }
 
-const select = <T>(selector: (state: SnarksWorkPoolState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectSnarksWorkPoolState,
-  selector,
-);
+const select = <T>(
+  selector: (state: SnarksWorkPoolState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectSnarksWorkPoolState, selector);
 
-export const selectSnarksWorkPools = select((state: SnarksWorkPoolState): WorkPool[] => state.filteredWorkPools);
-export const selectSnarksWorkPoolActiveWorkPool = select((state: SnarksWorkPoolState): WorkPool => state.activeWorkPool);
-export const selectSnarksWorkPoolOpenSidePanel = select((state: SnarksWorkPoolState): boolean => state.openSidePanel);
-export const selectSnarksWorkPoolSort = select((state: SnarksWorkPoolState): TableSort<WorkPool> => state.sort);
-export const selectSnarksWorkPoolFilters = select((state: SnarksWorkPoolState): string[] => state.filters);
-export const selectSnarksWorkPoolActiveWorkPoolSpecs = select((state: SnarksWorkPoolState): WorkPoolSpecs => state.activeWorkPoolSpecs);
-export const selectSnarksWorkPoolActiveWorkPoolDetail = select((state: SnarksWorkPoolState): WorkPoolDetail => state.activeWorkPoolDetail);
+export const selectSnarksWorkPools = select(
+  (state: SnarksWorkPoolState): WorkPool[] => state.filteredWorkPools,
+);
+export const selectSnarksWorkPoolActiveWorkPool = select(
+  (state: SnarksWorkPoolState): WorkPool => state.activeWorkPool,
+);
+export const selectSnarksWorkPoolOpenSidePanel = select(
+  (state: SnarksWorkPoolState): boolean => state.openSidePanel,
+);
+export const selectSnarksWorkPoolSort = select(
+  (state: SnarksWorkPoolState): TableSort<WorkPool> => state.sort,
+);
+export const selectSnarksWorkPoolFilters = select(
+  (state: SnarksWorkPoolState): string[] => state.filters,
+);
+export const selectSnarksWorkPoolActiveWorkPoolSpecs = select(
+  (state: SnarksWorkPoolState): WorkPoolSpecs => state.activeWorkPoolSpecs,
+);
+export const selectSnarksWorkPoolActiveWorkPoolDetail = select(
+  (state: SnarksWorkPoolState): WorkPoolDetail => state.activeWorkPoolDetail,
+);

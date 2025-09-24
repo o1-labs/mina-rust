@@ -25,47 +25,66 @@ import { Routes } from '@shared/enums/routes.enum';
   providedIn: 'root',
 })
 export class ScanStateEffects extends MinaRustBaseEffect<ScanStateActions> {
-
   readonly getScanState$: Effect;
 
   private inProgressGettingHeight: number | string = null;
 
-  constructor(private actions$: Actions,
-              private router: Router,
-              private scanStateService: ScanStateService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private router: Router,
+    private scanStateService: ScanStateService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getScanState$ = createEffect(() => this.actions$.pipe(
-      ofType(SCAN_STATE_GET_BLOCK, SCAN_STATE_CLOSE),
-      this.latestActionState<ScanStateGetBlock | ScanStateClose>(),
-      filter(({ action }) => {
-        return (action.type === SCAN_STATE_GET_BLOCK && action.payload.heightOrHash !== this.inProgressGettingHeight) || action.type === SCAN_STATE_CLOSE;
-      }),
-      tap(({ action, state }) => {
-        if (action.type === SCAN_STATE_GET_BLOCK) {
-          this.inProgressGettingHeight = action.payload.heightOrHash;
-          if (!state.snarks.scanState.stream) {
-            store.dispatch({ type: SCAN_STATE_INIT });
+    this.getScanState$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(SCAN_STATE_GET_BLOCK, SCAN_STATE_CLOSE),
+        this.latestActionState<ScanStateGetBlock | ScanStateClose>(),
+        filter(({ action }) => {
+          return (
+            (action.type === SCAN_STATE_GET_BLOCK &&
+              action.payload.heightOrHash !== this.inProgressGettingHeight) ||
+            action.type === SCAN_STATE_CLOSE
+          );
+        }),
+        tap(({ action, state }) => {
+          if (action.type === SCAN_STATE_GET_BLOCK) {
+            this.inProgressGettingHeight = action.payload.heightOrHash;
+            if (!state.snarks.scanState.stream) {
+              store.dispatch({ type: SCAN_STATE_INIT });
+            }
+          } else {
+            this.inProgressGettingHeight = null;
           }
-        } else {
-          this.inProgressGettingHeight = null;
-        }
-      }),
-      switchMap(({ action }) =>
-        action.type === SCAN_STATE_CLOSE
-          ? EMPTY
-          : this.scanStateService.getScanState(action.payload.heightOrHash),
+        }),
+        switchMap(({ action }) =>
+          action.type === SCAN_STATE_CLOSE
+            ? EMPTY
+            : this.scanStateService.getScanState(action.payload.heightOrHash),
+        ),
+        map((payload: ScanStateBlock) => ({
+          type: SCAN_STATE_GET_BLOCK_SUCCESS,
+          payload,
+        })),
+        tap(({ payload }) => {
+          if (
+            !this.router.url.includes(payload.height.toString()) &&
+            !this.router.url.includes(payload.hash)
+          ) {
+            this.router.navigate(
+              [Routes.SNARKS, Routes.SCAN_STATE, payload.height],
+              { queryParamsHandling: 'merge' },
+            );
+          }
+        }),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          SCAN_STATE_GET_BLOCK_SUCCESS,
+          { trees: [], workingSnarkers: [] },
+        ),
+        tap(() => (this.inProgressGettingHeight = null)),
       ),
-      map((payload: ScanStateBlock) => ({ type: SCAN_STATE_GET_BLOCK_SUCCESS, payload })),
-      tap(({ payload }) => {
-        if (!this.router.url.includes(payload.height.toString()) && !this.router.url.includes(payload.hash)) {
-          this.router.navigate([Routes.SNARKS, Routes.SCAN_STATE, payload.height], { queryParamsHandling: 'merge' });
-        }
-      }),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, SCAN_STATE_GET_BLOCK_SUCCESS, { trees: [], workingSnarkers: [] }),
-      tap(() => this.inProgressGettingHeight = null),
-    ));
+    );
   }
-
 }

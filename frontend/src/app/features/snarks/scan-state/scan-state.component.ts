@@ -1,8 +1,15 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import {
   ScanStateClose,
-  ScanStateGetBlock, ScanStateInit,
+  ScanStateGetBlock,
+  ScanStateInit,
   ScanStateSetActiveJobId,
   ScanStateSidebarResized,
 } from '@snarks/scan-state/scan-state.actions';
@@ -17,14 +24,16 @@ import { untilDestroyed } from '@ngneat/until-destroy';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-    selector: 'mina-scan-state',
-    templateUrl: './scan-state.component.html',
-    styleUrls: ['./scan-state.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-scan-state',
+  templateUrl: './scan-state.component.html',
+  styleUrls: ['./scan-state.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class ScanStateComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class ScanStateComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   openSidePanel: boolean;
 
   private heightOrHash: string;
@@ -33,7 +42,9 @@ export class ScanStateComponent extends StoreDispatcher implements OnInit, OnDes
   private timer: Subscription;
   private nodeChanged: boolean = false;
 
-  constructor(public el: ElementRef) { super(); }
+  constructor(public el: ElementRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.dispatch(ScanStateInit);
@@ -50,7 +61,10 @@ export class ScanStateComponent extends StoreDispatcher implements OnInit, OnDes
 
   private getBlock(): void {
     this.select(AppSelectors.activeNode, () => {
-      this.dispatch(ScanStateGetBlock, this.nodeChanged ? {} : { heightOrHash: this.heightOrHash });
+      this.dispatch(
+        ScanStateGetBlock,
+        this.nodeChanged ? {} : { heightOrHash: this.heightOrHash },
+      );
       this.nodeChanged = true;
     });
   }
@@ -64,28 +78,39 @@ export class ScanStateComponent extends StoreDispatcher implements OnInit, OnDes
   }
 
   private listenToStreamChange(): void {
-    this.select(selectScanStateStream, (stream: boolean) => {
-      this.stream = stream;
-      if (stream) {
-        this.createTimer();
-      } else {
-        this.timer?.unsubscribe();
-      }
-    }, distinctUntilChanged());
+    this.select(
+      selectScanStateStream,
+      (stream: boolean) => {
+        this.stream = stream;
+        if (stream) {
+          this.createTimer();
+        } else {
+          this.timer?.unsubscribe();
+        }
+      },
+      distinctUntilChanged(),
+    );
   }
 
   private listenToRoute(): void {
     this.select(getMergedRoute, (route: MergedRoute) => {
       this.heightOrHash = route.params['heightOrHash'];
-      if (route.queryParams['jobId'] && this.activeJobId !== route.queryParams['jobId']) {
+      if (
+        route.queryParams['jobId'] &&
+        this.activeJobId !== route.queryParams['jobId']
+      ) {
         this.dispatch(ScanStateSetActiveJobId, route.queryParams['jobId']);
       }
     });
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['heightOrHash']) {
-        this.dispatch(ScanStateSetActiveJobId, route.queryParams['jobId']);
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['heightOrHash']) {
+          this.dispatch(ScanStateSetActiveJobId, route.queryParams['jobId']);
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToActiveJobId(): void {

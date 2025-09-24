@@ -6,9 +6,11 @@
     <span class="pl-12">Fetched Blocks</span>
     <span class="pl-12">Applied Blocks</span>
     <span class="fx-row-vert-cent flex-end">
-      <button *ngIf="!openSidePanel"
-              class="h-sm w-sm fx-row-full-cent btn-selected p-0 mr-10"
-              (click)="toggleSidePanel()">
+      <button
+        *ngIf="!openSidePanel"
+        class="h-sm w-sm fx-row-full-cent btn-selected p-0 mr-10"
+        (click)="toggleSidePanel()"
+      >
         <span class="mina-icon f-20">view_sidebar</span>
       </button>
     </span>
@@ -20,7 +22,10 @@
   <span class="secondary">{{ row.globalSlot }}</span>
   <span class="secondary">{{ row.height }}</span>
   <span>
-    <mina-copy [display]="row.bestTip | truncateMid" [value]="row.bestTip"></mina-copy>
+    <mina-copy
+      [display]="row.bestTip | truncateMid"
+      [value]="row.bestTip"
+    ></mina-copy>
   </span>
   <span class="secondary">{{ row.fetchedBlocks }}</span>
   <span [innerHTML]="row.fetchedBlocksMin | secDuration: secConfig"></span>

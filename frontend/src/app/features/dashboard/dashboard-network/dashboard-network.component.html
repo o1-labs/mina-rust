@@ -1,4 +1,7 @@
-<div class="flex-column h-100 border-rad-6 background-gradient" [ngClass]="stats.connected ? 'complete' : 'border'">
+<div
+  class="flex-column h-100 border-rad-6 background-gradient"
+  [ngClass]="stats.connected ? 'complete' : 'border'"
+>
   <div class="h-xl lh-xl fx-row-vert-cent f-600 pl-12 pr-12 border-bottom">
     @if (stats.connected) {
       <span class="mina-icon f-20 success-primary">check_circle</span>
@@ -8,21 +11,27 @@
     <div [class.success-primary]="stats.connected" class="ml-8">Peers</div>
   </div>
   <div class="fx-row-vert-cent">
-    <mina-card label="Connected"
-               [value]="stats.connected"
-               color="var(--success-primary)"
-               [hint]="'Synced Peer' + (stats.connected | plural)"
-               class="mr-8"></mina-card>
-    <mina-card label="Connecting"
-               [value]="stats.connecting"
-               labelColor="var(--base-tertiary)"
-               [hint]="'Peer' + (stats.connecting | plural)"
-               class="mr-8"></mina-card>
-    <mina-card label="Disconnected"
-               color="var(--base-tertiary)"
-               labelColor="var(--base-tertiary)"
-               [hint]="'Peer' + (stats.disconnected | plural)"
-               [value]="stats.disconnected"></mina-card>
+    <mina-card
+      label="Connected"
+      [value]="stats.connected"
+      color="var(--success-primary)"
+      [hint]="'Synced Peer' + (stats.connected | plural)"
+      class="mr-8"
+    ></mina-card>
+    <mina-card
+      label="Connecting"
+      [value]="stats.connecting"
+      labelColor="var(--base-tertiary)"
+      [hint]="'Peer' + (stats.connecting | plural)"
+      class="mr-8"
+    ></mina-card>
+    <mina-card
+      label="Disconnected"
+      color="var(--base-tertiary)"
+      labelColor="var(--base-tertiary)"
+      [hint]="'Peer' + (stats.disconnected | plural)"
+      [value]="stats.disconnected"
+    ></mina-card>
   </div>
   <div class="w-100 flex-column flex-1 d-none-lg border-top">
     <mina-dashboard-peers-minimal-table></mina-dashboard-peers-minimal-table>

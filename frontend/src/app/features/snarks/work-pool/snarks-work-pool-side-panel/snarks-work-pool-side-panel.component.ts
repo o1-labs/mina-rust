@@ -1,8 +1,18 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { selectSnarksWorkPoolActiveWorkPool } from '@snarks/work-pool/snarks-work-pool.state';
 import { WorkPool } from '@shared/types/snarks/work-pool/work-pool.type';
-import { SnarksWorkPoolSetActiveWorkPool, SnarksWorkPoolToggleSidePanel } from '@snarks/work-pool/snarks-work-pool.actions';
+import {
+  SnarksWorkPoolSetActiveWorkPool,
+  SnarksWorkPoolToggleSidePanel,
+} from '@snarks/work-pool/snarks-work-pool.actions';
 import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -10,15 +20,17 @@ import { TemplatePortal } from '@angular/cdk/portal';
 import { getWindow } from '@openmina/shared';
 
 @Component({
-    selector: 'mina-snarks-work-pool-side-panel',
-    templateUrl: './snarks-work-pool-side-panel.component.html',
-    styleUrls: ['./snarks-work-pool-side-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100' },
-    standalone: false
+  selector: 'mina-snarks-work-pool-side-panel',
+  templateUrl: './snarks-work-pool-side-panel.component.html',
+  styleUrls: ['./snarks-work-pool-side-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100' },
+  standalone: false,
 })
-export class SnarksWorkPoolSidePanelComponent extends StoreDispatcher implements OnInit {
-
+export class SnarksWorkPoolSidePanelComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   activeWorkPool: WorkPool;
   activeStep: number = 0;
 
@@ -26,9 +38,13 @@ export class SnarksWorkPoolSidePanelComponent extends StoreDispatcher implements
 
   private overlayRef: OverlayRef;
 
-  constructor(private router: Router,
-              private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef) { super(); }
+  constructor(
+    private router: Router,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToActiveNode();
@@ -47,13 +63,17 @@ export class SnarksWorkPoolSidePanelComponent extends StoreDispatcher implements
   }
 
   toggleSidePanel(): void {
-    this.router.navigate([Routes.SNARKS, Routes.WORK_POOL], { queryParamsHandling: 'merge' });
+    this.router.navigate([Routes.SNARKS, Routes.WORK_POOL], {
+      queryParamsHandling: 'merge',
+    });
     this.dispatch(SnarksWorkPoolToggleSidePanel);
   }
 
   removeActiveWorkPool(): void {
     this.dispatch(SnarksWorkPoolSetActiveWorkPool, { id: undefined });
-    this.router.navigate([Routes.SNARKS, Routes.WORK_POOL], { queryParamsHandling: 'merge' });
+    this.router.navigate([Routes.SNARKS, Routes.WORK_POOL], {
+      queryParamsHandling: 'merge',
+    });
   }
 
   openNavDropdown(event: MouseEvent): void {
@@ -65,16 +85,19 @@ export class SnarksWorkPoolSidePanelComponent extends StoreDispatcher implements
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       width: 200,
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(event.target as HTMLElement)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: 35,
-          offsetX: -12
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'top',
+            offsetY: 35,
+            offsetX: -12,
+          },
+        ]),
     });
     event.stopPropagation();
 

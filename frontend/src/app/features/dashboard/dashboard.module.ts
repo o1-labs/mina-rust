@@ -13,7 +13,6 @@ import { DashboardBlocksSyncComponent } from './dashboard-blocks-sync/dashboard-
 import { DashboardPeersMinimalTableComponent } from './dashboard-peers-minimal-table/dashboard-peers-minimal-table.component';
 import { BlockProductionPillComponent } from '@app/layout/block-production-pill/block-production-pill.component';
 
-
 @NgModule({
   declarations: [
     DashboardComponent,

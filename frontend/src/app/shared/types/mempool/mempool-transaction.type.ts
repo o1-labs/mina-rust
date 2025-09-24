@@ -17,7 +17,6 @@ export enum MempoolTransactionKind {
   DELEGATION = 'Delegation',
 }
 
-
 export interface SignedCommand {
   payload: Payload;
   signer: string;

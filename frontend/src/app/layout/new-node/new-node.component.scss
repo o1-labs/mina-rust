@@ -23,7 +23,9 @@
 
   .mina-icon {
     display: none;
-    font-variation-settings: 'FILL' 0, 'wght' 400 !important;
+    font-variation-settings:
+      'FILL' 0,
+      'wght' 400 !important;
   }
 
   &.checked {

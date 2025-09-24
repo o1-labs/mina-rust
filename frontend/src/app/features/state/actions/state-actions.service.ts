@@ -3,7 +3,11 @@ import { map, Observable } from 'rxjs';
 import { StateActionGroup } from '@shared/types/state/actions/state-action-group.type';
 import { StateActionGroupAction } from '@shared/types/state/actions/state-action-group-action.type';
 import { StateActionColumn } from '@shared/types/state/actions/state-action-column.type';
-import { NANOSEC_IN_1_SEC, ONE_MILLION, toReadableDate } from '@openmina/shared';
+import {
+  NANOSEC_IN_1_SEC,
+  ONE_MILLION,
+  toReadableDate,
+} from '@openmina/shared';
 import { StateActionsStats } from '@shared/types/state/actions/state-actions-stats.type';
 import { RustService } from '@core/services/rust.service';
 
@@ -11,19 +15,20 @@ import { RustService } from '@core/services/rust.service';
   providedIn: 'root',
 })
 export class StateActionsService {
-
-  constructor(private rust: RustService) { }
+  constructor(private rust: RustService) {}
 
   getEarliestSlot(): Observable<number> {
-    return this.rust.get<any>('/stats/actions?id=latest').pipe(
-      map(res => res.id),
-    );
+    return this.rust
+      .get<any>('/stats/actions?id=latest')
+      .pipe(map(res => res.id));
   }
 
-  getActions(slot: number): Observable<[StateActionsStats, StateActionGroup[]]> {
-    return this.rust.get<any>(`/stats/actions?id=${slot}`).pipe(
-      map(res => [this.mapActionStats(res), this.mapActions(res.stats)]),
-    );
+  getActions(
+    slot: number,
+  ): Observable<[StateActionsStats, StateActionGroup[]]> {
+    return this.rust
+      .get<any>(`/stats/actions?id=${slot}`)
+      .pipe(map(res => [this.mapActionStats(res), this.mapActions(res.stats)]));
   }
 
   private mapActionStats(response: any): StateActionsStats {
@@ -39,42 +44,60 @@ export class StateActionsService {
   private mapActions(response: any): StateActionGroup[] {
     this.convertTimesToSeconds(response);
     const groupNames = this.getGroupNames(response);
-    return Object.keys(groupNames)
-      .map((groupName: string) => {
-        const actions: StateActionGroupAction[] = Object
-          .keys(response)
-          .filter(actionName => groupNames[groupName].includes(actionName))
-          .map(actionName => {
-            const columns: StateActionColumn[] = Object.keys(response[actionName]).map(range => ({
-              count: response[actionName][range].total_calls,
-              totalTime: response[actionName][range].total_duration,
-              maxTime: response[actionName][range].max_duration,
-              meanTime: this.getMeanTime(response[actionName][range].total_duration, response[actionName][range].total_calls),
-              squareCount: this.getSquareCount(response[actionName][range].total_calls),
-            }));
-            const totalCount = columns.reduce((acc: number, curr: StateActionColumn) => acc + curr.count, 0);
-            const totalTime = columns.reduce((acc: number, curr: StateActionColumn) => acc + curr.totalTime, 0);
-            return {
-              title: actionName !== groupName ? actionName.replace(groupName, '') : '',
-              fullTitle: actionName,
-              totalCount,
-              totalTime,
-              meanTime: this.getMeanTime(totalTime, totalCount),
-              columns,
-              display: true,
-            };
-          });
-        const count = actions.reduce((acc: number, curr: StateActionGroupAction) => acc + curr.totalCount, 0);
-        const totalTime = actions.reduce((acc: number, curr: StateActionGroupAction) => acc + curr.totalTime, 0);
-        return {
-          groupName,
-          actions,
-          count,
-          totalTime,
-          meanTime: this.getMeanTime(totalTime, count),
-          display: true,
-        };
-      });
+    return Object.keys(groupNames).map((groupName: string) => {
+      const actions: StateActionGroupAction[] = Object.keys(response)
+        .filter(actionName => groupNames[groupName].includes(actionName))
+        .map(actionName => {
+          const columns: StateActionColumn[] = Object.keys(
+            response[actionName],
+          ).map(range => ({
+            count: response[actionName][range].total_calls,
+            totalTime: response[actionName][range].total_duration,
+            maxTime: response[actionName][range].max_duration,
+            meanTime: this.getMeanTime(
+              response[actionName][range].total_duration,
+              response[actionName][range].total_calls,
+            ),
+            squareCount: this.getSquareCount(
+              response[actionName][range].total_calls,
+            ),
+          }));
+          const totalCount = columns.reduce(
+            (acc: number, curr: StateActionColumn) => acc + curr.count,
+            0,
+          );
+          const totalTime = columns.reduce(
+            (acc: number, curr: StateActionColumn) => acc + curr.totalTime,
+            0,
+          );
+          return {
+            title:
+              actionName !== groupName ? actionName.replace(groupName, '') : '',
+            fullTitle: actionName,
+            totalCount,
+            totalTime,
+            meanTime: this.getMeanTime(totalTime, totalCount),
+            columns,
+            display: true,
+          };
+        });
+      const count = actions.reduce(
+        (acc: number, curr: StateActionGroupAction) => acc + curr.totalCount,
+        0,
+      );
+      const totalTime = actions.reduce(
+        (acc: number, curr: StateActionGroupAction) => acc + curr.totalTime,
+        0,
+      );
+      return {
+        groupName,
+        actions,
+        count,
+        totalTime,
+        meanTime: this.getMeanTime(totalTime, count),
+        display: true,
+      };
+    });
   }
 
   private getMeanTime(duration: number, calls: number): number {
@@ -88,8 +111,8 @@ export class StateActionsService {
     let finalGroups: { [p: string]: string[] };
     let usedActions: { [p: string]: boolean };
     const statsActionNames = Object.keys(stats);
-    const prefixGroups: { [p: string]: string[] } = statsActionNames
-      .reduce((groups: { [p: string]: string[] }, actionName: string) => {
+    const prefixGroups: { [p: string]: string[] } = statsActionNames.reduce(
+      (groups: { [p: string]: string[] }, actionName: string) => {
         const nameSlices: string[] = actionName.split(/(?=[A-Z])/);
         nameSlices.reduce((sliceBuildup: string, slice: string) => {
           sliceBuildup = sliceBuildup + slice;
@@ -98,30 +121,50 @@ export class StateActionsService {
           return sliceBuildup;
         }, '');
         return groups;
-      }, {});
-    const sortedGroups: [string, string[]][] = Object.entries(prefixGroups).sort((a, b) => b[0].length - a[0].length);
+      },
+      {},
+    );
+    const sortedGroups: [string, string[]][] = Object.entries(
+      prefixGroups,
+    ).sort((a, b) => b[0].length - a[0].length);
     [finalGroups, usedActions] = sortedGroups
       .filter(([groups, items]) => items.length > 1)
-      .reduce((
-        [groups, usedActionsParam]: [groups: { [p: string]: string[] }, usedActionsParam: { [p: string]: boolean }],
-        [groupName, actions]: [groupName: string, actions: string[]],
-      ) => {
-        actions = actions.filter((actionName: string) => !usedActionsParam[actionName]);
-        if (actions.length > 1) {
-          groups[groupName] = actions;
-          usedActionsParam = actions.reduce((r, actionName: string) => ({
-            ...r,
-            [actionName]: true,
-          }), usedActionsParam);
-        }
-        return [groups, usedActionsParam];
-      }, [{}, {}]);
-    const ungroupedActions = statsActionNames.filter((actionName: string) => !usedActions[actionName]);
-    const ungrouped = ungroupedActions.reduce((ungroupedObject: { [p: string]: string[] }, name: string) => ({
-      ...ungroupedObject,
-      [name]: [name],
-    }), {});
-    return ({ ...finalGroups, ...ungrouped });
+      .reduce(
+        (
+          [groups, usedActionsParam]: [
+            groups: { [p: string]: string[] },
+            usedActionsParam: { [p: string]: boolean },
+          ],
+          [groupName, actions]: [groupName: string, actions: string[]],
+        ) => {
+          actions = actions.filter(
+            (actionName: string) => !usedActionsParam[actionName],
+          );
+          if (actions.length > 1) {
+            groups[groupName] = actions;
+            usedActionsParam = actions.reduce(
+              (r, actionName: string) => ({
+                ...r,
+                [actionName]: true,
+              }),
+              usedActionsParam,
+            );
+          }
+          return [groups, usedActionsParam];
+        },
+        [{}, {}],
+      );
+    const ungroupedActions = statsActionNames.filter(
+      (actionName: string) => !usedActions[actionName],
+    );
+    const ungrouped = ungroupedActions.reduce(
+      (ungroupedObject: { [p: string]: string[] }, name: string) => ({
+        ...ungroupedObject,
+        [name]: [name],
+      }),
+      {},
+    );
+    return { ...finalGroups, ...ungrouped };
   }
 
   private getSquareCount(calls: number): number {

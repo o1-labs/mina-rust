@@ -5,10 +5,7 @@ import { appConfig } from '@app/app.config';
 
 const serverConfig = {
   ...appConfig,
-  providers: [
-    ...appConfig.providers,
-    provideServerRendering(),
-  ],
+  providers: [...appConfig.providers, provideServerRendering()],
 };
 
 export default () => bootstrapApplication(AppComponent, serverConfig);

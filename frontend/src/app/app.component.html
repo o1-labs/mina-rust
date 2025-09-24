@@ -3,44 +3,56 @@
     <router-outlet></router-outlet>
     <!--    <mina-leaderboard-landing-page></mina-leaderboard-landing-page>-->
   } @else {
-    <mina-web-node-landing-page (goToNode)="goToWebNode()"
-                                (stopRequests)="clearNodeUpdateSubscription()"></mina-web-node-landing-page>
+    <mina-web-node-landing-page
+      (goToNode)="goToWebNode()"
+      (stopRequests)="clearNodeUpdateSubscription()"
+    ></mina-web-node-landing-page>
   }
 } @else if (showLoadingWebNodePage$ | async) {
   <router-outlet></router-outlet>
 } @else if (showLeaderboardPage$ | async) {
   <router-outlet></router-outlet>
 } @else if (loaded) {
-  <mat-sidenav-container [hasBackdrop]="false"
-                         class="w-100 h-100"
-                         *ngIf="menu$ | async as menu">
+  <mat-sidenav-container
+    [hasBackdrop]="false"
+    class="w-100 h-100"
+    *ngIf="menu$ | async as menu"
+  >
     @if (isDesktop) {
-      <mat-sidenav mode="side"
-                   [opened]="menu.open"
-                   [class.opened]="menu.open"
-                   [class.collapsed]="menu.collapsed"
-                   [class.mobile]="menu.isMobile">
+      <mat-sidenav
+        mode="side"
+        [opened]="menu.open"
+        [class.opened]="menu.open"
+        [class.collapsed]="menu.collapsed"
+        [class.mobile]="menu.isMobile"
+      >
         <mina-menu></mina-menu>
         <div class="backdrop" (click)="toggleMenu()"></div>
       </mat-sidenav>
     }
-    <mat-sidenav-content class="flex-column"
-                         [style.margin-left.px]="menu.isMobile ? 0 : (menu.collapsed ? 44 : 160)">
+    <mat-sidenav-content
+      class="flex-column"
+      [style.margin-left.px]="menu.isMobile ? 0 : menu.collapsed ? 44 : 160"
+    >
       @if (!hideToolbar) {
         <mina-toolbar></mina-toolbar>
       }
-      <div id="mina-content"
-           class="overflow-hidden"
-           [class.no-toolbar]="hideToolbar"
-           [class.no-submenus]="subMenusLength < 2"
-           [class.mobile]="menu.isMobile"
-           [class.uptime]="showLeaderboard">
+      <div
+        id="mina-content"
+        class="overflow-hidden"
+        [class.no-toolbar]="hideToolbar"
+        [class.no-submenus]="subMenusLength < 2"
+        [class.mobile]="menu.isMobile"
+        [class.uptime]="showLeaderboard"
+      >
         <router-outlet></router-outlet>
       </div>
       @if (!isDesktop) {
-        <mina-submenu-tabs [class.d-none]="subMenusLength < 2"
-                           class="mobile-menu border-top"
-                           (subMenusLength)="onSubmenusLengthChange($event)"></mina-submenu-tabs>
+        <mina-submenu-tabs
+          [class.d-none]="subMenusLength < 2"
+          class="mobile-menu border-top"
+          (subMenusLength)="onSubmenusLengthChange($event)"
+        ></mina-submenu-tabs>
         <mina-menu-tabs></mina-menu-tabs>
       }
     </mat-sidenav-content>

@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, Inject, OnDestroy } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Inject,
+  OnDestroy,
+} from '@angular/core';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 import { isBrowser, TableColumnList, TooltipPosition } from '@openmina/shared';
 import { MemoryResource } from '@shared/types/resources/memory/memory-resource.type';
@@ -7,17 +12,21 @@ import { MemoryResourcesSetActiveResource } from '@resources/memory/memory-resou
 import { DOCUMENT } from '@angular/common';
 
 @Component({
-    selector: 'app-memory-resources-table',
-    templateUrl: './memory-resources-table.component.html',
-    styleUrls: ['./memory-resources-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100 border-top' },
-    standalone: false
+  selector: 'app-memory-resources-table',
+  templateUrl: './memory-resources-table.component.html',
+  styleUrls: ['./memory-resources-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100 border-top' },
+  standalone: false,
 })
-export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryResource> implements OnDestroy {
-
+export class MemoryResourcesTableComponent
+  extends MinaTableRustWrapper<MemoryResource>
+  implements OnDestroy
+{
   activeResource: MemoryResource;
-  tooltipWidth: number = isBrowser() ? Math.max(window.innerWidth - 40, 1500) : 0;
+  tooltipWidth: number = isBrowser()
+    ? Math.max(window.innerWidth - 40, 1500)
+    : 0;
   position: TooltipPosition = TooltipPosition.RIGHT;
 
   protected readonly tableHeads: TableColumnList<MemoryResource> = [
@@ -33,7 +42,6 @@ export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryRe
     super();
   }
 
-
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
     this.listenToActiveMemoryChanges();
@@ -45,12 +53,15 @@ export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryRe
   }
 
   private listenToActiveMemoryChanges(): void {
-    this.select(selectMemoryResourcesActiveResource, (resource: MemoryResource) => {
-      this.activeResource = resource;
-      this.table.rows = resource?.children || [];
-      this.addCustomStyleElement();
-      this.table.detect();
-    });
+    this.select(
+      selectMemoryResourcesActiveResource,
+      (resource: MemoryResource) => {
+        this.activeResource = resource;
+        this.table.rows = resource?.children || [];
+        this.addCustomStyleElement();
+        this.table.detect();
+      },
+    );
   }
 
   protected override onRowClick(row: MemoryResource): void {
@@ -61,7 +72,9 @@ export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryRe
   }
 
   private addCustomStyleElement(): void {
-    this.customTableStyleElement = this.document.getElementById('memory-resources-custom-table') ?? this.document.createElement<'style'>('style');
+    this.customTableStyleElement =
+      this.document.getElementById('memory-resources-custom-table') ??
+      this.document.createElement<'style'>('style');
     this.customTableStyleElement.id = 'memory-resources-custom-table';
     let indexesWithChildren: number[] = [];
     let indexesWithoutChildren: number[] = [];
@@ -76,15 +89,15 @@ export class MemoryResourcesTableComponent extends MinaTableRustWrapper<MemoryRe
     this.customTableStyleElement.textContent = '';
     indexesWithChildren.forEach(i => {
       this.customTableStyleElement.textContent +=
-        `app-memory-resources-table mina-table .row[idx="${i}"] {border-radius: 4px; background-color: var(--base-surface-top) !important;pointer-events: auto}`
-        + `app-memory-resources-table mina-table .row[idx="${i}"]:hover {background-color: var(--base-tertiary2) !important}`;
+        `app-memory-resources-table mina-table .row[idx="${i}"] {border-radius: 4px; background-color: var(--base-surface-top) !important;pointer-events: auto}` +
+        `app-memory-resources-table mina-table .row[idx="${i}"]:hover {background-color: var(--base-tertiary2) !important}`;
     });
     indexesWithoutChildren.forEach(i => {
       this.customTableStyleElement.textContent +=
-        `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .secondary {color: var(--base-secondary) !important}`
-        + `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc {color: var(--base-secondary) !important}`
-        + `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc.yellow {color: var(--aware-primary) !important}`
-        + `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc.red {color: var(--warn-primary) !important}`
+        `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .secondary {color: var(--base-secondary) !important}` +
+        `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc {color: var(--base-secondary) !important}` +
+        `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc.yellow {color: var(--aware-primary) !important}` +
+        `app-memory-resources-table mina-table .row[idx="${i}"]:hover:not(.active):not(.head) .perc.red {color: var(--warn-primary) !important}`;
     });
     this.document.head.appendChild(this.customTableStyleElement);
   }

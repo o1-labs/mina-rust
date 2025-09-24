@@ -26,4 +26,4 @@ export default {
       url: 'https://staging-devnet-openmina-bp-2-dashboard.minaprotocol.network',
     },
   ],
-}
+};

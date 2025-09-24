@@ -18,7 +18,12 @@ export class MinimumDistanceAlgorithm {
     return this.cleanUpTree(root);
   }
 
-  private static insertPeer(node: DhtGraphNode, peer: NetworkNodeDhtPeer, parentOfNode: DhtGraphNode, level: number = 0): void {
+  private static insertPeer(
+    node: DhtGraphNode,
+    peer: NetworkNodeDhtPeer,
+    parentOfNode: DhtGraphNode,
+    level: number = 0,
+  ): void {
     if (level > peer.binaryDistance.length) {
       return;
     }
@@ -26,13 +31,20 @@ export class MinimumDistanceAlgorithm {
 
     if (!node.children[direction]) {
       if (
-        peer.binaryDistance[level - 1] === '1'
-        && parentOfNode.children[0]
-        && parentOfNode.children[0].children.length === 0
-        && parentOfNode.children[0].peer.binaryDistance !== '-'
-        && node.children.length === 0
-        && parentOfNode.children[0].peer.binaryDistance.slice(0, level - 1) === peer.binaryDistance.slice(0, level - 1)
-        && this.peers.slice(this.peers.indexOf(peer) + 1).every(p => p.binaryDistance.slice(0, level - 1) !== peer.binaryDistance.slice(0, level - 1))
+        peer.binaryDistance[level - 1] === '1' &&
+        parentOfNode.children[0] &&
+        parentOfNode.children[0].children.length === 0 &&
+        parentOfNode.children[0].peer.binaryDistance !== '-' &&
+        node.children.length === 0 &&
+        parentOfNode.children[0].peer.binaryDistance.slice(0, level - 1) ===
+          peer.binaryDistance.slice(0, level - 1) &&
+        this.peers
+          .slice(this.peers.indexOf(peer) + 1)
+          .every(
+            p =>
+              p.binaryDistance.slice(0, level - 1) !==
+              peer.binaryDistance.slice(0, level - 1),
+          )
       ) {
         node.peer = peer;
         node.children = [];
@@ -44,12 +56,19 @@ export class MinimumDistanceAlgorithm {
         children: [],
       };
     } else if (node.children[direction].peer.binaryDistance !== '-') {
-      const existingNodePeer = this.peers.find(p => p.binaryDistance === node.children[direction].peer.binaryDistance);
+      const existingNodePeer = this.peers.find(
+        p => p.binaryDistance === node.children[direction].peer.binaryDistance,
+      );
       node.children[direction] = {
         peer: { binaryDistance: '-' } as NetworkNodeDhtPeer,
         children: [],
       };
-      this.insertPeer(node.children[direction], existingNodePeer, node, level + 1);
+      this.insertPeer(
+        node.children[direction],
+        existingNodePeer,
+        node,
+        level + 1,
+      );
       this.insertPeer(node.children[direction], peer, node, level + 1);
     } else {
       this.insertPeer(node.children[direction], peer, node, level + 1);
@@ -65,7 +84,10 @@ export class MinimumDistanceAlgorithm {
     if (node.children.length === 0) {
       return node;
     }
-    if (node.children[0].peer.binaryDistance === '-' && node.children[1].peer.binaryDistance !== '-') {
+    if (
+      node.children[0].peer.binaryDistance === '-' &&
+      node.children[1].peer.binaryDistance !== '-'
+    ) {
       node.peer = node.children[1].peer;
       node.children = [];
       return node;

@@ -2,35 +2,55 @@
 
 <ng-template #template>
   <div class="flex-row h-100">
-    <mina-card label="Next Won Slot in"
-               [value]="card1.nextWonSlot"
-               [hint]="card1.slot ? 'Slot ' + card1.slot : '-'"
-               class="mr-10"></mina-card>
-    <mina-card label="Won Slots"
-               [value]="card2.wonSlots"
-               [hint]="card2.slotsUsed ? card2.slotsUsed + ' slots used' : '-'"
-               labelColor="var(--base-tertiary)"
-               color="var(--base-tertiary)"
-               class="mr-10"></mina-card>
-    <mina-card label="Accepted Blocks"
-               [value]="card3.acceptedBlocks"
-               [hint]="card3.lastBlockTime ? 'last ' + card3.lastBlockTime + ' ago' : '-'"
-               labelColor="var(--base-tertiary)"
-               color="var(--base-tertiary)"
-               class="mr-10"></mina-card>
-    <mina-card label="Epoch Progress"
-               [value]="card4.epochProgress"
-               [hint]="card4.endIn ? 'Ends in ' + card4.endIn : '-'"
-               labelColor="var(--base-tertiary)"
-               color="var(--base-tertiary)"
-               class="mr-10"></mina-card>
-    <div class="custom-card flex-column flex-between tertiary h-100 pb-8 pt-8 pl-12">
+    <mina-card
+      label="Next Won Slot in"
+      [value]="card1.nextWonSlot"
+      [hint]="card1.slot ? 'Slot ' + card1.slot : '-'"
+      class="mr-10"
+    ></mina-card>
+    <mina-card
+      label="Won Slots"
+      [value]="card2.wonSlots"
+      [hint]="card2.slotsUsed ? card2.slotsUsed + ' slots used' : '-'"
+      labelColor="var(--base-tertiary)"
+      color="var(--base-tertiary)"
+      class="mr-10"
+    ></mina-card>
+    <mina-card
+      label="Accepted Blocks"
+      [value]="card3.acceptedBlocks"
+      [hint]="
+        card3.lastBlockTime ? 'last ' + card3.lastBlockTime + ' ago' : '-'
+      "
+      labelColor="var(--base-tertiary)"
+      color="var(--base-tertiary)"
+      class="mr-10"
+    ></mina-card>
+    <mina-card
+      label="Epoch Progress"
+      [value]="card4.epochProgress"
+      [hint]="card4.endIn ? 'Ends in ' + card4.endIn : '-'"
+      labelColor="var(--base-tertiary)"
+      color="var(--base-tertiary)"
+      class="mr-10"
+    ></mina-card>
+    <div
+      class="custom-card flex-column flex-between tertiary h-100 pb-8 pt-8 pl-12"
+    >
       <div class="label">Public Key</div>
       <div class="pub-key fx-row-vert-cent">
-        {{ card5.publicKey | truncateMid: 4: 4 }}
-        <span class="mina-icon pointer icon-300 ml-5 primary-hover" [copyToClipboard]="card5.publicKey">content_copy</span>
+        {{ card5.publicKey | truncateMid: 4 : 4 }}
+        <span
+          class="mina-icon pointer icon-300 ml-5 primary-hover"
+          [copyToClipboard]="card5.publicKey"
+        >
+          content_copy
+        </span>
       </div>
-      <div class="fx-row-vert-cent primary-hover pointer" (click)="openInMinascan()">
+      <div
+        class="fx-row-vert-cent primary-hover pointer"
+        (click)="openInMinascan()"
+      >
         <span class="mina-icon icon-300 mr-5">open_in_new</span>
         <span>Open in Minascan</span>
       </div>

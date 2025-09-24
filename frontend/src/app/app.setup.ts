@@ -8,7 +8,10 @@ import { appReducer } from '@app/app.reducer';
 import { APP_KEY } from '@app/app.actions';
 import { AppState } from '@app/app.state';
 
-import { loadingReducer, LoadingState } from '@app/layout/toolbar/loading.reducer';
+import {
+  loadingReducer,
+  LoadingState,
+} from '@app/layout/toolbar/loading.reducer';
 
 import { dashboardReducer } from '@dashboard/dashboard.reducer';
 import { DashboardAction } from '@dashboard/dashboard.actions';
@@ -26,7 +29,10 @@ import { StateState } from '@state/state.state';
 import { SnarksAction, snarksReducer } from '@snarks/snarks.reducer';
 import { SnarksState } from '@snarks/snarks.state';
 
-import { ResourcesAction, resourcesReducer } from '@resources/resources.reducer';
+import {
+  ResourcesAction,
+  resourcesReducer,
+} from '@resources/resources.reducer';
 import { ResourcesState } from '@resources/resources.state';
 
 import { blockProductionReducer } from '@block-production/block-production.reducer';
@@ -58,16 +64,14 @@ export interface MinaState {
   leaderboard: LeaderboardState;
 }
 
-type MinaAction =
-  & ErrorPreviewAction
-  & DashboardAction
-  & NetworkAction
-  & NodesAction
-  & ResourcesAction
-  & StateAction
-  & SnarksAction
-  & FuzzingAction
-  ;
+type MinaAction = ErrorPreviewAction &
+  DashboardAction &
+  NetworkAction &
+  NodesAction &
+  ResourcesAction &
+  StateAction &
+  SnarksAction &
+  FuzzingAction;
 
 export const reducers: ActionReducerMap<MinaState, MinaAction> = {
   [APP_KEY]: appReducer,

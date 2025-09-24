@@ -13,27 +13,41 @@ export interface StateActionsState {
   activeSlot: number;
   currentSort: TableSort<StateActionGroup>;
   activeSearch: string;
-  stats: StateActionsStats
+  stats: StateActionsStats;
 }
 
-const select = <T>(selector: (state: StateActionsState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectStateActionsState,
-  selector,
+const select = <T>(
+  selector: (state: StateActionsState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectStateActionsState, selector);
+
+export const selectStateActionsGroups = select(
+  (state: StateActionsState): StateActionGroup[] => state.filteredGroups,
 );
-
-export const selectStateActionsGroups = select((state: StateActionsState): StateActionGroup[] => state.filteredGroups);
-export const selectStateActionsOpenSidePanel = select((state: StateActionsState): boolean => state.openSidePanel);
-export const selectStateActionsActiveSlotAndStats = select((state: StateActionsState): [number, StateActionsStats] => [state.activeSlot, state.stats]);
-export const selectStateActionsToolbarValues = select((state: StateActionsState): {
-  earliestSlot: number;
-  activeSlot: number;
-  currentSort: TableSort<StateActionGroup>;
-  activeSearch: string;
-} => ({
-  earliestSlot: state.earliestSlot,
-  activeSlot: state.activeSlot,
-  currentSort: state.currentSort,
-  activeSearch: state.activeSearch,
-}));
-export const selectStateActionsSort = select((state: StateActionsState): TableSort<StateActionGroup> => state.currentSort);
-
+export const selectStateActionsOpenSidePanel = select(
+  (state: StateActionsState): boolean => state.openSidePanel,
+);
+export const selectStateActionsActiveSlotAndStats = select(
+  (state: StateActionsState): [number, StateActionsStats] => [
+    state.activeSlot,
+    state.stats,
+  ],
+);
+export const selectStateActionsToolbarValues = select(
+  (
+    state: StateActionsState,
+  ): {
+    earliestSlot: number;
+    activeSlot: number;
+    currentSort: TableSort<StateActionGroup>;
+    activeSearch: string;
+  } => ({
+    earliestSlot: state.earliestSlot,
+    activeSlot: state.activeSlot,
+    currentSort: state.currentSort,
+    activeSearch: state.activeSearch,
+  }),
+);
+export const selectStateActionsSort = select(
+  (state: StateActionsState): TableSort<StateActionGroup> => state.currentSort,
+);

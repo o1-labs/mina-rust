@@ -27,10 +27,11 @@ const initialState: NetworkBlocksState = {
   activeFilters: [],
 };
 
-export function networkBlocksReducer(state: NetworkBlocksState = initialState, action: NetworkBlocksActions): NetworkBlocksState {
-
+export function networkBlocksReducer(
+  state: NetworkBlocksState = initialState,
+  action: NetworkBlocksActions,
+): NetworkBlocksState {
   switch (action.type) {
-
     case NETWORK_BLOCKS_GET_BLOCKS_SUCCESS: {
       const blocks = sortBlocks(action.payload, state.sort);
       let filteredBlocks = getFilteredBlocks(blocks, state.activeFilters);
@@ -68,7 +69,9 @@ export function networkBlocksReducer(state: NetworkBlocksState = initialState, a
       return {
         ...state,
         activeFilters,
-        filteredBlocks: applyNewLatencies(sortBlocks(filteredBlocks, state.sort)),
+        filteredBlocks: applyNewLatencies(
+          sortBlocks(filteredBlocks, state.sort),
+        ),
       };
     }
 
@@ -95,19 +98,41 @@ export function networkBlocksReducer(state: NetworkBlocksState = initialState, a
   }
 }
 
-function getFilteredBlocks(allBlocks: NetworkBlock[], activeFilters: string[]): NetworkBlock[] {
-  return activeFilters.length > 0 ? allBlocks.filter(b => activeFilters.includes(b.hash)) : allBlocks;
+function getFilteredBlocks(
+  allBlocks: NetworkBlock[],
+  activeFilters: string[],
+): NetworkBlock[] {
+  return activeFilters.length > 0
+    ? allBlocks.filter(b => activeFilters.includes(b.hash))
+    : allBlocks;
 }
 
-function sortBlocks(blocks: NetworkBlock[], tableSort: TableSort<NetworkBlock>): NetworkBlock[] {
-  return sort<NetworkBlock>(blocks, tableSort, ['date', 'hash', 'sender', 'receiver', 'messageKind']);
+function sortBlocks(
+  blocks: NetworkBlock[],
+  tableSort: TableSort<NetworkBlock>,
+): NetworkBlock[] {
+  return sort<NetworkBlock>(blocks, tableSort, [
+    'date',
+    'hash',
+    'sender',
+    'receiver',
+    'messageKind',
+  ]);
 }
 
 function applyNewLatencies(blocks: NetworkBlock[]): NetworkBlock[] {
-  const fastestTime = blocks.map((b: NetworkBlock) => BigInt(b.timestamp)).reduce((t1: bigint, t2: bigint) => t2 < t1 ? t2 : t1);
+  const fastestTime = blocks
+    .map((b: NetworkBlock) => BigInt(b.timestamp))
+    .reduce((t1: bigint, t2: bigint) => (t2 < t1 ? t2 : t1));
   return blocks.map(b => ({
     ...b,
-    receivedLatency: b.receivedLatency !== undefined ? Number(BigInt(b.timestamp) - fastestTime) / ONE_BILLION : undefined,
-    sentLatency: b.sentLatency !== undefined ? Number(BigInt(b.timestamp) - fastestTime) / ONE_BILLION : undefined,
+    receivedLatency:
+      b.receivedLatency !== undefined
+        ? Number(BigInt(b.timestamp) - fastestTime) / ONE_BILLION
+        : undefined,
+    sentLatency:
+      b.sentLatency !== undefined
+        ? Number(BigInt(b.timestamp) - fastestTime) / ONE_BILLION
+        : undefined,
   }));
 }

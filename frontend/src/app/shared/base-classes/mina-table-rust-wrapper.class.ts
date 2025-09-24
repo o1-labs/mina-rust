@@ -5,8 +5,10 @@ import { MinaState } from '@app/app.setup';
 import { MinaTableWrapper } from '@shared/base-classes/mina-table-wrapper.class';
 
 @Directive()
-export abstract class MinaTableRustWrapper<T extends object> extends MinaTableWrapper<T, MinaState> implements OnInit {
-
+export abstract class MinaTableRustWrapper<T extends object>
+  extends MinaTableWrapper<T, MinaState>
+  implements OnInit
+{
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
 

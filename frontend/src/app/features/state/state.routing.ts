@@ -10,7 +10,10 @@ const routes: Routes = [
     children: [
       {
         path: 'actions',
-        loadChildren: () => import('./actions/state-actions.module').then(m => m.StateActionsModule),
+        loadChildren: () =>
+          import('./actions/state-actions.module').then(
+            m => m.StateActionsModule,
+          ),
         title: STATE_TITLE,
       },
       {
@@ -29,6 +32,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class StateRouting { }
+export class StateRouting {}

@@ -13,12 +13,18 @@ const routes: Routes = [
       {
         path: 'overview',
         canActivate: [blockProductionGuard],
-        loadChildren: () => import('./overview/block-production-overview.module').then(m => m.BlockProductionOverviewModule),
+        loadChildren: () =>
+          import('./overview/block-production-overview.module').then(
+            m => m.BlockProductionOverviewModule,
+          ),
       },
       {
         path: 'won-slots',
         canActivate: [blockProductionGuard],
-        loadChildren: () => import('./won-slots/block-production-won-slots.module').then(m => m.BlockProductionWonSlotsModule),
+        loadChildren: () =>
+          import('./won-slots/block-production-won-slots.module').then(
+            m => m.BlockProductionWonSlotsModule,
+          ),
       },
       {
         path: '',

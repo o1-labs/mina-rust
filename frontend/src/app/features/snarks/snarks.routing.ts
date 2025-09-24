@@ -11,12 +11,18 @@ const routes: Routes = [
     children: [
       {
         path: 'scan-state',
-        loadChildren: () => import('@snarks/scan-state/scan-state.module').then(m => m.ScanStateModule),
+        loadChildren: () =>
+          import('@snarks/scan-state/scan-state.module').then(
+            m => m.ScanStateModule,
+          ),
         title: SNARKS_TITLE,
       },
       {
         path: 'work-pool',
-        loadChildren: () => import('@snarks/work-pool/snarks-work-pool.module').then(m => m.SnarksWorkPoolModule),
+        loadChildren: () =>
+          import('@snarks/work-pool/snarks-work-pool.module').then(
+            m => m.SnarksWorkPoolModule,
+          ),
         title: SNARKS_TITLE,
       },
       {

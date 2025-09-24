@@ -5,10 +5,15 @@ import { MinaState } from '@app/app.setup';
 import { AppSelectors } from '@app/app.state';
 import { filter, map } from 'rxjs';
 import { Routes } from '@shared/enums/routes.enum';
-import { FeaturesConfig, MinaNode } from '@shared/types/core/environment/mina-env.type';
+import {
+  FeaturesConfig,
+  MinaNode,
+} from '@shared/types/core/environment/mina-env.type';
 import { getFeaturesConfig, getFirstFeature } from '@shared/constants/config';
 
-export const blockProductionGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+export const blockProductionGuard: CanActivateFn = (
+  route: ActivatedRouteSnapshot,
+) => {
   const store: Store<MinaState> = inject<Store<MinaState>>(Store<MinaState>);
   const router: Router = inject<Router>(Router);
   return store.select(AppSelectors.activeNode).pipe(
@@ -22,7 +27,10 @@ export const blockProductionGuard: CanActivateFn = (route: ActivatedRouteSnapsho
         router.navigate([getFirstFeature(node)]);
         return false;
       }
-      router.navigate([Routes.BLOCK_PRODUCTION, getFeaturesConfig(node)['block-production'][0]]);
+      router.navigate([
+        Routes.BLOCK_PRODUCTION,
+        getFeaturesConfig(node)['block-production'][0],
+      ]);
       return false;
     }),
   );

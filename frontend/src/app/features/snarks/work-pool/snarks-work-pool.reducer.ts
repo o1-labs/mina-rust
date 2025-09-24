@@ -1,4 +1,10 @@
-import { isDesktop, sort, SortDirection, TableSort, toggleItem } from '@openmina/shared';
+import {
+  isDesktop,
+  sort,
+  SortDirection,
+  TableSort,
+  toggleItem,
+} from '@openmina/shared';
 import { SnarksWorkPoolState } from '@snarks/work-pool/snarks-work-pool.state';
 import {
   SNARKS_WORK_POOL_CLOSE,
@@ -26,9 +32,11 @@ const initialState: SnarksWorkPoolState = {
   activeWorkPoolDetail: undefined,
 };
 
-export function reducer(state: SnarksWorkPoolState = initialState, action: SnarksWorkPoolActions): SnarksWorkPoolState {
+export function reducer(
+  state: SnarksWorkPoolState = initialState,
+  action: SnarksWorkPoolActions,
+): SnarksWorkPoolState {
   switch (action.type) {
-
     case SNARKS_WORK_POOL_GET_WORK_POOL_SUCCESS: {
       let workPools = sortWorkPools(action.payload, state.sort);
       return {
@@ -51,7 +59,10 @@ export function reducer(state: SnarksWorkPoolState = initialState, action: Snark
       return {
         ...state,
         sort: action.payload,
-        filteredWorkPools: filterWorkPools(sortWorkPools(state.workPools, action.payload), state.filters),
+        filteredWorkPools: filterWorkPools(
+          sortWorkPools(state.workPools, action.payload),
+          state.filters,
+        ),
       };
     }
 
@@ -93,14 +104,29 @@ function filterWorkPools(workPools: WorkPool[], filters: string[]): WorkPool[] {
     return workPools;
   }
   if (filters.includes('local')) {
-    return workPools.filter(workPool => workPool.snarkOrigin === 'Local' || workPool.commitmentOrigin === 'Local');
+    return workPools.filter(
+      workPool =>
+        workPool.snarkOrigin === 'Local' ||
+        workPool.commitmentOrigin === 'Local',
+    );
   }
   if (filters.includes('remote')) {
-    return workPools.filter(workPool => workPool.snarkOrigin === 'Remote' || workPool.commitmentOrigin === 'Remote');
+    return workPools.filter(
+      workPool =>
+        workPool.snarkOrigin === 'Remote' ||
+        workPool.commitmentOrigin === 'Remote',
+    );
   }
   throw Error('Unknown filter');
 }
 
-function sortWorkPools(events: WorkPool[], tableSort: TableSort<WorkPool>): WorkPool[] {
-  return sort<WorkPool>(events, tableSort, ['id', 'snarkOrigin', 'commitmentOrigin']);
+function sortWorkPools(
+  events: WorkPool[],
+  tableSort: TableSort<WorkPool>,
+): WorkPool[] {
+  return sort<WorkPool>(events, tableSort, [
+    'id',
+    'snarkOrigin',
+    'commitmentOrigin',
+  ]);
 }

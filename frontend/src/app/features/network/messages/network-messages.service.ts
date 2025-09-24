@@ -9,16 +9,23 @@ import { NetworkMessagesFilterTypes } from '@shared/types/network/messages/netwo
 import { NetworkMessagesDirection } from '@shared/types/network/messages/network-messages-direction.enum';
 import { ConfigService } from '@core/services/config.service';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class NetworkMessagesService {
+  constructor(
+    private http: HttpClient,
+    private config: ConfigService,
+  ) {}
 
-  constructor(private http: HttpClient,
-              private config: ConfigService) { }
-
-  getNetworkMessages(limit: number, id: number | undefined, direction: NetworkMessagesDirection, activeFilters: NetworkMessagesFilter[], from: number | undefined, to: number | undefined): Observable<NetworkMessage[]> {
+  getNetworkMessages(
+    limit: number,
+    id: number | undefined,
+    direction: NetworkMessagesDirection,
+    activeFilters: NetworkMessagesFilter[],
+    from: number | undefined,
+    to: number | undefined,
+  ): Observable<NetworkMessage[]> {
     let url = `${this.config.DEBUGGER}/messages?limit=${limit}&direction=${direction}`;
 
     if (id) {
@@ -32,19 +39,39 @@ export class NetworkMessagesService {
     }
     Object.values(NetworkMessagesFilterTypes).forEach((filterType: string) => {
       if (activeFilters.some(f => f.type === filterType)) {
-        url += `&${filterType}=` + activeFilters.filter(f => f.type === filterType).map(f => f.value).join(',');
+        url +=
+          `&${filterType}=` +
+          activeFilters
+            .filter(f => f.type === filterType)
+            .map(f => f.value)
+            .join(',');
       }
     });
 
-    return this.http.get<any[]>(url)
-      .pipe(map((messages: any[]) => this.mapNetworkMessageResponse(messages, direction)));
+    return this.http
+      .get<any[]>(url)
+      .pipe(
+        map((messages: any[]) =>
+          this.mapNetworkMessageResponse(messages, direction),
+        ),
+      );
   }
 
   getNetworkFullMessage(messageId: number): Observable<any> {
-    return this.http.request<any>(new HttpRequest<any>('GET', `${this.config.DEBUGGER}/message/` + messageId, { reportProgress: true, observe: 'events' }))
+    return this.http
+      .request<any>(
+        new HttpRequest<any>(
+          'GET',
+          `${this.config.DEBUGGER}/message/` + messageId,
+          { reportProgress: true, observe: 'events' },
+        ),
+      )
       .pipe(
         map((event: any) => {
-          if (event.type === HttpEventType.DownloadProgress && event.total > 10485760) {
+          if (
+            event.type === HttpEventType.DownloadProgress &&
+            event.total > 10485760
+          ) {
             throw new Error(event.total);
           } else if (event.type === HttpEventType.Response) {
             return event.body.message;
@@ -54,35 +81,56 @@ export class NetworkMessagesService {
       );
   }
 
-  getNetworkConnection(connectionId: number): Observable<NetworkMessageConnection> {
-    return this.http.get<any>(`${this.config.DEBUGGER}/connection/` + connectionId)
+  getNetworkConnection(
+    connectionId: number,
+  ): Observable<NetworkMessageConnection> {
+    return this.http
+      .get<any>(`${this.config.DEBUGGER}/connection/` + connectionId)
       .pipe(map(NetworkMessagesService.mapNetworkConnectionResponse));
   }
 
   getNetworkMessageHex(messageId: number): Observable<string> {
-    return this.http.get<string>(`${this.config.DEBUGGER}/message_hex/` + messageId);
+    return this.http.get<string>(
+      `${this.config.DEBUGGER}/message_hex/` + messageId,
+    );
   }
 
-  private mapNetworkMessageResponse(messages: any[], direction: NetworkMessagesDirection): NetworkMessage[] {
+  private mapNetworkMessageResponse(
+    messages: any[],
+    direction: NetworkMessagesDirection,
+  ): NetworkMessage[] {
     if (direction === NetworkMessagesDirection.REVERSE) {
       messages = messages.reverse();
     }
 
-    return messages.map(message => ({
-      id: message[0],
-      timestamp: toReadableDate((message[1].timestamp.secs_since_epoch * ONE_THOUSAND) + message[1].timestamp.nanos_since_epoch / ONE_MILLION),
-      incoming: message[1].incoming ? 'Incoming' : 'Outgoing',
-      connectionId: message[1].connection_id,
-      address: message[1].remote_addr,
-      size: message[1].size,
-      streamKind: message[1].stream_kind,
-      failedToDecryptPercentage: message[1].message?.total_failed ? NetworkMessagesService.getFailedToDecryptPercentage(message) : undefined,
-      messageKind: NetworkMessagesService.getMessageKind(message),
-    } as NetworkMessage));
+    return messages.map(
+      message =>
+        ({
+          id: message[0],
+          timestamp: toReadableDate(
+            message[1].timestamp.secs_since_epoch * ONE_THOUSAND +
+              message[1].timestamp.nanos_since_epoch / ONE_MILLION,
+          ),
+          incoming: message[1].incoming ? 'Incoming' : 'Outgoing',
+          connectionId: message[1].connection_id,
+          address: message[1].remote_addr,
+          size: message[1].size,
+          streamKind: message[1].stream_kind,
+          failedToDecryptPercentage: message[1].message?.total_failed
+            ? NetworkMessagesService.getFailedToDecryptPercentage(message)
+            : undefined,
+          messageKind: NetworkMessagesService.getMessageKind(message),
+        }) as NetworkMessage,
+    );
   }
 
   private static getFailedToDecryptPercentage(message: any): number {
-    return Number((100 * message[1].message.total_failed / (message[1].message.total_decrypted + message[1].message.total_failed)).toFixed(1));
+    return Number(
+      (
+        (100 * message[1].message.total_failed) /
+        (message[1].message.total_decrypted + message[1].message.total_failed)
+      ).toFixed(1),
+    );
   }
 
   private static getMessageKind(message: any): string {
@@ -97,13 +145,17 @@ export class NetworkMessagesService {
     // return typeof message[1].message === 'string' ? message[1].message : 'Error Report';
   }
 
-  private static mapNetworkConnectionResponse(connection: any): NetworkMessageConnection {
+  private static mapNetworkConnectionResponse(
+    connection: any,
+  ): NetworkMessageConnection {
     return {
       address: connection.info.addr,
       pid: connection.info.pid,
       fd: connection.info.fd,
       incoming: connection.incoming,
-      timestamp: toReadableDate(connection.timestamp.secs_since_epoch * ONE_THOUSAND),
+      timestamp: toReadableDate(
+        connection.timestamp.secs_since_epoch * ONE_THOUSAND,
+      ),
     } as NetworkMessageConnection;
   }
 }

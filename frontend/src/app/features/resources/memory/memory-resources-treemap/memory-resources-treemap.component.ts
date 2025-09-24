@@ -27,23 +27,37 @@ import {
   selectMemoryResourcesBreadcrumbs,
   selectMemoryResourcesTreemapView,
 } from '@resources/memory/memory-resources.state';
-import { debounceTime, delay, distinctUntilChanged, filter, fromEvent, skip, tap } from 'rxjs';
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  fromEvent,
+  skip,
+  tap,
+} from 'rxjs';
 import { ResourcesSizePipe } from '@resources/memory/memory-resources.pipe';
 import { MemoryResourcesSetActiveResource } from '@resources/memory/memory-resources.actions';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { TreemapView } from '@shared/types/resources/memory/treemap-view.type';
-import { isDesktop, safelyExecuteInBrowser, TooltipService } from '@openmina/shared';
+import {
+  isDesktop,
+  safelyExecuteInBrowser,
+  TooltipService,
+} from '@openmina/shared';
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-    selector: 'app-memory-resources-treemap',
-    templateUrl: './memory-resources-treemap.component.html',
-    styleUrls: ['./memory-resources-treemap.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'app-memory-resources-treemap',
+  templateUrl: './memory-resources-treemap.component.html',
+  styleUrls: ['./memory-resources-treemap.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class MemoryResourcesTreemapComponent extends StoreDispatcher implements AfterViewInit {
-
+export class MemoryResourcesTreemapComponent
+  extends StoreDispatcher
+  implements AfterViewInit
+{
   private breadcrumbs: MemoryResource[] = [];
   private activeResource: MemoryResource;
   private isFirstTime: boolean = true;
@@ -56,8 +70,18 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
 
   private width: number;
   private height: number;
-  private svg: Selection<SVGSVGElement, MemoryResource | unknown, null, undefined>;
-  private group: Selection<SVGGElement, MemoryResource | unknown, SVGSVGElement, MemoryResource>;
+  private svg: Selection<
+    SVGSVGElement,
+    MemoryResource | unknown,
+    null,
+    undefined
+  >;
+  private group: Selection<
+    SVGGElement,
+    MemoryResource | unknown,
+    SVGSVGElement,
+    MemoryResource
+  >;
   private treemap: HierarchyRectangularNode<MemoryResource>;
   private xScale: ScaleLinear<number, number>;
   private yScale: ScaleLinear<number, number>;
@@ -65,14 +89,21 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
   @HostListener('document:keydown.escape')
   onKeydownHandler(): void {
     if (this.breadcrumbs.length > 1) {
-      const node = this.findNodeByName(this.breadcrumbs[this.breadcrumbs.length - 1], this.treemap);
+      const node = this.findNodeByName(
+        this.breadcrumbs[this.breadcrumbs.length - 1],
+        this.treemap,
+      );
       this.zoomOut(node);
     }
   }
 
-  constructor(private ngZone: NgZone,
-              private sizePipe: ResourcesSizePipe,
-              private tooltipService: TooltipService) { super(); }
+  constructor(
+    private ngZone: NgZone,
+    private sizePipe: ResourcesSizePipe,
+    private tooltipService: TooltipService,
+  ) {
+    super();
+  }
 
   ngAfterViewInit(): void {
     this.tooltip = this.tooltipService.graphTooltip;
@@ -102,16 +133,19 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
 
   private listenToMemoryResourcesChanges(): void {
     this.ngZone.runOutsideAngular(() => {
-      this.select(selectMemoryResourcesTreemapView, (treemapView: TreemapView) => {
-        if (!this.treemapView) {
-          this.treemapView = treemapView;
-        } else {
-          this.treemapView = treemapView;
-          this.createTreemapValues(this.baseResource);
-          const node = this.findNodeByName(this.activeResource, this.treemap);
-          this.zoomIn(node, false);
-        }
-      });
+      this.select(
+        selectMemoryResourcesTreemapView,
+        (treemapView: TreemapView) => {
+          if (!this.treemapView) {
+            this.treemapView = treemapView;
+          } else {
+            this.treemapView = treemapView;
+            this.createTreemapValues(this.baseResource);
+            const node = this.findNodeByName(this.activeResource, this.treemap);
+            this.zoomIn(node, false);
+          }
+        },
+      );
       this.select(
         selectMemoryResources,
         (resource: MemoryResource) => {
@@ -132,29 +166,35 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
         filter(Boolean),
       );
 
-      this.select(selectMemoryResourcesActiveResource, (resource: MemoryResource) => {
-        this.activeResource = resource;
-        if (!this.isFirstTime) {
-          if (this.lastClicked !== resource) {
-            this.lastClicked = resource;
-            const node = this.findNodeByName(resource, this.treemap);
-            this.zoomIn(node, false);
+      this.select(
+        selectMemoryResourcesActiveResource,
+        (resource: MemoryResource) => {
+          this.activeResource = resource;
+          if (!this.isFirstTime) {
+            if (this.lastClicked !== resource) {
+              this.lastClicked = resource;
+              const node = this.findNodeByName(resource, this.treemap);
+              this.zoomIn(node, false);
+            }
           }
-        }
-        this.isFirstTime = false;
-      }, filter(Boolean));
+          this.isFirstTime = false;
+        },
+        filter(Boolean),
+      );
 
-      this.select(selectMemoryResourcesBreadcrumbs, (breadcrumbs: MemoryResource[]) => {
-        this.breadcrumbs = breadcrumbs;
-      }, filter(Boolean));
+      this.select(
+        selectMemoryResourcesBreadcrumbs,
+        (breadcrumbs: MemoryResource[]) => {
+          this.breadcrumbs = breadcrumbs;
+        },
+        filter(Boolean),
+      );
     });
   }
 
   private redrawChart(): void {
     this.bindWidthAndHeight();
-    this.svg
-      .attr('width', this.width)
-      .attr('height', this.height);
+    this.svg.attr('width', this.width).attr('height', this.height);
     this.createTreemapValues(this.baseResource);
     this.bindAxisScales();
     const node = this.findNodeByName(this.activeResource, this.treemap);
@@ -165,7 +205,8 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     if (this.svg) {
       return;
     }
-    this.svg = d3.select(this.treeMapRef.nativeElement)
+    this.svg = d3
+      .select(this.treeMapRef.nativeElement)
       .append('svg')
       .attr('width', this.width)
       .attr('height', this.height)
@@ -188,9 +229,7 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     const existingGroup = this.svg.select<SVGGElement>('.treemap');
 
     if (existingGroup.empty()) {
-      this.group = this.svg
-        .append<SVGGElement>('g')
-        .attr('class', 'treemap');
+      this.group = this.svg.append<SVGGElement>('g').attr('class', 'treemap');
     } else {
       this.group = existingGroup;
     }
@@ -202,7 +241,13 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
   }
 
   private createTreemapValues(resource: MemoryResource): void {
-    const tile = (node: HierarchyRectangularNode<MemoryResource>, x0: number, y0: number, x1: number, y1: number) => {
+    const tile = (
+      node: HierarchyRectangularNode<MemoryResource>,
+      x0: number,
+      y0: number,
+      x1: number,
+      y1: number,
+    ) => {
       switch (this.treemapView) {
         case TreemapView.BINARY:
           treemapBinary(node, 0, 0, this.width, this.height);
@@ -228,8 +273,11 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     };
 
     const root = hierarchy<MemoryResource>(resource)
-      .sum((d: MemoryResource) => d.children.length ? 0 : (d.value || 0.01))
-      .sort((a: HierarchyNode<MemoryResource>, b: HierarchyNode<MemoryResource>) => b.value - a.value);
+      .sum((d: MemoryResource) => (d.children.length ? 0 : d.value || 0.01))
+      .sort(
+        (a: HierarchyNode<MemoryResource>, b: HierarchyNode<MemoryResource>) =>
+          b.value - a.value,
+      );
     this.treemap = d3.treemap<MemoryResource>().tile(tile)(root);
   }
 
@@ -238,104 +286,143 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     this.height = this.treeMapRef.nativeElement.offsetHeight - 2;
   }
 
-  private render(group: Selection<SVGGElement, MemoryResource | unknown, SVGSVGElement, null>, root: HierarchyRectangularNode<MemoryResource>): void {
+  private render(
+    group: Selection<
+      SVGGElement,
+      MemoryResource | unknown,
+      SVGSVGElement,
+      null
+    >,
+    root: HierarchyRectangularNode<MemoryResource>,
+  ): void {
     const node = group
-      .selectAll<SVGGElement, HierarchyRectangularNode<MemoryResource>>('g.node')
+      .selectAll<
+        SVGGElement,
+        HierarchyRectangularNode<MemoryResource>
+      >('g.node')
       .data(root.children)
       .join('g')
       .attr('class', 'node');
 
     node
-      .attr('cursor', (d: HierarchyRectangularNode<MemoryResource>) => d.children ? 'pointer' : null)
-      .on('click', (_, d: HierarchyRectangularNode<MemoryResource>) => d.children ? this.zoomIn(d) : null)
-      .on('mouseenter', (event: { target: SVGGElement }, d: HierarchyRectangularNode<MemoryResource>) => {
-        if (d.data.children.length) {
-          const g = d3.select(event.target);
-          g.raise();
-          g.select('rect')
-            .attr('fill', 'var(--base-tertiary2)')
-            .attr('stroke', 'var(--base-tertiary)')
-            .attr('stroke-width', 2);
-          g.select('text.name')
-            .attr('fill', 'var(--base-primary)');
-          g.select('text.val')
-            .attr('fill', 'var(--base-secondary)');
-          g.select('text.child-count')
-            .attr('fill', 'var(--base-primary)');
-          g.select('rect.child-bg')
-            .attr('fill', 'var(--base-container)');
-        }
-        this.showTooltip(event, d);
-      })
+      .attr('cursor', (d: HierarchyRectangularNode<MemoryResource>) =>
+        d.children ? 'pointer' : null,
+      )
+      .on('click', (_, d: HierarchyRectangularNode<MemoryResource>) =>
+        d.children ? this.zoomIn(d) : null,
+      )
+      .on(
+        'mouseenter',
+        (
+          event: { target: SVGGElement },
+          d: HierarchyRectangularNode<MemoryResource>,
+        ) => {
+          if (d.data.children.length) {
+            const g = d3.select(event.target);
+            g.raise();
+            g.select('rect')
+              .attr('fill', 'var(--base-tertiary2)')
+              .attr('stroke', 'var(--base-tertiary)')
+              .attr('stroke-width', 2);
+            g.select('text.name').attr('fill', 'var(--base-primary)');
+            g.select('text.val').attr('fill', 'var(--base-secondary)');
+            g.select('text.child-count').attr('fill', 'var(--base-primary)');
+            g.select('rect.child-bg').attr('fill', 'var(--base-container)');
+          }
+          this.showTooltip(event, d);
+        },
+      )
       .on('mousemove', (event: { target: SVGGElement }) => {
         this.updateTooltipPosition(event);
       })
-      .on('mouseleave', (event: { target: SVGGElement }, d: HierarchyRectangularNode<MemoryResource>) => {
-        if (d.data.children.length) {
-          const g = d3.select(event.target);
-          g.select('rect')
-            .attr('fill', 'var(--base-surface-top)')
-            .attr('stroke', 'var(--base-tertiary)')
-            .attr('stroke-width', 0.5);
-          g.select('text.name')
-            .attr('fill', 'var(--base-primary)');
-          g.select('text.val')
-            .attr('fill', 'var(--base-tertiary)');
-          g.select('text.child-count')
-            .attr('fill', 'var(--base-primary)');
-          g.select('rect.child-bg')
-            .attr('fill', 'var(--base-background)');
-        }
-        this.hideTooltip();
-      });
+      .on(
+        'mouseleave',
+        (
+          event: { target: SVGGElement },
+          d: HierarchyRectangularNode<MemoryResource>,
+        ) => {
+          if (d.data.children.length) {
+            const g = d3.select(event.target);
+            g.select('rect')
+              .attr('fill', 'var(--base-surface-top)')
+              .attr('stroke', 'var(--base-tertiary)')
+              .attr('stroke-width', 0.5);
+            g.select('text.name').attr('fill', 'var(--base-primary)');
+            g.select('text.val').attr('fill', 'var(--base-tertiary)');
+            g.select('text.child-count').attr('fill', 'var(--base-primary)');
+            g.select('rect.child-bg').attr('fill', 'var(--base-background)');
+          }
+          this.hideTooltip();
+        },
+      );
 
     if (node.select('rect').empty()) {
-      node.append('rect')
-        .attr('fill', (d: HierarchyRectangularNode<MemoryResource>) => d.data.children.length ? 'var(--base-surface-top)' : 'var(--base-background)')
+      node
+        .append('rect')
+        .attr('fill', (d: HierarchyRectangularNode<MemoryResource>) =>
+          d.data.children.length
+            ? 'var(--base-surface-top)'
+            : 'var(--base-background)',
+        )
         .attr('stroke', 'var(--base-tertiary)')
         .attr('stroke-width', 0.5);
     }
 
     if (node.select<SVGTextElement>('text.name').empty()) {
-      node.append('text')
+      node
+        .append('text')
         .attr('class', 'name')
         .attr('x', 8)
         .attr('y', 16)
         .attr('fill', 'var(--base-primary)')
-        .text((d: HierarchyRectangularNode<MemoryResource>) => d.data.name.executableName);
+        .text(
+          (d: HierarchyRectangularNode<MemoryResource>) =>
+            d.data.name.executableName,
+        );
     }
 
     if (node.select('text.val').empty()) {
-      node.append('text')
+      node
+        .append('text')
         .attr('class', 'val')
         .attr('x', 8)
         .attr('y', 28)
         .attr('fill', 'var(--base-tertiary)')
-        .text((d: HierarchyRectangularNode<MemoryResource>) => this.sizePipe.transform(d.data.value));
+        .text((d: HierarchyRectangularNode<MemoryResource>) =>
+          this.sizePipe.transform(d.data.value),
+        );
     }
 
     const rectPadding = 4;
     const marginLeft = 4;
     const nameEl = node.select<SVGTextElement>('text.name');
-    const nameElWidth = (nameEl.node()?.getBBox().width + 10) || 0;
+    const nameElWidth = nameEl.node()?.getBBox().width + 10 || 0;
 
-    const countText = node.append('text')
+    const countText = node
+      .append('text')
       .attr('class', 'child-count')
       .attr('x', nameElWidth + marginLeft + rectPadding)
       .attr('y', 16)
       .attr('fill', 'var(--base-primary)')
-      .text((d: HierarchyRectangularNode<MemoryResource>) => d.data.children.length);
+      .text(
+        (d: HierarchyRectangularNode<MemoryResource>) => d.data.children.length,
+      );
 
-    node.append('rect')
+    node
+      .append('rect')
       .attr('class', 'child-bg')
       .attr('x', marginLeft + nameElWidth)
       .attr('y', 4)
-      .attr('width', () => (countText.node()?.getBBox().width || 0) + (rectPadding * 2))
+      .attr(
+        'width',
+        () => (countText.node()?.getBBox().width || 0) + rectPadding * 2,
+      )
       .attr('height', 16)
       .attr('rx', 2)
       .attr('fill', 'var(--base-container)');
 
-    node.append('path')
+    node
+      .append('path')
       .attr('class', 'chevron')
       .attr('fill', 'none')
       .attr('stroke', 'var(--base-primary)')
@@ -344,7 +431,10 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     countText.raise();
   }
 
-  private showTooltip(event: { target: SVGGElement }, d: HierarchyRectangularNode<MemoryResource>) {
+  private showTooltip(
+    event: { target: SVGGElement },
+    d: HierarchyRectangularNode<MemoryResource>,
+  ) {
     this.tooltip.innerHTML = `
       ${d.data.name.executableName} <span class="tertiary">${this.sizePipe.transform(d.data.value)}</span><br>
         ${d.data.children.length} <span class="tertiary">${d.data.children.length === 1 ? 'child' : 'children'}</span>
@@ -378,21 +468,50 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     this.tooltip.style.display = 'none';
   }
 
-  private position(group: Selection<SVGGElement, MemoryResource | unknown, SVGSVGElement, MemoryResource>): void {
+  private position(
+    group: Selection<
+      SVGGElement,
+      MemoryResource | unknown,
+      SVGSVGElement,
+      MemoryResource
+    >,
+  ): void {
     group
       .selectAll<SVGGElement, HierarchyRectangularNode<MemoryResource>>('g')
-      .attr('transform', (d: HierarchyRectangularNode<MemoryResource>) => `translate(${this.xScale(d.x0)},${this.yScale(d.y0)})`)
+      .attr(
+        'transform',
+        (d: HierarchyRectangularNode<MemoryResource>) =>
+          `translate(${this.xScale(d.x0)},${this.yScale(d.y0)})`,
+      )
       .select('rect')
-      .attr('width', (d: HierarchyRectangularNode<MemoryResource>) => this.xScale(d.x1) - this.xScale(d.x0))
-      .attr('height', (d: HierarchyRectangularNode<MemoryResource>) => this.yScale(d.y1) - this.yScale(d.y0));
-  };
+      .attr(
+        'width',
+        (d: HierarchyRectangularNode<MemoryResource>) =>
+          this.xScale(d.x1) - this.xScale(d.x0),
+      )
+      .attr(
+        'height',
+        (d: HierarchyRectangularNode<MemoryResource>) =>
+          this.yScale(d.y1) - this.yScale(d.y0),
+      );
+  }
 
-  private fadeTexts(group: Selection<SVGGElement, MemoryResource | unknown, SVGSVGElement, MemoryResource>): void {
+  private fadeTexts(
+    group: Selection<
+      SVGGElement,
+      MemoryResource | unknown,
+      SVGSVGElement,
+      MemoryResource
+    >,
+  ): void {
     group
       .selectAll<SVGGElement, HierarchyRectangularNode<MemoryResource>>('g')
       .nodes()
       .forEach((node: SVGGElement) => {
-        const d3node = d3.select<SVGGElement, HierarchyRectangularNode<MemoryResource>>(node);
+        const d3node = d3.select<
+          SVGGElement,
+          HierarchyRectangularNode<MemoryResource>
+        >(node);
         const rect = d3node.select<SVGRectElement>('rect:not(.child-bg)');
         const rectWidth = rect?.node()?.getBBox().width || 0;
         const rectHeight = rect?.node()?.getBBox().height || 0;
@@ -401,9 +520,12 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
         const textNodes = d3.select(node).selectAll('text');
         const childBgRect = d3node.select<SVGRectElement>('rect.child-bg');
         const childBgRectWidth = childBgRect?.node()?.getBBox().width || 0;
-        const childCountText = d3node.select<SVGTextElement>('text.child-count');
+        const childCountText =
+          d3node.select<SVGTextElement>('text.child-count');
         const zeroChildren = d3node.datum().data.children.length === 0;
-        const requiredWidth = zeroChildren ? textWidth : (textWidth + childBgRectWidth + 20);
+        const requiredWidth = zeroChildren
+          ? textWidth
+          : textWidth + childBgRectWidth + 20;
         const chevron = d3node.select<SVGRectElement>('path.chevron');
         if (requiredWidth > rectWidth || rectHeight < 30) {
           textNodes.classed('see', false);
@@ -421,7 +543,10 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
       });
   }
 
-  private zoomIn(d: HierarchyRectangularNode<MemoryResource>, dispatch: boolean = true): void {
+  private zoomIn(
+    d: HierarchyRectangularNode<MemoryResource>,
+    dispatch: boolean = true,
+  ): void {
     this.lastClicked = d.data;
 
     this.xScale.domain([d.x0, d.x1]);
@@ -431,14 +556,10 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     this.render(newG, d);
     this.position(newG);
 
-    this.position(
-      oldG.transition().duration(500).remove() as any,
-    );
+    this.position(oldG.transition().duration(500).remove() as any);
 
     this.position(
-      (newG
-        .attr('transform', `scale(2)`)
-        .transition().duration(500) as any)
+      (newG.attr('transform', `scale(2)`).transition().duration(500) as any)
         .on('end', () => this.fadeTexts(newG))
         .attr('transform', `scale(1)`)
         .attrTween('opacity', () => d3.interpolate(0, 1)),
@@ -447,14 +568,18 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     this.group = newG;
 
     if (dispatch) {
-      this.ngZone.run(() => this.dispatch(MemoryResourcesSetActiveResource, d.data));
+      this.ngZone.run(() =>
+        this.dispatch(MemoryResourcesSetActiveResource, d.data),
+      );
     }
-  };
+  }
 
   private zoomOut(d: HierarchyRectangularNode<MemoryResource>): void {
     this.lastClicked = d.parent.data;
     const oldG = this.group.attr('pointer-events', 'none');
-    const newG = this.svg.insert<SVGGElement>('g', '*').attr('class', 'treemap');
+    const newG = this.svg
+      .insert<SVGGElement>('g', '*')
+      .attr('class', 'treemap');
 
     this.xScale.domain([d.parent.x0, d.parent.x1]);
     this.yScale.domain([d.parent.y0, d.parent.y1]);
@@ -462,24 +587,34 @@ export class MemoryResourcesTreemapComponent extends StoreDispatcher implements 
     this.position(newG);
 
     this.position(
-      newG.style('opacity', 0.6)
+      newG
+        .style('opacity', 0.6)
         .attr('transform', `scale(2)`)
-        .transition().duration(500)
+        .transition()
+        .duration(500)
         .on('end', () => this.fadeTexts(newG))
         .style('opacity', 1)
         .attr('transform', `scale(1)`) as any,
     );
 
     this.position(
-      oldG.transition().duration(500)
-        .style('opacity', 0).on('end', () => oldG.remove()) as any,
+      oldG
+        .transition()
+        .duration(500)
+        .style('opacity', 0)
+        .on('end', () => oldG.remove()) as any,
     );
 
     this.group = newG;
-    this.ngZone.run(() => this.dispatch(MemoryResourcesSetActiveResource, d.parent.data));
-  };
+    this.ngZone.run(() =>
+      this.dispatch(MemoryResourcesSetActiveResource, d.parent.data),
+    );
+  }
 
-  private findNodeByName(node: MemoryResource, root: HierarchyRectangularNode<MemoryResource>): HierarchyRectangularNode<MemoryResource> {
+  private findNodeByName(
+    node: MemoryResource,
+    root: HierarchyRectangularNode<MemoryResource>,
+  ): HierarchyRectangularNode<MemoryResource> {
     if (root.data.id === node.id) {
       return root;
     } else if (root.children) {

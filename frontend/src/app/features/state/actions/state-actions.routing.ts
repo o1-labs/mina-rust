@@ -12,8 +12,8 @@ const routes: Routes = [
         path: ':id',
         component: StateActionsComponent,
         title: STATE_TITLE,
-      }
-    ]
+      },
+    ],
   },
 ];
 

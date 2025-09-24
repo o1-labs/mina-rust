@@ -9,8 +9,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { NetworkBlocksEffects } from '@network/blocks/network-blocks.effects';
 import { NetworkBlocksSidePanelComponent } from './network-blocks-side-panel/network-blocks-side-panel.component';
 import { NetworkBlocksToolbarComponent } from './network-blocks-toolbar/network-blocks-toolbar.component';
-import { CopyComponent, HorizontalResizableContainerComponent } from '@openmina/shared';
-
+import {
+  CopyComponent,
+  HorizontalResizableContainerComponent,
+} from '@openmina/shared';
 
 @NgModule({
   declarations: [
@@ -27,8 +29,6 @@ import { CopyComponent, HorizontalResizableContainerComponent } from '@openmina/
     EffectsModule.forFeature([NetworkBlocksEffects]),
     HorizontalResizableContainerComponent,
   ],
-  exports: [
-    NetworkBlocksGraphComponent,
-  ],
+  exports: [NetworkBlocksGraphComponent],
 })
 export class NetworkBlocksModule {}

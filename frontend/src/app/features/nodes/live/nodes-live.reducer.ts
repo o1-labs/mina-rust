@@ -1,4 +1,11 @@
-import { isDesktop, lastItem, sort, SortDirection, TableSort, toggleItem } from '@openmina/shared';
+import {
+  isDesktop,
+  lastItem,
+  sort,
+  SortDirection,
+  TableSort,
+  toggleItem,
+} from '@openmina/shared';
 import { NodesLiveState } from '@nodes/live/nodes-live.state';
 import {
   NODES_LIVE_CLOSE,
@@ -24,28 +31,40 @@ const initialState: NodesLiveState = {
   filters: [],
 };
 
-export function reducer(state: NodesLiveState = initialState, action: NodesLiveActions): NodesLiveState {
+export function reducer(
+  state: NodesLiveState = initialState,
+  action: NodesLiveActions,
+): NodesLiveState {
   switch (action.type) {
-
     case NODES_LIVE_GET_NODES_SUCCESS: {
-      let activeNode = state.activeNode ? action.payload.find(node => node.bestTip === state.activeNode.bestTip) : lastItem(action.payload);
+      let activeNode = state.activeNode
+        ? action.payload.find(node => node.bestTip === state.activeNode.bestTip)
+        : lastItem(action.payload);
       return {
         ...state,
         nodes: action.payload,
         activeNode,
-        filteredEvents: filterEvents(sortEvents(activeNode?.events || [], state.sort), state.filters),
+        filteredEvents: filterEvents(
+          sortEvents(activeNode?.events || [], state.sort),
+          state.filters,
+        ),
       };
     }
 
     case NODES_LIVE_SET_ACTIVE_NODE: {
-      let activeNode = state.nodes.find(node => node.bestTip === action.payload.hash);
+      let activeNode = state.nodes.find(
+        node => node.bestTip === action.payload.hash,
+      );
       if (!activeNode) {
         return state;
       }
       return {
         ...state,
         activeNode,
-        filteredEvents: filterEvents(sortEvents(activeNode.events, state.sort), state.filters),
+        filteredEvents: filterEvents(
+          sortEvents(activeNode.events, state.sort),
+          state.filters,
+        ),
       };
     }
 
@@ -53,7 +72,10 @@ export function reducer(state: NodesLiveState = initialState, action: NodesLiveA
       return {
         ...state,
         sort: action.payload,
-        filteredEvents: filterEvents(sortEvents(state.activeNode.events, action.payload), state.filters),
+        filteredEvents: filterEvents(
+          sortEvents(state.activeNode.events, action.payload),
+          state.filters,
+        ),
       };
     }
 
@@ -70,8 +92,11 @@ export function reducer(state: NodesLiveState = initialState, action: NodesLiveA
       return {
         ...state,
         filters,
-        filteredEvents: filterEvents(sortEvents(state.activeNode.events, state.sort), filters),
-      }
+        filteredEvents: filterEvents(
+          sortEvents(state.activeNode.events, state.sort),
+          filters,
+        ),
+      };
     }
 
     case NODES_LIVE_CLOSE:
@@ -82,11 +107,17 @@ export function reducer(state: NodesLiveState = initialState, action: NodesLiveA
   }
 }
 
-function sortEvents(events: NodesLiveBlockEvent[], tableSort: TableSort<NodesLiveBlockEvent>): NodesLiveBlockEvent[] {
+function sortEvents(
+  events: NodesLiveBlockEvent[],
+  tableSort: TableSort<NodesLiveBlockEvent>,
+): NodesLiveBlockEvent[] {
   return sort<NodesLiveBlockEvent>(events, tableSort, ['message', 'status']);
 }
 
-function filterEvents(events: NodesLiveBlockEvent[], filters: string[]): NodesLiveBlockEvent[] {
+function filterEvents(
+  events: NodesLiveBlockEvent[],
+  filters: string[],
+): NodesLiveBlockEvent[] {
   if (!filters.length) {
     return events;
   }
@@ -94,7 +125,13 @@ function filterEvents(events: NodesLiveBlockEvent[], filters: string[]): NodesLi
     events = events.filter(event => event.isBestTip);
   }
 
-  if (filters.some(f => Object.values(NodesOverviewNodeBlockStatus).includes(f as NodesOverviewNodeBlockStatus))) {
+  if (
+    filters.some(f =>
+      Object.values(NodesOverviewNodeBlockStatus).includes(
+        f as NodesOverviewNodeBlockStatus,
+      ),
+    )
+  ) {
     events = events.filter(event => filters.includes(event.message));
   }
 

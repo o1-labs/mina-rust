@@ -1,7 +1,6 @@
 @use 'openmina';
 
 .list-wrapper {
-
   aside {
     width: 100px;
     position: absolute;
@@ -76,7 +75,8 @@
       background-color: openmina.$special-selected-alt-1-container;
     }
 
-    .root span, .best-tip span {
+    .root span,
+    .best-tip span {
       margin-right: 5px;
       border-radius: 6px;
       padding: 5px;

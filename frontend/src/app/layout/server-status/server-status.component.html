@@ -1,40 +1,64 @@
 @if (details) {
-  <div class="wrapper fx-row-vert-cent"
-       [ngClass]="switchForbidden ? AppNodeStatus.PENDING : details.status">
+  <div
+    class="wrapper fx-row-vert-cent"
+    [ngClass]="switchForbidden ? AppNodeStatus.PENDING : details.status"
+  >
     @if (!switchForbidden && !hideNodeStats && !isMobile) {
       @if (!hideTx) {
-        <div class="chip mr-8 p-relative h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
-             #mempoolAnchor
-             (mouseenter)="openTooltipDropdown(mempoolAnchor, mempool)"
-             (mouseleave)="detachTooltipOverlay()">
+        <div
+          class="chip mr-8 p-relative h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
+          #mempoolAnchor
+          (mouseenter)="openTooltipDropdown(mempoolAnchor, mempool)"
+          (mouseleave)="detachTooltipOverlay()"
+        >
           <span class="mina-icon icon-300 f-20">blur_circular</span>
-          <div>{{ details.transactions }} <span>Tx{{ details.transactions | plural }}</span></div>
-          <div>{{ details.snarks }} <span>SNARK{{ details.snarks | plural }}</span></div>
+          <div>
+            {{ details.transactions }}
+            <span>Tx{{ details.transactions | plural }}</span>
+          </div>
+          <div>
+            {{ details.snarks }}
+            <span>SNARK{{ details.snarks | plural }}</span>
+          </div>
         </div>
       }
       @if (!hidePeers) {
-        <div class="chip mr-8 p-relative h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
-             #peersAnchor
-             (mouseenter)="openTooltipDropdown(peersAnchor, peers)"
-             (mouseleave)="detachTooltipOverlay()">
+        <div
+          class="chip mr-8 p-relative h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
+          #peersAnchor
+          (mouseenter)="openTooltipDropdown(peersAnchor, peers)"
+          (mouseleave)="detachTooltipOverlay()"
+        >
           <span class="mina-icon icon-300 f-20">language</span>
-          <div>{{ details.peersConnected }} <span>Peer{{ details.peersConnected | plural }}</span></div>
+          <div>
+            {{ details.peersConnected }}
+            <span>Peer{{ details.peersConnected | plural }}</span>
+          </div>
         </div>
       }
     }
-    <div class="node-status fx-row-vert-cent h-sm p-relative z-1 mr-8"
-         (click)="isMobile ? openNodePicker($event) : null"
-         [class.can-add-nodes]="switchForbidden">
+    <div
+      class="node-status fx-row-vert-cent h-sm p-relative z-1 mr-8"
+      (click)="isMobile ? openNodePicker($event) : null"
+      [class.can-add-nodes]="switchForbidden"
+    >
       @if (!switchForbidden && !hideNodeStats) {
         <div class="shine-parent overflow-hidden p-absolute z-0 border-rad-6">
-          @if (details.status === AppNodeStatus.CATCHUP || details.status === AppNodeStatus.BOOTSTRAP) {
+          @if (
+            details.status === AppNodeStatus.CATCHUP ||
+            details.status === AppNodeStatus.BOOTSTRAP
+          ) {
             <div class="shining-border p-absolute"></div>
           }
         </div>
-        <div class="chip p-relative z-1 h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
-             #blockAnchor
-             (mouseenter)="!isMobile ? openTooltipDropdown(blockAnchor, block) : null"
-             (mouseleave)="detachTooltipOverlay()">
+        <div
+          class="chip p-relative z-1 h-sm pl-5 pr-5 fx-row-vert-cent border-rad-6 text-nowrap"
+          #blockAnchor
+          (mouseenter)="
+            !isMobile ? openTooltipDropdown(blockAnchor, block) : null
+          "
+          (mouseleave)="detachTooltipOverlay()"
+        >
           @if (!isMobile) {
             <span class="mina-icon icon-300 f-20">dns</span>
           }
@@ -44,23 +68,31 @@
               <span>#</span>
             }
             {{ details.blockHeight }}
-           </span>
+          </span>
           <span>{{ blockTimeAgo ? blockTimeAgo + ' ago' : '' }}</span>
         </div>
       }
       @if (!isMobile || (isMobile && switchForbidden)) {
-        <div class="background-wrap w-100 p-relative fx-row-full-cent h-100 pointer"
-             [class.hide-stats]="hideNodeStats"
-             [class.switch-forbidden]="switchForbidden"
-             (click)="openNodePicker($event)"
-             [globalTooltip]="false"
-             [tooltip]="'This page shows information about all your configured nodes.'"
-             [tooltipDisabled]="!switchForbidden">
-          <div class="node-switcher h-100 w-100 fx-row-full-cent pl-5 pr-8"
-               [class.pl-8]="switchForbidden"
-               [class.border-rad-4]="switchForbidden"
-               #overlayOpener>
-            <span class="strong-text truncate">{{ !switchForbidden ? activeNode?.name : 'All Nodes' }}</span>
+        <div
+          class="background-wrap w-100 p-relative fx-row-full-cent h-100 pointer"
+          [class.hide-stats]="hideNodeStats"
+          [class.switch-forbidden]="switchForbidden"
+          (click)="openNodePicker($event)"
+          [globalTooltip]="false"
+          [tooltip]="
+            'This page shows information about all your configured nodes.'
+          "
+          [tooltipDisabled]="!switchForbidden"
+        >
+          <div
+            class="node-switcher h-100 w-100 fx-row-full-cent pl-5 pr-8"
+            [class.pl-8]="switchForbidden"
+            [class.border-rad-4]="switchForbidden"
+            #overlayOpener
+          >
+            <span class="strong-text truncate">
+              {{ !switchForbidden ? activeNode?.name : 'All Nodes' }}
+            </span>
             @if (!switchForbidden && (canAddNodes || nodes.length > 1)) {
               <span class="mina-icon icon-300">arrow_drop_down</span>
             }
@@ -72,8 +104,10 @@
 }
 
 <ng-template #mempool>
-  <div @fadeIn
-       class="bg-surface-top secondary border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100">
+  <div
+    @fadeIn
+    class="bg-surface-top secondary border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100"
+  >
     <div class="h-sm tertiary">Mempool</div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>Transactions</div>
@@ -87,8 +121,10 @@
 </ng-template>
 
 <ng-template #peers>
-  <div @fadeIn
-       class="bg-surface-top secondary border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100">
+  <div
+    @fadeIn
+    class="bg-surface-top secondary border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100"
+  >
     <div class="h-sm tertiary">Network Traffic</div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>Connected Peers</div>
@@ -106,8 +142,10 @@
 </ng-template>
 
 <ng-template #block>
-  <div @fadeIn
-       class="node-status-popup secondary bg-surface-top border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100 text-nowrap">
+  <div
+    @fadeIn
+    class="node-status-popup secondary bg-surface-top border-rad-8 popup-box-shadow-weak p-8 pb-5 w-100 h-100 text-nowrap"
+  >
     <div class="h-sm tertiary">Node Status</div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>MINA short history</div>
@@ -115,12 +153,14 @@
     </div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>Latest applied block</div>
-      <div [class.success-primary]="details.blockHeight !== null" class="f-600">{{ details.blockHeight }}</div>
+      <div [class.success-primary]="details.blockHeight !== null" class="f-600">
+        {{ details.blockHeight }}
+      </div>
     </div>
     <div class="fx-row-vert-cent flex-between h-xs">
       <div>Last updated</div>
-      <div [class.success-primary]="details.blockHeight !== null"
-           class="f-600">{{ blockTimeAgo ? blockTimeAgo + ' ago' : '' }}
+      <div [class.success-primary]="details.blockHeight !== null" class="f-600">
+        {{ blockTimeAgo ? blockTimeAgo + ' ago' : '' }}
       </div>
     </div>
   </div>

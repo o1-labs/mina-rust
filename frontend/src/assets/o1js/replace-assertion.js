@@ -11,10 +11,10 @@ fs.readFile(filePath, 'utf8', (err, data) => {
 
   const updatedContent = data.replace(
     /if\(!g\)throw Error/g,
-    'if(!g)new Error'
+    'if(!g)new Error',
   );
 
-  fs.writeFile(filePath, updatedContent, 'utf8', (err) => {
+  fs.writeFile(filePath, updatedContent, 'utf8', err => {
     if (err) {
       console.error('Error replacing content in file:', err);
       process.exit(1);
