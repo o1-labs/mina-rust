@@ -18,6 +18,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   o1Labs, including seed and plain nodes
   ([#1430](https://github.com/o1-labs/mina-rust/pull/1430)). The infrastructure
   is tested accordingly in the CI at every push.
+- **Website**: add comparison list of implemented and missing GraphQL endpoints
+  ([#1486](https://github.com/o1-labs/mina-rust/pull/1466))
+
 ### Changed
 
 - **CI**: Speed up CI by decoupling test runs from full build completion.
