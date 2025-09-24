@@ -14,7 +14,7 @@ env:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.ref != 'refs/heads/develop' && !startsWith(github.ref, 'refs/tags/v') }}
 
 jobs:
   # Test documentation build
@@ -122,16 +122,27 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-  # Create versioned documentation on tag creation
+  # Create and deploy versioned documentation on tag creation
   version-docs:
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: [build-docs]
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
       - name: Setup Node.js
         uses: actions/setup-node@v5
@@ -161,10 +172,19 @@ jobs:
           sudo apt update
           sudo apt install -y protobuf-compiler
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+          # This should be in line with the verison in:
+          # - Makefile
+          # - ./github/workflows/docs.yaml
+          # - ./github/workflows/fmt.yaml
+          # - ./github/workflows/lint.yaml
+          toolchain: nightly
+
       - name: Build versioned documentation
-        run: |
-          cd website
-          npm run build
+        run: make docs-build
         env:
           NODE_ENV: production
 
@@ -182,3 +202,12 @@ jobs:
           path: |
             mina-docs-${{ steps.version.outputs.version }}.tar.gz
             mina-docs-${{ steps.version.outputs.version }}.zip
+
+      - name: Upload to GitHub Pages
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: website/build
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

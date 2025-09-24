@@ -320,6 +320,25 @@ This command:
 The versioned documentation will be available at `/docs/1.5.0/` and can be
 accessed through the version dropdown in the website navigation.
 
+<!-- prettier-ignore-start -->
+
+:::info Automated CI Deployment
+
+When a release tag is created (e.g., `v1.5.0`), the GitHub Actions CI will
+automatically:
+
+- Create a versioned copy of the documentation
+- Build the documentation with the new version included
+- Deploy the updated documentation to GitHub Pages
+- Upload versioned documentation archives as release assets
+
+This means the documentation versioning and deployment is handled automatically
+as part of the tag creation process.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
 ### 7. Create GitHub Release
 
 ```bash
