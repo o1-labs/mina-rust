@@ -47,6 +47,110 @@ This command:
 - Updates `website/versions.json` to include the new version
 - Makes the version available in the dropdown menu
 
+### Creating a Version for a Previous Release
+
+Sometimes you need to create documentation versions for releases that were made
+before the versioning system was implemented. This process involves checking out
+the specific commit for that release and creating the version from that
+historical state.
+
+#### Step-by-Step Process
+
+1. **Find the release commit or tag**:
+
+   ```bash
+   # Look for the specific release tag
+   git tag --list | grep v0.17.0
+
+   # Or find the commit hash for the release
+   git log --oneline --grep="v0.17.0" --grep="Release.*0.17.0"
+   ```
+
+2. **Create a temporary branch from the release commit**:
+
+   ```bash
+   # If you have a tag for v0.17.0
+   git checkout -b temp-v0.17.0-docs v0.17.0
+
+   # Or if you have the commit hash
+   git checkout -b temp-v0.17.0-docs <commit-hash>
+   ```
+
+3. **Install documentation dependencies**:
+
+   ```bash
+   cd website
+   npm install
+   ```
+
+4. **Create the version from the historical documentation**:
+
+   ```bash
+   # Create version 0.17.0 from the current (historical) docs
+   npm run docusaurus docs:version 0.17.0
+   ```
+
+5. **Copy the versioned files to your main branch**:
+
+   ```bash
+   # Switch back to your main development branch
+   git checkout develop  # or main
+
+   # Copy the versioned documentation files
+   cp -r /path/to/temp-branch/website/versioned_docs/version-0.17.0/ website/versioned_docs/
+   cp /path/to/temp-branch/website/versioned_sidebars/version-0.17.0-sidebars.json website/versioned_sidebars/
+
+   # Update versions.json to include the new version
+   # Edit website/versions.json to add "0.17.0" to the array
+   ```
+
+6. **Clean up the temporary branch**:
+
+   ```bash
+   git branch -D temp-v0.17.0-docs
+   ```
+
+7. **Verify and commit the changes**:
+
+   ```bash
+   # Test that the documentation builds correctly
+   make docs-build-only
+
+   # Commit the versioned documentation
+   git add website/versioned_docs/version-0.17.0/
+   git add website/versioned_sidebars/version-0.17.0-sidebars.json
+   git add website/versions.json
+   git commit -m "Add documentation version for v0.17.0"
+   ```
+
+#### Example: Creating v0.17.0 Documentation
+
+```bash
+# Example workflow for creating v0.17.0 documentation
+git checkout -b temp-v0.17.0-docs v0.17.0
+cd website && npm install
+npm run docusaurus docs:version 0.17.0
+git checkout develop
+cp -r ../temp-v0.17.0-docs/website/versioned_docs/version-0.17.0/ website/versioned_docs/
+cp ../temp-v0.17.0-docs/website/versioned_sidebars/version-0.17.0-sidebars.json website/versioned_sidebars/
+# Edit website/versions.json to add "0.17.0"
+git branch -D temp-v0.17.0-docs
+make docs-build-only
+```
+
+#### Important Notes for Previous Releases
+
+- **Documentation State**: The versioned documentation will reflect the exact
+  state of the docs at that historical commit
+- **Missing Features**: If the historical documentation was incomplete or
+  missing, the versioned docs will also be incomplete
+- **Broken Links**: Links that reference newer features or pages may be broken
+  in historical versions
+- **Manual Editing**: You may need to manually edit the versioned documentation
+  to fix any issues specific to that release
+- **Testing**: Always test the documentation build after adding historical
+  versions
+
 ### Listing Available Versions
 
 ```bash
