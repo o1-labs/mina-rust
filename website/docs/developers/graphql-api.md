@@ -763,6 +763,110 @@ Consider:
 - **Concurrent requests**: The API handles concurrent requests but intensive
   queries may affect node performance
 
+## Implementation Status Comparison
+
+This table tracks the implementation status of GraphQL endpoints in the Mina
+Rust node compared to the
+[OCaml node](https://github.com/MinaProtocol/mina/blob/compatible/src/lib/mina_graphql/mina_graphql.ml#L2813-L2855).
+For more details, see the tracking
+[issue #1039](https://github.com/o1-labs/mina-rust/issues/1039).
+
+### Query Endpoints Status
+
+| Endpoint                                                                               | Description                           | Priority | Rust Status        | Notes                                |
+| -------------------------------------------------------------------------------------- | ------------------------------------- | -------- | ------------------ | ------------------------------------ |
+| **Core Queries**                                                                       |                                       |          |                    |                                      |
+| [`daemonStatus`](#daemonstatus)                                                        | Get running daemon status             | HIGH     | ✅ Implemented     | Full daemon status with network info |
+| [`account`](#accountpublickey-string-token-string)                                     | Find account via public key and token | HIGH     | ✅ Implemented     | Account balance, nonce, delegate     |
+| [`block`](#blockheight-int-statehash-string)                                           | Retrieve block by hash or height      | HIGH     | ✅ Implemented     | Full block with transactions         |
+| [`pooledUserCommands`](#pooledusercommandspublickey-string-hashes-string-ids-string)   | User commands in transaction pool     | HIGH     | ✅ Implemented     | Payments and delegations             |
+| [`pooledZkappCommands`](#pooledzkappcommandspublickey-string-hashes-string-ids-string) | zkApp commands in transaction pool    | HIGH     | ✅ Implemented     | Smart contract transactions          |
+| [`transactionStatus`](#transactionstatuspayment-string-zkapptransaction-string)        | Get transaction status                | HIGH     | ✅ Implemented     | PENDING, INCLUDED, or UNKNOWN        |
+| [`networkID`](#networkid)                                                              | Chain-agnostic network identifier     | HIGH     | ✅ Implemented     | Returns `mina:<network_name>`        |
+| **Blockchain Info**                                                                    |                                       |          |                    |                                      |
+| [`syncStatus`](#syncstatus)                                                            | Network sync status                   | -        | ✅ Implemented     | Sync state tracking                  |
+| [`version`](#version)                                                                  | Node version (git commit hash)        | -        | ✅ Implemented     | Build information                    |
+| [`bestChain`](#bestchainmaxlength-int)                                                 | Blocks from root to best tip          | -        | ✅ Implemented     | Ordered chain of blocks              |
+| [`genesisBlock`](#genesisblock)                                                        | Get the genesis block                 | -        | ✅ Implemented     | Initial block data                   |
+| [`genesisConstants`](#genesisconstants)                                                | Genesis configuration                 | -        | ✅ Implemented     | Network parameters                   |
+| **SNARK Pool**                                                                         |                                       |          |                    |                                      |
+| [`snarkPool`](#snarkpool)                                                              | Completed SNARK works                 | -        | ✅ Implemented     | Proofs with fees                     |
+| [`pendingSnarkWork`](#pendingsnarkwork)                                                | SNARK work to be done                 | -        | ✅ Implemented     | Available work items                 |
+| [`currentSnarkWorker`](#currentsnarkworker)                                            | Current SNARK worker info             | -        | ✅ Implemented     | Worker configuration                 |
+| **Not Yet Implemented**                                                                |                                       |          |                    |                                      |
+| `accounts`                                                                             | All accounts for a public key         | -        | ❌ Not Implemented | Multiple account support             |
+| `tokenAccounts`                                                                        | All accounts for a token ID           | -        | ❌ Not Implemented | Token-specific queries               |
+| `tokenOwner`                                                                           | Account that owns a token             | -        | ❌ Not Implemented | Token ownership                      |
+| `trackedAccounts`                                                                      | Accounts with tracked private keys    | -        | ❌ Not Implemented | Wallet management                    |
+| `getPeers`                                                                             | Connected peers list                  | -        | ⚠️ Partial         | Only via daemonStatus                |
+| `initialPeers`                                                                         | Initial connection peers              | -        | ❌ Not Implemented | Bootstrap peers                      |
+| `trustStatus`                                                                          | Trust status for IP                   | -        | ❌ Not Implemented | Peer trust management                |
+| `trustStatusAll`                                                                       | All peers trust status                | -        | ❌ Not Implemented | Network trust state                  |
+| `validatePayment`                                                                      | Validate payment format               | -        | ❌ Not Implemented | Transaction validation               |
+| `runtimeConfig`                                                                        | Runtime configuration                 | -        | ❌ Not Implemented | Node configuration                   |
+| `fork_config`                                                                          | Blockchain fork config                | -        | ❌ Not Implemented | Fork parameters                      |
+| `evaluateVrf`                                                                          | Evaluate VRF for public key           | -        | ❌ Not Implemented | VRF operations                       |
+| `checkVrf`                                                                             | Check VRF evaluation                  | -        | ❌ Not Implemented | VRF verification                     |
+| `blockchainVerificationKey`                                                            | Protocol state proof key              | -        | ❌ Not Implemented | Verification keys                    |
+| `signatureKind`                                                                        | Signature type in use                 | -        | ❌ Not Implemented | Cryptography info                    |
+| `timeOffset`                                                                           | Blockchain time offset                | -        | ❌ Not Implemented | Time synchronization                 |
+| `connectionGatingConfig`                                                               | Connection rules                      | -        | ❌ Not Implemented | Network policies                     |
+| `threadGraph`                                                                          | Internal thread graph                 | -        | ❌ Not Implemented | Debugging tool                       |
+| `getFilteredLogEntries`                                                                | Structured log events                 | -        | ❌ Not Implemented | Testing/debugging                    |
+
+### Mutation Endpoints Status
+
+| Endpoint                            | Description            | Priority | Rust Status        | Notes                   |
+| ----------------------------------- | ---------------------- | -------- | ------------------ | ----------------------- |
+| **Core Mutations**                  |                        |          |                    |                         |
+| [`sendPayment`](#sendpayment)       | Send a payment         | HIGH     | ✅ Implemented     | Full payment submission |
+| [`sendDelegation`](#senddelegation) | Change delegation      | HIGH     | ✅ Implemented     | Stake delegation        |
+| [`sendZkapp`](#sendzkapp)           | Send zkApp transaction | HIGH     | ✅ Implemented     | Smart contracts         |
+| **Not Yet Implemented**             |                        |          |                    |                         |
+| `createAccount`                     | Create new account     | -        | ❌ Not Implemented | Account creation        |
+| `createHDAccount`                   | Create HD account      | -        | ❌ Not Implemented | HD wallet support       |
+| `unlockAccount`                     | Unlock account         | -        | ❌ Not Implemented | Enable transactions     |
+| `lockAccount`                       | Lock account           | -        | ❌ Not Implemented | Disable transactions    |
+| `deleteAccount`                     | Delete private key     | -        | ❌ Not Implemented | Key management          |
+| `reloadAccounts`                    | Reload account info    | -        | ❌ Not Implemented | Account refresh         |
+| `importAccount`                     | Import from file       | -        | ❌ Not Implemented | Account import          |
+| `mockZkapp`                         | Mock zkApp (testing)   | -        | ❌ Not Implemented | Testing tool            |
+| `sendTestPayments`                  | Test payment series    | -        | ❌ Not Implemented | Testing tool            |
+| `sendRosettaTransaction`            | Rosetta format tx      | -        | ❌ Not Implemented | Rosetta API             |
+| `exportLogs`                        | Export daemon logs     | -        | ❌ Not Implemented | Log management          |
+| `setCoinbaseReceiver`               | Set coinbase key       | -        | ❌ Not Implemented | Block production        |
+| `setSnarkWorker`                    | Configure SNARK worker | -        | ❌ Not Implemented | SNARK configuration     |
+| `setSnarkWorkFee`                   | Set SNARK work fee     | -        | ❌ Not Implemented | Fee configuration       |
+| `setConnectionGatingConfig`         | Set connection rules   | -        | ❌ Not Implemented | Network policies        |
+| `addPeers`                          | Connect to peers       | -        | ❌ Not Implemented | Peer management         |
+| `archivePrecomputedBlock`           | Archive precomputed    | -        | ❌ Not Implemented | Archive operations      |
+| `archiveExtensionalBlock`           | Archive extensional    | -        | ❌ Not Implemented | Archive operations      |
+
+### Subscription Endpoints Status
+
+| Endpoint              | Description         | Rust Status        | Notes                  |
+| --------------------- | ------------------- | ------------------ | ---------------------- |
+| `newSyncUpdate`       | Sync status changes | ❌ Not Implemented | Uses EmptySubscription |
+| `newBlock`            | New block events    | ❌ Not Implemented | Uses EmptySubscription |
+| `chainReorganization` | Best tip changes    | ❌ Not Implemented | Uses EmptySubscription |
+
+### Implementation Summary
+
+- **Total endpoints in OCaml node**: ~61 (excluding deprecated)
+- **Implemented in Rust**: 18 endpoints
+- **Partially implemented**: 1 endpoint
+- **Not implemented**: ~37 endpoints
+- **Deprecated (skipped)**: 8 endpoints
+
+All HIGH priority endpoints required for basic node operation are fully
+implemented. The Rust implementation focuses on core functionality needed for:
+
+- Blockchain synchronization
+- Account queries
+- Transaction submission (payments, delegations, zkApps)
+- SNARK work coordination
+- Network status monitoring
+
 ## Next Steps
 
 - [Node Architecture](./architecture) - Understanding the node's internal
