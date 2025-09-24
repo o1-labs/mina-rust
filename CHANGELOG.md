@@ -36,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website**: update GraphQL API page by extracting all endpoints and run it in
   CI, at every push, with the o1Labs managed plain nodes
   ([#1421](https://github.com/o1-labs/mina-rust/pull/1421)).
+- **Frontend**: rename all occurences of openmina.scss to mina-rust.scss
+  ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
 
 ## v0.17.0
 
