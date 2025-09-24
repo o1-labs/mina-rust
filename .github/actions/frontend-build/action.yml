@@ -9,6 +9,10 @@ inputs:
     description: 'Whether to run Cypress tests'
     required: false
     default: 'false'
+  test-build-commands:
+    description: 'Whether to test all build commands'
+    required: false
+    default: 'false'
   node-version:
     description: 'Node.js version to use'
     required: false
@@ -40,7 +44,81 @@ runs:
       shell: bash
 
     - name: Build frontend
-      run: npm run build
+      run: make build
+      working-directory: frontend
+      shell: bash
+
+    # Test Makefile targets
+    - name: Test make build
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build
+        [ -d "dist/frontend" ] || { echo "Error: make build failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+
+    - name: Test make build-development
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-development
+        [ -d "dist/frontend" ] || { echo "Error: make build-development failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-fuzzing
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-fuzzing
+        [ -d "dist/frontend" ] || { echo "Error: make build-fuzzing failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-local
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-local
+        [ -d "dist/frontend" ] || { echo "Error: make build-local failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-prod
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-prod
+        [ -d "dist/frontend" ] || { echo "Error: make build-prod failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-producer
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-producer
+        [ -d "dist/frontend" ] || { echo "Error: make build-producer failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-production
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-production
+        [ -d "dist/frontend" ] || { echo "Error: make build-production failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
+    - name: Test make build-webnodelocal
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-webnodelocal
+        [ -d "dist/frontend" ] || { echo "Error: make build-webnodelocal failed"; exit 1; }
       working-directory: frontend
       shell: bash
 

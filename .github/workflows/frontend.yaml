@@ -22,3 +22,4 @@ jobs:
         with:
           run-prettier-check: 'true'
           run-tests: 'true'
+          test-build-commands: 'false'
