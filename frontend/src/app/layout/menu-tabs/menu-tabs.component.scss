@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   height: 56px;
@@ -7,15 +7,15 @@
     gap: 12px;
 
     .menu {
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
       min-width: 72px;
       flex: 1 0 auto;
 
       &.active {
-        color: openmina.$selected-primary;
+        color: mina-rust.$selected-primary;
 
         .mina-icon {
-          color: openmina.$selected-primary;
+          color: mina-rust.$selected-primary;
           font-variation-settings:
             'FILL' 1,
             'wght' 300,

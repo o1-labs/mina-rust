@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .icon-wrap {
   width: 24px;
@@ -6,7 +6,7 @@
   margin-right: -10px;
 
   &:hover {
-    background-color: openmina.$selected-container;
+    background-color: mina-rust.$selected-container;
     filter: brightness(160%);
   }
 }

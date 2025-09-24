@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   height: 40px;
@@ -27,7 +27,7 @@
     height: 1px;
     width: 25%;
     border-radius: 4px;
-    background-color: openmina.$selected-primary;
+    background-color: mina-rust.$selected-primary;
     bottom: 0;
     left: 0;
     animation: loading 1.5s infinite;

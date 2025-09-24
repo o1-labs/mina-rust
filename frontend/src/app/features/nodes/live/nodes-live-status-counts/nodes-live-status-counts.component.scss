@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .circle {
   width: 10px;
@@ -6,22 +6,22 @@
   border-radius: 12px;
 
   &.red {
-    background-color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-primary;
   }
 
   &.gray {
-    background-color: openmina.$base-tertiary;
+    background-color: mina-rust.$base-tertiary;
   }
 
   &.white {
-    background-color: openmina.$base-primary;
+    background-color: mina-rust.$base-primary;
   }
 
   &.blue {
-    background-color: openmina.$selected-primary;
+    background-color: mina-rust.$selected-primary;
   }
 
   &.green {
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
   }
 }

@@ -1,21 +1,21 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .th-group {
   display: grid;
   grid-template-columns: 305px 510px 360px 1fr;
 
   > span:nth-child(1) {
-    border-bottom: 1px solid openmina.$base-tertiary;
+    border-bottom: 1px solid mina-rust.$base-tertiary;
   }
 
   > span:nth-child(2) {
-    color: openmina.$special-selected-alt-3-primary;
-    border-bottom: 1px solid openmina.$special-selected-alt-3-primary;
+    color: mina-rust.$special-selected-alt-3-primary;
+    border-bottom: 1px solid mina-rust.$special-selected-alt-3-primary;
   }
 
   > span:nth-child(3) {
-    color: openmina.$special-selected-alt-1-primary;
-    border-bottom: 1px solid openmina.$special-selected-alt-1-primary;
+    color: mina-rust.$special-selected-alt-1-primary;
+    border-bottom: 1px solid mina-rust.$special-selected-alt-1-primary;
   }
 
   @media (max-width: 768px) {
@@ -26,31 +26,31 @@
 :host ::ng-deep .mina-table .row .th {
   @for $i from 3 through 6 {
     span:nth-child(#{$i}) {
-      color: openmina.$special-selected-alt-3-primary !important;
+      color: mina-rust.$special-selected-alt-3-primary !important;
     }
   }
 
   @for $i from 7 through 9 {
     span:nth-child(#{$i}) {
-      color: openmina.$special-selected-alt-1-primary !important;
+      color: mina-rust.$special-selected-alt-1-primary !important;
     }
   }
 }
 
 span {
   &.snarked {
-    background-color: openmina.$special-selected-alt-1-container;
-    color: openmina.$special-selected-alt-1-primary;
+    background-color: mina-rust.$special-selected-alt-1-container;
+    color: mina-rust.$special-selected-alt-1-primary;
   }
 
   &.committed {
-    background-color: openmina.$special-selected-alt-3-container;
-    color: openmina.$special-selected-alt-3-primary;
+    background-color: mina-rust.$special-selected-alt-3-container;
+    color: mina-rust.$special-selected-alt-3-primary;
   }
 
   &.aware-chip {
-    background-color: openmina.$aware-container;
-    color: openmina.$aware-primary !important;
+    background-color: mina-rust.$aware-container;
+    color: mina-rust.$aware-primary !important;
   }
 
   &.committed,

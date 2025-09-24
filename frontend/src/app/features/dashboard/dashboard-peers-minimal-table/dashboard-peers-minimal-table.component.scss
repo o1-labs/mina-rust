@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .mina-icon {
   font-variation-settings:
@@ -7,11 +7,11 @@
 }
 
 .Connected {
-  color: openmina.$success-primary;
+  color: mina-rust.$success-primary;
 }
 
 .Connecting {
-  color: openmina.$base-primary;
+  color: mina-rust.$base-primary;
 }
 
 :host ::ng-deep cdk-virtual-scroll-viewport {

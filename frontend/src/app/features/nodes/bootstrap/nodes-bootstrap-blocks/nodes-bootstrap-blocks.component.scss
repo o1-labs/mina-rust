@@ -1,7 +1,7 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .tab-group {
-  @include openmina.flexRowVertCenter();
+  @include mina-rust.flexRowVertCenter();
 
   .tab {
     min-width: 90px;
@@ -9,17 +9,17 @@
     width: 33%;
     text-align: center;
     border-radius: 6px;
-    color: openmina.$base-secondary;
+    color: mina-rust.$base-secondary;
     transition: 0.2s;
     background-color: transparent;
 
     &.selected {
-      background-color: openmina.$selected-container;
-      color: openmina.$selected-primary;
+      background-color: mina-rust.$selected-container;
+      color: mina-rust.$selected-primary;
     }
 
     &:hover:not(.selected) {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
   }
 }
@@ -28,7 +28,7 @@
   .row {
     display: grid;
     grid-template-columns: 150px 50px 1fr;
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     span {
       height: 36px;

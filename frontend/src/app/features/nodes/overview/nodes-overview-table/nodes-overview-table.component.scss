@@ -1,11 +1,11 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .th-group {
   display: grid;
   grid-template-columns: 480px 390px 1fr;
 
   > span {
-    border-bottom: 1px solid openmina.$base-tertiary;
+    border-bottom: 1px solid mina-rust.$base-tertiary;
 
     &:last-child {
       min-width: 510px;
@@ -22,23 +22,23 @@
   border-radius: 4px;
 
   &.Synced {
-    background-color: openmina.$success-container;
-    color: openmina.$success-primary;
+    background-color: mina-rust.$success-container;
+    color: mina-rust.$success-primary;
   }
 
   &.Bootstrap,
   &.Catchup {
-    background-color: openmina.$aware-container;
-    color: openmina.$aware-primary;
+    background-color: mina-rust.$aware-container;
+    color: mina-rust.$aware-primary;
   }
 
   &.Offline {
-    background-color: openmina.$warn-container;
-    color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-container;
+    color: mina-rust.$warn-primary;
   }
 
   &.Pending {
-    background-color: openmina.$base-container;
-    color: openmina.$base-secondary;
+    background-color: mina-rust.$base-container;
+    color: mina-rust.$base-secondary;
   }
 }

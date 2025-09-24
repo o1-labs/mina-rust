@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .side-panel-stepper {
   .step {
@@ -29,7 +29,7 @@
 }
 
 .tab-group {
-  @include openmina.flexRowVertCenter();
+  @include mina-rust.flexRowVertCenter();
 
   .tab {
     min-width: 90px;
@@ -37,17 +37,17 @@
     width: 50%;
     text-align: center;
     border-radius: 6px;
-    color: openmina.$base-secondary;
+    color: mina-rust.$base-secondary;
     transition: 0.2s;
     background-color: transparent;
 
     &.selected {
-      background-color: openmina.$selected-container;
-      color: openmina.$selected-primary;
+      background-color: mina-rust.$selected-container;
+      color: mina-rust.$selected-primary;
     }
 
     &:hover:not(.selected) {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
   }
 }
@@ -58,19 +58,19 @@
   }
 
   div:nth-child(1) {
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
   }
 
   div:nth-child(2) {
-    background-color: openmina.$special-selected-alt-1-primary;
+    background-color: mina-rust.$special-selected-alt-1-primary;
   }
 
   div:nth-child(3) {
-    background-color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-primary;
   }
 
   div:nth-child(4) {
-    background-color: openmina.$base-tertiary;
+    background-color: mina-rust.$base-tertiary;
   }
 }
 

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 
-@use 'openmina';
+@use 'mina-rust';
 @use 'leaderboard-variables';
 
 $custom-typography: mat.m2-define-legacy-typography-config(
@@ -25,9 +25,9 @@ body {
 
 body {
   margin: 0;
-  font-family: openmina.$inter-font;
+  font-family: mina-rust.$inter-font;
   font-weight: 400;
-  color: openmina.$base-primary;
+  color: mina-rust.$base-primary;
   background-color: var(--base-background, #000000);
   -webkit-tap-highlight-color: transparent;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
@@ -63,12 +63,12 @@ p {
 /* User Select */
 body {
   ::-moz-selection {
-    color: openmina.$base-primary;
-    background: openmina.$selected-secondary;
+    color: mina-rust.$base-primary;
+    background: mina-rust.$selected-secondary;
   }
 
   ::selection {
-    color: openmina.$base-primary;
-    background: openmina.$selected-secondary;
+    color: mina-rust.$base-primary;
+    background: mina-rust.$selected-secondary;
   }
 }

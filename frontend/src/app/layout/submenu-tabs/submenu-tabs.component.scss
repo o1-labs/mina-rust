@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .submenus {
   .a-wrap {
@@ -7,19 +7,19 @@
 
   a {
     background-color: transparent;
-    color: openmina.$base-secondary;
+    color: mina-rust.$base-secondary;
     border-radius: 6px;
     position: relative;
     height: 24px;
     line-height: 24px;
 
     &:hover {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
 
     &.active {
-      color: openmina.$selected-primary;
-      background-color: openmina.$selected-container;
+      color: mina-rust.$selected-primary;
+      background-color: mina-rust.$selected-container;
     }
 
     @media (max-width: 700px) {
