@@ -17,6 +17,7 @@
               window['env'] = window.env || env.default || env;
             }
             console.log(`Environment configuration loaded from: ${path}`);
+            console.log(`Content is ${JSON.stringify(window.env)}`);
             return;
           } catch (error) {
             continue;
