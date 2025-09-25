@@ -27,14 +27,9 @@ build-local: ## Build the frontend with local configuration
 	cp dist/frontend/browser/assets/environments/local.js \
 		dist/frontend/browser/assets/environments/env.js
 
-.PHONY: build-prod
-build-prod: ## Build the frontend for production
-	npx ng build --configuration production
-	cp dist/frontend/browser/assets/environments/production.js \
-		dist/frontend/browser/assets/environments/env.js
 
-.PHONY: build-prod-sentry
-build-prod-sentry: ## Build the frontend for production with Sentry sourcemaps
+.PHONY: build-production-sentry
+build-production-sentry: ## Build the frontend for production with Sentry sourcemaps
 	npx ng build --configuration production
 	cp dist/frontend/browser/assets/environments/production.js \
 		dist/frontend/browser/assets/environments/env.js
@@ -47,18 +42,16 @@ build-producer: ## Build the frontend with producer configuration
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-production
-build-production: ## Build the frontend with production configuration (alias for build-prod)
-	$(MAKE) build-prod
-
-.PHONY: build-webnodelocal
-build-webnodelocal: ## Build the frontend with webnodelocal configuration
-	npx ng build --configuration webnodelocal
-	cp dist/frontend/browser/assets/environments/webnode.js \
+build-production: ## Build the frontend with production configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/production.js \
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-webnode
-build-webnode: ## Build the frontend with webnode configuration (alias for webnodelocal)
-	$(MAKE) build-webnodelocal
+build-webnode: ## Build the frontend with webnode configuration
+	npx ng build --configuration webnodelocal
+	cp dist/frontend/browser/assets/environments/webnode.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-leaderboard
 build-leaderboard: ## Build the frontend with leaderboard configuration
@@ -101,7 +94,7 @@ copy-env: ## Copy webnode.js to env.js
 .PHONY: deploy
 deploy: ## Deploy the application
 	$(MAKE) prebuild
-	$(MAKE) build-prod-sentry
+	$(MAKE) build-production-sentry
 	$(MAKE) copy-env
 	firebase deploy
 
@@ -119,7 +112,7 @@ deploy-leaderboard-sentry: ## Deploy the leaderboard application with Sentry sou
 
 .PHONY: docker
 docker: ## Build and push Docker image
-	$(MAKE) build-prod-sentry
+	$(MAKE) build-production-sentry
 	docker buildx build --platform linux/amd64 -t openmina/frontend:latest .
 	docker push openmina/frontend:latest
 
@@ -185,9 +178,6 @@ start-webnode: ## Start the webnode development server
 	npm install
 	npx ng serve --configuration webnodelocal --open
 
-.PHONY: start-webnodelocal
-start-webnodelocal: ## Start the development server with webnodelocal configuration
-	npx ng serve --configuration webnodelocal
 
 .PHONY: test
 test: ## Run Cypress tests

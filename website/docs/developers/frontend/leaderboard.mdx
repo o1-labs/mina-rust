@@ -30,7 +30,7 @@ Build the Leaderboard-specific version:
 cd frontend
 
 # Build with leaderboard configuration
-make build-prod
+make build-production
 
 # Copy leaderboard environment
 cp dist/frontend/browser/assets/environments/leaderboard.js \
@@ -73,7 +73,7 @@ For custom hosting solutions:
 
 ```bash
 # Build the application
-make build-prod
+make build-production
 
 # Configure for leaderboard
 cp dist/frontend/browser/assets/environments/leaderboard.js \
@@ -82,3 +82,58 @@ cp dist/frontend/browser/assets/environments/leaderboard.js \
 # Serve the static files
 npx http-server dist/frontend/browser -p 8080
 ```
+
+## Docker deployment
+
+The Leaderboard can be deployed using Docker.
+
+### Environment configuration
+
+The Leaderboard uses the `leaderboard` environment configuration which:
+
+- **Community participation tracking** - Optimized for monitoring testnet
+  contributions and rankings
+- **Real-time metrics** - Provides live updates of participant performance and
+  network statistics
+- **Leaderboard APIs** - Connects to specialized endpoints for ranking and
+  participation data
+- **Analytics enabled** - Includes detailed participation tracking and usage
+  analytics
+
+### Build Docker image
+
+```bash
+# Generate .env.docker with current git information (required for WASM build)
+frontend/docker/generate-docker-env.sh
+
+# Build the Docker image (from project root)
+docker build -t mina-frontend -f frontend/Dockerfile .
+```
+
+### Run with Docker
+
+```bash
+# Run Leaderboard with leaderboard configuration
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
+```
+
+### Docker Compose
+
+Use the provided docker-compose configuration for easier management:
+
+```bash
+# Start Leaderboard
+docker-compose -f docker-compose.frontend.yml up frontend-leaderboard
+```
+
+<!-- prettier-ignore-start -->
+
+:::info Docker Build Process
+
+The Docker image builds the frontend **at container startup** based on the
+`MINA_FRONTEND_ENVIRONMENT` variable. For the Leaderboard, use `production`
+environment.
+
+:::
+
+<!-- prettier-ignore-stop -->

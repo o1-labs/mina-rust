@@ -1,6 +1,6 @@
 /**
- * This configuration is used for fuzzing test environment.
- * Connects to fuzzing test nodes for stress testing.
+ * This configuration is used for local development environment.
+ * Connects to a local Mina node running on localhost.
  */
 
 export default {
@@ -13,7 +13,7 @@ export default {
   },
   configs: [
     {
-      name: 'Fuzzing Node',
+      name: 'Local Node',
       url: 'http://localhost:3085',
     },
   ],

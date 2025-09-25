@@ -1,3 +1,3 @@
 cd frontend
 make prebuild
-make build-prod
+make build-production

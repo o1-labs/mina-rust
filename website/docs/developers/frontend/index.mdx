@@ -79,6 +79,78 @@ These instructions are tested and compatible with:
   {InstallAngularCli}
 </CodeBlock>
 
+## Environment configurations
+
+The frontend applications support multiple environment configurations that
+determine network endpoints, build optimizations, and feature sets:
+
+### Available environments
+
+- **`local`** - Development configuration for local node testing
+  - Connects to `localhost:3085` for GraphQL API
+  - Debug features enabled
+  - Hot reload and development tools
+
+- **`development`** - Development/testnet configuration
+  - Connects to development network endpoints
+  - Enhanced logging and debugging features
+  - Non-minified builds for easier debugging
+
+- **`production`** - Production network configuration
+  - Connects to mainnet or production endpoints
+  - Fully optimized builds with minification
+  - Error reporting and analytics enabled
+
+- **`producer`** - Block producer specialized configuration
+  - Additional monitoring dashboards
+  - Producer-specific metrics and tools
+  - Enhanced performance monitoring
+
+- **`webnode`** - WebAssembly node configuration
+  - Enables WebRTC peer-to-peer networking
+  - Integrates with browser-based WASM node
+  - Automatic circuit file management
+  - Optimized for in-browser execution
+
+- **`fuzzing`** - Testing and fuzzing configuration
+  - Special build for automated testing
+  - Enhanced test instrumentation
+  - Mock data and test endpoints
+
+### Using environments
+
+Environments are specified during build:
+
+```bash
+# Local development
+make build-local
+
+# Production deployment
+make build-production
+
+# WebNode deployment
+make build-webnode
+```
+
+Or via Docker:
+
+```bash
+# Specify environment at runtime (REQUIRED)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=local mina-frontend
+```
+
+<!-- prettier-ignore-start -->
+
+:::warning Environment Variable Required
+
+The `MINA_FRONTEND_ENVIRONMENT` variable is **mandatory** when running the
+Docker container. The container will exit with an error if this variable is not
+set.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
 ## Next Steps
 
 With Node.js and Angular CLI installed, you're ready to build and run any of the

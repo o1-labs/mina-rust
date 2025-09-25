@@ -37,7 +37,7 @@ Build the WebNode version of the frontend:
 cd frontend
 
 # Build with WebNode configuration
-make build-webnodelocal
+make build-webnode
 ```
 
 <!-- prettier-ignore-start -->
@@ -70,11 +70,75 @@ Deploy WebNode to a web server:
 
 ```bash
 # Build for production
-make build-webnodelocal
+make build-webnode
 
 # Deploy to static hosting
 cp -r dist/frontend/browser/* /var/www/webnode/
 ```
+
+## Docker deployment
+
+WebNode can be deployed using Docker with automatic WASM file management.
+
+### Environment configuration
+
+The `MINA_FRONTEND_ENVIRONMENT=webnode` setting configures the frontend for
+WebAssembly-based node operation:
+
+- **WebRTC networking** - Enables peer-to-peer connections through WebRTC for
+  browser-based networking
+- **WASM integration** - Configures the frontend to load and interact with the
+  pre-built WebAssembly node
+- **Circuit file management** - Automatically downloads required cryptographic
+  circuit files for proof verification
+- **Browser optimization** - Optimizes the build for in-browser execution and
+  resource management
+- **WebNode-specific APIs** - Enables WebNode-specific GraphQL endpoints and
+  state management
+
+### Build Docker image
+
+```bash
+# Generate .env.docker with current git information (required for WASM build)
+frontend/docker/generate-docker-env.sh
+
+# Build the Docker image (from project root)
+docker build -t mina-frontend -f frontend/Dockerfile .
+```
+
+### Run with Docker
+
+```bash
+# Run WebNode with webnode configuration
+# This enables WASM node functionality and downloads circuit files
+docker run -p 4200:80 \
+  -e MINA_FRONTEND_ENVIRONMENT=webnode \
+  mina-frontend
+```
+
+### Docker Compose
+
+Use the provided docker-compose configuration:
+
+```bash
+# Start WebNode
+docker-compose -f docker-compose.frontend.yml up frontend-webnode
+```
+
+<!-- prettier-ignore-start -->
+
+:::info WebNode Docker Features
+
+The Docker image for WebNode:
+
+- **Pre-includes WASM files** - WebAssembly files are built during image
+  creation
+- **Runtime configuration** - Builds the frontend at container startup with
+  WebNode-specific settings
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ## Resources
 
