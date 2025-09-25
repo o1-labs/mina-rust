@@ -42,10 +42,11 @@
 # =============================================================================
 
 # Build stage for WASM files
-FROM rust:latest AS build_wasm
+FROM rust:1.84.0-bullseye AS build_wasm
 
 # Install system dependencies required for building the wasm files
-RUN apt-get update && apt-get install -y \
+# hadolint ignore=DL3008
+RUN apt-get update && apt-get install -y --no-install-recommends \
     pkg-config \
     libssl-dev \
     protobuf-compiler \
@@ -81,12 +82,14 @@ RUN bash -c 'set -a && source .env.docker && make build-wasm'
 
 # WASM files extraction stage
 FROM scratch AS wasm_files
+WORKDIR /pkg
 COPY --from=build_wasm /workspace/pkg ./
 
 # Final stage - Apache with source code and build capability
 FROM httpd:2.4 AS final
 
 # Install system dependencies required for Node.js and build tools
+# hadolint ignore=DL3008
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         curl \
@@ -101,13 +104,10 @@ WORKDIR /app
 COPY ./website/docs/developers/scripts/frontend/install-nodejs-linux.sh ./scripts/install-nodejs-linux.sh
 COPY ./website/docs/developers/scripts/frontend/install-angular-cli.sh ./scripts/install-angular-cli.sh
 
-RUN chmod +x ./scripts/*.sh
-
-# Install Node.js using documentation script
-RUN bash ./scripts/install-nodejs-linux.sh
-
-# Source nvm and install Angular CLI using documentation script
-RUN bash -c 'source "$HOME/.nvm/nvm.sh" && bash ./scripts/install-angular-cli.sh'
+# Install Node.js and Angular CLI using documentation scripts
+RUN chmod +x ./scripts/*.sh && \
+    bash ./scripts/install-nodejs-linux.sh && \
+    bash -c 'source "$HOME/.nvm/nvm.sh" && bash ./scripts/install-angular-cli.sh'
 
 # Copy entire frontend source code and Makefile
 COPY frontend/ ./frontend/
@@ -123,12 +123,10 @@ COPY --from=wasm_files . /usr/local/apache2/htdocs/assets/webnode/pkg/
 COPY circuit-blobs/3.0.1devnet /usr/local/apache2/htdocs/assets/webnode/circuit-blobs/3.0.1devnet
 COPY circuit-blobs/3.0.0mainnet /usr/local/apache2/htdocs/assets/webnode/circuit-blobs/3.0.0mainnet
 
-# Create startup script
+# Create startup script and setup directories
 COPY frontend/docker/startup.sh /usr/local/bin/startup.sh
-RUN chmod +x /usr/local/bin/startup.sh
-
-# Create directory for built frontend
-RUN mkdir -p /usr/local/apache2/htdocs
+RUN chmod +x /usr/local/bin/startup.sh && \
+    mkdir -p /usr/local/apache2/htdocs
 
 # Install frontend dependencies using Makefile
 WORKDIR /app/frontend

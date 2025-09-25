@@ -231,13 +231,13 @@ lint-bash: ## Check all shell scripts using shellcheck
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec hadolint {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	else \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
