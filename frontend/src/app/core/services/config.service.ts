@@ -5,6 +5,8 @@ import { Store } from '@ngrx/store';
 import { MinaState } from '@app/app.setup';
 import { filter } from 'rxjs';
 
+// NOTE: When modifying this service, update the documentation at:
+// website/docs/developers/frontend/environment-configuration.mdx
 @Injectable({
   providedIn: 'root',
 })

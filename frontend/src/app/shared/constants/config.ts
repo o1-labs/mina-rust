@@ -12,6 +12,8 @@ import {
   safelyExecuteInBrowser,
 } from '@openmina/shared';
 
+// NOTE: When modifying CONFIG or related functions, update the documentation at:
+// website/docs/developers/frontend/environment-configuration.mdx
 export const CONFIG: Readonly<MinaEnv> = {
   ...environment,
   globalConfig: {
