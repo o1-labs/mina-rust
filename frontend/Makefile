@@ -18,31 +18,72 @@ build-development: ## Build the frontend with development configuration
 .PHONY: build-fuzzing
 build-fuzzing: ## Build the frontend with fuzzing configuration
 	npx ng build --configuration fuzzing
+	cp dist/frontend/browser/assets/environments/fuzzing.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-local
 build-local: ## Build the frontend with local configuration
 	npx ng build --configuration local
+	cp dist/frontend/browser/assets/environments/local.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-prod
 build-prod: ## Build the frontend for production
 	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/production.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-prod-sentry
 build-prod-sentry: ## Build the frontend for production with Sentry sourcemaps
 	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/production.js \
+		dist/frontend/browser/assets/environments/env.js
 	$(MAKE) sentry-sourcemaps
 
 .PHONY: build-producer
 build-producer: ## Build the frontend with producer configuration
 	npx ng build --configuration producer
+	cp dist/frontend/browser/assets/environments/producer.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-production
-build-production: ## Build the frontend with production configuration
-	npx ng build --configuration production
+build-production: ## Build the frontend with production configuration (alias for build-prod)
+	$(MAKE) build-prod
 
 .PHONY: build-webnodelocal
 build-webnodelocal: ## Build the frontend with webnodelocal configuration
 	npx ng build --configuration webnodelocal
+	cp dist/frontend/browser/assets/environments/webnode.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-webnode
+build-webnode: ## Build the frontend with webnode configuration (alias for webnodelocal)
+	$(MAKE) build-webnodelocal
+
+.PHONY: build-leaderboard
+build-leaderboard: ## Build the frontend with leaderboard configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-staging
+build-staging: ## Build the frontend with staging configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/staging.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-block-producers
+build-block-producers: ## Build the frontend with block-producers configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/block-producers.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-leaderboard-sentry
+build-leaderboard-sentry: ## Build the frontend with leaderboard configuration and Sentry sourcemaps
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+	$(MAKE) sentry-sourcemaps
 
 .PHONY: check-prettify
 check-prettify: ## Check if files are formatted with Prettier
@@ -67,17 +108,13 @@ deploy: ## Deploy the application
 .PHONY: deploy-leaderboard
 deploy-leaderboard: ## Deploy the leaderboard application
 	$(MAKE) prebuild
-	$(MAKE) build-prod
-	cp dist/frontend/browser/assets/environments/leaderboard.js \
-		dist/frontend/browser/assets/environments/env.js
+	$(MAKE) build-leaderboard
 	firebase deploy
 
 .PHONY: deploy-leaderboard-sentry
 deploy-leaderboard-sentry: ## Deploy the leaderboard application with Sentry sourcemaps
 	$(MAKE) prebuild
-	$(MAKE) build-prod-sentry
-	cp dist/frontend/browser/assets/environments/leaderboard.js \
-		dist/frontend/browser/assets/environments/env.js
+	$(MAKE) build-leaderboard-sentry
 	firebase deploy
 
 .PHONY: docker
