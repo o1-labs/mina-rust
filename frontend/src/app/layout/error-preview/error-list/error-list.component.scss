@@ -1,9 +1,9 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   width: 312px;
   max-height: 30vh;
-  background-color: openmina.$base-surface-top;
+  background-color: mina-rust.$base-surface-top;
   margin-right: 10px;
   margin-left: 10px;
 
@@ -17,7 +17,7 @@
   min-height: 105px;
 
   &:not(:last-child) {
-    border-bottom: 1px solid openmina.$base-divider;
+    border-bottom: 1px solid mina-rust.$base-divider;
   }
 
   .message {

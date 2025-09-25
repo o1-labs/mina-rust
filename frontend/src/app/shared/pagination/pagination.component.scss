@@ -1,12 +1,12 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .pagination-group {
   button {
     background-color: transparent;
-    color: openmina.$selected-primary;
+    color: mina-rust.$selected-primary;
 
     &:hover {
-      background-color: openmina.$selected-container;
+      background-color: mina-rust.$selected-container;
     }
   }
 }

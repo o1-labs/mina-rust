@@ -1,9 +1,9 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .wrapper {
   .chip,
   .background-wrap {
-    background-color: openmina.$base-surface;
+    background-color: mina-rust.$base-surface;
 
     &::before {
       content: '';
@@ -20,15 +20,15 @@
     .chip,
     .background-wrap {
       div {
-        color: openmina.$base-primary;
+        color: mina-rust.$base-primary;
       }
 
       span {
-        color: openmina.$base-secondary;
+        color: mina-rust.$base-secondary;
       }
 
       &::before {
-        background-color: openmina.$base-container;
+        background-color: mina-rust.$base-container;
       }
     }
   }
@@ -37,19 +37,19 @@
     .chip,
     .background-wrap {
       div {
-        color: openmina.$warn-primary;
+        color: mina-rust.$warn-primary;
       }
 
       span {
-        color: openmina.$warn-secondary;
+        color: mina-rust.$warn-secondary;
 
         &.mina-icon {
-          color: openmina.$warn-primary;
+          color: mina-rust.$warn-primary;
         }
       }
 
       &::before {
-        background-color: openmina.$warn-container;
+        background-color: mina-rust.$warn-container;
       }
     }
   }
@@ -59,19 +59,19 @@
     .chip,
     .background-wrap {
       div {
-        color: openmina.$aware-primary;
+        color: mina-rust.$aware-primary;
       }
 
       span {
-        color: openmina.$aware-secondary;
+        color: mina-rust.$aware-secondary;
 
         &.mina-icon {
-          color: openmina.$aware-primary;
+          color: mina-rust.$aware-primary;
         }
       }
 
       &::before {
-        background-color: openmina.$aware-container;
+        background-color: mina-rust.$aware-container;
       }
     }
   }
@@ -80,19 +80,19 @@
     .chip,
     .background-wrap {
       div {
-        color: openmina.$success-primary;
+        color: mina-rust.$success-primary;
       }
 
       span {
-        color: openmina.$success-secondary;
+        color: mina-rust.$success-secondary;
 
         &.mina-icon {
-          color: openmina.$success-primary;
+          color: mina-rust.$success-primary;
         }
       }
 
       &::before {
-        background-color: openmina.$success-container;
+        background-color: mina-rust.$success-container;
       }
     }
   }
@@ -157,11 +157,11 @@
         to right,
         transparent 20%,
         transparent 40%,
-        openmina.$base-container 45%,
-        openmina.$base-divider 46%,
-        openmina.$aware-tertiary 50%,
-        openmina.$base-divider 54%,
-        openmina.$base-container 55%,
+        mina-rust.$base-container 45%,
+        mina-rust.$base-divider 46%,
+        mina-rust.$aware-tertiary 50%,
+        mina-rust.$base-divider 54%,
+        mina-rust.$base-container 55%,
         transparent 55%,
         transparent 100%
       );
@@ -173,8 +173,8 @@
   .background-wrap {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    border-left: 2px solid openmina.$base-surface;
-    color: openmina.$base-secondary;
+    border-left: 2px solid mina-rust.$base-surface;
+    color: mina-rust.$base-secondary;
 
     &:not(.switch-forbidden)::before {
       border-bottom-left-radius: 0;
@@ -186,13 +186,13 @@
     }
 
     .strong-text {
-      color: openmina.$base-primary;
+      color: mina-rust.$base-primary;
       max-width: 125px;
     }
 
     .node-switcher {
       &:not(.border-rad-4) {
-        border-left: 2px solid openmina.$base-surface;
+        border-left: 2px solid mina-rust.$base-surface;
         cursor: pointer;
         padding-left: 5px !important;
 
@@ -201,7 +201,7 @@
         }
 
         &:hover {
-          background-color: openmina.$base-container;
+          background-color: mina-rust.$base-container;
         }
       }
     }
@@ -216,15 +216,15 @@
 
 .popup-box-shadow-weak {
   .Synced {
-    color: openmina.$success-primary;
+    color: mina-rust.$success-primary;
   }
 
   .Catchup,
   .Bootstrap {
-    color: openmina.$aware-primary;
+    color: mina-rust.$aware-primary;
   }
 
   .Offline {
-    color: openmina.$warn-primary;
+    color: mina-rust.$warn-primary;
   }
 }

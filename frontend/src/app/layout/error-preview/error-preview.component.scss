@@ -1,7 +1,7 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .notification {
-  color: openmina.$base-secondary;
+  color: mina-rust.$base-secondary;
   background-color: transparent;
   padding-left: 4px;
   padding-right: 4px;
@@ -21,11 +21,11 @@
   }
 
   &:hover:not(.unread-errors) {
-    background-color: openmina.$base-container;
+    background-color: mina-rust.$base-container;
   }
 
   &.unread-errors {
-    background-color: openmina.$warn-container;
-    color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-container;
+    color: mina-rust.$warn-primary;
   }
 }

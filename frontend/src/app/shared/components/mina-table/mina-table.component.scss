@@ -1,12 +1,12 @@
-@use 'openmina';
+@use 'mina-rust';
 
 ::ng-deep .mina-table {
-  @include openmina.flexColumn();
+  @include mina-rust.flexColumn();
 
   .row {
     height: 36px;
     display: grid;
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     > span {
       height: 36px;
@@ -15,11 +15,11 @@
     }
 
     &.active {
-      background-color: openmina.$selected-container;
+      background-color: mina-rust.$selected-container;
 
       > span,
       a {
-        color: openmina.$selected-primary !important;
+        color: mina-rust.$selected-primary !important;
       }
     }
 
@@ -32,21 +32,21 @@
     }
 
     &:hover:not(.active):not(.head) {
-      background-color: openmina.$base-divider;
+      background-color: mina-rust.$base-divider;
 
       * {
-        color: openmina.$base-primary !important;
+        color: mina-rust.$base-primary !important;
       }
     }
 
     &.head {
       font-weight: 600;
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
       text-transform: capitalize;
 
       &.sorting {
         > span {
-          @include openmina.flexRowVertCenter();
+          @include mina-rust.flexRowVertCenter();
 
           .mina-icon.info {
             font-variation-settings:
@@ -80,7 +80,7 @@
 
           &:hover,
           &.active {
-            color: openmina.$base-primary;
+            color: mina-rust.$base-primary;
             transition: 200ms;
 
             .mina-icon:not(.show):not(.info) {
@@ -137,7 +137,7 @@
       display: block;
       position: fixed;
       rotate: -90deg;
-      color: openmina.$base-secondary;
+      color: mina-rust.$base-secondary;
       left: -1000px;
 
       &.hide {

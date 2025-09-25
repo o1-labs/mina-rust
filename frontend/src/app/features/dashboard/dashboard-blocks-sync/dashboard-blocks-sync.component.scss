@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   .mina-icon {
@@ -10,11 +10,11 @@
   .background-gradient {
     background: linear-gradient(
       145deg,
-      openmina.$base-background 0%,
-      openmina.$base-background 50%,
-      openmina.$success-container 60%,
-      openmina.$base-surface 85%,
-      openmina.$base-surface 100%
+      mina-rust.$base-background 0%,
+      mina-rust.$base-background 50%,
+      mina-rust.$success-container 60%,
+      mina-rust.$base-surface 85%,
+      mina-rust.$base-surface 100%
     );
     background-size: 500%;
     background-position: 0 50%;

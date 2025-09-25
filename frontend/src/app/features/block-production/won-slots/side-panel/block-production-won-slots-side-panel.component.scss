@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 $blue: #57d7ff;
 $pink: #fda2ff;
@@ -32,9 +32,9 @@ $orange: #ff833d;
     left: -50px;
     width: 50px;
     background: radial-gradient(
-      openmina.$success-primary,
-      openmina.$success-primary,
-      openmina.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
       transparent,
       transparent
     );
@@ -44,7 +44,7 @@ $orange: #ff833d;
 
   .progress {
     height: 2px;
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
     top: 2px;
     left: 0;
   }
@@ -72,7 +72,7 @@ $orange: #ff833d;
     'GRAD' 0,
     'opsz' 20 !important;
   transition: none;
-  color: openmina.$base-divider;
+  color: mina-rust.$base-divider;
 
   &.success-primary {
     transition: 0.3s;
@@ -81,15 +81,15 @@ $orange: #ff833d;
 
 .step {
   .mina-icon {
-    color: openmina.$success-primary;
+    color: mina-rust.$success-primary;
     transition: 0.3s;
   }
 
   &.incomplete {
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     .mina-icon {
-      color: openmina.$base-divider;
+      color: mina-rust.$base-divider;
       transition: none;
     }
   }
@@ -98,7 +98,7 @@ $orange: #ff833d;
 .bg-container {
   &:hover {
     .step > .mina-icon {
-      color: openmina.$base-primary !important;
+      color: mina-rust.$base-primary !important;
     }
   }
 

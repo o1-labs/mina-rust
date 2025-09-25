@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   max-height: 50vh;
@@ -12,7 +12,7 @@
     height: 22px;
 
     &:hover {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
   }
 
@@ -40,7 +40,7 @@
 }
 
 .node:focus {
-  outline: 2px solid openmina.$selected-primary;
+  outline: 2px solid mina-rust.$selected-primary;
 }
 
 .mina-icon {

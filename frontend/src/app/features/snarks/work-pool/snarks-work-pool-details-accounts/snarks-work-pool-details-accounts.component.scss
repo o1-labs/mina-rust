@@ -1,15 +1,15 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .acc-row {
   height: 36px;
   line-height: 36px;
-  color: openmina.$base-tertiary;
+  color: mina-rust.$base-tertiary;
 
   &:not(.head) {
     cursor: pointer;
 
     &:hover {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
   }
 }
@@ -19,11 +19,11 @@
 
   &.open {
     margin-bottom: 5px;
-    background-color: openmina.$base-container !important;
+    background-color: mina-rust.$base-container !important;
     border-radius: 6px;
 
     .acc-row {
-      color: openmina.$base-primary !important;
+      color: mina-rust.$base-primary !important;
 
       .mina-icon {
         rotate: 90deg;

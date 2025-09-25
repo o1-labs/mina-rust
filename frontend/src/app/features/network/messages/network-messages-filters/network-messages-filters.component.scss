@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .table-filter {
   .filter-row {
@@ -19,22 +19,22 @@
       margin-top: 4px;
 
       .mina-icon {
-        color: openmina.$base-tertiary;
+        color: mina-rust.$base-tertiary;
       }
 
       &:hover:not(.active) {
-        background-color: openmina.$base-divider;
+        background-color: mina-rust.$base-divider;
 
         .mina-icon {
-          color: openmina.$base-secondary;
+          color: mina-rust.$base-secondary;
         }
       }
 
       &.active {
-        background-color: openmina.$selected-container;
+        background-color: mina-rust.$selected-container;
 
         .mina-icon {
-          color: openmina.$selected-primary;
+          color: mina-rust.$selected-primary;
         }
       }
     }
@@ -54,7 +54,7 @@
     max-height: 70vh;
 
     .category {
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
       line-height: 32px;
     }
 
@@ -66,13 +66,13 @@
       margin-right: 4px;
 
       &:hover:not(.active) {
-        background-color: openmina.$base-divider;
-        color: openmina.$base-secondary !important;
+        background-color: mina-rust.$base-divider;
+        color: mina-rust.$base-secondary !important;
       }
 
       &.active {
-        background-color: openmina.$selected-container;
-        color: openmina.$selected-primary !important;
+        background-color: mina-rust.$selected-container;
+        color: mina-rust.$selected-primary !important;
       }
     }
   }

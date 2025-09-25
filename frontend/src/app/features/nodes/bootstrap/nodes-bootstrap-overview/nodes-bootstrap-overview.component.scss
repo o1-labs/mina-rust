@@ -1,13 +1,13 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .stats span {
   &:nth-child(even) {
-    color: openmina.$base-primary;
+    color: mina-rust.$base-primary;
     margin-right: 20px;
     margin-left: 5px;
   }
 
   &:nth-child(odd) {
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
   }
 }

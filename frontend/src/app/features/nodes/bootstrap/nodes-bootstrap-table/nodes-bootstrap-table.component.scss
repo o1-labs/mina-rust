@@ -1,21 +1,21 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .th-group {
   display: grid;
   grid-template-columns: 370px 290px 290px 1fr;
 
   > span:nth-child(1) {
-    border-bottom: 1px solid openmina.$base-tertiary;
+    border-bottom: 1px solid mina-rust.$base-tertiary;
   }
 
   > span:nth-child(2) {
-    color: openmina.$base-primary;
-    border-bottom: 1px solid openmina.$base-primary;
+    color: mina-rust.$base-primary;
+    border-bottom: 1px solid mina-rust.$base-primary;
   }
 
   > span:nth-child(3) {
-    color: openmina.$success-primary;
-    border-bottom: 1px solid openmina.$success-primary;
+    color: mina-rust.$success-primary;
+    border-bottom: 1px solid mina-rust.$success-primary;
   }
 
   @media (max-width: 768px) {
@@ -26,13 +26,13 @@
 :host ::ng-deep .mina-table .row .th {
   @for $i from 5 through 8 {
     span:nth-child(#{$i}) {
-      color: openmina.$base-primary !important;
+      color: mina-rust.$base-primary !important;
     }
   }
 
   @for $i from 9 through 12 {
     span:nth-child(#{$i}) {
-      color: openmina.$success-primary !important;
+      color: mina-rust.$success-primary !important;
     }
   }
 }

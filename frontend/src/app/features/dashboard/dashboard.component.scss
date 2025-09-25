@@ -1,7 +1,7 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
-  background-color: openmina.$base-background;
+  background-color: mina-rust.$base-background;
 }
 
 .comps {
@@ -66,10 +66,10 @@ mina-dashboard-blocks-sync {
     left: -50px;
     width: 50px;
     background: radial-gradient(
-      openmina.$success-primary,
-      openmina.$success-primary,
-      openmina.$success-primary,
-      openmina.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
       transparent,
       transparent
     );
@@ -79,7 +79,7 @@ mina-dashboard-blocks-sync {
 
   .progress {
     height: 2px;
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
     top: 2px;
     left: 0;
   }
