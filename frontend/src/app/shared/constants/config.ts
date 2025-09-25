@@ -35,7 +35,15 @@ safelyExecuteInBrowser(() => {
 });
 
 export function getAvailableFeatures(config: MinaNode): FeatureType[] {
-  return Object.keys(getFeaturesConfig(config)) as FeatureType[];
+  const featuresConfig = getFeaturesConfig(config);
+  if (!featuresConfig) {
+    console.warn('getAvailableFeatures: No features configuration found', {
+      config,
+      CONFIG,
+    });
+    return [];
+  }
+  return Object.keys(featuresConfig) as FeatureType[];
 }
 
 export function getFirstFeature(
@@ -44,25 +52,49 @@ export function getFirstFeature(
   if (!isBrowser()) {
     return '' as FeatureType;
   }
+
+  console.log('getFirstFeature called with config:', {
+    config,
+    'CONFIG.configs': CONFIG.configs,
+  });
+
   if (Array.isArray(config?.features)) {
     return config.features[0];
   }
 
-  return Object.keys(getFeaturesConfig(config))[0] as FeatureType;
+  const featuresConfig = getFeaturesConfig(config);
+  if (!featuresConfig) {
+    console.warn('getFirstFeature: No features configuration found', {
+      config,
+      CONFIG,
+    });
+    return '' as FeatureType;
+  }
+  return Object.keys(featuresConfig)[0] as FeatureType;
 }
 
 export function isFeatureEnabled(
   config: MinaNode,
   feature: FeatureType,
 ): boolean {
-  if (Array.isArray(config.features)) {
+  if (Array.isArray(config?.features)) {
     return hasValue(config.features[0]);
   }
 
-  return hasValue(getFeaturesConfig(config)[feature]);
+  const featuresConfig = getFeaturesConfig(config);
+  if (!featuresConfig) {
+    console.warn('isFeatureEnabled: No features configuration found', {
+      config,
+      feature,
+    });
+    return false;
+  }
+  return hasValue(featuresConfig[feature]);
 }
 
-export function getFeaturesConfig(config: MinaNode): FeaturesConfig {
+export function getFeaturesConfig(
+  config: MinaNode,
+): FeaturesConfig | undefined {
   if (CONFIG.configs.length === 0) {
     return CONFIG.globalConfig?.features;
   }
@@ -75,6 +107,14 @@ export function isSubFeatureEnabled(
   subFeature: string,
 ): boolean {
   const features = getFeaturesConfig(config);
+  if (!features) {
+    console.warn('isSubFeatureEnabled: No features configuration found', {
+      config,
+      feature,
+      subFeature,
+    });
+    return false;
+  }
   return hasValue(features[feature]) && features[feature].includes(subFeature);
 }
 
