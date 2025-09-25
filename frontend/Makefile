@@ -67,6 +67,14 @@ deploy: ## Deploy the application
 .PHONY: deploy-leaderboard
 deploy-leaderboard: ## Deploy the leaderboard application
 	$(MAKE) prebuild
+	$(MAKE) build-prod
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+	firebase deploy
+
+.PHONY: deploy-leaderboard-sentry
+deploy-leaderboard-sentry: ## Deploy the leaderboard application with Sentry sourcemaps
+	$(MAKE) prebuild
 	$(MAKE) build-prod-sentry
 	cp dist/frontend/browser/assets/environments/leaderboard.js \
 		dist/frontend/browser/assets/environments/env.js

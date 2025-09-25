@@ -1,0 +1,82 @@
+---
+title: WebNode
+description: Run a Mina node in your web browser using WebAssembly
+sidebar_position: 4
+---
+
+import CodeBlock from "@theme/CodeBlock";
+
+# WebNode
+
+The WebNode is an experimental implementation of the Mina Rust node compiled to
+WebAssembly, enabling users to run a fully functional Mina node directly in
+their web browser. This groundbreaking approach eliminates the need for native
+software installation and pushes the boundaries of decentralized infrastructure.
+
+## Overview
+
+WebNode leverages WebAssembly (WASM) technology to bring the full power of the
+Mina Rust node to web browsers. This enables block production, transaction
+validation, and network participation without traditional infrastructure
+requirements.
+
+## Features
+
+- **Browser-based node** - Run a complete Mina node in Chrome, Firefox, or Edge
+- **Block production** - Participate in consensus directly from your browser
+- **P2P networking** - Connect to other nodes using WebRTC
+- **State management** - Maintain blockchain state in browser storage
+- **Zero installation** - No software installation or system configuration
+  required
+
+## Building WebNode
+
+Build the WebNode version of the frontend:
+
+```bash
+cd frontend
+
+# Build with WebNode configuration
+make build-webnodelocal
+```
+
+<!-- prettier-ignore-start -->
+
+:::info Frontend Build Only
+
+These Makefile commands only build the frontend portion of the WebNode. The
+WebAssembly module build is not included in these commands.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Running WebNode
+
+### Development Mode
+
+Start the WebNode development server:
+
+```bash
+# Start WebNode locally
+make start-webnodelocal
+```
+
+Access the WebNode at `http://localhost:4200`
+
+### Production Deployment
+
+Deploy WebNode to a web server:
+
+```bash
+# Build for production
+make build-webnodelocal
+
+# Deploy to static hosting
+cp -r dist/frontend/browser/* /var/www/webnode/
+```
+
+## Resources
+
+- [WebAssembly Documentation](https://webassembly.org/)
+- [WebRTC Specification](https://www.w3.org/TR/webrtc/)
