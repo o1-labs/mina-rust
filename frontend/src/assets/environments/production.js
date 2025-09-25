@@ -8,17 +8,25 @@ export default {
   globalConfig: {
     features: {
       dashboard: [],
-      'block-production': ['overview', 'won-slots'],
+      nodes: ['overview', 'live', 'bootstrap'],
+      state: ['actions'],
+      snarks: ['scan-state', 'work-pool'],
+      mempool: [],
+      'block-production': ['won-slots'],
     },
-  },
-  sentry: {
-    dsn: 'https://production-dsn-here@sentry.io/project-id',
-    tracingOrigins: ['https://www.openmina.com'],
   },
   configs: [
     {
-      name: 'Production Node',
-      url: 'https://production-node.openmina.com',
+      name: 'o1Labs Plain Node 1',
+      url: 'http://mina-rust-plain-1.gcp.o1test.net/graphql',
+    },
+    {
+      name: 'o1Labs Plain Node 2',
+      url: 'http://mina-rust-plain-2.gcp.o1test.net/graphql',
+    },
+    {
+      name: 'o1Labs Plain Node 3',
+      url: 'http://mina-rust-plain-3.gcp.o1test.net/graphql',
     },
   ],
 };

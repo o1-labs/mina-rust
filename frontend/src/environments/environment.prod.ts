@@ -1,17 +1,40 @@
 import { MinaEnv } from '@shared/types/core/environment/mina-env.type';
 
-const env = typeof window !== 'undefined' ? (window as any).env : {};
+// This environment provides build-time configuration for production
+// The actual runtime configuration gets loaded from /environments/env.js
 export const environment: Readonly<MinaEnv> = {
   production: true,
-  configs: env.configs,
-  globalConfig: env.globalConfig,
-  hideNodeStats: env.hideNodeStats,
-  identifier: env.identifier,
-  hideToolbar: env.hideToolbar,
-  canAddNodes: env.canAddNodes,
-  showWebNodeLandingPage: env.showWebNodeLandingPage,
-  showLeaderboard: env.showLeaderboard,
-  hidePeersPill: env.hidePeersPill,
-  hideTxPill: env.hideTxPill,
-  sentry: env.sentry,
+  identifier: 'Production',
+  canAddNodes: false,
+  hideNodeStats: false,
+  hideToolbar: false,
+  showWebNodeLandingPage: false,
+  showLeaderboard: false,
+  hidePeersPill: false,
+  hideTxPill: false,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      nodes: ['overview', 'live', 'bootstrap'],
+      state: ['actions'],
+      snarks: ['scan-state', 'work-pool'],
+      mempool: [],
+      'block-production': ['won-slots'],
+    },
+  },
+  configs: [
+    {
+      name: 'o1Labs Plain Node 1',
+      url: 'http://mina-rust-plain-1.gcp.o1test.net/graphql',
+    },
+    {
+      name: 'o1Labs Plain Node 2',
+      url: 'http://mina-rust-plain-2.gcp.o1test.net/graphql',
+    },
+    {
+      name: 'o1Labs Plain Node 3',
+      url: 'http://mina-rust-plain-3.gcp.o1test.net/graphql',
+    },
+  ],
+  sentry: undefined,
 };
