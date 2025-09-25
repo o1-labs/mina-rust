@@ -31,9 +31,6 @@ tools/heartbeats-processor/*.db
 # Ensure .sqlx files are included
 !tools/heartbeats-processor/.sqlx/
 
-# Will be copied on demand in the Docker image, if necessary
-circuit-blobs
-
 # GH workflows
 .claude
 .github
@@ -65,6 +62,11 @@ tests.tsv
 
 # The website must not be included
 website
+## Ignore some scripts that can be used in the Docker images.
+## These scripts are used to be consistent with what is on the website and what
+## is actually used.
+!./website/docs/developers/scripts/frontend/install-nodejs-linux.sh
+!./website/docs/developers/scripts/frontend/install-angular-cli.sh
 
 # NPM related
 node_modules
