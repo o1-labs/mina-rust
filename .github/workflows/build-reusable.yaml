@@ -50,7 +50,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v1
 
       - name: Release build
         run: make build-release
@@ -91,7 +91,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-tests-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-tests-${{ inputs.os }}-${{ inputs.cache-prefix }}v1
 
       - name: Build tests
         run: make build-tests
@@ -115,7 +115,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-tests-webrtc-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-tests-webrtc-${{ inputs.os }}-${{ inputs.cache-prefix }}v1
 
       - name: Build tests
         run: make build-tests-webrtc
@@ -139,7 +139,7 @@ jobs:
       - name: Setup WebAssembly environment
         uses: ./.github/actions/setup-wasm
         with:
-          cache-prefix: wasm-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: wasm-${{ inputs.os }}-${{ inputs.cache-prefix }}v1
 
       - name: Release build
         run: make build-wasm
