@@ -224,6 +224,7 @@ lint-bash: ## Check all shell scripts using shellcheck
 		-not -path "*/target/*" \
 		-not -path "*/node_modules/*" \
 		-not -path "*/website/docs/developers/scripts/setup/*" \
+		-not -path "*/website/docs/developers/scripts/frontend/*" \
 		-print0 | xargs -0 shellcheck
 	@echo "Shellcheck completed successfully!"
 

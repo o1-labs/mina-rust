@@ -1,0 +1,84 @@
+---
+title: Leaderboard
+description: Community participation tracking for Mina Rust node testnets
+sidebar_position: 3
+---
+
+import CodeBlock from "@theme/CodeBlock";
+
+# Leaderboard
+
+The Leaderboard is a specialized frontend application designed to track and rank
+community participation in Mina Rust node testnets. It provides real-time
+visibility into testnet contributions, encouraging healthy competition among
+participants.
+
+## Overview
+
+The Leaderboard system was developed to monitor testnet participation metrics
+and provide transparent rankings of community members based on their
+contributions to network stability, block production, and overall testnet
+health.
+
+## Configuration
+
+### Building for Leaderboard
+
+Build the Leaderboard-specific version:
+
+```bash
+cd frontend
+
+# Build with leaderboard configuration
+make build-prod
+
+# Copy leaderboard environment
+cp dist/frontend/browser/assets/environments/leaderboard.js \
+   dist/frontend/browser/assets/environments/env.js
+```
+
+## Deployment
+
+### Firebase Deployment
+
+<!-- prettier-ignore-start -->
+
+:::caution Outdated Configuration
+
+The Firebase deployment configuration may be outdated. Please verify the current
+deployment targets and update the configuration as needed before deploying to
+production.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+Deploy the Leaderboard to Firebase hosting:
+
+```bash
+# Deploy leaderboard variant
+make deploy-leaderboard
+```
+
+This command will:
+
+1. Run prebuild to update version
+2. Build production assets with Sentry integration
+3. Configure leaderboard-specific environment
+4. Deploy to Firebase hosting
+
+### Standalone Deployment
+
+For custom hosting solutions:
+
+```bash
+# Build the application
+make build-prod
+
+# Configure for leaderboard
+cp dist/frontend/browser/assets/environments/leaderboard.js \
+   dist/frontend/browser/assets/environments/env.js
+
+# Serve the static files
+npx http-server dist/frontend/browser -p 8080
+```

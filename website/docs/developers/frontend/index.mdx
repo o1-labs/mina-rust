@@ -1,0 +1,86 @@
+---
+title: Frontend Applications
+description: Web-based interfaces for the Mina Rust node ecosystem
+sidebar_position: 1
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import InstallNodejsLinux from "!!raw-loader!../scripts/frontend/install-nodejs-linux.sh";
+import InstallNodejsMacos from "!!raw-loader!../scripts/frontend/install-nodejs-macos.sh";
+import InstallAngularCli from "!!raw-loader!../scripts/frontend/install-angular-cli.sh";
+
+# Frontend Applications
+
+The Mina Rust node ecosystem includes several web-based frontend applications,
+each serving a specific purpose in the network.
+
+## Components
+
+### [Node Dashboard](./node-dashboard)
+
+A comprehensive web interface for monitoring and interacting with your Mina Rust
+node. View real-time blockchain state, network activity, and node metrics
+through an intuitive dashboard.
+
+### [Leaderboard](./leaderboard)
+
+Track community participation in testnets with a competitive leaderboard system.
+Previously used to monitor and rank testnet participants based on their
+contributions to network stability and block production.
+
+### [WebNode](./webnode)
+
+Run a Mina node directly in your web browser using WebAssembly. This
+experimental feature enables block production without installing native
+software, pushing the boundaries of decentralized infrastructure.
+
+## Prerequisites
+
+All frontend applications are built with Angular and require Node.js to be
+installed.
+
+<!-- prettier-ignore-start -->
+
+:::info Platform Compatibility
+
+These instructions are tested and compatible with:
+
+- **Ubuntu**: 22.04, 24.04
+- **macOS**: macOS-13, macOS-14, macOS-latest
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+### Install Node.js
+
+<Tabs groupId="operating-systems">
+<TabItem value="linux" label="Linux">
+
+<CodeBlock language="bash" title="scripts/frontend/install-nodejs-linux.sh">
+  {InstallNodejsLinux}
+</CodeBlock>
+
+</TabItem>
+<TabItem value="macos" label="macOS">
+
+<CodeBlock language="bash" title="scripts/frontend/install-nodejs-macos.sh">
+  {InstallNodejsMacos}
+</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+### Install Angular CLI
+
+<CodeBlock language="bash" title="scripts/frontend/install-angular-cli.sh">
+  {InstallAngularCli}
+</CodeBlock>
+
+## Next Steps
+
+With Node.js and Angular CLI installed, you're ready to build and run any of the
+frontend applications. Select a component above to learn about its specific
+features and configuration.
