@@ -67,14 +67,6 @@ jobs:
           fi
           bash website/docs/developers/scripts/frontend/install-dependencies.sh
 
-      - name: Test build development script
-        run: |
-          # Source nvm if available (Linux)
-          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
-            \. "$NVM_DIR/nvm.sh"
-          fi
-          bash website/docs/developers/scripts/frontend/build-development.sh
-
       - name: Test build production script
         run: |
           # Source nvm if available (Linux)

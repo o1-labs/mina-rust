@@ -3,8 +3,6 @@
   "version": "1.0.184",
   "scripts": {
     "build": "make build",
-    "build:dev": "make build-development",
-    "build:development": "make build-development",
     "build:fuzzing": "make build-fuzzing",
     "build:local": "make build-local",
     "build:production:sentry": "make build-production-sentry",
@@ -22,9 +20,7 @@
     "sentry:sourcemaps": "make sentry-sourcemaps",
     "start": "make start",
     "start:bundle": "make start-bundle",
-    "start:dev": "make start-development",
     "start:dev:mobile": "make start-dev-mobile",
-    "start:development": "make start-development",
     "start:fuzzing": "make start-fuzzing",
     "start:local": "make start-local",
     "start:production": "make start-production",

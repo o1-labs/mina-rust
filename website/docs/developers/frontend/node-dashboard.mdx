@@ -8,7 +8,6 @@ sidebar_position: 2
 import CodeBlock from "@theme/CodeBlock";
 import InstallDependencies from "!!raw-loader!../scripts/frontend/install-dependencies.sh";
 import StartDevelopment from "!!raw-loader!../scripts/frontend/start-development.sh";
-import BuildDevelopment from "!!raw-loader!../scripts/frontend/build-development.sh";
 import BuildProduction from "!!raw-loader!../scripts/frontend/build-production.sh";
 import FormatCode from "!!raw-loader!../scripts/frontend/format-code.sh";
 import RunTests from "!!raw-loader!../scripts/frontend/run-tests.sh";
@@ -61,16 +60,6 @@ This will:
 ## Build configurations
 
 The frontend supports multiple build configurations for different environments:
-
-### Development builds
-
-For local development with debugging features:
-
-<CodeBlock language="bash" title="scripts/frontend/build-development.sh">
-  {BuildDevelopment}
-</CodeBlock>
-
-Other development configurations:
 
 ```bash
 # Local configuration (connects to local node)

@@ -11,10 +11,6 @@ help: ## Display this help message
 build: ## Build the frontend
 	npx ng build
 
-.PHONY: build-development
-build-development: ## Build the frontend with development configuration
-	npx ng build --configuration development
-
 .PHONY: build-fuzzing
 build-fuzzing: ## Build the frontend with fuzzing configuration
 	npx ng build --configuration fuzzing
@@ -26,7 +22,6 @@ build-local: ## Build the frontend with local configuration
 	npx ng build --configuration local
 	cp dist/frontend/browser/assets/environments/local.js \
 		dist/frontend/browser/assets/environments/env.js
-
 
 .PHONY: build-production-sentry
 build-production-sentry: ## Build the frontend for production with Sentry sourcemaps
@@ -49,7 +44,7 @@ build-production: ## Build the frontend with production configuration
 
 .PHONY: build-webnode
 build-webnode: ## Build the frontend with webnode configuration
-	npx ng build --configuration webnodelocal
+	npx ng build --configuration webnode-local
 	cp dist/frontend/browser/assets/environments/webnode.js \
 		dist/frontend/browser/assets/environments/env.js
 
@@ -153,11 +148,7 @@ start-bundle: ## Serve the built bundle
 
 .PHONY: start-dev-mobile
 start-dev-mobile: ## Start the development server for mobile (accessible on network)
-	npx ng serve --configuration development --host 0.0.0.0
-
-.PHONY: start-development
-start-development: ## Start the development server with development configuration
-	npx ng serve --configuration development
+	npx ng serve --configuration local --host 0.0.0.0
 
 .PHONY: start-fuzzing
 start-fuzzing: ## Start the fuzzing build and serve
@@ -176,8 +167,7 @@ start-production: ## Start the development server with production configuration
 .PHONY: start-webnode
 start-webnode: ## Start the webnode development server
 	npm install
-	npx ng serve --configuration webnodelocal --open
-
+	npx ng serve --configuration webnode-local --open
 
 .PHONY: test
 test: ## Run Cypress tests
