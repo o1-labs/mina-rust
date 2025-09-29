@@ -7,7 +7,7 @@
  * - Development: src/environments/environment.ts
  * - Production: src/environments/environment.prod.ts
  * - Local: src/environments/environment.local.ts
- * - WebNode: src/environments/environment.webnodelocal.ts
+ * - WebNode: src/environments/environment.webnode-local.ts
  * - Producer: src/environments/environment.producer.ts
  * - Fuzzing: src/environments/environment.fuzzing.ts
  *

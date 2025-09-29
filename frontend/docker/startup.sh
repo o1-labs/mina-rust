@@ -33,7 +33,7 @@ build_frontend() {
             make build-producer
             ;;
         "webnode")
-            # Uses Angular webnodelocal configuration and webnode.js runtime
+            # Uses Angular webnode-local configuration and webnode.js runtime
             make build-webnode
             ;;
         "leaderboard")
