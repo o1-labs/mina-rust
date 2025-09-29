@@ -260,6 +260,8 @@ setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
 		esac; \
 		TARGET="$$ARCH_PART-$$OS_PART"; \
+		echo "Installing nightly toolchain: ${NIGHTLY_RUST_VERSION}-$$TARGET"; \
+		rustup toolchain install ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		echo "Installing components for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
 		rustup component add rust-src --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
