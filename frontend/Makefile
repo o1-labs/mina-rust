@@ -9,15 +9,40 @@ help: ## Display this help message
 
 .PHONY: build
 build: ## Build the frontend
-	ng build
+	npx ng build
 
-.PHONY: build-dev
-build-dev: ## Build the frontend for development
-	ng build --configuration development
+.PHONY: build-development
+build-development: ## Build the frontend with development configuration
+	npx ng build --configuration development
+
+.PHONY: build-fuzzing
+build-fuzzing: ## Build the frontend with fuzzing configuration
+	npx ng build --configuration fuzzing
+
+.PHONY: build-local
+build-local: ## Build the frontend with local configuration
+	npx ng build --configuration local
 
 .PHONY: build-prod
 build-prod: ## Build the frontend for production
-	ng build --configuration production && $(MAKE) sentry-sourcemaps
+	npx ng build --configuration production
+
+.PHONY: build-prod-sentry
+build-prod-sentry: ## Build the frontend for production with Sentry sourcemaps
+	npx ng build --configuration production
+	$(MAKE) sentry-sourcemaps
+
+.PHONY: build-producer
+build-producer: ## Build the frontend with producer configuration
+	npx ng build --configuration producer
+
+.PHONY: build-production
+build-production: ## Build the frontend with production configuration
+	npx ng build --configuration production
+
+.PHONY: build-webnodelocal
+build-webnodelocal: ## Build the frontend with webnodelocal configuration
+	npx ng build --configuration webnodelocal
 
 .PHONY: check-prettify
 check-prettify: ## Check if files are formatted with Prettier
@@ -34,21 +59,24 @@ copy-env: ## Copy webnode.js to env.js
 
 .PHONY: deploy
 deploy: ## Deploy the application
-	$(MAKE) prebuild && $(MAKE) build-prod && $(MAKE) copy-env && \
-		firebase deploy
+	$(MAKE) prebuild
+	$(MAKE) build-prod-sentry
+	$(MAKE) copy-env
+	firebase deploy
 
 .PHONY: deploy-leaderboard
 deploy-leaderboard: ## Deploy the leaderboard application
-	$(MAKE) prebuild && $(MAKE) build-prod && \
-		cp dist/frontend/browser/assets/environments/leaderboard.js \
-		dist/frontend/browser/assets/environments/env.js && \
-		firebase deploy
+	$(MAKE) prebuild
+	$(MAKE) build-prod-sentry
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+	firebase deploy
 
 .PHONY: docker
 docker: ## Build and push Docker image
-	$(MAKE) build-prod && \
-		docker buildx build --platform linux/amd64 -t openmina/frontend:latest . && \
-		docker push openmina/frontend:latest
+	$(MAKE) build-prod-sentry
+	docker buildx build --platform linux/amd64 -t openmina/frontend:latest .
+	docker push openmina/frontend:latest
 
 .PHONY: install
 install: ## Install npm dependencies
@@ -72,34 +100,49 @@ rebuild: clean install build ## Clean, reinstall dependencies, and rebuild
 .PHONY: sentry-sourcemaps
 sentry-sourcemaps: ## Upload sourcemaps to Sentry
 	sentry-cli sourcemaps inject --org openmina-uv --project openmina \
-		./dist/frontend/browser && \
-		sentry-cli sourcemaps upload --org openmina-uv --project openmina \
+		./dist/frontend/browser
+	sentry-cli sourcemaps upload --org openmina-uv --project openmina \
 		./dist/frontend/browser
 
 .PHONY: start
 start: ## Start the development server
-	npm install && ng serve --configuration local --open
+	npm install
+	npx ng serve --configuration local --open
 
 .PHONY: start-bundle
 start-bundle: ## Serve the built bundle
 	serve dist/frontend/browser -s -l 4200
 
-.PHONY: start-dev
-start-dev: ## Start the development server (dev configuration)
-	ng serve --configuration development
-
 .PHONY: start-dev-mobile
 start-dev-mobile: ## Start the development server for mobile (accessible on network)
-	ng serve --configuration development --host 0.0.0.0
+	npx ng serve --configuration development --host 0.0.0.0
+
+.PHONY: start-development
+start-development: ## Start the development server with development configuration
+	npx ng serve --configuration development
 
 .PHONY: start-fuzzing
 start-fuzzing: ## Start the fuzzing build and serve
-	$(MAKE) install-deps && ng build --configuration fuzzing && \
-		$(MAKE) start-bundle
+	$(MAKE) install-deps
+	npx ng build --configuration fuzzing
+	$(MAKE) start-bundle
+
+.PHONY: start-local
+start-local: ## Start the development server with local configuration
+	npx ng serve --configuration local
+
+.PHONY: start-production
+start-production: ## Start the development server with production configuration
+	npx ng serve --configuration production
 
 .PHONY: start-webnode
 start-webnode: ## Start the webnode development server
-	npm install && ng serve --configuration webnodelocal --open
+	npm install
+	npx ng serve --configuration webnodelocal --open
+
+.PHONY: start-webnodelocal
+start-webnodelocal: ## Start the development server with webnodelocal configuration
+	npx ng serve --configuration webnodelocal
 
 .PHONY: test
 test: ## Run Cypress tests

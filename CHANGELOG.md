@@ -24,6 +24,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1486](https://github.com/o1-labs/mina-rust/pull/1466))
 - **Frontend**: use a Makefile for scripts in package.json
   ([#1468](https://github.com/o1-labs/mina-rust/pull/1468))
+- **Frontend**: define one Makefile target per build configuration
+  ([#1469](https://github.com/o1-labs/mina-rust/pull/1469))
 
 ### Changed
 

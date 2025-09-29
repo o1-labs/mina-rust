@@ -18,3 +18,5 @@ jobs:
 
       - name: Frontend build
         uses: ./.github/actions/frontend-build
+        with:
+          test-build-commands: 'true'
