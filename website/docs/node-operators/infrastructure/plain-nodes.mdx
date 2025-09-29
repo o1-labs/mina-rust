@@ -150,6 +150,35 @@ Infrastructure maintenance and updates are communicated through:
 - Project documentation updates
 - Community announcements
 
+## Deployment (o1Labs Employees Only)
+
+<!-- prettier-ignore-start -->
+
+:::caution o1Labs Employees Only
+
+This section is for o1Labs employees only. If you do not have access to the
+required repositories, contact the platform lead.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+o1Labs uses [ArgoCD](https://argo-cd.readthedocs.io/) to maintain the
+infrastructure through GitOps.
+
+To update the plain nodes infrastructure:
+
+1. Access the private repository:
+   `https://github.com/o1-labs/gitops-infrastructure`
+2. Create a new branch for your changes
+3. Edit: `applications/auto-deployed/mina-rust-standard-seeds.yaml`
+4. Update the `MINA_RUST_TAG` variable to the desired commit or release tag
+   (must be available as a Docker image on
+   [DockerHub](https://hub.docker.com/r/o1labs/mina-rust))
+5. Create a pull request with your changes
+6. Ask the platform lead or rust node team lead to review and merge the PR
+7. Once merged, ArgoCD will automatically deploy the update
+
 ## Reference Information
 
 ### Related Documentation
