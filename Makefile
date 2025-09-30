@@ -482,16 +482,22 @@ docs-install: ## Install documentation dependencies
 	@echo "Installing documentation dependencies..."
 	@cd website && npm install
 
+.PHONY: docs-typescript
+docs-typescript: docs-install ## Generate TypeScript API documentation
+	@echo "Generating TypeScript API documentation..."
+	@cd website && npm run typedoc
+	@echo "TypeScript API documentation generated in website/docs/developers/frontend/api/"
+
 .PHONY: docs-build
-docs-build: docs-integrate-rust docs-install ## Build the documentation website with Rust API docs
-	@echo "Building documentation website with Rust API documentation..."
+docs-build: docs-integrate-rust docs-typescript docs-install ## Build the documentation website with Rust and TypeScript API docs
+	@echo "Building documentation website with API documentation..."
 	@cd website && npm run build
 	@echo "Documentation built successfully!"
 	@echo "Built files are in website/build/"
 
 .PHONY: docs-serve
-docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
-	@echo "Starting documentation server with Rust API documentation..."
+docs-serve: docs-integrate-rust docs-typescript docs-install ## Serve the documentation website locally with Rust and TypeScript API docs
+	@echo "Starting documentation server with API documentation..."
 	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
 	@cd website && npm start -- --port $(DOCS_PORT)
 
@@ -534,7 +540,7 @@ docs-integrate-rust: docs-rust ## Integrate Rust API documentation into website
 .PHONY: docs-clean
 docs-clean: ## Clean documentation build artifacts
 	@echo "Cleaning documentation build artifacts..."
-	@rm -rf website/build website/.docusaurus website/static/api-docs target/doc
+	@rm -rf website/build website/.docusaurus website/static/api-docs website/docs/developers/frontend/api target/doc
 	@echo "Documentation artifacts cleaned!"
 
 # Release management targets

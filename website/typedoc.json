@@ -1,0 +1,21 @@
+{
+  "entryPoints": [
+    "src/typedoc-entry.ts"
+  ],
+  "tsconfig": "tsconfig.typedoc.json",
+  "out": "./docs/developers/frontend/api",
+  "plugin": ["typedoc-plugin-markdown"],
+  "name": "Frontend TypeScript API",
+  "readme": "none",
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "sort": ["source-order"],
+  "kindSortOrder": [
+    "Interface",
+    "TypeAlias",
+    "Function",
+    "Variable"
+  ],
+  "skipErrorChecking": true
+}
