@@ -10,6 +10,8 @@ import TabItem from "@theme/TabItem";
 import InstallNodejsLinux from "!!raw-loader!../scripts/frontend/install-nodejs-linux.sh";
 import InstallNodejsMacos from "!!raw-loader!../scripts/frontend/install-nodejs-macos.sh";
 import InstallAngularCli from "!!raw-loader!../scripts/frontend/install-angular-cli.sh";
+import InstallCypressUbuntu2204 from "!!raw-loader!../scripts/frontend/install-cypress-deps-ubuntu-22-04.sh";
+import InstallCypressUbuntu2404 from "!!raw-loader!../scripts/frontend/install-cypress-deps-ubuntu-24-04.sh";
 
 # Frontend Applications
 
@@ -140,6 +142,53 @@ docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=local mina-frontend
 The `MINA_FRONTEND_ENVIRONMENT` variable is **mandatory** when running the
 Docker container. The container will exit with an error if this variable is not
 set.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Testing dependencies
+
+### Cypress end-to-end testing
+
+The frontend applications use Cypress for end-to-end testing. Cypress requires
+additional system dependencies to run browser automation tests.
+
+<Tabs>
+<TabItem value="ubuntu-22-04" label="Ubuntu 22.04">
+
+<CodeBlock
+  language="bash"
+  title="scripts/frontend/install-cypress-deps-ubuntu-22-04.sh"
+>
+  {InstallCypressUbuntu2204}
+</CodeBlock>
+
+</TabItem>
+<TabItem value="ubuntu-24-04" label="Ubuntu 24.04">
+
+<CodeBlock
+  language="bash"
+  title="scripts/frontend/install-cypress-deps-ubuntu-24-04.sh"
+>
+  {InstallCypressUbuntu2404}
+</CodeBlock>
+
+</TabItem>
+</Tabs>
+
+<!-- prettier-ignore-start -->
+
+:::info Cypress Dependencies
+
+These dependencies are required for:
+
+- Running Cypress in headless mode (CI/CD environments)
+- Displaying the Cypress Test Runner GUI locally
+- Browser automation and screenshot capabilities
+
+**Note for macOS users:** Cypress typically works out of the box on macOS with
+system browsers. No additional dependencies need to be installed.
 
 :::
 
