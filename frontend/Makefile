@@ -49,8 +49,7 @@ build-webnode: ## Build the frontend with webnode configuration
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-leaderboard
-build-leaderboard: ## Build the frontend with leaderboard configuration
-	npx ng build --configuration production
+build-leaderboard: build-production ## Build the frontend with leaderboard configuration
 	cp dist/frontend/browser/assets/environments/leaderboard.js \
 		dist/frontend/browser/assets/environments/env.js
 
@@ -87,33 +86,16 @@ copy-env: ## Copy webnode.js to env.js
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: deploy
-deploy: ## Deploy the application
-	$(MAKE) prebuild
-	$(MAKE) build-production-sentry
-	$(MAKE) copy-env
+deploy: prebuild build-production-sentry copy-env ## Deploy the application
 	firebase deploy
 
 .PHONY: deploy-leaderboard
-deploy-leaderboard: ## Deploy the leaderboard application
-	$(MAKE) prebuild
-	$(MAKE) build-leaderboard
+deploy-leaderboard: prebuild build-leaderboard ## Deploy the leaderboard application
 	firebase deploy
 
 .PHONY: deploy-leaderboard-sentry
-deploy-leaderboard-sentry: ## Deploy the leaderboard application with Sentry sourcemaps
-	$(MAKE) prebuild
-	$(MAKE) build-leaderboard-sentry
+deploy-leaderboard-sentry: prebuild build-leaderboard-sentry ## Deploy the leaderboard application with Sentry sourcemaps
 	firebase deploy
-
-.PHONY: docker
-docker: ## Build and push Docker image
-	$(MAKE) build-production-sentry
-	docker buildx build --platform linux/amd64 -t openmina/frontend:latest .
-	docker push openmina/frontend:latest
-
-.PHONY: install
-install: ## Install npm dependencies
-	npm install
 
 .PHONY: install-deps
 install-deps: ## Install npm dependencies (alias)
@@ -128,7 +110,7 @@ prettify: ## Format HTML, SCSS, TypeScript, and JavaScript files with Prettier
 	npx prettier --write 'src/**/*.{ts,js,html,scss,css,json}'
 
 .PHONY: rebuild
-rebuild: clean install build ## Clean, reinstall dependencies, and rebuild
+rebuild: clean install-deps build ## Clean, reinstall dependencies, and rebuild
 
 .PHONY: sentry-sourcemaps
 sentry-sourcemaps: ## Upload sourcemaps to Sentry
@@ -138,8 +120,7 @@ sentry-sourcemaps: ## Upload sourcemaps to Sentry
 		./dist/frontend/browser
 
 .PHONY: start
-start: ## Start the development server
-	npm install
+start: install-deps ## Start the development server
 	npx ng serve --configuration local --open
 
 .PHONY: start-bundle
@@ -151,8 +132,7 @@ start-dev-mobile: ## Start the development server for mobile (accessible on netw
 	npx ng serve --configuration local --host 0.0.0.0
 
 .PHONY: start-fuzzing
-start-fuzzing: ## Start the fuzzing build and serve
-	$(MAKE) install-deps
+start-fuzzing: install-deps ## Start the fuzzing build and serve
 	npx ng build --configuration fuzzing
 	$(MAKE) start-bundle
 
@@ -165,8 +145,7 @@ start-production: ## Start the development server with production configuration
 	npx ng serve --configuration production
 
 .PHONY: start-webnode
-start-webnode: ## Start the webnode development server
-	npm install
+start-webnode: install-deps ## Start the webnode development server
 	npx ng serve --configuration webnode-local --open
 
 .PHONY: test

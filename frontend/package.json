@@ -13,7 +13,6 @@
     "copy-env": "make copy-env",
     "deploy": "make deploy",
     "deploy:leaderboard": "make deploy-leaderboard",
-    "docker": "make docker",
     "install:deps": "make install-deps",
     "prebuild": "make prebuild",
     "prettify": "make prettify",

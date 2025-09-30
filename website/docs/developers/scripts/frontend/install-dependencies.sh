@@ -1,2 +1,2 @@
 cd frontend
-make install
+make install-deps

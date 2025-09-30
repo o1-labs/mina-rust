@@ -130,7 +130,7 @@ RUN chmod +x /usr/local/bin/startup.sh && \
 
 # Install frontend dependencies using Makefile
 WORKDIR /app/frontend
-RUN bash -c 'source "$HOME/.nvm/nvm.sh" && make install'
+RUN bash -c 'source "$HOME/.nvm/nvm.sh" && make install-deps'
 
 WORKDIR /app
 
