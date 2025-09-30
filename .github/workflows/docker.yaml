@@ -97,6 +97,10 @@ jobs:
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits
 
+      - name: Generate .env.docker
+        run: |
+          bash ./frontend/docker/generate-docker-env.sh
+
       - name: Build Docker image
         id: build
         uses: docker/build-push-action@v6
