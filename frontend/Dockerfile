@@ -124,7 +124,7 @@ COPY circuit-blobs/3.0.1devnet /usr/local/apache2/htdocs/assets/webnode/circuit-
 COPY circuit-blobs/3.0.0mainnet /usr/local/apache2/htdocs/assets/webnode/circuit-blobs/3.0.0mainnet
 
 # Create startup script and setup directories
-COPY frontend/docker/startup.sh /usr/local/bin/startup.sh
+COPY ./frontend/docker/startup.sh /usr/local/bin/startup.sh
 RUN chmod +x /usr/local/bin/startup.sh && \
     mkdir -p /usr/local/apache2/htdocs
 
