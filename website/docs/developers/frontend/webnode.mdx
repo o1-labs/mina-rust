@@ -5,6 +5,11 @@ sidebar_position: 4
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import BuildWebnode from "!!raw-loader!../scripts/frontend/build-webnode.sh";
+import StartWebnodeLocal from "!!raw-loader!../scripts/frontend/start-webnode-local.sh";
+import DeployWebnode from "!!raw-loader!../scripts/frontend/deploy-webnode.sh";
+import DockerBuildWebnode from "!!raw-loader!../scripts/frontend/docker-build-webnode.sh";
+import DockerRunWebnode from "!!raw-loader!../scripts/frontend/docker-run-webnode.sh";
 
 # WebNode
 
@@ -33,12 +38,9 @@ requirements.
 
 Build the WebNode version of the frontend:
 
-```bash
-cd frontend
-
-# Build with WebNode configuration
-make build-webnode
-```
+<CodeBlock language="bash" title="scripts/frontend/build-webnode.sh">
+  {BuildWebnode}
+</CodeBlock>
 
 <!-- prettier-ignore-start -->
 
@@ -57,10 +59,9 @@ WebAssembly module build is not included in these commands.
 
 Start the WebNode development server:
 
-```bash
-# Start WebNode locally
-make start-webnodelocal
-```
+<CodeBlock language="bash" title="scripts/frontend/start-webnode-local.sh">
+  {StartWebnodeLocal}
+</CodeBlock>
 
 Access the WebNode at `http://localhost:4200`
 
@@ -68,13 +69,9 @@ Access the WebNode at `http://localhost:4200`
 
 Deploy WebNode to a web server:
 
-```bash
-# Build for production
-make build-webnode
-
-# Deploy to static hosting
-cp -r dist/frontend/browser/* /var/www/webnode/
-```
+<CodeBlock language="bash" title="scripts/frontend/deploy-webnode.sh">
+  {DeployWebnode}
+</CodeBlock>
 
 ## Docker deployment
 
@@ -98,23 +95,15 @@ WebAssembly-based node operation:
 
 ### Build Docker image
 
-```bash
-# Generate .env.docker with current git information (required for WASM build)
-frontend/docker/generate-docker-env.sh
-
-# Build the Docker image (from project root)
-docker build -t mina-frontend -f frontend/Dockerfile .
-```
+<CodeBlock language="bash" title="scripts/frontend/docker-build-webnode.sh">
+  {DockerBuildWebnode}
+</CodeBlock>
 
 ### Run with Docker
 
-```bash
-# Run WebNode with webnode configuration
-# This enables WASM node functionality and downloads circuit files
-docker run -p 4200:80 \
-  -e MINA_FRONTEND_ENVIRONMENT=webnode \
-  mina-frontend
-```
+<CodeBlock language="bash" title="scripts/frontend/docker-run-webnode.sh">
+  {DockerRunWebnode}
+</CodeBlock>
 
 <!-- prettier-ignore-start -->
 
