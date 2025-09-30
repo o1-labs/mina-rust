@@ -228,18 +228,6 @@ docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=fuzzing mina-frontend
 docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
 ```
 
-### Docker Compose
-
-For easier management, use the provided docker-compose configuration:
-
-```bash
-# Start Node Dashboard with webnode environment
-docker-compose -f docker-compose.frontend.yml up frontend-webnode
-
-# Start Node Dashboard with producer environment
-docker-compose -f docker-compose.frontend.yml up frontend-producer
-```
-
 <!-- prettier-ignore-start -->
 
 :::info Docker Build Process

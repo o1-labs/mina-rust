@@ -117,15 +117,6 @@ docker build -t mina-frontend -f frontend/Dockerfile .
 docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
 ```
 
-### Docker Compose
-
-Use the provided docker-compose configuration for easier management:
-
-```bash
-# Start Leaderboard
-docker-compose -f docker-compose.frontend.yml up frontend-leaderboard
-```
-
 <!-- prettier-ignore-start -->
 
 :::info Docker Build Process
