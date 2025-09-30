@@ -81,10 +81,13 @@ Ensure Docker and Docker Compose are installed on your system -
 
    <!-- prettier-ignore-start -->
 
-   :::warning Required Configuration The archive node requires a `.env` file
-   with PostgreSQL database settings. The example above provides the minimum
-   required configuration. You can customize the database password and other
-   settings as needed. :::
+   :::warning Required Configuration
+
+   The archive node requires a `.env` file with PostgreSQL database settings.
+   The example above provides the minimum required configuration. You can
+   customize the database password and other settings as needed.
+
+   :::
 
    <!-- prettier-ignore-stop -->
 
