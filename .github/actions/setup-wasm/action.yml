@@ -1,5 +1,5 @@
 name: 'Setup WebAssembly Build Environment'
-description: 'Setup Rust with WASM target and wasm-bindgen-cli'
+description: 'Setup Rust with WASM target and wasm-bindgen-cli with Cargo.lock based caching'
 inputs:
   toolchain:
     description: 'Rust toolchain version'
@@ -22,7 +22,30 @@ runs:
       run: |
         make setup-wasm
 
-    - name: Setup Rust Cache
+    - name: Generate Cargo.lock hash
+      id: cargo-lock-hash
+      shell: bash
+      run: |
+        if [ -f "Cargo.lock" ]; then
+          echo "hash=${{ hashFiles('**/Cargo.lock') }}" >> $GITHUB_OUTPUT
+        else
+          echo "hash=no-cargo-lock" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Setup Rust Cache (Cargo.lock based)
       uses: Swatinem/rust-cache@v2
       with:
-        prefix-key: ${{ inputs.cache-prefix }}
+        # Use Cargo.lock hash as the primary cache key
+        key: ${{ inputs.cache-prefix }}-${{ inputs.toolchain }}-${{ steps.cargo-lock-hash.outputs.hash }}
+        # Shared cache key for fallback
+        shared-key: ${{ inputs.cache-prefix }}-${{ inputs.toolchain }}-shared
+        # Save cache on develop and main branches
+        save-if: ${{ github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' }}
+        # Cache these directories for WASM builds
+        cache-directories: |
+          ~/.cargo/registry/index
+          ~/.cargo/registry/cache
+          ~/.cargo/git
+          target/
+        # Don't cache the entire target directory for PRs to save space
+        cache-targets: ${{ github.event_name == 'pull_request' && 'false' || 'true' }}
