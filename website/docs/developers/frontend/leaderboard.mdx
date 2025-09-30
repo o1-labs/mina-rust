@@ -5,6 +5,11 @@ sidebar_position: 3
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import BuildLeaderboard from "!!raw-loader!../scripts/frontend/build-leaderboard.sh";
+import DeployLeaderboard from "!!raw-loader!../scripts/frontend/deploy-leaderboard.sh";
+import ServeLeaderboard from "!!raw-loader!../scripts/frontend/serve-leaderboard.sh";
+import DockerBuildLeaderboard from "!!raw-loader!../scripts/frontend/docker-build-leaderboard.sh";
+import DockerRunLeaderboard from "!!raw-loader!../scripts/frontend/docker-run-leaderboard.sh";
 
 # Leaderboard
 
@@ -26,16 +31,9 @@ health.
 
 Build the Leaderboard-specific version:
 
-```bash
-cd frontend
-
-# Build with leaderboard configuration
-make build-production
-
-# Copy leaderboard environment
-cp dist/frontend/browser/assets/environments/leaderboard.js \
-   dist/frontend/browser/assets/environments/env.js
-```
+<CodeBlock language="bash" title="scripts/frontend/build-leaderboard.sh">
+  {BuildLeaderboard}
+</CodeBlock>
 
 ## Deployment
 
@@ -55,10 +53,9 @@ production.
 
 Deploy the Leaderboard to Firebase hosting:
 
-```bash
-# Deploy leaderboard variant
-make deploy-leaderboard
-```
+<CodeBlock language="bash" title="scripts/frontend/deploy-leaderboard.sh">
+  {DeployLeaderboard}
+</CodeBlock>
 
 This command will:
 
@@ -71,17 +68,9 @@ This command will:
 
 For custom hosting solutions:
 
-```bash
-# Build the application
-make build-production
-
-# Configure for leaderboard
-cp dist/frontend/browser/assets/environments/leaderboard.js \
-   dist/frontend/browser/assets/environments/env.js
-
-# Serve the static files
-npx http-server dist/frontend/browser -p 8080
-```
+<CodeBlock language="bash" title="scripts/frontend/serve-leaderboard.sh">
+  {ServeLeaderboard}
+</CodeBlock>
 
 ## Docker deployment
 
@@ -102,20 +91,15 @@ The Leaderboard uses the `leaderboard` environment configuration which:
 
 ### Build Docker image
 
-```bash
-# Generate .env.docker with current git information (required for WASM build)
-frontend/docker/generate-docker-env.sh
-
-# Build the Docker image (from project root)
-docker build -t mina-frontend -f frontend/Dockerfile .
-```
+<CodeBlock language="bash" title="scripts/frontend/docker-build-leaderboard.sh">
+  {DockerBuildLeaderboard}
+</CodeBlock>
 
 ### Run with Docker
 
-```bash
-# Run Leaderboard with leaderboard configuration
-docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
-```
+<CodeBlock language="bash" title="scripts/frontend/docker-run-leaderboard.sh">
+  {DockerRunLeaderboard}
+</CodeBlock>
 
 <!-- prettier-ignore-start -->
 

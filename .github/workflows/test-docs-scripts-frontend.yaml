@@ -83,6 +83,14 @@ jobs:
           fi
           bash website/docs/developers/scripts/frontend/format-code.sh
 
+      - name: Test build leaderboard script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-leaderboard.sh
+
       - name: Prepare for Cypress tests (Ubuntu 22.04)
         if: matrix.os == 'ubuntu-22.04'
         run: |
