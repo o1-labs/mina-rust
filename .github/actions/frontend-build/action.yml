@@ -48,7 +48,7 @@ runs:
       working-directory: frontend
       shell: bash
 
-    # Test Makefile targets
+    # Test Makefile targets (alphabetical order)
     - name: Test make build
       if: inputs.test-build-commands == 'true'
       run: |
@@ -58,13 +58,12 @@ runs:
       working-directory: frontend
       shell: bash
 
-
-    - name: Test make build-development
+    - name: Test make build-block-producers
       if: inputs.test-build-commands == 'true'
       run: |
         rm -rf dist
-        make build-development
-        [ -d "dist/frontend" ] || { echo "Error: make build-development failed"; exit 1; }
+        make build-block-producers
+        [ -d "dist/frontend" ] || { echo "Error: make build-block-producers failed"; exit 1; }
       working-directory: frontend
       shell: bash
 
@@ -77,6 +76,15 @@ runs:
       working-directory: frontend
       shell: bash
 
+    - name: Test make build-leaderboard
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-leaderboard
+        [ -d "dist/frontend" ] || { echo "Error: make build-leaderboard failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
     - name: Test make build-local
       if: inputs.test-build-commands == 'true'
       run: |
@@ -86,14 +94,6 @@ runs:
       working-directory: frontend
       shell: bash
 
-    - name: Test make build-prod
-      if: inputs.test-build-commands == 'true'
-      run: |
-        rm -rf dist
-        make build-prod
-        [ -d "dist/frontend" ] || { echo "Error: make build-prod failed"; exit 1; }
-      working-directory: frontend
-      shell: bash
 
     - name: Test make build-producer
       if: inputs.test-build-commands == 'true'
@@ -113,14 +113,24 @@ runs:
       working-directory: frontend
       shell: bash
 
-    - name: Test make build-webnodelocal
+    - name: Test make build-staging
       if: inputs.test-build-commands == 'true'
       run: |
         rm -rf dist
-        make build-webnodelocal
-        [ -d "dist/frontend" ] || { echo "Error: make build-webnodelocal failed"; exit 1; }
+        make build-staging
+        [ -d "dist/frontend" ] || { echo "Error: make build-staging failed"; exit 1; }
       working-directory: frontend
       shell: bash
+
+    - name: Test make build-webnode
+      if: inputs.test-build-commands == 'true'
+      run: |
+        rm -rf dist
+        make build-webnode
+        [ -d "dist/frontend" ] || { echo "Error: make build-webnode failed"; exit 1; }
+      working-directory: frontend
+      shell: bash
+
 
     - name: Run tests
       if: inputs.run-tests == 'true'

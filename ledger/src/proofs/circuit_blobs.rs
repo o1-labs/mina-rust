@@ -63,8 +63,6 @@
 //! For web deployments, circuit files are served statically:
 //!
 //! - **Frontend Path**: `/assets/webnode/circuit-blobs/<version>/`
-//! - **Download Script**: `frontend/docker/startup.sh` handles automatic
-//!   downloading
 //! - **Version**: Specified by `CIRCUITS_VERSION` environment variable
 //!
 //! ## How It Works for Users

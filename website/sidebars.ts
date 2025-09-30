@@ -101,6 +101,7 @@ const sidebars: SidebarsConfig = {
         'developers/frontend/node-dashboard',
         'developers/frontend/leaderboard',
         'developers/frontend/webnode',
+        'developers/frontend/environment-configuration',
       ],
     },
     {

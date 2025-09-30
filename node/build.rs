@@ -99,12 +99,45 @@ impl ActionMeta {
 }
 
 fn main() -> Result<(), Box<dyn Error>> {
-    vergen::EmitBuilder::builder()
-        .all_build()
-        .all_cargo()
-        .all_git()
-        .all_rustc()
-        .emit_and_set()?;
+    // Check if all required VERGEN environment variables are already set
+    // If so, skip running vergen to avoid git repository dependency
+    let vergen_vars = [
+        "VERGEN_BUILD_TIMESTAMP",
+        "VERGEN_GIT_BRANCH",
+        "VERGEN_GIT_COMMIT_TIMESTAMP",
+        "VERGEN_GIT_SHA",
+        "VERGEN_GIT_DESCRIBE",
+        "VERGEN_CARGO_FEATURES",
+        "VERGEN_CARGO_OPT_LEVEL",
+        "VERGEN_CARGO_TARGET_TRIPLE",
+        "VERGEN_CARGO_DEBUG",
+        "VERGEN_RUSTC_CHANNEL",
+        "VERGEN_RUSTC_SEMVER",
+        "VERGEN_RUSTC_HOST_TRIPLE",
+        "VERGEN_RUSTC_COMMIT_DATE",
+        "VERGEN_RUSTC_COMMIT_HASH",
+        "VERGEN_RUSTC_LLVM_VERSION",
+    ];
+
+    let all_vergen_vars_present = vergen_vars.iter().all(|var| std::env::var(var).is_ok());
+
+    if !all_vergen_vars_present {
+        // Run vergen normally if environment variables are not provided
+        vergen::EmitBuilder::builder()
+            .all_build()
+            .all_cargo()
+            .all_git()
+            .all_rustc()
+            .emit_and_set()?;
+    } else {
+        // Re-emit the environment variables as cargo environment variables
+        // so they're available at compile time via env!() macro
+        for var in &vergen_vars {
+            if let Ok(value) = std::env::var(var) {
+                println!("cargo:rustc-env={}={}", var, value);
+            }
+        }
+    }
 
     let crate_dir_name = std::env::var("CARGO_MANIFEST_DIR")?;
     let crate_dir = PathBuf::from(crate_dir_name);

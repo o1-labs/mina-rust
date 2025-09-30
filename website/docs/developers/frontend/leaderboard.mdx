@@ -5,6 +5,11 @@ sidebar_position: 3
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import BuildLeaderboard from "!!raw-loader!../scripts/frontend/build-leaderboard.sh";
+import DeployLeaderboard from "!!raw-loader!../scripts/frontend/deploy-leaderboard.sh";
+import ServeLeaderboard from "!!raw-loader!../scripts/frontend/serve-leaderboard.sh";
+import DockerBuildLeaderboard from "!!raw-loader!../scripts/frontend/docker-build-leaderboard.sh";
+import DockerRunLeaderboard from "!!raw-loader!../scripts/frontend/docker-run-leaderboard.sh";
 
 # Leaderboard
 
@@ -26,16 +31,9 @@ health.
 
 Build the Leaderboard-specific version:
 
-```bash
-cd frontend
-
-# Build with leaderboard configuration
-make build-prod
-
-# Copy leaderboard environment
-cp dist/frontend/browser/assets/environments/leaderboard.js \
-   dist/frontend/browser/assets/environments/env.js
-```
+<CodeBlock language="bash" title="scripts/frontend/build-leaderboard.sh">
+  {BuildLeaderboard}
+</CodeBlock>
 
 ## Deployment
 
@@ -55,10 +53,9 @@ production.
 
 Deploy the Leaderboard to Firebase hosting:
 
-```bash
-# Deploy leaderboard variant
-make deploy-leaderboard
-```
+<CodeBlock language="bash" title="scripts/frontend/deploy-leaderboard.sh">
+  {DeployLeaderboard}
+</CodeBlock>
 
 This command will:
 
@@ -71,14 +68,47 @@ This command will:
 
 For custom hosting solutions:
 
-```bash
-# Build the application
-make build-prod
+<CodeBlock language="bash" title="scripts/frontend/serve-leaderboard.sh">
+  {ServeLeaderboard}
+</CodeBlock>
 
-# Configure for leaderboard
-cp dist/frontend/browser/assets/environments/leaderboard.js \
-   dist/frontend/browser/assets/environments/env.js
+## Docker deployment
 
-# Serve the static files
-npx http-server dist/frontend/browser -p 8080
-```
+The Leaderboard can be deployed using Docker.
+
+### Environment configuration
+
+The Leaderboard uses the `leaderboard` environment configuration which:
+
+- **Community participation tracking** - Optimized for monitoring testnet
+  contributions and rankings
+- **Real-time metrics** - Provides live updates of participant performance and
+  network statistics
+- **Leaderboard APIs** - Connects to specialized endpoints for ranking and
+  participation data
+- **Analytics enabled** - Includes detailed participation tracking and usage
+  analytics
+
+### Build Docker image
+
+<CodeBlock language="bash" title="scripts/frontend/docker-build-leaderboard.sh">
+  {DockerBuildLeaderboard}
+</CodeBlock>
+
+### Run with Docker
+
+<CodeBlock language="bash" title="scripts/frontend/docker-run-leaderboard.sh">
+  {DockerRunLeaderboard}
+</CodeBlock>
+
+<!-- prettier-ignore-start -->
+
+:::info Docker Build Process
+
+The Docker image builds the frontend **at container startup** based on the
+`MINA_FRONTEND_ENVIRONMENT` variable. For the Leaderboard, use `production`
+environment.
+
+:::
+
+<!-- prettier-ignore-stop -->

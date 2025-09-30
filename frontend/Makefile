@@ -11,38 +11,66 @@ help: ## Display this help message
 build: ## Build the frontend
 	npx ng build
 
-.PHONY: build-development
-build-development: ## Build the frontend with development configuration
-	npx ng build --configuration development
-
 .PHONY: build-fuzzing
 build-fuzzing: ## Build the frontend with fuzzing configuration
 	npx ng build --configuration fuzzing
+	cp dist/frontend/browser/assets/environments/fuzzing.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-local
 build-local: ## Build the frontend with local configuration
 	npx ng build --configuration local
+	cp dist/frontend/browser/assets/environments/local.js \
+		dist/frontend/browser/assets/environments/env.js
 
-.PHONY: build-prod
-build-prod: ## Build the frontend for production
+.PHONY: build-production-sentry
+build-production-sentry: ## Build the frontend for production with Sentry sourcemaps
 	npx ng build --configuration production
-
-.PHONY: build-prod-sentry
-build-prod-sentry: ## Build the frontend for production with Sentry sourcemaps
-	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/production.js \
+		dist/frontend/browser/assets/environments/env.js
 	$(MAKE) sentry-sourcemaps
 
 .PHONY: build-producer
 build-producer: ## Build the frontend with producer configuration
 	npx ng build --configuration producer
+	cp dist/frontend/browser/assets/environments/producer.js \
+		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-production
 build-production: ## Build the frontend with production configuration
 	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/production.js \
+		dist/frontend/browser/assets/environments/env.js
 
-.PHONY: build-webnodelocal
-build-webnodelocal: ## Build the frontend with webnodelocal configuration
-	npx ng build --configuration webnodelocal
+.PHONY: build-webnode
+build-webnode: ## Build the frontend with webnode configuration
+	npx ng build --configuration webnode-local
+	cp dist/frontend/browser/assets/environments/webnode.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-leaderboard
+build-leaderboard: build-production ## Build the frontend with leaderboard configuration
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-staging
+build-staging: ## Build the frontend with staging configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/staging.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-block-producers
+build-block-producers: ## Build the frontend with block-producers configuration
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/block-producers.js \
+		dist/frontend/browser/assets/environments/env.js
+
+.PHONY: build-leaderboard-sentry
+build-leaderboard-sentry: ## Build the frontend with leaderboard configuration and Sentry sourcemaps
+	npx ng build --configuration production
+	cp dist/frontend/browser/assets/environments/leaderboard.js \
+		dist/frontend/browser/assets/environments/env.js
+	$(MAKE) sentry-sourcemaps
 
 .PHONY: check-prettify
 check-prettify: ## Check if files are formatted with Prettier
@@ -58,37 +86,16 @@ copy-env: ## Copy webnode.js to env.js
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: deploy
-deploy: ## Deploy the application
-	$(MAKE) prebuild
-	$(MAKE) build-prod-sentry
-	$(MAKE) copy-env
+deploy: prebuild build-production-sentry copy-env ## Deploy the application
 	firebase deploy
 
 .PHONY: deploy-leaderboard
-deploy-leaderboard: ## Deploy the leaderboard application
-	$(MAKE) prebuild
-	$(MAKE) build-prod
-	cp dist/frontend/browser/assets/environments/leaderboard.js \
-		dist/frontend/browser/assets/environments/env.js
+deploy-leaderboard: prebuild build-leaderboard ## Deploy the leaderboard application
 	firebase deploy
 
 .PHONY: deploy-leaderboard-sentry
-deploy-leaderboard-sentry: ## Deploy the leaderboard application with Sentry sourcemaps
-	$(MAKE) prebuild
-	$(MAKE) build-prod-sentry
-	cp dist/frontend/browser/assets/environments/leaderboard.js \
-		dist/frontend/browser/assets/environments/env.js
+deploy-leaderboard-sentry: prebuild build-leaderboard-sentry ## Deploy the leaderboard application with Sentry sourcemaps
 	firebase deploy
-
-.PHONY: docker
-docker: ## Build and push Docker image
-	$(MAKE) build-prod-sentry
-	docker buildx build --platform linux/amd64 -t openmina/frontend:latest .
-	docker push openmina/frontend:latest
-
-.PHONY: install
-install: ## Install npm dependencies
-	npm install
 
 .PHONY: install-deps
 install-deps: ## Install npm dependencies (alias)
@@ -103,7 +110,7 @@ prettify: ## Format HTML, SCSS, TypeScript, and JavaScript files with Prettier
 	npx prettier --write 'src/**/*.{ts,js,html,scss,css,json}'
 
 .PHONY: rebuild
-rebuild: clean install build ## Clean, reinstall dependencies, and rebuild
+rebuild: clean install-deps build ## Clean, reinstall dependencies, and rebuild
 
 .PHONY: sentry-sourcemaps
 sentry-sourcemaps: ## Upload sourcemaps to Sentry
@@ -113,8 +120,7 @@ sentry-sourcemaps: ## Upload sourcemaps to Sentry
 		./dist/frontend/browser
 
 .PHONY: start
-start: ## Start the development server
-	npm install
+start: install-deps ## Start the development server
 	npx ng serve --configuration local --open
 
 .PHONY: start-bundle
@@ -123,15 +129,10 @@ start-bundle: ## Serve the built bundle
 
 .PHONY: start-dev-mobile
 start-dev-mobile: ## Start the development server for mobile (accessible on network)
-	npx ng serve --configuration development --host 0.0.0.0
-
-.PHONY: start-development
-start-development: ## Start the development server with development configuration
-	npx ng serve --configuration development
+	npx ng serve --configuration local --host 0.0.0.0
 
 .PHONY: start-fuzzing
-start-fuzzing: ## Start the fuzzing build and serve
-	$(MAKE) install-deps
+start-fuzzing: install-deps ## Start the fuzzing build and serve
 	npx ng build --configuration fuzzing
 	$(MAKE) start-bundle
 
@@ -144,13 +145,8 @@ start-production: ## Start the development server with production configuration
 	npx ng serve --configuration production
 
 .PHONY: start-webnode
-start-webnode: ## Start the webnode development server
-	npm install
-	npx ng serve --configuration webnodelocal --open
-
-.PHONY: start-webnodelocal
-start-webnodelocal: ## Start the development server with webnodelocal configuration
-	npx ng serve --configuration webnodelocal
+start-webnode: install-deps ## Start the webnode development server
+	npx ng serve --configuration webnode-local --open
 
 .PHONY: test
 test: ## Run Cypress tests

@@ -231,13 +231,13 @@ lint-bash: ## Check all shell scripts using shellcheck
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec hadolint {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	else \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
@@ -260,6 +260,8 @@ setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
 		esac; \
 		TARGET="$$ARCH_PART-$$OS_PART"; \
+		echo "Installing nightly toolchain: ${NIGHTLY_RUST_VERSION}-$$TARGET"; \
+		rustup toolchain install ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		echo "Installing components for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
 		rustup component add rust-src --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \

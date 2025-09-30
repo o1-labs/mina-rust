@@ -5,6 +5,11 @@ sidebar_position: 4
 ---
 
 import CodeBlock from "@theme/CodeBlock";
+import BuildWebnode from "!!raw-loader!../scripts/frontend/build-webnode.sh";
+import StartWebnodeLocal from "!!raw-loader!../scripts/frontend/start-webnode-local.sh";
+import DeployWebnode from "!!raw-loader!../scripts/frontend/deploy-webnode.sh";
+import DockerBuildWebnode from "!!raw-loader!../scripts/frontend/docker-build-webnode.sh";
+import DockerRunWebnode from "!!raw-loader!../scripts/frontend/docker-run-webnode.sh";
 
 # WebNode
 
@@ -33,12 +38,9 @@ requirements.
 
 Build the WebNode version of the frontend:
 
-```bash
-cd frontend
-
-# Build with WebNode configuration
-make build-webnodelocal
-```
+<CodeBlock language="bash" title="scripts/frontend/build-webnode.sh">
+  {BuildWebnode}
+</CodeBlock>
 
 <!-- prettier-ignore-start -->
 
@@ -57,10 +59,9 @@ WebAssembly module build is not included in these commands.
 
 Start the WebNode development server:
 
-```bash
-# Start WebNode locally
-make start-webnodelocal
-```
+<CodeBlock language="bash" title="scripts/frontend/start-webnode-local.sh">
+  {StartWebnodeLocal}
+</CodeBlock>
 
 Access the WebNode at `http://localhost:4200`
 
@@ -68,13 +69,56 @@ Access the WebNode at `http://localhost:4200`
 
 Deploy WebNode to a web server:
 
-```bash
-# Build for production
-make build-webnodelocal
+<CodeBlock language="bash" title="scripts/frontend/deploy-webnode.sh">
+  {DeployWebnode}
+</CodeBlock>
 
-# Deploy to static hosting
-cp -r dist/frontend/browser/* /var/www/webnode/
-```
+## Docker deployment
+
+WebNode can be deployed using Docker with automatic WASM file management.
+
+### Environment configuration
+
+The `MINA_FRONTEND_ENVIRONMENT=webnode` setting configures the frontend for
+WebAssembly-based node operation:
+
+- **WebRTC networking** - Enables peer-to-peer connections through WebRTC for
+  browser-based networking
+- **WASM integration** - Configures the frontend to load and interact with the
+  pre-built WebAssembly node
+- **Circuit file management** - Automatically downloads required cryptographic
+  circuit files for proof verification
+- **Browser optimization** - Optimizes the build for in-browser execution and
+  resource management
+- **WebNode-specific APIs** - Enables WebNode-specific GraphQL endpoints and
+  state management
+
+### Build Docker image
+
+<CodeBlock language="bash" title="scripts/frontend/docker-build-webnode.sh">
+  {DockerBuildWebnode}
+</CodeBlock>
+
+### Run with Docker
+
+<CodeBlock language="bash" title="scripts/frontend/docker-run-webnode.sh">
+  {DockerRunWebnode}
+</CodeBlock>
+
+<!-- prettier-ignore-start -->
+
+:::info WebNode Docker Features
+
+The Docker image for WebNode:
+
+- **Pre-includes WASM files** - WebAssembly files are built during image
+  creation
+- **Runtime configuration** - Builds the frontend at container startup with
+  WebNode-specific settings
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ## Resources
 

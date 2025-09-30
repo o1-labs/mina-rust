@@ -2,6 +2,8 @@
 <html lang="en">
   <head>
     <script type="module" defer>
+      // NOTE: When modifying this function, update the documentation at:
+      // website/docs/developers/frontend/environment-configuration.mdx
       async function loadEnvironment() {
         const possiblePaths = [
           '/environments/env.js', // Production/CI path
@@ -14,6 +16,8 @@
             if (typeof window !== 'undefined') {
               window['env'] = window.env || env.default || env;
             }
+            console.log(`Environment configuration loaded from: ${path}`);
+            console.log(`Content is ${JSON.stringify(window.env)}`);
             return;
           } catch (error) {
             continue;
@@ -72,8 +76,8 @@
       if (typeof window !== 'undefined') {
         window.addEventListener('startWebNode', async () => {
           const possiblePaths = [
-            '/webnode/pkg/openmina_node_web.js', // Production/CI path
-            '../public/webnode/pkg/openmina_node_web.js', // Development path
+            '/webnode/pkg/mina_node_web.js', // Production/CI path
+            '../public/webnode/pkg/mina_node_web.js', // Development path
           ];
 
           for (const path of possiblePaths) {

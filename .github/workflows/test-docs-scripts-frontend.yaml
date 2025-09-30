@@ -67,14 +67,6 @@ jobs:
           fi
           bash website/docs/developers/scripts/frontend/install-dependencies.sh
 
-      - name: Test build development script
-        run: |
-          # Source nvm if available (Linux)
-          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
-            \. "$NVM_DIR/nvm.sh"
-          fi
-          bash website/docs/developers/scripts/frontend/build-development.sh
-
       - name: Test build production script
         run: |
           # Source nvm if available (Linux)
@@ -91,16 +83,30 @@ jobs:
           fi
           bash website/docs/developers/scripts/frontend/format-code.sh
 
+      - name: Test build leaderboard script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-leaderboard.sh
+
+      - name: Test build webnode script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-webnode.sh
+
       - name: Prepare for Cypress tests (Ubuntu 22.04)
         if: matrix.os == 'ubuntu-22.04'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev \
-            libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+          bash website/docs/developers/scripts/frontend/install-cypress-deps-ubuntu-22-04.sh
 
       - name: Prepare for Cypress tests (Ubuntu 24.04)
         if: matrix.os == 'ubuntu-24.04'
         run: |
-          sudo apt-get update
-          sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev \
-            libnss3 libxss1 libasound2t64 libxtst6 xauth xvfb
+          bash website/docs/developers/scripts/frontend/install-cypress-deps-ubuntu-24-04.sh
+
+      # Note: Cypress works out of the box on macOS, no additional dependencies needed

@@ -8,7 +8,6 @@ sidebar_position: 2
 import CodeBlock from "@theme/CodeBlock";
 import InstallDependencies from "!!raw-loader!../scripts/frontend/install-dependencies.sh";
 import StartDevelopment from "!!raw-loader!../scripts/frontend/start-development.sh";
-import BuildDevelopment from "!!raw-loader!../scripts/frontend/build-development.sh";
 import BuildProduction from "!!raw-loader!../scripts/frontend/build-production.sh";
 import FormatCode from "!!raw-loader!../scripts/frontend/format-code.sh";
 import RunTests from "!!raw-loader!../scripts/frontend/run-tests.sh";
@@ -62,16 +61,6 @@ This will:
 
 The frontend supports multiple build configurations for different environments:
 
-### Development builds
-
-For local development with debugging features:
-
-<CodeBlock language="bash" title="scripts/frontend/build-development.sh">
-  {BuildDevelopment}
-</CodeBlock>
-
-Other development configurations:
-
 ```bash
 # Local configuration (connects to local node)
 make build-local
@@ -91,7 +80,7 @@ For optimized production deployments:
 Production build with Sentry error tracking:
 
 ```bash
-make build-prod-sentry
+make build-production-sentry
 ```
 
 ### Specialized configurations
@@ -104,7 +93,7 @@ make build-producer
 make build-fuzzing
 
 # WebNode integration
-make build-webnodelocal
+make build-webnode
 ```
 
 ## Configuration
@@ -114,21 +103,19 @@ make build-webnodelocal
 The frontend uses environment-specific configuration files located in
 `src/assets/environments/`:
 
-- [`development.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/development.js) -
-  Development servers
-- [`fuzzing.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/fuzzing.js) -
+- [`fuzzing.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/fuzzing.js) -
   Fuzzing tests
-- [`local.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/local.js) -
+- [`local.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/local.js) -
   Local development
-- [`producer.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/producer.js) -
+- [`producer.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/producer.js) -
   Block producer interface
-- [`production.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/production.js) -
+- [`production.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/production.js) -
   Production deployment
-- [`webnode.js`](https://github.com/o1-labs/mina-rust-2/blob/develop/frontend/src/assets/environments/webnode.js) -
+- [`webnode.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/webnode.js) -
   WebNode integration
 
 For the most current environment configuration files, see the
-[frontend/src/assets/environments](https://github.com/o1-labs/mina-rust-2/tree/develop/frontend/src/assets/environments)
+[frontend/src/assets/environments](https://github.com/o1-labs/mina-rust/tree/develop/frontend/src/assets/environments)
 directory in the develop branch.
 
 ## Development workflow
@@ -163,10 +150,10 @@ Create an optimized production build:
 ```bash
 # Build with version update
 make prebuild
-make build-prod
+make build-production
 
 # Build with Sentry sourcemaps
-make build-prod-sentry
+make build-production-sentry
 ```
 
 ### Serving production builds
@@ -174,9 +161,82 @@ make build-prod-sentry
 Test production builds locally:
 
 ```bash
-make build-prod
+make build-production
 make start-bundle
 ```
+
+## Docker deployment
+
+The Node Dashboard can be deployed using Docker with environment-specific
+builds.
+
+### Environment configurations
+
+The `MINA_FRONTEND_ENVIRONMENT` variable determines how the frontend is built
+and configured:
+
+- **`local`** - Local development environment connecting to localhost:3085.
+  Optimized for development with a local node instance.
+
+- **`fuzzing`** - Fuzzing test environment for stress testing. Development build
+  with enhanced debugging for testing scenarios.
+
+- **`prod`** - Production environment with full optimization. Connects to
+  production network endpoints with minification and performance optimizations.
+
+- **`producer`** - Specialized configuration for block producers. Includes
+  additional monitoring and producer-specific features.
+
+- **`webnodelocal`** - WebNode configuration for browser-based Mina node
+  operation. Enables WASM integration and WebRTC networking for in-browser
+  execution.
+
+- **`leaderboard`** - Leaderboard configuration for community participation
+  tracking. Optimized for testnet participation metrics and rankings.
+
+### Build Docker image
+
+```bash
+# Generate .env.docker with current git information (required for WASM build)
+frontend/docker/generate-docker-env.sh
+
+# Build the Docker image (from project root)
+docker build -t mina-frontend -f frontend/Dockerfile .
+```
+
+### Run with Docker
+
+```bash
+# Run Node Dashboard with local configuration (connects to localhost:3085)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=local mina-frontend
+
+# Run Node Dashboard with production configuration (production endpoints)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=prod mina-frontend
+
+# Run Node Dashboard with webnode configuration (browser-based node operation)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=webnodelocal mina-frontend
+
+# Run Node Dashboard with producer configuration (block producer features)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=producer mina-frontend
+
+# Run Node Dashboard with fuzzing configuration (stress testing)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=fuzzing mina-frontend
+
+# Run Node Dashboard with leaderboard configuration (community tracking)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
+```
+
+<!-- prettier-ignore-start -->
+
+:::info Docker Build Process
+
+The Docker image builds the frontend **at container startup** based on the
+`MINA_FRONTEND_ENVIRONMENT` variable. This allows a single Docker image to serve
+different configurations.
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ## Project structure
 
