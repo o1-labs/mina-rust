@@ -75,8 +75,6 @@ jobs:
             runs-on: ubuntu-latest
           - platform: linux/arm64
             runs-on: ubuntu-24.04-arm
-        configuration:
-          - build_configuration: production
     runs-on: ${{ matrix.arch.runs-on }}
     steps:
       - name: Prepare
@@ -102,8 +100,6 @@ jobs:
         with:
           context: ./frontend
           platforms: ${{ matrix.arch.platform }}
-          build-args: |
-            BUILD_CONFIGURATION=${{ matrix.configuration.build_configuration }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=true
@@ -117,7 +113,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-${{ matrix.configuration.build_configuration }}-digests-${{ env.PLATFORM_PAIR }}
+          name: frontend-digests-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
