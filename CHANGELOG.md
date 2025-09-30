@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1468](https://github.com/o1-labs/mina-rust/pull/1468))
 - **Frontend**: define one Makefile target per build configuration
   ([#1469](https://github.com/o1-labs/mina-rust/pull/1469))
+- **Frontend**: revamping the Docker image, and provide a better support and
+  documentation for the different configuration.
+  ([#1473](https://github.com/o1-labs/mina-rust/pull/1473))
 
 ### Changed
 
