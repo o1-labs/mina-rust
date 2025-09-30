@@ -94,6 +94,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Download circuits files
+        uses: ./.github/actions/setup-circuits
+
       - name: Build Docker image
         id: build
         uses: docker/build-push-action@v6
