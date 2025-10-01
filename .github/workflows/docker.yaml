@@ -67,7 +67,7 @@ jobs:
 
   # Frontend
   build-mina-frontend-image:
-    timeout-minutes: 5
+    timeout-minutes: 60
     strategy:
       matrix:
         arch:

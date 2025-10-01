@@ -211,7 +211,7 @@ docker build -t mina-frontend -f frontend/Dockerfile .
 docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=local mina-frontend
 
 # Run Node Dashboard with production configuration (production endpoints)
-docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=prod mina-frontend
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=production mina-frontend
 
 # Run Node Dashboard with webnode configuration (browser-based node operation)
 docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=webnodelocal mina-frontend
