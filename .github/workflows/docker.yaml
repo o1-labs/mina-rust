@@ -210,7 +210,7 @@ jobs:
       - push-frontend-image
     strategy:
       matrix:
-        environment: [local, webnode, production, producer, fuzzing]
+        environment: [local, webnode, production, fuzzing]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
