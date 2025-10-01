@@ -159,7 +159,7 @@ jobs:
         with:
           registry_image: ${{ env.REGISTRY_FRONTEND_IMAGE }}
           git_commit: ${{ env.GIT_COMMIT }}
-          digest_pattern: 'frontend-*-digests-*'
+          digest_pattern: 'frontend-digests-*'
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
           additional_tags: ${{ env.ADDITIONAL_TAGS }}
@@ -219,7 +219,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: /tmp/digests
-          pattern: frontend-*-digests-*
+          pattern: frontend-digests-*
           merge-multiple: true
 
       - name: Set up Docker Buildx
