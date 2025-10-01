@@ -57,7 +57,6 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Advanced Topics',
       items: [
-        'node-operators/local-demo',
         'node-operators/alpha-testing',
         'node-operators/webnode/local-webnode',
         'node-operators/testing/overview',
