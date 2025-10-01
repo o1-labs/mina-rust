@@ -18,15 +18,15 @@ export default {
   configs: [
     {
       name: 'o1Labs Plain Node 1',
-      url: 'http://mina-rust-plain-1.gcp.o1test.net/graphql',
+      url: 'https://mina-rust-plain-1.gcp.o1test.net/',
     },
     {
       name: 'o1Labs Plain Node 2',
-      url: 'http://mina-rust-plain-2.gcp.o1test.net/graphql',
+      url: 'https://mina-rust-plain-2.gcp.o1test.net/',
     },
     {
       name: 'o1Labs Plain Node 3',
-      url: 'http://mina-rust-plain-3.gcp.o1test.net/graphql',
+      url: 'https://mina-rust-plain-3.gcp.o1test.net/',
     },
   ],
 };
