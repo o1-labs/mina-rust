@@ -1,4 +1,4 @@
-# Run Block Producing Node
+# Run a block producer
 
 This guide is intended for setting up block producer nodes on **Mina Devnet**
 only. Do not use this guide for Mina Mainnet until necessary security audits are
