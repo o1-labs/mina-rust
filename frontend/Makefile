@@ -30,12 +30,6 @@ build-production-sentry: ## Build the frontend for production with Sentry source
 		dist/frontend/browser/assets/environments/env.js
 	$(MAKE) sentry-sourcemaps
 
-.PHONY: build-producer
-build-producer: ## Build the frontend with producer configuration
-	npx ng build --configuration producer
-	cp dist/frontend/browser/assets/environments/producer.js \
-		dist/frontend/browser/assets/environments/env.js
-
 .PHONY: build-production
 build-production: ## Build the frontend with production configuration
 	npx ng build --configuration production
@@ -57,12 +51,6 @@ build-leaderboard: build-production ## Build the frontend with leaderboard confi
 build-staging: ## Build the frontend with staging configuration
 	npx ng build --configuration production
 	cp dist/frontend/browser/assets/environments/staging.js \
-		dist/frontend/browser/assets/environments/env.js
-
-.PHONY: build-block-producers
-build-block-producers: ## Build the frontend with block-producers configuration
-	npx ng build --configuration production
-	cp dist/frontend/browser/assets/environments/block-producers.js \
 		dist/frontend/browser/assets/environments/env.js
 
 .PHONY: build-leaderboard-sentry
