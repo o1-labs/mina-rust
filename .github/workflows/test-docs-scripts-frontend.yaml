@@ -16,6 +16,8 @@ name: Test Documentation Scripts - Frontend
 
 on:
   push:
+    branches: [main, develop]
+  pull_request:
 
 jobs:
   test-frontend-scripts:
