@@ -20,6 +20,7 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       items: [
         'node-operators/getting-started',
+        'node-operators/join-devnet',
       ],
     },
     {

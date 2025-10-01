@@ -29,6 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Frontend**: revamping the Docker image, and provide a better support and
   documentation for the different configuration.
   ([#1473](https://github.com/o1-labs/mina-rust/pull/1473))
+- **Website**: add "Join devnet" page with instructions for community members to
+  join the devnet program and test the Rust node implementation
+  ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
 
 ### Changed
 
