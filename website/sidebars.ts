@@ -83,6 +83,7 @@ const sidebars: SidebarsConfig = {
         'developers/architecture',
         'developers/circuits',
         'developers/ledger-crate',
+        'developers/zkapps',
       ],
     },
     {
