@@ -56,6 +56,10 @@ use crate::zkapps::zkapp_logic::ZkAppCommandElt;
 
 /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L9>
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
+/// Transaction failure reasons.
+///
+/// When a transaction fails, the fee is still deducted from the fee payer,
+/// but no account updates are applied.
 pub enum TransactionFailure {
     Predicate,
     SourceNotPresent,
