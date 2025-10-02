@@ -17,10 +17,40 @@ EXIT_CODE=0
 TOTAL_REFS=0
 VALID_REFS=0
 INVALID_REFS=0
+COMMENT_FILE=""
+ERRORS_COLLECTED=""
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --pr-comment)
+            COMMENT_FILE="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
 
 echo "Verifying code references in documentation..."
 echo "Repository root: ${REPO_ROOT}"
+if [[ -n "${COMMENT_FILE}" ]]; then
+    echo "PR comment mode: will write to ${COMMENT_FILE}"
+fi
 echo ""
+
+# Function to add error to collection
+add_error() {
+    local error_msg="$1"
+    if [[ -z "${ERRORS_COLLECTED}" ]]; then
+        ERRORS_COLLECTED="${error_msg}"
+    else
+        ERRORS_COLLECTED="${ERRORS_COLLECTED}
+${error_msg}"
+    fi
+}
 
 # Find all markdown files with CODE_REFERENCE comments
 while IFS= read -r doc_file; do
@@ -41,11 +71,15 @@ while IFS= read -r doc_file; do
 
             TOTAL_REFS=$((TOTAL_REFS + 1))
 
+            # Get relative path for documentation file
+            doc_file_rel="${doc_file#"${REPO_ROOT}"/}"
+
             # Check if the source file exists
             source_file="${REPO_ROOT}/${file_path}"
             if [[ ! -f "$source_file" ]]; then
                 echo -e "${RED}✗${NC} Invalid reference in ${doc_file}:${line_num}"
                 echo "  File not found: ${file_path}"
+                add_error "- **${doc_file_rel}:${line_num}** - File not found: \`${file_path}\`"
                 INVALID_REFS=$((INVALID_REFS + 1))
                 EXIT_CODE=1
                 continue
@@ -57,6 +91,7 @@ while IFS= read -r doc_file; do
                 echo -e "${RED}✗${NC} Invalid reference in ${doc_file}:${line_num}"
                 echo "  Line range L${start_line}-L${end_line} exceeds file length (${total_lines} lines)"
                 echo "  File: ${file_path}"
+                add_error "- **${doc_file_rel}:${line_num}** - Line range L${start_line}-L${end_line} exceeds file length (${total_lines} lines) in \`${file_path}\`"
                 INVALID_REFS=$((INVALID_REFS + 1))
                 EXIT_CODE=1
                 continue
@@ -102,12 +137,14 @@ while IFS= read -r doc_file; do
                             echo "  ${file_path}#L${start_line}-L${end_line}"
                             echo "  Local code differs from GitHub (${branch})"
                             echo "  This may indicate uncommitted changes or branch divergence"
+                            add_error "- **${doc_file_rel}:${line_num}** - Code reference to \`${file_path}#L${start_line}-L${end_line}\` differs from GitHub (\`${branch}\` branch). The referenced code may have been modified locally but not yet merged to \`${branch}\`."
                             INVALID_REFS=$((INVALID_REFS + 1))
                             EXIT_CODE=1
                         fi
                     else
                         echo -e "${YELLOW}⚠${NC} Could not parse GitHub URL in ${doc_file}:${line_num}"
                         echo "  URL: ${github_url}"
+                        add_error "- **${doc_file_rel}:${line_num}** - Could not parse GitHub URL: \`${github_url}\`"
                         INVALID_REFS=$((INVALID_REFS + 1))
                         EXIT_CODE=1
                     fi
@@ -115,12 +152,14 @@ while IFS= read -r doc_file; do
                     echo -e "${YELLOW}⚠${NC} Mismatched line range in ${doc_file}:${line_num}"
                     echo "  CODE_REFERENCE comment specifies: L${start_line}-L${end_line}"
                     echo "  But GitHub URL has different line range"
+                    add_error "- **${doc_file_rel}:${line_num}** - CODE_REFERENCE comment specifies L${start_line}-L${end_line} but GitHub URL has different line range"
                     INVALID_REFS=$((INVALID_REFS + 1))
                     EXIT_CODE=1
                 fi
             else
                 echo -e "${YELLOW}⚠${NC} No GitHub URL found for reference in ${doc_file}:${line_num}"
                 echo "  Expected rust reference block with GitHub URL"
+                add_error "- **${doc_file_rel}:${line_num}** - No GitHub URL found for reference (expected rust reference block with GitHub URL)"
                 INVALID_REFS=$((INVALID_REFS + 1))
                 EXIT_CODE=1
             fi
@@ -145,6 +184,37 @@ if [[ $EXIT_CODE -eq 0 ]]; then
     echo -e "${GREEN}✓ All code references are valid!${NC}"
 else
     echo -e "${RED}✗ Some code references are invalid. Please update the documentation.${NC}"
+
+    # If in PR comment mode, write the comment to file
+    if [[ -n "${COMMENT_FILE}" ]]; then
+        cat > "${COMMENT_FILE}" <<EOF
+## ⚠️ Code Reference Verification Failed
+
+The documentation contains code references that do not match the current state of the codebase on the \`develop\` branch.
+
+### Issues Found
+
+${ERRORS_COLLECTED}
+
+### Action Required
+
+**The code referenced in the documentation must be merged to \`develop\` before documentation can be added/modified.**
+
+Please follow this workflow:
+1. Merge the code changes to \`develop\` first (this PR or a separate code PR)
+2. Create a follow-up PR with the documentation updates that reference the merged code
+3. The verification will pass once the code is available on \`develop\`
+
+See the [documentation guidelines](https://o1-labs.github.io/mina-rust/developers/documentation-guidelines) for more information about the two-PR workflow.
+EOF
+        echo ""
+        echo "PR comment written to: ${COMMENT_FILE}"
+    fi
 fi
 
-exit $EXIT_CODE
+# In PR comment mode, don't fail the workflow - just post the comment
+if [[ -n "${COMMENT_FILE}" ]]; then
+    exit 0
+else
+    exit $EXIT_CODE
+fi
