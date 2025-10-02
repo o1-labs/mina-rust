@@ -51,6 +51,9 @@ jobs:
           # - ./github/workflows/lint.yaml
           toolchain: nightly
 
+      - name: Verify code references in documentation
+        run: bash .github/scripts/verify-code-references.sh
+
       - name: Build documentation
         run: make docs-build
 
