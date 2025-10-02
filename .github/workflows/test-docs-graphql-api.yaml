@@ -1,0 +1,44 @@
+name: Test Documentation Scripts - GraphQL API
+
+# Test GraphQL API scripts and examples
+# This workflow validates:
+# 1. Script/query file consistency (test-script-query-consistency.sh)
+# 2. API functionality by executing scripts against live endpoints
+# (test-graphql-command-scripts.sh)
+# Scripts can be run locally for development and debugging
+on:
+  schedule:
+    # Run daily at 7 AM UTC to catch API issues early
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+  pull_request:
+    # Always run on pull requests
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  test-graphql-scripts:
+    name: Test GraphQL API Scripts
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Install jq for JSON processing
+        run: |
+          if [[ "${{ runner.os }}" == "Linux" ]]; then
+            sudo apt-get update && sudo apt-get install -y jq
+          elif [[ "${{ runner.os }}" == "macOS" ]]; then
+            brew install jq
+          fi
+
+      - name: Test script and query file consistency
+        run: ./.github/scripts/test-script-query-consistency.sh
+
+      - name: Test GraphQL command scripts
+        run: ./.github/scripts/test-graphql-command-scripts.sh

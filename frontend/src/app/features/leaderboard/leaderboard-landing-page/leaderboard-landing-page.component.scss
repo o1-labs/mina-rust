@@ -2,11 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@100;200;300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@200..1000&display=swap');
 
-
 :host {
   background-color: leaderboard-variables.$mina-cta-primary;
   color: leaderboard-variables.$mina-base-primary;
-  font-family: "IBM Plex Sans", sans-serif;
+  font-family: 'IBM Plex Sans', sans-serif;
 }
 
 .floating-banner {
@@ -47,7 +46,7 @@ mina-leaderboard-footer {
     font-size: 20px;
     line-height: 20px;
     font-weight: 300;
-    transition: .15s ease;
+    transition: 0.15s ease;
     min-width: 240px;
 
     &:hover {
@@ -123,7 +122,7 @@ section {
     background: leaderboard-variables.$mina-base-container;
     border-radius: 20px;
     border: 1px solid #b7cdd8;
-    box-shadow: 0 11.614px 24.121px -4.467px rgba(183, 205, 216, 0.20);
+    box-shadow: 0 11.614px 24.121px -4.467px rgba(183, 205, 216, 0.2);
     backdrop-filter: blur(20.777027130126953px);
     padding: 40px;
 
@@ -188,10 +187,10 @@ section {
     padding: 48px;
     min-height: 336px;
     gap: 40px;
-    background: rgba(239, 244, 246, 0.30);
+    background: rgba(239, 244, 246, 0.3);
     border-radius: 20px;
     border: 1px solid #b7cdd8;
-    box-shadow: 0 11.614px 24.121px -4.467px rgba(183, 205, 216, 0.20);
+    box-shadow: 0 11.614px 24.121px -4.467px rgba(183, 205, 216, 0.2);
     backdrop-filter: blur(20.777027130126953px);
     max-width: 90%;
     margin: 48px auto 0;
@@ -209,7 +208,7 @@ section {
     }
 
     .text {
-      font-family: "IBM Plex Sans", sans-serif;
+      font-family: 'IBM Plex Sans', sans-serif;
 
       h4 {
         margin-bottom: 14px;

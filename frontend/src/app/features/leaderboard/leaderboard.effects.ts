@@ -14,20 +14,28 @@ import { LeaderboardService } from '@leaderboard/leaderboard.service';
   providedIn: 'root',
 })
 export class LeaderboardEffects extends BaseEffect {
-
   readonly getHeartbeats$: Effect;
 
-  constructor(private actions$: Actions,
-              private leaderboardService: LeaderboardService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private leaderboardService: LeaderboardService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getHeartbeats$ = createEffect(() => this.actions$.pipe(
-      ofType(LeaderboardActions.getHeartbeats),
-      this.latestActionState(),
-      switchMap(() => this.leaderboardService.getHeartbeatsSummaries()),
-      map(heartbeatSummaries => LeaderboardActions.getHeartbeatsSuccess({ heartbeatSummaries })),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, LeaderboardActions.getHeartbeatsSuccess({ heartbeatSummaries: [] })),
-    ));
+    this.getHeartbeats$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(LeaderboardActions.getHeartbeats),
+        this.latestActionState(),
+        switchMap(() => this.leaderboardService.getHeartbeatsSummaries()),
+        map(heartbeatSummaries =>
+          LeaderboardActions.getHeartbeatsSuccess({ heartbeatSummaries }),
+        ),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          LeaderboardActions.getHeartbeatsSuccess({ heartbeatSummaries: [] }),
+        ),
+      ),
+    );
   }
 }

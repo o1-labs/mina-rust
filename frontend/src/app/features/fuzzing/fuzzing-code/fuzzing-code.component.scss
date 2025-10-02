@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .code-row {
   height: 24px;
@@ -7,13 +7,13 @@
   padding-left: 12px;
 
   > span:first-child {
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
     width: 50px;
     cursor: pointer;
-    border-right: 4px solid openmina.$base-container;
+    border-right: 4px solid mina-rust.$base-container;
 
     &:hover {
-      color: openmina.$base-primary;
+      color: mina-rust.$base-primary;
     }
   }
 
@@ -41,7 +41,7 @@
 
       &:hover {
         border-radius: 2px;
-        outline-color: openmina.$base-tertiary;
+        outline-color: mina-rust.$base-tertiary;
       }
     }
   }
@@ -49,13 +49,13 @@
 
 :host .no-fuzzing-highlight ::ng-deep .code-row {
   span:nth-child(1) {
-    color: openmina.$base-tertiary !important;
-    border-right-color: openmina.$base-container !important;
+    color: mina-rust.$base-tertiary !important;
+    border-right-color: mina-rust.$base-container !important;
   }
 
   span:nth-child(2),
   span:nth-child(2) > * {
     background-color: unset !important;
-    color: openmina.$base-secondary !important;
+    color: mina-rust.$base-secondary !important;
   }
 }

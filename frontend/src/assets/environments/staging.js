@@ -7,15 +7,15 @@ export default {
   canAddNodes: false,
   globalConfig: {
     features: {
-      'dashboard': [],
+      dashboard: [],
       'block-production': ['won-slots'],
-      'nodes': ['overview', 'live', 'bootstrap'],
-      'mempool': [],
-      'state': ['actions'],
-      'snarks': ['scan-state', 'work-pool'],
-      'benchmarks': ['wallets'],
+      nodes: ['overview', 'live', 'bootstrap'],
+      mempool: [],
+      state: ['actions'],
+      snarks: ['scan-state', 'work-pool'],
+      benchmarks: ['wallets'],
     },
-    graphQL: 'https://adonagy.com/graphql'
+    graphQL: 'https://adonagy.com/graphql',
   },
   configs: [
     {

@@ -1,3 +1,4 @@
+.env.docker
 /target
 /node/testing/res/
 circuit-blobs

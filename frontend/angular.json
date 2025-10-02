@@ -89,11 +89,11 @@
               ],
               "outputHashing": "all"
             },
-            "webnodelocal": {
+            "webnode-local": {
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.webnodelocal.ts"
+                  "with": "src/environments/environment.webnode-local.ts"
                 }
               ],
               "outputHashing": "all"
@@ -103,15 +103,6 @@
                 {
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.fuzzing.ts"
-                }
-              ],
-              "outputHashing": "all"
-            },
-            "producer": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.producer.ts"
                 }
               ],
               "outputHashing": "all"
@@ -128,8 +119,8 @@
             "development": {
               "buildTarget": "frontend:build:development"
             },
-            "webnodelocal": {
-              "buildTarget": "frontend:build:webnodelocal"
+            "webnode-local": {
+              "buildTarget": "frontend:build:webnode-local"
             },
             "local": {
               "buildTarget": "frontend:build:local"

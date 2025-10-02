@@ -4,14 +4,14 @@ module.exports = {
   experiments: {
     topLevelAwait: true,
   },
-  entry: path.resolve(__dirname, "bootstrap.js"),
+  entry: path.resolve(__dirname, 'bootstrap.js'),
   output: {
     path: path.resolve(__dirname, 'dist'),
     umdNamedDefine: true,
     publicPath: '/',
-    filename: "o1js-wrapper.js",
-    library: "o1jsWrapper",
-    libraryTarget: "umd",
+    filename: 'o1js-wrapper.js',
+    library: 'o1jsWrapper',
+    libraryTarget: 'umd',
     globalObject: 'this',
   },
   module: {
@@ -43,4 +43,4 @@ module.exports = {
       'Cross-Origin-Embedder-Policy': 'require-corp',
     },
   },
-}
+};

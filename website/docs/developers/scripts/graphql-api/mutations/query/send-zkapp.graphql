@@ -1,0 +1,16 @@
+mutation SendZkApp($input: SendZkAppInput!) {
+  sendZkapp(input: $input) {
+    zkapp {
+      id
+      hash
+      zkappCommand {
+        feePayer {
+          body {
+            publicKey
+            fee
+          }
+        }
+      }
+    }
+  }
+}

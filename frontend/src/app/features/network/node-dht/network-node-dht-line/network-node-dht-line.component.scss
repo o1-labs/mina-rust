@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .base-div {
   padding-right: 0;
@@ -14,51 +14,51 @@
   width: 16px;
   height: 16px;
   border-radius: 16px;
-  background-color: openmina.$base-secondary;
+  background-color: mina-rust.$base-secondary;
   bottom: 0;
   cursor: pointer;
 
   &.Connected:not(.Not) {
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
     z-index: 1;
   }
 
   &.Cannot.Connect {
-    background-color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-primary;
     z-index: 2;
   }
 
   &.origin {
-    background-color: openmina.$base-surface !important;
-    border: 2px solid openmina.$special-selected-alt-1-primary;
+    background-color: mina-rust.$base-surface !important;
+    border: 2px solid mina-rust.$special-selected-alt-1-primary;
 
     &:hover {
-      background-color: openmina.$special-selected-alt-1-primary;
+      background-color: mina-rust.$special-selected-alt-1-primary;
     }
   }
 
   &:hover.Not.Connected,
   &:hover.Can.Connect {
-    background-color: openmina.$base-primary;
+    background-color: mina-rust.$base-primary;
   }
 
   &.active {
-    background-color: openmina.$selected-primary !important;
+    background-color: mina-rust.$selected-primary !important;
     z-index: 3;
   }
 }
 
 .bucket {
   border-radius: 0;
-  border-right: 1.5px dashed openmina.$base-tertiary2;
+  border-right: 1.5px dashed mina-rust.$base-tertiary2;
 
   .line-bg {
     bottom: 0;
-    background-color: openmina.$base-container;
+    background-color: mina-rust.$base-container;
     height: 16px;
 
     .mid-line {
-      background-color: openmina.$base-tertiary2;
+      background-color: mina-rust.$base-tertiary2;
       height: 1px;
       top: 50%;
       transform: translateY(-50%);
@@ -66,7 +66,7 @@
   }
 
   &:first-child {
-    border-left: 1.5px dashed openmina.$base-tertiary2;
+    border-left: 1.5px dashed mina-rust.$base-tertiary2;
 
     .line-bg {
       border-top-left-radius: 16px;

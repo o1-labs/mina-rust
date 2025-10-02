@@ -14,11 +14,19 @@ const initialState: MemoryResourcesState = {
   resource: undefined,
   activeResource: undefined,
   breadcrumbs: [],
-  granularity: nanOrElse(Number(getLocalStorage()?.getItem('memory-granularity')), 512),
-  treemapView: getLocalStorage()?.getItem('memory-view') as TreemapView || TreemapView.BINARY,
+  granularity: nanOrElse(
+    Number(getLocalStorage()?.getItem('memory-granularity')),
+    512,
+  ),
+  treemapView:
+    (getLocalStorage()?.getItem('memory-view') as TreemapView) ||
+    TreemapView.BINARY,
 };
 
-export function memoryResourcesReducer(state: MemoryResourcesState = initialState, action: MemoryResourcesActions): MemoryResourcesState {
+export function memoryResourcesReducer(
+  state: MemoryResourcesState = initialState,
+  action: MemoryResourcesActions,
+): MemoryResourcesState {
   switch (action.type) {
     case MEMORY_RESOURCES_GET_SUCCESS: {
       return {
@@ -37,7 +45,9 @@ export function memoryResourcesReducer(state: MemoryResourcesState = initialStat
       if (action.payload.name.executableName === 'root') {
         breadcrumbs = [state.resource];
       } else {
-        const indexOfSameResource = breadcrumbs.findIndex(b => b.id === action.payload.id);
+        const indexOfSameResource = breadcrumbs.findIndex(
+          b => b.id === action.payload.id,
+        );
         if (indexOfSameResource !== -1) {
           breadcrumbs = breadcrumbs.slice(0, indexOfSameResource + 1);
         } else {

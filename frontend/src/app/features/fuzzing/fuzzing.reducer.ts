@@ -27,11 +27,15 @@ const initialState: FuzzingState = {
   filterText: undefined,
 };
 
-export function fuzzingReducer(state: FuzzingState = initialState, action: FuzzingActions): FuzzingState {
+export function fuzzingReducer(
+  state: FuzzingState = initialState,
+  action: FuzzingActions,
+): FuzzingState {
   switch (action.type) {
-
     case FUZZING_GET_DIRECTORIES_SUCCESS: {
-      if (JSON.stringify(action.payload) === JSON.stringify(state.directories)) {
+      if (
+        JSON.stringify(action.payload) === JSON.stringify(state.directories)
+      ) {
         return state;
       }
       return {
@@ -55,7 +59,9 @@ export function fuzzingReducer(state: FuzzingState = initialState, action: Fuzzi
     case FUZZING_GET_FILES_SUCCESS: {
       const files = sortFiles(action.payload, state.sort);
       const filteredFiles = filterFiles(files, state.filterText);
-      if (JSON.stringify(filteredFiles) === JSON.stringify(state.filteredFiles)) {
+      if (
+        JSON.stringify(filteredFiles) === JSON.stringify(state.filteredFiles)
+      ) {
         return state;
       }
       return {
@@ -73,7 +79,10 @@ export function fuzzingReducer(state: FuzzingState = initialState, action: Fuzzi
     }
 
     case FUZZING_GET_FILE_DETAILS_SUCCESS: {
-      if (JSON.stringify(action.payload) === JSON.stringify(state.activeFileDetails)) {
+      if (
+        JSON.stringify(action.payload) ===
+        JSON.stringify(state.activeFileDetails)
+      ) {
         return state;
       }
       return {
@@ -110,9 +119,14 @@ export function fuzzingReducer(state: FuzzingState = initialState, action: Fuzzi
 }
 
 function filterFiles(files: FuzzingFile[], filterText: string): FuzzingFile[] {
-  return files.filter(file => !filterText || file.path.toLowerCase().includes(filterText));
+  return files.filter(
+    file => !filterText || file.path.toLowerCase().includes(filterText),
+  );
 }
 
-function sortFiles(files: FuzzingFile[], tableSort: TableSort<FuzzingFile>): FuzzingFile[] {
+function sortFiles(
+  files: FuzzingFile[],
+  tableSort: TableSort<FuzzingFile>,
+): FuzzingFile[] {
   return sort<FuzzingFile>(files, tableSort, ['path']);
 }

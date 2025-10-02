@@ -1,9 +1,9 @@
-@use 'openmina';
+@use 'mina-rust';
 
 mat-sidenav {
   width: 160px;
   border-right: none;
-  background-color: openmina.$base-background;
+  background-color: mina-rust.$base-background;
   transition: 200ms ease-out !important;
   visibility: visible !important;
   display: block !important;
@@ -56,14 +56,14 @@ mat-sidenav-content {
 mat-sidenav-container,
 mat-sidenav-content {
   color: inherit;
-  background-color: openmina.$base-background;
+  background-color: mina-rust.$base-background;
 }
 
 #mina-content {
   $toolbar: 40px;
   height: calc(100% - #{$toolbar});
   border-top-left-radius: 6px;
-  background-color: openmina.$base-surface;
+  background-color: mina-rust.$base-surface;
 
   &.no-toolbar {
     height: 100%;
@@ -78,7 +78,6 @@ mat-sidenav-content {
     margin-right: 4px;
     margin-bottom: 4px;
     border-top-right-radius: 6px;
-
 
     &.uptime {
       $toolbar: 130px;

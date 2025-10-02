@@ -4,7 +4,7 @@ export interface ScanStateLeaf {
   bundle_job_id?: string;
   job?: {
     kind: string;
-  }
+  };
   seq_no?: number;
   commitment?: any;
   snark?: {

@@ -20,68 +20,80 @@ export const BENCHMARKS_TITLE: string = APP_TITLE + ' - Benchmarks';
 export const WEBNODE_TITLE: string = APP_TITLE + ' - Web Node';
 export const FUZZING_TITLE: string = APP_TITLE + ' - Fuzzing';
 
-
 export function generateRoutes(): Routes {
   const routes: Routes = [
     {
       path: 'dashboard',
-      loadChildren: () => import('@dashboard/dashboard.module').then(m => m.DashboardModule),
+      loadChildren: () =>
+        import('@dashboard/dashboard.module').then(m => m.DashboardModule),
       title: DASHBOARD_TITLE,
       canActivate: [landingPageGuard],
     },
     {
       path: 'nodes',
-      loadChildren: () => import('@nodes/nodes.module').then(m => m.NodesModule),
+      loadChildren: () =>
+        import('@nodes/nodes.module').then(m => m.NodesModule),
       title: NODES_TITLE,
       // canActivate: [FeatureGuard],
     },
     {
       path: 'resources',
-      loadChildren: () => import('@resources/resources.module').then(m => m.ResourcesModule),
+      loadChildren: () =>
+        import('@resources/resources.module').then(m => m.ResourcesModule),
       title: RESOURCES_TITLE,
     },
     {
       path: 'network',
-      loadChildren: () => import('@network/network.module').then(m => m.NetworkModule),
+      loadChildren: () =>
+        import('@network/network.module').then(m => m.NetworkModule),
       title: NETWORK_TITLE,
     },
     {
       path: 'state',
-      loadChildren: () => import('@state/state.module').then(m => m.StateModule),
+      loadChildren: () =>
+        import('@state/state.module').then(m => m.StateModule),
       title: STATE_TITLE,
       canActivate: [landingPageGuard],
     },
     {
       path: 'snarks',
-      loadChildren: () => import('@snarks/snarks.module').then(m => m.SnarksModule),
+      loadChildren: () =>
+        import('@snarks/snarks.module').then(m => m.SnarksModule),
       title: SNARKS_TITLE,
     },
     {
       path: 'block-production',
-      loadChildren: () => import('@block-production/block-production.module').then(m => m.BlockProductionModule),
+      loadChildren: () =>
+        import('@block-production/block-production.module').then(
+          m => m.BlockProductionModule,
+        ),
       title: BLOCK_PRODUCTION_TITLE,
       canActivate: [landingPageGuard],
     },
     {
       path: 'mempool',
-      loadChildren: () => import('@mempool/mempool.module').then(m => m.MempoolModule),
+      loadChildren: () =>
+        import('@mempool/mempool.module').then(m => m.MempoolModule),
       title: MEMPOOL_TITLE,
       canActivate: [landingPageGuard],
     },
     {
       path: 'benchmarks',
-      loadChildren: () => import('@benchmarks/benchmarks.module').then(m => m.BenchmarksModule),
+      loadChildren: () =>
+        import('@benchmarks/benchmarks.module').then(m => m.BenchmarksModule),
       title: BENCHMARKS_TITLE,
       canActivate: [landingPageGuard],
     },
     {
       path: 'fuzzing',
-      loadChildren: () => import('@fuzzing/fuzzing.module').then(m => m.FuzzingModule),
+      loadChildren: () =>
+        import('@fuzzing/fuzzing.module').then(m => m.FuzzingModule),
       title: FUZZING_TITLE,
     },
     {
       path: 'loading-web-node',
-      loadChildren: () => import('@web-node/web-node.module').then(m => m.WebNodeModule),
+      loadChildren: () =>
+        import('@web-node/web-node.module').then(m => m.WebNodeModule),
       title: WEBNODE_TITLE,
       canActivate: [landingPageGuard],
     },
@@ -89,7 +101,10 @@ export function generateRoutes(): Routes {
   if (CONFIG.showLeaderboard) {
     routes.push({
       path: '',
-      loadChildren: () => import('@leaderboard/leaderboard.module').then(m => m.LeaderboardModule),
+      loadChildren: () =>
+        import('@leaderboard/leaderboard.module').then(
+          m => m.LeaderboardModule,
+        ),
     });
   } else if (CONFIG.showWebNodeLandingPage) {
     routes.push({
@@ -107,7 +122,6 @@ export function generateRoutes(): Routes {
     },
   ];
 }
-
 
 @NgModule({
   imports: [

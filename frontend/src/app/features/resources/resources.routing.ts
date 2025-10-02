@@ -4,7 +4,10 @@ import { RouterModule, Routes } from '@angular/router';
 const routes: Routes = [
   {
     path: 'memory',
-    loadChildren: () => import('@resources/memory/memory-resources.module').then(m => m.MemoryResourcesModule),
+    loadChildren: () =>
+      import('@resources/memory/memory-resources.module').then(
+        m => m.MemoryResourcesModule,
+      ),
   },
   {
     path: '**',

@@ -108,6 +108,12 @@ function HomepageHeader() {
                 <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
               </svg>
             </Link>
+            <Link className={styles.btnSecondary} to="/docs/node-operators/join-devnet">
+              Join Devnet
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+                <path d="M8.59 16.59L13.17 12L8.59 7.41L10 6L16 12L10 18L8.59 16.59Z"/>
+              </svg>
+            </Link>
           </div>
         </div>
       </div>

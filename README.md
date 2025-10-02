@@ -33,7 +33,7 @@ website:
 
 ### Quick Links
 
-- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-installation)**
+- **[Docker Installation](https://o1-labs.github.io/mina-rust/docs/node-operators/docker-usage)**
 - **[Building from Source](https://o1-labs.github.io/mina-rust/docs/node-operators/building-from-source)**
 - **[Block Producer Setup](https://o1-labs.github.io/mina-rust/docs/node-operators/block-producer)**
 - **[Archive Node](https://o1-labs.github.io/mina-rust/docs/node-operators/archive-node)**
@@ -96,6 +96,31 @@ This repository contains the complete Mina Rust Node implementation:
 - **[API Documentation](https://o1-labs.github.io/mina-rust/api-docs/)** -
   Comprehensive API reference
 
+## Supported Platforms
+
+[![CI Status][ci-badge]][ci-link]
+
+| Platform                                | Architecture  | Build Status                                                     |
+| --------------------------------------- | ------------- | ---------------------------------------------------------------- |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 22.04** | x64           | [![Ubuntu 22.04 x64][ubuntu-22-badge]][ubuntu-22-link]           |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 24.04** | x64           | [![Ubuntu 24.04 x64][ubuntu-24-badge]][ubuntu-24-link]           |
+| ![Ubuntu][ubuntu-icon] **Ubuntu 24.04** | ARM64         | [![Ubuntu 24.04 ARM64][ubuntu-24-arm-badge]][ubuntu-24-arm-link] |
+| ![macOS][macos-icon] **macOS 13**       | Intel         | [![macOS 13 Intel][macos-13-badge]][macos-13-link]               |
+| ![macOS][macos-icon] **macOS 14**       | Apple Silicon | [![macOS 14 M1/M2][macos-14-badge]][macos-14-link]               |
+| ![macOS][macos-icon] **macOS 15**       | Apple Silicon | [![macOS 15 M1/M2/M3][macos-15-badge]][macos-15-link]            |
+| ![macOS][macos-icon] **macOS Latest**   | Apple Silicon | [![macOS Latest][macos-latest-badge]][macos-latest-link]         |
+
+> **Note**: Multi-platform builds run automatically on `develop` and `main`
+> branches. Pull requests run fast Ubuntu-only builds for quick feedback.
+
+## Nightly Status
+
+[![Documentation Scripts][doc-scripts-badge]][doc-scripts-link]
+[![GraphQL API Tests][graphql-api-badge]][graphql-api-link]
+[![Infrastructure Tests][infra-tests-badge]][infra-tests-link]
+[![Remote GraphQL][remote-graphql-badge]][remote-graphql-link]
+[![Board Carryover][board-carryover-badge]][board-carryover-link]
+
 [changelog]: ./CHANGELOG.md
 [beta-badge]: https://img.shields.io/badge/status-beta-yellow
 [changelog-badge]: https://img.shields.io/badge/changelog-Changelog-%23E05735
@@ -103,3 +128,70 @@ This repository contains the complete Mina Rust Node implementation:
 [release-link]: https://github.com/o1-labs/mina-rust/releases/latest
 [Apache licensed]: https://img.shields.io/badge/license-Apache_2.0-blue.svg
 [Apache link]: https://github.com/o1-labs/mina-rust/blob/master/LICENSE
+
+<!-- Platform support badges -->
+
+[ci-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/tests.yaml/badge.svg?branch=develop
+[ci-link]: https://github.com/o1-labs/mina-rust/actions/workflows/tests.yaml
+[ubuntu-icon]:
+  https://img.shields.io/badge/-Ubuntu-E95420?style=flat&logo=ubuntu&logoColor=white
+[macos-icon]:
+  https://img.shields.io/badge/-macOS-000000?style=flat&logo=apple&logoColor=white
+
+<!-- Individual platform badges -->
+
+[ubuntu-22-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-22-04.yaml/badge.svg?branch=develop
+[ubuntu-24-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04.yaml/badge.svg?branch=develop
+[ubuntu-24-arm-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04-arm.yaml/badge.svg?branch=develop
+[macos-13-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-13.yaml/badge.svg?branch=develop
+[macos-14-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-14.yaml/badge.svg?branch=develop
+[macos-15-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-15.yaml/badge.svg?branch=develop
+[macos-latest-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-latest.yaml/badge.svg?branch=develop
+
+<!-- Platform-specific build links -->
+
+[ubuntu-22-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-22-04.yaml
+[ubuntu-24-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04.yaml
+[ubuntu-24-arm-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-ubuntu-24-04-arm.yaml
+[macos-13-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-13.yaml
+[macos-14-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-14.yaml
+[macos-15-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-15.yaml
+[macos-latest-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/build-macos-latest.yaml
+
+<!-- Nightly workflow badges -->
+
+[doc-scripts-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-scripts.yaml/badge.svg?branch=develop
+[doc-scripts-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-scripts.yaml
+[graphql-api-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-graphql-api.yaml/badge.svg?branch=develop
+[graphql-api-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-graphql-api.yaml
+[infra-tests-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-infrastructure.yaml/badge.svg?branch=develop
+[infra-tests-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-docs-infrastructure.yaml
+[remote-graphql-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-graphql-remote.yml/badge.svg?branch=develop
+[remote-graphql-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/test-graphql-remote.yml
+[board-carryover-badge]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/board-carryover-interation.yaml/badge.svg?branch=develop
+[board-carryover-link]:
+  https://github.com/o1-labs/mina-rust/actions/workflows/board-carryover-interation.yaml

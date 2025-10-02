@@ -28,8 +28,8 @@ export function decodeMemo(memo: string): string {
 }
 
 function toHexString(byteArray: Uint8Array) {
-  return Array.from(byteArray, (byte) => {
-    return ('0' + (byte & 0xFF).toString(16)).slice(-2);
+  return Array.from(byteArray, byte => {
+    return ('0' + (byte & 0xff).toString(16)).slice(-2);
   }).join('');
 }
 
@@ -41,5 +41,7 @@ export function removeUnicodeEscapes(str: string): string {
 }
 
 export function getTimeFromMemo(memo: string): string {
-  return memo?.includes(',') ? toReadableDate(memo.split(',')[0].replace('S.T.', '')) : undefined;
+  return memo?.includes(',')
+    ? toReadableDate(memo.split(',')[0].replace('S.T.', ''))
+    : undefined;
 }

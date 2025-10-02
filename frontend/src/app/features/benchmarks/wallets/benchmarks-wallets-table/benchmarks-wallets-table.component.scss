@@ -1,27 +1,27 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .status {
   padding: 2px 5px;
   border-radius: 4px;
 
   &.sending {
-    background-color: openmina.$base-container;
-    color: openmina.$base-primary;
+    background-color: mina-rust.$base-container;
+    color: mina-rust.$base-primary;
   }
 
   &.included {
-    background-color: openmina.$success-container;
-    color: openmina.$success-primary;
+    background-color: mina-rust.$success-container;
+    color: mina-rust.$success-primary;
   }
 
   &.generated {
-    background-color: openmina.$special-selected-alt-2-container;
-    color: openmina.$special-selected-alt-2-primary;
+    background-color: mina-rust.$special-selected-alt-2-container;
+    color: mina-rust.$special-selected-alt-2-primary;
   }
 
   &.error,
   &.rejected {
-    background-color: openmina.$warn-container;
-    color: openmina.$warn-primary;
+    background-color: mina-rust.$warn-container;
+    color: mina-rust.$warn-primary;
   }
 }

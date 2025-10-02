@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   padding-bottom: 80px;
@@ -8,7 +8,7 @@
   .steps {
     position: relative;
     padding-left: 40px;
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     &::before {
       content: '';
@@ -17,12 +17,12 @@
       left: 10px;
       width: 1px;
       height: calc(100% - 13px);
-      background-color: openmina.$base-divider;
+      background-color: mina-rust.$base-divider;
     }
 
     .step {
       position: relative;
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
 
       &::before {
         content: '';
@@ -31,25 +31,25 @@
         left: -29px;
         width: 20px;
         height: 1px;
-        background-color: openmina.$base-divider;
+        background-color: mina-rust.$base-divider;
       }
     }
   }
 
   &.pending {
     .group-title {
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
     }
   }
 
   &.success {
     .group-title {
-      color: openmina.$success-primary;
+      color: mina-rust.$success-primary;
     }
 
     .steps::before,
     .steps .step::before {
-      background-color: openmina.$success-tertiary;
+      background-color: mina-rust.$success-tertiary;
     }
   }
 
@@ -58,7 +58,7 @@
     height: 20px;
 
     span {
-      background-color: openmina.$base-tertiary;
+      background-color: mina-rust.$base-tertiary;
       width: 10px;
       height: 10px;
       border-radius: 10px;

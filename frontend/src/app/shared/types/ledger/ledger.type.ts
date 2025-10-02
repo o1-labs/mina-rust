@@ -58,7 +58,6 @@ export interface SignTransactionResponse extends BaseLedgerResponse {
 
 export interface GetAppVersionResponse extends BaseLedgerResponse {
   version?: string;
-
 }
 
 export interface GetAppNameResponse extends BaseLedgerResponse {

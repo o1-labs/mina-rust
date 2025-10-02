@@ -1,0 +1,3 @@
+query TransactionStatus($payment: String!) {
+  transactionStatus(payment: $payment)
+}

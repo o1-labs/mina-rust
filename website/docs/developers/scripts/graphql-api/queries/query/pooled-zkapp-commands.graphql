@@ -1,0 +1,24 @@
+query PooledZkApps($publicKey: String) {
+  pooledZkappCommands(publicKey: $publicKey) {
+    id
+    hash
+    zkappCommand {
+      feePayer {
+        body {
+          publicKey
+          fee
+          nonce
+        }
+      }
+      accountUpdates {
+        body {
+          publicKey
+          balanceChange {
+            magnitude
+            sgn
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,23 +1,37 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppSelectors } from '@app/app.state';
 import { skip, timer } from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
-import { NodesLiveClose, NodesLiveGetNodes, NodesLiveInit } from '@nodes/live/nodes-live.actions';
+import {
+  NodesLiveClose,
+  NodesLiveGetNodes,
+  NodesLiveInit,
+} from '@nodes/live/nodes-live.actions';
 import { selectNodesLiveOpenSidePanel } from '@nodes/live/nodes-live.state';
 
 @Component({
-    selector: 'mina-nodes-live',
-    templateUrl: './nodes-live.component.html',
-    styleUrls: ['./nodes-live.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-nodes-live',
+  templateUrl: './nodes-live.component.html',
+  styleUrls: ['./nodes-live.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class NodesLiveComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class NodesLiveComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   openSidePanel: boolean;
 
-  constructor(public el: ElementRef<HTMLElement>) { super(); }
+  constructor(public el: ElementRef<HTMLElement>) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToNodeChange();
@@ -25,10 +39,14 @@ export class NodesLiveComponent extends StoreDispatcher implements OnInit, OnDes
   }
 
   private listenToNodeChange(): void {
-    this.select(AppSelectors.activeNode, () => {
-      this.dispatch(NodesLiveInit);
-      this.dispatch(NodesLiveGetNodes, { force: true });
-    }, skip(1));
+    this.select(
+      AppSelectors.activeNode,
+      () => {
+        this.dispatch(NodesLiveInit);
+        this.dispatch(NodesLiveGetNodes, { force: true });
+      },
+      skip(1),
+    );
 
     timer(0, 2000)
       .pipe(untilDestroyed(this))

@@ -1,13 +1,19 @@
 import { ErrorPreviewState } from '@error-preview/error-preview.state';
-import { ADD_ERROR, ErrorPreviewActions, MARK_ERRORS_AS_SEEN } from '@app/layout/error-preview/error-preview.actions';
+import {
+  ADD_ERROR,
+  ErrorPreviewActions,
+  MARK_ERRORS_AS_SEEN,
+} from '@app/layout/error-preview/error-preview.actions';
 
 const initialState: ErrorPreviewState = {
   errors: [],
 };
 
-export function errorReducer(state: ErrorPreviewState = initialState, action: ErrorPreviewActions): ErrorPreviewState {
+export function errorReducer(
+  state: ErrorPreviewState = initialState,
+  action: ErrorPreviewActions,
+): ErrorPreviewState {
   switch (action.type) {
-
     case ADD_ERROR: {
       return {
         ...state,

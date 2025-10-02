@@ -7,5 +7,5 @@ export interface WorkPoolCommitment {
     snarker: string;
     fee: string;
     job_id: string;
-  }
+  };
 }

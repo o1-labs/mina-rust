@@ -6,7 +6,10 @@
 # - ./github/workflows/docs.yaml
 # - ./github/workflows/fmt.yaml
 # - ./github/workflows/lint.yaml
-NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
+NIGHTLY_RUST_VERSION = "nightly"
+
+# WebAssembly
+WASM_BINDGEN_CLI_VERSION = "0.2.99"
 
 # Docker
 DOCKER_ORG ?= o1labs
@@ -30,6 +33,9 @@ NETWORK ?= devnet
 VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
+# Documentation server port
+DOCS_PORT ?= 3000
+
 OPAM_PATH := $(shell command -v opam 2>/dev/null)
 
 ifdef OPAM_PATH
@@ -41,6 +47,16 @@ endif
 
 .PHONY: help
 help: ## Ask for help!
+	@echo "Mina Rust Makefile - Common Variables:"
+	@echo "  DOCS_PORT=<port>     Set documentation server port (default: 3000)"
+	@echo "  NETWORK=<network>    Set network (default: devnet)"
+	@echo "  VERBOSITY=<level>    Set logging verbosity (default: info)"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make docs-serve DOCS_PORT=8080    # Start docs server on port 8080"
+	@echo "  make run-node NETWORK=mainnet     # Run node on mainnet"
+	@echo ""
+	@echo "Available targets:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: build
@@ -131,16 +147,18 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 	@echo "Removing trailing whitespaces from all files..."
 	@find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sed -i'' -e "s/[[:space:]]*$$//" {} + && \
+		-exec sh -c 'echo "Processing: $$1"; sed -i"" -e "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
@@ -148,10 +166,12 @@ check-trailing-whitespace: ## Check for trailing whitespaces in source files
 	@echo "Checking for trailing whitespaces..."
 	@files_with_trailing_ws=$$(find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
@@ -175,11 +195,9 @@ clean: ## Clean build artifacts
 .PHONY: download-circuits
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/openmina/circuit-blobs.git; \
-	  ln -s "$$PWD"/circuit-blobs/3.0.0devnet ledger/; \
+	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
-	  ln -s "$$PWD"/circuit-blobs/berkeley_rc1 ledger/; \
 	else \
 	  echo "circuit-blobs already exists, skipping download."; \
 	fi
@@ -206,27 +224,28 @@ lint-bash: ## Check all shell scripts using shellcheck
 		-not -path "*/target/*" \
 		-not -path "*/node_modules/*" \
 		-not -path "*/website/docs/developers/scripts/setup/*" \
+		-not -path "*/website/docs/developers/scripts/frontend/*" \
 		-print0 | xargs -0 shellcheck
 	@echo "Shellcheck completed successfully!"
 
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec hadolint {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	else \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	fi
 
-.PHONY: setup-wasm-toolchain
-setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
+.PHONY: setup-wasm
+setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 		@ARCH=$$(uname -m); \
 		OS=$$(uname -s | tr A-Z a-z); \
 		case $$OS in \
@@ -241,8 +260,13 @@ setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
 			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
 		esac; \
 		TARGET="$$ARCH_PART-$$OS_PART"; \
-		echo "Installing rust-src and rustfmt for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
-		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET
+		echo "Installing nightly toolchain: ${NIGHTLY_RUST_VERSION}-$$TARGET"; \
+		rustup toolchain install ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		echo "Installing components for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
+		rustup component add rust-src --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		cargo install wasm-bindgen-cli --version ${WASM_BINDGEN_CLI_VERSION}
 
 .PHONY: test
 test: ## Run tests
@@ -470,13 +494,13 @@ docs-build: docs-integrate-rust docs-install ## Build the documentation website 
 .PHONY: docs-serve
 docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
 	@echo "Starting documentation server with Rust API documentation..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-serve
 docs-build-serve: docs-build ## Build and serve the documentation website locally with Rust API docs
-	@echo "Serving built documentation with Rust API documentation at: http://localhost:3000"
-	@cd website && npm run serve
+	@echo "Serving built documentation with Rust API documentation at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm run serve -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-only
 docs-build-only: docs-install ## Build the documentation website without Rust API docs
@@ -488,8 +512,8 @@ docs-build-only: docs-install ## Build the documentation website without Rust AP
 .PHONY: docs-serve-only
 docs-serve-only: docs-install ## Serve the documentation website locally without Rust API docs
 	@echo "Starting documentation server (without Rust API docs)..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-rust
 docs-rust: ## Generate Rust API documentation

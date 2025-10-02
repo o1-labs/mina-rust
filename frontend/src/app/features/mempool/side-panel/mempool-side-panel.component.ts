@@ -1,29 +1,47 @@
-import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { downloadJson, ExpandTracking, MinaJsonViewerComponent } from '@openmina/shared';
+import {
+  downloadJson,
+  ExpandTracking,
+  MinaJsonViewerComponent,
+} from '@openmina/shared';
 import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 import { MempoolActions } from '@app/features/mempool/mempool.actions';
 import { MempoolSelectors } from '@app/features/mempool/mempool.state';
-import { MempoolTransaction, SignedCommand, ZkappCommand } from '@shared/types/mempool/mempool-transaction.type';
+import {
+  MempoolTransaction,
+  SignedCommand,
+  ZkappCommand,
+} from '@shared/types/mempool/mempool-transaction.type';
 
 @Component({
-    selector: 'mina-mempool-side-panel',
-    templateUrl: './mempool-side-panel.component.html',
-    styleUrls: ['./mempool-side-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-100 flex-column' },
-    standalone: false
+  selector: 'mina-mempool-side-panel',
+  templateUrl: './mempool-side-panel.component.html',
+  styleUrls: ['./mempool-side-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-100 flex-column' },
+  standalone: false,
 })
-export class MempoolSidePanelComponent extends StoreDispatcher implements OnInit {
-
+export class MempoolSidePanelComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   tx: SignedCommand | ZkappCommand;
   jsonString: string;
   expandingTracking: ExpandTracking = {};
 
-  @ViewChild(MinaJsonViewerComponent) private minaJsonViewer: MinaJsonViewerComponent;
+  @ViewChild(MinaJsonViewerComponent)
+  private minaJsonViewer: MinaJsonViewerComponent;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToActiveRowChange();

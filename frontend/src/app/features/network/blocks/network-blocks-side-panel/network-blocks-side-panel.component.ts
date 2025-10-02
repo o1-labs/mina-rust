@@ -5,16 +5,24 @@ import { SecDurationConfig } from '@openmina/shared';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-    selector: 'mina-network-blocks-side-panel',
-    templateUrl: './network-blocks-side-panel.component.html',
-    styleUrls: ['./network-blocks-side-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-100 flex-column border-left' },
-    standalone: false
+  selector: 'mina-network-blocks-side-panel',
+  templateUrl: './network-blocks-side-panel.component.html',
+  styleUrls: ['./network-blocks-side-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-100 flex-column border-left' },
+  standalone: false,
 })
-export class NetworkBlocksSidePanelComponent extends StoreDispatcher implements OnInit {
-
-  readonly secConfig: SecDurationConfig = { onlySeconds: true, undefinedAlternative: '-', color: true, severe: 30, warn: 5 };
+export class NetworkBlocksSidePanelComponent
+  extends StoreDispatcher
+  implements OnInit
+{
+  readonly secConfig: SecDurationConfig = {
+    onlySeconds: true,
+    undefinedAlternative: '-',
+    color: true,
+    severe: 30,
+    warn: 5,
+  };
 
   firstSentTime: number;
 

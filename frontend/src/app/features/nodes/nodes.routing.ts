@@ -10,17 +10,24 @@ const routes: Routes = [
     children: [
       {
         path: 'overview',
-        loadChildren: () => import('@nodes/overview/nodes-overview.module').then(m => m.NodesOverviewModule),
+        loadChildren: () =>
+          import('@nodes/overview/nodes-overview.module').then(
+            m => m.NodesOverviewModule,
+          ),
         title: NODES_TITLE,
       },
       {
         path: 'bootstrap',
-        loadChildren: () => import('@nodes/bootstrap/nodes-bootstrap.module').then(m => m.NodesBootstrapModule),
+        loadChildren: () =>
+          import('@nodes/bootstrap/nodes-bootstrap.module').then(
+            m => m.NodesBootstrapModule,
+          ),
         title: NODES_TITLE,
       },
       {
         path: 'live',
-        loadChildren: () => import('@nodes/live/nodes-live.module').then(m => m.NodesLiveModule),
+        loadChildren: () =>
+          import('@nodes/live/nodes-live.module').then(m => m.NodesLiveModule),
         title: NODES_TITLE,
       },
       {
@@ -39,6 +46,6 @@ const routes: Routes = [
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class NodesRouting {}

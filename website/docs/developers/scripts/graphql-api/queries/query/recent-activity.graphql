@@ -1,0 +1,18 @@
+query RecentActivity {
+  bestChain(maxLength: 5) {
+    stateHash
+    protocolState {
+      consensusState {
+        blockHeight
+      }
+    }
+    transactions {
+      userCommands {
+        amount
+        fee
+        from
+        to
+      }
+    }
+  }
+}

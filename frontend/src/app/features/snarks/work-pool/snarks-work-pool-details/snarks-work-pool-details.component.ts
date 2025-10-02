@@ -7,24 +7,31 @@ import { getMergedRoute, MergedRoute } from '@openmina/shared';
 import { take } from 'rxjs';
 
 @Component({
-    selector: 'mina-snarks-work-pool-details',
-    templateUrl: './snarks-work-pool-details.component.html',
-    styleUrls: ['./snarks-work-pool-details.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-snarks-work-pool-details',
+  templateUrl: './snarks-work-pool-details.component.html',
+  styleUrls: ['./snarks-work-pool-details.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class SnarksWorkPoolDetailsComponent extends StoreDispatcher implements OnInit {
-
-  accounts: { job: number, first: boolean, data: any }[];
+export class SnarksWorkPoolDetailsComponent
+  extends StoreDispatcher
+  implements OnInit
+{
+  accounts: { job: number; first: boolean; data: any }[];
   selectedTabIndex: number;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.select(selectSnarksWorkPoolActiveWorkPoolDetail, (detail: WorkPoolDetail) => {
-      this.accounts = this.getAccounts(detail);
-      this.detect();
-    });
+    this.select(
+      selectSnarksWorkPoolActiveWorkPoolDetail,
+      (detail: WorkPoolDetail) => {
+        this.accounts = this.getAccounts(detail);
+        this.detect();
+      },
+    );
     this.listenToTabFromRoute();
   }
 
@@ -36,9 +43,15 @@ export class SnarksWorkPoolDetailsComponent extends StoreDispatcher implements O
     });
   }
 
-  private getAccounts(detail: WorkPoolDetail): { job: number, first: boolean, data: any }[] {
-    const accounts: { job: number, first: boolean, data: any }[] = [];
-    const getAccountsRecursively = (nodes: any[], job: number, first: boolean): void => {
+  private getAccounts(
+    detail: WorkPoolDetail,
+  ): { job: number; first: boolean; data: any }[] {
+    const accounts: { job: number; first: boolean; data: any }[] = [];
+    const getAccountsRecursively = (
+      nodes: any[],
+      job: number,
+      first: boolean,
+    ): void => {
       for (const node of nodes) {
         if (node.Account) {
           accounts.push({ job, first, data: node.Account });
@@ -54,13 +67,11 @@ export class SnarksWorkPoolDetailsComponent extends StoreDispatcher implements O
         try {
           const tree = job.Base.first_pass_ledger_witness.tree;
           getAccountsRecursively(tree.Node, idx, true);
-        } catch (e) {
-        }
+        } catch (e) {}
         try {
           const tree2 = job.Base.second_pass_ledger_witness.tree;
           getAccountsRecursively(tree2.Node, idx, false);
-        } catch (e) {
-        }
+        } catch (e) {}
       });
       return accounts;
     } catch (e) {
@@ -69,12 +80,16 @@ export class SnarksWorkPoolDetailsComponent extends StoreDispatcher implements O
   }
 
   private listenToTabFromRoute(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.queryParams['tab']) {
-        this.selectedTabIndex = Number(route.queryParams['tab']);
-      } else {
-        this.selectTab(0);
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.queryParams['tab']) {
+          this.selectedTabIndex = Number(route.queryParams['tab']);
+        } else {
+          this.selectTab(0);
+        }
+      },
+      take(1),
+    );
   }
 }

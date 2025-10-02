@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .menu {
   .menu-toggle {
@@ -6,13 +6,21 @@
     border: none;
     border-radius: 0;
     background-color: unset;
-    transition: width 200ms ease-out, background-color 80ms;
+    transition:
+      width 200ms ease-out,
+      background-color 80ms;
 
     .mina-icon {
       font-size: 20px;
-      color: openmina.$base-tertiary;
-      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
-      transition: transform 200ms ease-out, color 80ms;
+      color: mina-rust.$base-tertiary;
+      font-variation-settings:
+        'FILL' 0,
+        'wght' 300,
+        'GRAD' 0,
+        'opsz' 20;
+      transition:
+        transform 200ms ease-out,
+        color 80ms;
 
       &.flipped {
         transform: rotateY(180deg);
@@ -39,16 +47,16 @@
     }
 
     &:hover {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
 
       .mina-icon {
-        color: openmina.$base-primary;
+        color: mina-rust.$base-primary;
       }
     }
   }
 
   .item {
-    color: openmina.$base-secondary;
+    color: mina-rust.$base-secondary;
     cursor: pointer;
     padding-left: 4px;
     display: flex;
@@ -66,8 +74,12 @@
       .mina-icon {
         font-size: 20px;
         padding-right: 7px;
-        color: openmina.$base-tertiary;
-        font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+        color: mina-rust.$base-tertiary;
+        font-variation-settings:
+          'FILL' 0,
+          'wght' 300,
+          'GRAD' 0,
+          'opsz' 20;
       }
 
       span:nth-child(2) {
@@ -77,16 +89,20 @@
     }
 
     &:hover:not(.active) {
-      background-color: openmina.$base-container;
-      color: openmina.$base-secondary;
+      background-color: mina-rust.$base-container;
+      color: mina-rust.$base-secondary;
     }
 
     &.active {
-      color: openmina.$selected-primary;
+      color: mina-rust.$selected-primary;
 
       .item-content .mina-icon {
-        color: openmina.$selected-primary;
-        font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+        color: mina-rust.$selected-primary;
+        font-variation-settings:
+          'FILL' 1,
+          'wght' 300,
+          'GRAD' 0,
+          'opsz' 20;
       }
     }
   }
@@ -132,15 +148,17 @@
   background-color: transparent;
 
   .mina-icon {
-    color: openmina.$base-secondary;
-    font-variation-settings: 'FILL' 1, 'wght' 200;
+    color: mina-rust.$base-secondary;
+    font-variation-settings:
+      'FILL' 1,
+      'wght' 200;
   }
 
   &:hover {
-    background-color: openmina.$base-surface-top;
+    background-color: mina-rust.$base-surface-top;
 
     .mina-icon {
-      color: openmina.$base-primary;
+      color: mina-rust.$base-primary;
     }
   }
 }
@@ -166,7 +184,7 @@
   animation: rotWithOpc 0.3s linear;
 
   &:hover {
-    background: openmina.$base-surface-top;
+    background: mina-rust.$base-surface-top;
   }
 
   .network,
@@ -181,19 +199,23 @@
 }
 
 @keyframes rotWithOpc {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
-  20%, 80% {
+  20%,
+  80% {
     opacity: 0;
   }
 }
 
 @keyframes rotWithOpc2 {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 1;
   }
-  20%, 80% {
+  20%,
+  80% {
     opacity: 0;
   }
 }

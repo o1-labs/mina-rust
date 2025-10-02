@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 $blue: #57d7ff;
 $pink: #fda2ff;
@@ -20,7 +20,7 @@ $orange: #ff833d;
 }
 
 .pill {
-  background-color: openmina.$base-background;
+  background-color: mina-rust.$base-background;
   height: 100%;
   min-width: 170px;
   @media (max-width: 767px) {
@@ -33,7 +33,7 @@ $orange: #ff833d;
 
   .pill-inside1 {
     position: absolute;
-    background-color: openmina.$base-background;
+    background-color: mina-rust.$base-background;
     top: 1px;
     left: 1px;
     height: calc(100% - 2px);
@@ -41,7 +41,12 @@ $orange: #ff833d;
 
     .pill-inside2 {
       padding-left: 6px;
-      background: linear-gradient(25deg, rgba($blue, 0.2), rgba($pink, 0.2), rgba($orange, 0.2));
+      background: linear-gradient(
+        25deg,
+        rgba($blue, 0.2),
+        rgba($pink, 0.2),
+        rgba($orange, 0.2)
+      );
 
       .mina-icon,
       .bp,
@@ -66,7 +71,6 @@ $orange: #ff833d;
   }
 }
 
-
 .comet-border {
   position: relative;
   margin: auto;
@@ -75,13 +79,13 @@ $orange: #ff833d;
 }
 
 .comet-border:before {
-  content: "";
+  content: '';
   background-image: conic-gradient(
-      $orange 5deg,
-      $pink 10deg,
-      $pink 50deg,
-      $blue 90deg,
-      transparent 140deg
+    $orange 5deg,
+    $pink 10deg,
+    $pink 50deg,
+    $blue 90deg,
+    transparent 140deg
   );
   height: 80px;
   width: 80px;

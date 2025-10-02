@@ -1,30 +1,39 @@
-@if ((isPending || nodeIsBootstrapping || isCalculatingVRF || isLoading) && emptySlots) {
-  <div class="w-100 h-100 fx-col-full-cent"
-       @fadeInOut>
+@if (
+  (isPending || nodeIsBootstrapping || isCalculatingVRF || isLoading) &&
+  emptySlots
+) {
+  <div class="w-100 h-100 fx-col-full-cent" @fadeInOut>
     <mina-loading-spinner [size]="50" [borderWidth]="2"></mina-loading-spinner>
     <div class="fx-col-full-cent">
       @if (isPending || isLoading) {
         <div class="f-600 f-18 mt-16 mb-10">Loading</div>
       } @else if (nodeIsBootstrapping) {
         <div class="f-600 f-18 mt-16 mb-10">Waiting For Sync</div>
-        <div class="secondary f-16">Only a synced node can calculate block production rights</div>
+        <div class="secondary f-16">
+          Only a synced node can calculate block production rights
+        </div>
       } @else {
-        <div class="f-600 f-18 mt-16 mb-10">Calculating Block Producing Rights</div>
+        <div class="f-600 f-18 mt-16 mb-10">
+          Calculating Block Producing Rights
+        </div>
         <div class="secondary f-16" [class.opacity-0]="!epoch">
-          Epoch {{ epoch }} - Slot {{ vrfStats?.evaluated }}/{{ vrfStats?.total }}
+          Epoch {{ epoch }} - Slot {{ vrfStats?.evaluated }}/{{
+            vrfStats?.total
+          }}
         </div>
       }
     </div>
   </div>
 } @else {
-  <mina-horizontal-resizable-container [leftTemplate]="left"
-                                       [rightTemplate]="right"
-                                       [show]="showSidePanel"
-                                       [minWidth]="360"
-                                       [maxWidthElement]="el.nativeElement"
-                                       localStorageKey="bp-won-slots-spw"
-                                       @fadeInOut>
-  </mina-horizontal-resizable-container>
+  <mina-horizontal-resizable-container
+    [leftTemplate]="left"
+    [rightTemplate]="right"
+    [show]="showSidePanel"
+    [minWidth]="360"
+    [maxWidthElement]="el.nativeElement"
+    localStorageKey="bp-won-slots-spw"
+    @fadeInOut
+  ></mina-horizontal-resizable-container>
 
   <ng-template #left>
     <div class="flex-column h-100">
@@ -35,7 +44,9 @@
       <div class="flex-column flex-1">
         <mina-block-production-won-slots-filters></mina-block-production-won-slots-filters>
         @if (!emptySlots) {
-          <mina-block-production-won-slots-table class="h-minus-xl"></mina-block-production-won-slots-table>
+          <mina-block-production-won-slots-table
+            class="h-minus-xl"
+          ></mina-block-production-won-slots-table>
         } @else {
           <div class="h-minus-xl fx-col-full-cent">
             <span class="mina-icon mb-16 f-40">cancel_presentation</span>

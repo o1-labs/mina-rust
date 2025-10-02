@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .header {
   height: 56px;
@@ -26,8 +26,8 @@
   }
 
   .learn-btn {
-    background-color: openmina.$base-background;
-    color: openmina.$base-primary;
+    background-color: mina-rust.$base-background;
+    color: mina-rust.$base-primary;
     max-width: 330px;
     margin: 0 12px;
     filter: invert(1);

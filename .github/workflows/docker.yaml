@@ -67,7 +67,7 @@ jobs:
 
   # Frontend
   build-mina-frontend-image:
-    timeout-minutes: 5
+    timeout-minutes: 60
     strategy:
       matrix:
         arch:
@@ -75,8 +75,6 @@ jobs:
             runs-on: ubuntu-latest
           - platform: linux/arm64
             runs-on: ubuntu-24.04-arm
-        configuration:
-          - build_configuration: production
     runs-on: ${{ matrix.arch.runs-on }}
     steps:
       - name: Prepare
@@ -96,14 +94,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Download circuits files
+        uses: ./.github/actions/setup-circuits
+
+      - name: Generate .env.docker
+        run: |
+          bash ./frontend/docker/generate-docker-env.sh
+
       - name: Build Docker image
         id: build
         uses: docker/build-push-action@v6
         with:
-          context: ./frontend
+          context: ./
+          file: ./frontend/Dockerfile
           platforms: ${{ matrix.arch.platform }}
-          build-args: |
-            BUILD_CONFIGURATION=${{ matrix.configuration.build_configuration }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           outputs: type=image,name=${{ env.REGISTRY_FRONTEND_IMAGE }},push-by-digest=true,name-canonical=true,push=true
@@ -117,7 +121,7 @@ jobs:
       - name: Upload digest
         uses: actions/upload-artifact@v4
         with:
-          name: frontend-${{ matrix.configuration.build_configuration }}-digests-${{ env.PLATFORM_PAIR }}
+          name: frontend-digests-${{ env.PLATFORM_PAIR }}
           path: /tmp/digests/*
           if-no-files-found: error
           retention-days: 1
@@ -155,7 +159,7 @@ jobs:
         with:
           registry_image: ${{ env.REGISTRY_FRONTEND_IMAGE }}
           git_commit: ${{ env.GIT_COMMIT }}
-          digest_pattern: 'frontend-*-digests-*'
+          digest_pattern: 'frontend-digests-*'
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
           additional_tags: ${{ env.ADDITIONAL_TAGS }}
@@ -197,3 +201,91 @@ jobs:
           dockerhub_username: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub_token: ${{ secrets.DOCKERHUB_TOKEN }}
           additional_tags: ${{ env.ADDITIONAL_TAGS }}
+
+  # Test frontend image with all environment configurations
+  test-frontend-image:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
+    needs:
+      - push-frontend-image
+    strategy:
+      matrix:
+        environment: [local, webnode, production, fuzzing]
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Download frontend digest artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: /tmp/digests
+          pattern: frontend-digests-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Get image digest
+        id: digest
+        run: |
+          # Get the first digest from artifacts (we'll test with amd64)
+          DIGEST=$(ls /tmp/digests | head -1)
+          echo "digest=sha256:${DIGEST}" >> $GITHUB_OUTPUT
+
+      - name: Test frontend image with ${{ matrix.environment }} environment
+        run: |
+          # Pull the image by digest
+          docker pull ${{ env.REGISTRY_FRONTEND_IMAGE }}@${{ steps.digest.outputs.digest }}
+
+          # Tag it for easier reference
+          docker tag ${{ env.REGISTRY_FRONTEND_IMAGE }}@${{ steps.digest.outputs.digest }} test-frontend:${{ matrix.environment }}
+
+          # Run the test script
+          ./.github/scripts/docker/test-frontend-docker.sh test-frontend:${{ matrix.environment }} ${{ matrix.environment }}
+
+  # Test Docker image build-info
+  test-docker-build-info:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/') || startsWith(github.ref, 'refs/heads/release')
+    needs:
+      - push-node-image
+    steps:
+      - name: Set up environment variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "DOCKER_TAG=develop" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            echo "DOCKER_TAG=${TAG}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            VERSION="${BRANCH_NAME#release/}"
+            echo "DOCKER_TAG=${VERSION}" >> $GITHUB_ENV
+          fi
+
+      - name: Test build-info command in Docker image
+        run: |
+          echo "Testing build-info for Docker image ${{ env.REGISTRY_NODE_IMAGE }}:${{ env.DOCKER_TAG }}"
+
+          # Run build-info command
+          docker run --rm ${{ env.REGISTRY_NODE_IMAGE }}:${{ env.DOCKER_TAG }} build-info
+
+          # Verify required fields are present
+          docker run --rm ${{ env.REGISTRY_NODE_IMAGE }}:${{ env.DOCKER_TAG }} build-info | grep -E "Version:|Build time:|Commit SHA:|Commit branch:|Rustc version:"
+
+          # Verify version format
+          VERSION=$(docker run --rm ${{ env.REGISTRY_NODE_IMAGE }}:${{ env.DOCKER_TAG }} build-info | grep "Version:" | awk '{print $2}')
+          if [[ ! "$VERSION" =~ ^[0-9a-f]{7}$ ]]; then
+            echo "Error: Version should be a 7-character commit hash, got: $VERSION"
+            exit 1
+          fi
+
+          echo "Docker image build-info verification passed!"

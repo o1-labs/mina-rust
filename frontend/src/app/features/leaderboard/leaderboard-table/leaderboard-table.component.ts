@@ -6,26 +6,26 @@ import { isDesktop, TooltipPosition } from '@openmina/shared';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
-    selector: 'mina-leaderboard-table',
-    templateUrl: './leaderboard-table.component.html',
-    styleUrl: './leaderboard-table.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column w-100 h-100' },
-    animations: [
-        trigger('fadeInOut', [
-            transition(':enter', [
-                style({ opacity: 0 }),
-                animate('400ms linear', style({ opacity: 1 })),
-            ]),
-            transition(':leave', [
-                animate('400ms linear', style({ opacity: 0 })),
-            ]),
-        ]),
-    ],
-    standalone: false
+  selector: 'mina-leaderboard-table',
+  templateUrl: './leaderboard-table.component.html',
+  styleUrl: './leaderboard-table.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column w-100 h-100' },
+  animations: [
+    trigger('fadeInOut', [
+      transition(':enter', [
+        style({ opacity: 0 }),
+        animate('400ms linear', style({ opacity: 1 })),
+      ]),
+      transition(':leave', [animate('400ms linear', style({ opacity: 0 }))]),
+    ]),
+  ],
+  standalone: false,
 })
-export class LeaderboardTableComponent extends StoreDispatcher implements OnInit {
-
+export class LeaderboardTableComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   isLoading: boolean = true;
   rows: HeartbeatSummary[] = [];
   desktop: boolean = isDesktop();
@@ -43,10 +43,13 @@ export class LeaderboardTableComponent extends StoreDispatcher implements OnInit
   }
 
   private listenToHeartbeatsChanges(): void {
-    this.select(LeaderboardSelectors.filteredHeartbeatSummaries, (rows: HeartbeatSummary[]) => {
-      this.rows = rows;
-      this.detect();
-    });
+    this.select(
+      LeaderboardSelectors.filteredHeartbeatSummaries,
+      (rows: HeartbeatSummary[]) => {
+        this.rows = rows;
+        this.detect();
+      },
+    );
   }
 
   protected readonly TooltipPosition = TooltipPosition;

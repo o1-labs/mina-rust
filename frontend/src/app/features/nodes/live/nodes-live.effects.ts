@@ -13,7 +13,7 @@ import {
   NODES_LIVE_GET_NODES_SUCCESS,
   NodesLiveActions,
   NodesLiveClose,
-  NodesLiveGetNodes
+  NodesLiveGetNodes,
 } from '@nodes/live/nodes-live.actions';
 import { NodesLiveNode } from '@shared/types/nodes/live/nodes-live-node.type';
 import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
@@ -22,33 +22,46 @@ import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
   providedIn: 'root',
 })
 export class NodesLiveEffects extends MinaRustBaseEffect<NodesLiveActions> {
-
   readonly getNodes$: Effect;
 
   private pendingRequest: boolean;
 
-  constructor(private actions$: Actions,
-              private nodesLiveService: NodesLiveService,
-              store: Store<MinaState>) {
+  constructor(
+    private actions$: Actions,
+    private nodesLiveService: NodesLiveService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getNodes$ = createEffect(() => this.actions$.pipe(
-      ofType(NODES_LIVE_GET_NODES, NODES_LIVE_CLOSE),
-      this.latestActionState<NodesLiveGetNodes | NodesLiveClose>(),
-      filter(({ action }) => (action as any).payload?.force || !this.pendingRequest),
-      tap(({ action }) => {
-        if (action.type === NODES_LIVE_GET_NODES) {
-          this.pendingRequest = true;
-        }
-      }),
-      switchMap(({ action }) =>
-        action.type === NODES_LIVE_CLOSE
-          ? EMPTY
-          : this.nodesLiveService.getLiveNodeTips(),
+    this.getNodes$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(NODES_LIVE_GET_NODES, NODES_LIVE_CLOSE),
+        this.latestActionState<NodesLiveGetNodes | NodesLiveClose>(),
+        filter(
+          ({ action }) =>
+            (action as any).payload?.force || !this.pendingRequest,
+        ),
+        tap(({ action }) => {
+          if (action.type === NODES_LIVE_GET_NODES) {
+            this.pendingRequest = true;
+          }
+        }),
+        switchMap(({ action }) =>
+          action.type === NODES_LIVE_CLOSE
+            ? EMPTY
+            : this.nodesLiveService.getLiveNodeTips(),
+        ),
+        map((payload: NodesLiveNode[]) => ({
+          type: NODES_LIVE_GET_NODES_SUCCESS,
+          payload,
+        })),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          NODES_LIVE_GET_NODES_SUCCESS,
+          { blocks: [], events: [] },
+        ),
+        tap(() => (this.pendingRequest = false)),
       ),
-      map((payload: NodesLiveNode[]) => ({ type: NODES_LIVE_GET_NODES_SUCCESS, payload })),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, NODES_LIVE_GET_NODES_SUCCESS, { blocks: [], events: [] }),
-      tap(() => this.pendingRequest = false),
-    ));
+    );
   }
 }

@@ -6,9 +6,12 @@ import { ONE_THOUSAND } from '@openmina/shared';
  * @param time
  * @param config - withSecs: boolean, fromTime: number
  */
-export function getTimeDiff(time: number, config?: { withSecs?: boolean, only1unit?: boolean, fromTime?: number }): {
-  diff: string,
-  inFuture: boolean
+export function getTimeDiff(
+  time: number,
+  config?: { withSecs?: boolean; only1unit?: boolean; fromTime?: number },
+): {
+  diff: string;
+  inFuture: boolean;
 } {
   if (!time) {
     return { diff: undefined, inFuture: false };
@@ -18,7 +21,9 @@ export function getTimeDiff(time: number, config?: { withSecs?: boolean, only1un
   }
 
   const paramTime = new Date(time).getTime();
-  const currentTime = config?.fromTime ? new Date(config.fromTime).getTime() : Date.now();
+  const currentTime = config?.fromTime
+    ? new Date(config.fromTime).getTime()
+    : Date.now();
 
   let timeDifference = paramTime - currentTime;
   const inFuture = timeDifference > 0;

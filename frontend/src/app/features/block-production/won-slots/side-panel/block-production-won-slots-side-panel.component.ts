@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { BlockProductionWonSlotsSelectors } from '@block-production/won-slots/block-production-won-slots.state';
 import {
@@ -7,7 +15,17 @@ import {
   BlockProductionWonSlotTimes,
 } from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
 import { getTimeDiff } from '@shared/helpers/date.helper';
-import { any, hasValue, isDesktop, isMobile, noMillisFormat, ONE_THOUSAND, safelyExecuteInBrowser, SecDurationConfig, toReadableDate } from '@openmina/shared';
+import {
+  any,
+  hasValue,
+  isDesktop,
+  isMobile,
+  noMillisFormat,
+  ONE_THOUSAND,
+  safelyExecuteInBrowser,
+  SecDurationConfig,
+  toReadableDate,
+} from '@openmina/shared';
 import { filter } from 'rxjs';
 import { BlockProductionWonSlotsActions } from '@block-production/won-slots/block-production-won-slots.actions';
 import { AppSelectors } from '@app/app.state';
@@ -16,16 +34,19 @@ import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-    selector: 'mina-block-production-won-slots-side-panel',
-    templateUrl: './block-production-won-slots-side-panel.component.html',
-    styleUrls: ['./block-production-won-slots-side-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100' },
-    standalone: false
+  selector: 'mina-block-production-won-slots-side-panel',
+  templateUrl: './block-production-won-slots-side-panel.component.html',
+  styleUrls: ['./block-production-won-slots-side-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100' },
+  standalone: false,
 })
-export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
-  protected readonly BlockProductionWonSlotsStatus = BlockProductionWonSlotsStatus;
+export class BlockProductionWonSlotsSidePanelComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
+  protected readonly BlockProductionWonSlotsStatus =
+    BlockProductionWonSlotsStatus;
   protected readonly config: SecDurationConfig = {
     color: false,
     includeMinutes: true,
@@ -47,18 +68,28 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
   percentage: number;
   private timer: any;
   private stopTimer: boolean;
-  private stateWhenReachedZero: { globalSlot: number; status: BlockProductionWonSlotsStatus };
+  private stateWhenReachedZero: {
+    globalSlot: number;
+    status: BlockProductionWonSlotsStatus;
+  };
   private network: string;
 
-  @ViewChild('beforeLedger', { read: ViewContainerRef }) private beforeLedger: ViewContainerRef;
-  @ViewChild('ledger', { read: ViewContainerRef }) private ledger: ViewContainerRef;
-  @ViewChild('produced', { read: ViewContainerRef }) private produced: ViewContainerRef;
-  @ViewChild('proof', { read: ViewContainerRef }) private proof: ViewContainerRef;
-  @ViewChild('apply', { read: ViewContainerRef }) private apply: ViewContainerRef;
+  @ViewChild('beforeLedger', { read: ViewContainerRef })
+  private beforeLedger: ViewContainerRef;
+  @ViewChild('ledger', { read: ViewContainerRef })
+  private ledger: ViewContainerRef;
+  @ViewChild('produced', { read: ViewContainerRef })
+  private produced: ViewContainerRef;
+  @ViewChild('proof', { read: ViewContainerRef })
+  private proof: ViewContainerRef;
+  @ViewChild('apply', { read: ViewContainerRef })
+  private apply: ViewContainerRef;
 
   @ViewChild('discarded') private discardedTemplate: TemplateRef<void>;
 
-  constructor(private router: Router) {super();}
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToActiveSlot();
@@ -67,43 +98,53 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
   }
 
   private listenToActiveNode(): void {
-    this.select(AppSelectors.activeNodeDetails, (node: AppNodeDetails) => {
-      this.network = node.network?.toLowerCase();
-    }, filter(Boolean));
+    this.select(
+      AppSelectors.activeNodeDetails,
+      (node: AppNodeDetails) => {
+        this.network = node.network?.toLowerCase();
+      },
+      filter(Boolean),
+    );
   }
 
   private listenToActiveSlot(): void {
-    this.select(BlockProductionWonSlotsSelectors.activeSlot, (slot: BlockProductionWonSlotsSlot) => {
-      this.slot = slot;
-      this.title = slot.message;
-      this.percentage = [
-        slot.times?.stagedLedgerDiffCreate,
-        slot.times?.produced,
-        slot.times?.proofCreate,
-        slot.times?.blockApply,
-        slot.times?.committed,
-      ].filter(t => hasValue(t)).length * 20;
+    this.select(
+      BlockProductionWonSlotsSelectors.activeSlot,
+      (slot: BlockProductionWonSlotsSlot) => {
+        this.slot = slot;
+        this.title = slot.message;
+        this.percentage =
+          [
+            slot.times?.stagedLedgerDiffCreate,
+            slot.times?.produced,
+            slot.times?.proofCreate,
+            slot.times?.blockApply,
+            slot.times?.committed,
+          ].filter(t => hasValue(t)).length * 20;
 
-      this.scheduled = toReadableDate(slot.slotTime);
-      this.slotStartedAlready = slot.slotTime < Date.now();
+        this.scheduled = toReadableDate(slot.slotTime);
+        this.slotStartedAlready = slot.slotTime < Date.now();
 
-      if (
-        (this.stateWhenReachedZero?.globalSlot === slot.globalSlot && this.stateWhenReachedZero?.status !== slot.status)
-        || !this.stateWhenReachedZero
-      ) {
-        this.stopTimer = !this.slot.active;
-        this.stateWhenReachedZero = undefined;
-      }
+        if (
+          (this.stateWhenReachedZero?.globalSlot === slot.globalSlot &&
+            this.stateWhenReachedZero?.status !== slot.status) ||
+          !this.stateWhenReachedZero
+        ) {
+          this.stopTimer = !this.slot.active;
+          this.stateWhenReachedZero = undefined;
+        }
 
-      this.parse();
+        this.parse();
 
-      this.vrfText = this.getVrfText;
-      this.vrf = slot.vrfValueWithThreshold;
+        this.vrfText = this.getVrfText;
+        this.vrf = slot.vrfValueWithThreshold;
 
-      this.createDiscardedView();
+        this.createDiscardedView();
 
-      this.detect();
-    }, filter(Boolean));
+        this.detect();
+      },
+      filter(Boolean),
+    );
   }
 
   viewInMinascan(): void {
@@ -126,7 +167,10 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
 
   private parse(): void {
     if (this.slot && !this.stopTimer) {
-      const remainingTime = getTimeDiff(this.addMinutesToTimestamp(this.slot.slotTime, 3), { withSecs: true });
+      const remainingTime = getTimeDiff(
+        this.addMinutesToTimestamp(this.slot.slotTime, 3),
+        { withSecs: true },
+      );
       if (remainingTime.inFuture) {
         this.remainingTime = '-';
       }
@@ -134,7 +178,10 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
       if (this.remainingTime === '0s') {
         /* when we reached 0s, we need to fetch data again because this slot is over and the user should see that in the table */
         this.stopTimer = true;
-        this.stateWhenReachedZero = { globalSlot: this.slot.globalSlot, status: this.slot.status };
+        this.stateWhenReachedZero = {
+          globalSlot: this.slot.globalSlot,
+          status: this.slot.status,
+        };
         this.remainingTime = '-';
       }
       this.detect();
@@ -143,7 +190,10 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
     }
   }
 
-  private addMinutesToTimestamp(timestampInMilliseconds: number, minutesToAdd: number): number {
+  private addMinutesToTimestamp(
+    timestampInMilliseconds: number,
+    minutesToAdd: number,
+  ): number {
     return timestampInMilliseconds + minutesToAdd * ONE_THOUSAND * 60;
   }
 
@@ -171,7 +221,9 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
       if (times.discarded >= times.blockApplyEnd) {
         locationName = 'apply';
       }
-      (any(this)[locationName] as ViewContainerRef)?.createEmbeddedView(this.discardedTemplate);
+      (any(this)[locationName] as ViewContainerRef)?.createEmbeddedView(
+        this.discardedTemplate,
+      );
     }
   }
 
@@ -184,5 +236,4 @@ export class BlockProductionWonSlotsSidePanelComponent extends StoreDispatcher i
     super.ngOnDestroy();
     clearInterval(this.timer);
   }
-
 }

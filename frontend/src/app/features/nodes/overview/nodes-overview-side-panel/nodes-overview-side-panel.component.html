@@ -1,7 +1,10 @@
 <div class="fx-row-vert-cent flex-between pl-12 pr-12 h-lg">
   <span class="secondary f-600">Blocks in Transition Frontier</span>
-  <span class="mina-icon pointer tertiary primary-hover f-18"
-        (click)="closeSidePanel()">close
+  <span
+    class="mina-icon pointer tertiary primary-hover f-18"
+    (click)="closeSidePanel()"
+  >
+    close
   </span>
 </div>
 <div class="h-minus-lg secondary overflow-y-auto border-top">
@@ -45,14 +48,25 @@
       </div>
       {{ node.appliedBlocks }}
     </div>
-    <div class="h-xl lh-xl pl-12 border-top f-600 secondary">Transition Frontier</div>
+    <div class="h-xl lh-xl pl-12 border-top f-600 secondary">
+      Transition Frontier
+    </div>
     <div class="squares flex-row flex-wrap pl-12 pr-12 pb-12 border-bottom">
-      <div *ngFor="let block of node.blocks"
-           [tooltip]="block.height + ' - ' + block.status + (block.isBestTip ? ' (Best Tip)' : '')"
-           [showDelay]="300"
-           [ngClass]="block.status"></div>
+      <div
+        *ngFor="let block of node.blocks"
+        [tooltip]="
+          block.height +
+          ' - ' +
+          block.status +
+          (block.isBestTip ? ' (Best Tip)' : '')
+        "
+        [showDelay]="300"
+        [ngClass]="block.status"
+      ></div>
     </div>
 
-    <mina-nodes-overview-ledgers [ledgers]="node.ledgers"></mina-nodes-overview-ledgers>
+    <mina-nodes-overview-ledgers
+      [ledgers]="node.ledgers"
+    ></mina-nodes-overview-ledgers>
   </ng-container>
 </div>

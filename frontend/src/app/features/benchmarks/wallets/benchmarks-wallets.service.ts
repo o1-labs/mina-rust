@@ -10,11 +10,15 @@ import {
   SignedCommand,
   ZkappCommand,
 } from '@shared/types/mempool/mempool-transaction.type';
-import { decodeMemo, getTimeFromMemo, removeUnicodeEscapes } from '@shared/helpers/transaction.helper';
+import {
+  decodeMemo,
+  getTimeFromMemo,
+  removeUnicodeEscapes,
+} from '@shared/helpers/transaction.helper';
 import { getLocalStorage, ONE_BILLION } from '@openmina/shared';
 import { MempoolTransactionResponseKind } from '@app/features/mempool/mempool.service';
 
-export const WALLETS: { privateKey: string, publicKey: string }[] = [
+export const WALLETS: { privateKey: string; publicKey: string }[] = [
   {
     privateKey: 'EKEQGWy4TjbVeqKjbe7TW81DKQM34min5FNmXpKArHKLyGVd3KSP',
     publicKey: 'B62qpD75xH5R19wxZG2uz8whNsHPTioVoYcPV3zfjjSbzTmaHQHKKEV',
@@ -4025,28 +4029,40 @@ export const WALLETS: { privateKey: string, publicKey: string }[] = [
   providedIn: 'root',
 })
 export class BenchmarksWalletsService {
-
   private client: Client = new Client({ network: 'testnet' });
 
   constructor(private rust: RustService) {
     if (!getLocalStorage()?.getItem('browserId')) {
-      getLocalStorage()?.setItem('browserId', Math.floor(Math.random() * 999999999).toString());
+      getLocalStorage()?.setItem(
+        'browserId',
+        Math.floor(Math.random() * 999999999).toString(),
+      );
     }
   }
 
-  getAccounts(): Observable<Pick<BenchmarksWallet, 'publicKey' | 'privateKey' | 'minaTokens' | 'nonce'>[]> {
+  getAccounts(): Observable<
+    Pick<
+      BenchmarksWallet,
+      'publicKey' | 'privateKey' | 'minaTokens' | 'nonce'
+    >[]
+  > {
     return this.rust.get<AccountsResponse[]>('/accounts').pipe(
-      map(wallets => wallets.map(wallet => {
-        return ({
-          privateKey: WALLETS.find(w => w.publicKey === wallet.public_key)?.privateKey,
-          publicKey: wallet.public_key,
-          minaTokens: wallet.balance / ONE_BILLION,
-          nonce: wallet.nonce,
-        });
-      })),
+      map(wallets =>
+        wallets.map(wallet => {
+          return {
+            privateKey: WALLETS.find(w => w.publicKey === wallet.public_key)
+              ?.privateKey,
+            publicKey: wallet.public_key,
+            minaTokens: wallet.balance / ONE_BILLION,
+            nonce: wallet.nonce,
+          };
+        }),
+      ),
       map(wallets => {
         return [
-          ...wallets.filter(w => WALLETS.map(w => w.publicKey).includes(w.publicKey)),
+          ...wallets.filter(w =>
+            WALLETS.map(w => w.publicKey).includes(w.publicKey),
+          ),
           // ...wallets
           //   .filter(w => {
           //     let foundW = WALLETS.find(wa => wa.publicKey === w.publicKey);
@@ -4063,10 +4079,12 @@ export class BenchmarksWalletsService {
     );
   }
 
-  sendTransactions(transactions: BenchmarksWalletTransaction[]): Observable<Partial<{
-    transactions: BenchmarksWalletTransaction[],
-    error: Error
-  }>> {
+  sendTransactions(transactions: BenchmarksWalletTransaction[]): Observable<
+    Partial<{
+      transactions: BenchmarksWalletTransaction[];
+      error: Error;
+    }>
+  > {
     const signedPayments = transactions.map(transaction => {
       return this.client.signPayment(transaction, transaction.privateKey);
     });
@@ -4088,7 +4106,7 @@ export class BenchmarksWalletsService {
           dateTime: getTimeFromMemo(tx.memo),
         })),
       })),
-      catchError((err) => {
+      catchError(err => {
         const error = new Error(err.message);
         (error as any).data = transactions.map(tx => ({
           ...tx,
@@ -4100,14 +4118,23 @@ export class BenchmarksWalletsService {
   }
 
   getAllIncludedTransactions(): Observable<MempoolTransaction[]> {
-    return this.rust.get<Array<[MempoolTransactionResponseKind, SignedCommand | ZkappCommand]>>('/best-chain-user-commands').pipe(
-      map(data => this.mapTxPoolResponse(data)),
-    );
+    return this.rust
+      .get<
+        Array<[MempoolTransactionResponseKind, SignedCommand | ZkappCommand]>
+      >('/best-chain-user-commands')
+      .pipe(map(data => this.mapTxPoolResponse(data)));
   }
 
-  private mapTxPoolResponse(response: Array<[MempoolTransactionResponseKind, SignedCommand | ZkappCommand]>): MempoolTransaction[] {
-    return response
-      .map(([kind, command]: [MempoolTransactionResponseKind, SignedCommand | ZkappCommand]) => {
+  private mapTxPoolResponse(
+    response: Array<
+      [MempoolTransactionResponseKind, SignedCommand | ZkappCommand]
+    >,
+  ): MempoolTransaction[] {
+    return response.map(
+      ([kind, command]: [
+        MempoolTransactionResponseKind,
+        SignedCommand | ZkappCommand,
+      ]) => {
         switch (kind) {
           case MempoolTransactionResponseKind.SignedCommand:
             const tx = command as SignedCommand;
@@ -4120,7 +4147,9 @@ export class BenchmarksWalletsService {
               memo: removeUnicodeEscapes(memo),
               transactionData: tx,
               sentFromStressingTool: memo.includes('S.T.'),
-              sentByMyBrowser: memo.includes(getLocalStorage()?.getItem('browserId')),
+              sentByMyBrowser: memo.includes(
+                getLocalStorage()?.getItem('browserId'),
+              ),
             } as MempoolTransaction;
           case MempoolTransactionResponseKind.ZkappCommand:
             const zkTx = command as ZkappCommand;
@@ -4133,11 +4162,13 @@ export class BenchmarksWalletsService {
               memo: removeUnicodeEscapes(zkMemo),
               transactionData: zkTx,
               sentFromStressingTool: zkMemo.includes('S.T.'),
-              sentByMyBrowser: zkMemo.includes(getLocalStorage()?.getItem('browserId')),
+              sentByMyBrowser: zkMemo.includes(
+                getLocalStorage()?.getItem('browserId'),
+              ),
             } as MempoolTransaction;
         }
-
-      });
+      },
+    );
   }
 }
 

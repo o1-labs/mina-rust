@@ -58,9 +58,13 @@ export interface ZkInput {
   accountUpdates: number;
 }
 
-export async function deployZkApp(graphQlUrl: string, input: ZkInput, updates: {
-  next: (val: { step: string, duration: number }) => void
-}): Promise<any> {
+export async function deployZkApp(
+  graphQlUrl: string,
+  input: ZkInput,
+  updates: {
+    next: (val: { step: string; duration: number }) => void;
+  },
+): Promise<any> {
   console.log('----------- Sending ZkApp -----------');
   const network = Mina.Network(graphQlUrl);
   Mina.setActiveInstance(network);
@@ -71,8 +75,8 @@ export async function deployZkApp(graphQlUrl: string, input: ZkInput, updates: {
       privateKey: randPrivateKey,
     };
   });
-  console.log(pairs.map((pair) => pair.privateKey.toBase58()));
-  const zkApps: Add[] = pairs.map((pair) => new Add(pair.publicKey));
+  console.log(pairs.map(pair => pair.privateKey.toBase58()));
+  const zkApps: Add[] = pairs.map(pair => new Add(pair.publicKey));
 
   let stepStartTime = performance.now();
 
@@ -82,7 +86,7 @@ export async function deployZkApp(graphQlUrl: string, input: ZkInput, updates: {
       updates.next({ step, duration: undefined });
       return;
     }
-    let duration = Math.round((now - stepStartTime) / 1000 * 1000) / 1000;
+    let duration = Math.round(((now - stepStartTime) / 1000) * 1000) / 1000;
     updates.next({ step, duration });
     console.log(`${step} (${duration}s)`);
     stepStartTime = now;
@@ -99,7 +103,10 @@ export async function deployZkApp(graphQlUrl: string, input: ZkInput, updates: {
     memo: input.memo,
   };
   let tx = await Mina.transaction(payerAccount, async () => {
-    AccountUpdate.fundNewAccount(PublicKey.fromBase58(input.payerPublicKey), input.accountUpdates);
+    AccountUpdate.fundNewAccount(
+      PublicKey.fromBase58(input.payerPublicKey),
+      input.accountUpdates,
+    );
     for (const zkApp of zkApps) {
       await zkApp.deploy();
     }
@@ -110,10 +117,13 @@ export async function deployZkApp(graphQlUrl: string, input: ZkInput, updates: {
   await tx.prove();
   updateStep('Proved');
 
-  await tx.sign([PrivateKey.fromBase58(input.payerPrivateKey), ...pairs.map((pair) => pair.privateKey)]);
+  await tx.sign([
+    PrivateKey.fromBase58(input.payerPrivateKey),
+    ...pairs.map(pair => pair.privateKey),
+  ]);
   updateStep('Signed');
 
-  return tx.safeSend().then((sentTx) => {
+  return tx.safeSend().then(sentTx => {
     updateStep('Sent');
     console.log(sentTx);
     console.log('----------- Done -----------');
@@ -126,9 +136,13 @@ const deployedZkApps: string[] = [
   'EKFF1zZ4KUCZoe7GXHAPcfLdkGPgsYJ5RNtQvHMx8ndhY1pZttaa',
 ];
 
-export async function updateZkApp(graphQlUrl: string, input: ZkInput, updates: {
-  next: (val: { step: string, duration: number }) => void
-}): Promise<any> {
+export async function updateZkApp(
+  graphQlUrl: string,
+  input: ZkInput,
+  updates: {
+    next: (val: { step: string; duration: number }) => void;
+  },
+): Promise<any> {
   console.log('----------- Updating ZkApp -----------');
   const network = Mina.Network(graphQlUrl);
   Mina.setActiveInstance(network);
@@ -139,7 +153,7 @@ export async function updateZkApp(graphQlUrl: string, input: ZkInput, updates: {
       privateKey: randPrivateKey,
     };
   });
-  const zkApps: Add[] = pairs.map((pair) => new Add(pair.publicKey));
+  const zkApps: Add[] = pairs.map(pair => new Add(pair.publicKey));
 
   let stepStartTime = performance.now();
 
@@ -149,7 +163,7 @@ export async function updateZkApp(graphQlUrl: string, input: ZkInput, updates: {
       updates.next({ step, duration: undefined });
       return;
     }
-    let duration = Math.round((now - stepStartTime) / 1000 * 1000) / 1000;
+    let duration = Math.round(((now - stepStartTime) / 1000) * 1000) / 1000;
     updates.next({ step, duration });
     console.log(`${step} (${duration}s)`);
     stepStartTime = now;
@@ -176,10 +190,13 @@ export async function updateZkApp(graphQlUrl: string, input: ZkInput, updates: {
   await tx.prove();
   updateStep('Proved');
 
-  await tx.sign([PrivateKey.fromBase58(input.payerPrivateKey), ...pairs.map((pair) => pair.privateKey)]);
+  await tx.sign([
+    PrivateKey.fromBase58(input.payerPrivateKey),
+    ...pairs.map(pair => pair.privateKey),
+  ]);
   updateStep('Signed');
 
-  return tx.safeSend().then((sentTx) => {
+  return tx.safeSend().then(sentTx => {
     updateStep('Sent');
     updateStep(null);
     console.log(sentTx);

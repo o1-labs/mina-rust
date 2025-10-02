@@ -1,0 +1,12 @@
+query CurrentSnarkWorker {
+  currentSnarkWorker {
+    key
+    fee
+    account {
+      publicKey
+      balance {
+        total
+      }
+    }
+  }
+}

@@ -1,0 +1,272 @@
+---
+title: Node Dashboard
+description:
+  Web interface for monitoring and interacting with the Mina Rust node
+sidebar_position: 2
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import InstallDependencies from "!!raw-loader!../scripts/frontend/install-dependencies.sh";
+import StartDevelopment from "!!raw-loader!../scripts/frontend/start-development.sh";
+import BuildProduction from "!!raw-loader!../scripts/frontend/build-production.sh";
+import FormatCode from "!!raw-loader!../scripts/frontend/format-code.sh";
+import RunTests from "!!raw-loader!../scripts/frontend/run-tests.sh";
+
+# Node Dashboard
+
+The Node Dashboard is a comprehensive web interface for monitoring and
+interacting with your Mina Rust node. Built with Angular, it provides real-time
+insights into your node's operation and the broader network state.
+
+## Features
+
+- **Real-time node monitoring** - View node status, blockchain state, and
+  network activity
+- **Block explorer** - Browse blocks, transactions, and accounts
+- **Network visualization** - See peer connections and network topology
+- **SNARK worker monitoring** - Track SNARK work production and verification
+- **Transaction pool viewer** - Monitor pending transactions
+- **Performance metrics** - Resource usage and performance dashboards
+
+## Prerequisites
+
+Ensure you have Node.js and Angular CLI installed by following the
+[Frontend Prerequisites](./#prerequisites) guide.
+
+## Quick start
+
+### Installation
+
+Navigate to the frontend directory and install dependencies:
+
+<CodeBlock language="bash" title="scripts/frontend/install-dependencies.sh">
+  {InstallDependencies}
+</CodeBlock>
+
+### Development server
+
+Start the development server with hot-reload:
+
+<CodeBlock language="bash" title="scripts/frontend/start-development.sh">
+  {StartDevelopment}
+</CodeBlock>
+
+This will:
+
+1. Install any missing dependencies
+2. Start the Angular development server
+3. Open the application in your browser at `http://localhost:4200`
+
+## Build configurations
+
+The frontend supports multiple build configurations for different environments:
+
+```bash
+# Local configuration (connects to local node)
+make build-local
+
+# Mobile-accessible development server
+make start-dev-mobile
+```
+
+### Production builds
+
+For optimized production deployments:
+
+<CodeBlock language="bash" title="scripts/frontend/build-production.sh">
+  {BuildProduction}
+</CodeBlock>
+
+Production build with Sentry error tracking:
+
+```bash
+make build-production-sentry
+```
+
+### Specialized configurations
+
+```bash
+# Block producer dashboard
+make build-producer
+
+# Fuzzing test interface
+make build-fuzzing
+
+# WebNode integration
+make build-webnode
+```
+
+## Configuration
+
+### Environment files
+
+The frontend uses environment-specific configuration files located in
+`src/assets/environments/`:
+
+- [`fuzzing.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/fuzzing.js) -
+  Fuzzing tests
+- [`local.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/local.js) -
+  Local development
+- [`producer.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/producer.js) -
+  Block producer interface
+- [`production.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/production.js) -
+  Production deployment
+- [`webnode.js`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/assets/environments/webnode.js) -
+  WebNode integration
+
+For the most current environment configuration files, see the
+[frontend/src/assets/environments](https://github.com/o1-labs/mina-rust/tree/develop/frontend/src/assets/environments)
+directory in the develop branch.
+
+## Development workflow
+
+### Code formatting
+
+The project uses Prettier for consistent code formatting:
+
+<CodeBlock language="bash" title="scripts/frontend/format-code.sh">
+  {FormatCode}
+</CodeBlock>
+
+### Testing
+
+Run the Cypress test suite:
+
+<CodeBlock language="bash" title="scripts/frontend/run-tests.sh">
+  {RunTests}
+</CodeBlock>
+
+For interactive testing:
+
+```bash
+# Interactive test runner
+make test
+```
+
+### Building for production
+
+Create an optimized production build:
+
+```bash
+# Build with version update
+make prebuild
+make build-production
+
+# Build with Sentry sourcemaps
+make build-production-sentry
+```
+
+### Serving production builds
+
+Test production builds locally:
+
+```bash
+make build-production
+make start-bundle
+```
+
+## Docker deployment
+
+The Node Dashboard can be deployed using Docker with environment-specific
+builds.
+
+### Environment configurations
+
+The `MINA_FRONTEND_ENVIRONMENT` variable determines how the frontend is built
+and configured:
+
+- **`local`** - Local development environment connecting to localhost:3085.
+  Optimized for development with a local node instance.
+
+- **`fuzzing`** - Fuzzing test environment for stress testing. Development build
+  with enhanced debugging for testing scenarios.
+
+- **`prod`** - Production environment with full optimization. Connects to
+  production network endpoints with minification and performance optimizations.
+
+- **`producer`** - Specialized configuration for block producers. Includes
+  additional monitoring and producer-specific features.
+
+- **`webnodelocal`** - WebNode configuration for browser-based Mina node
+  operation. Enables WASM integration and WebRTC networking for in-browser
+  execution.
+
+- **`leaderboard`** - Leaderboard configuration for community participation
+  tracking. Optimized for testnet participation metrics and rankings.
+
+### Build Docker image
+
+```bash
+# Generate .env.docker with current git information (required for WASM build)
+frontend/docker/generate-docker-env.sh
+
+# Build the Docker image (from project root)
+docker build -t mina-frontend -f frontend/Dockerfile .
+```
+
+### Run with Docker
+
+```bash
+# Run Node Dashboard with local configuration (connects to localhost:3085)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=local mina-frontend
+
+# Run Node Dashboard with production configuration (production endpoints)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=production mina-frontend
+
+# Run Node Dashboard with webnode configuration (browser-based node operation)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=webnode mina-frontend
+
+# Run Node Dashboard with producer configuration (block producer features)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=producer mina-frontend
+
+# Run Node Dashboard with fuzzing configuration (stress testing)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=fuzzing mina-frontend
+
+# Run Node Dashboard with leaderboard configuration (community tracking)
+docker run -p 4200:80 -e MINA_FRONTEND_ENVIRONMENT=leaderboard mina-frontend
+```
+
+<!-- prettier-ignore-start -->
+
+:::info Docker Build Process
+
+The Docker image builds the frontend **at container startup** based on the
+`MINA_FRONTEND_ENVIRONMENT` variable. This allows a single Docker image to serve
+different configurations.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## Project structure
+
+```
+frontend/
+├── src/
+│   ├── app/              # Angular application code
+│   │   ├── core/         # Core services and utilities
+│   │   ├── shared/       # Shared components and modules
+│   │   ├── features/     # Feature modules
+│   │   └── layout/       # Layout components
+│   ├── assets/           # Static assets
+│   │   └── environments/ # Environment configurations
+│   ├── styles/           # Global styles
+│   └── index.html        # Main HTML template
+├── cypress/              # E2E test specifications
+├── scripts/              # Build and deployment scripts
+├── Makefile              # Build automation
+├── angular.json          # Angular CLI configuration
+├── package.json          # Node.js dependencies
+└── tsconfig.json         # TypeScript configuration
+```
+
+## Features
+
+### Real-time updates
+
+The frontend maintains WebSocket connections for real-time updates:
+
+- Block production events
+- Network peer changes
+- Transaction pool updates
+- SNARK work completion

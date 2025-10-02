@@ -1,11 +1,11 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .no-results {
   button {
-    background-color: openmina.$base-container;
+    background-color: mina-rust.$base-container;
 
     &:hover {
-      background-color: openmina.$base-divider;
+      background-color: mina-rust.$base-divider;
     }
   }
 }

@@ -1,25 +1,23 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { BlockProductionWonSlotsActions } from '@block-production/won-slots/block-production-won-slots.actions';
-import {
-  BlockProductionWonSlotsFilters,
-} from '@shared/types/block-production/won-slots/block-production-won-slots-filters.type';
+import { BlockProductionWonSlotsFilters } from '@shared/types/block-production/won-slots/block-production-won-slots-filters.type';
 import { BlockProductionWonSlotsSelectors } from '@block-production/won-slots/block-production-won-slots.state';
 import { isMobile } from '@openmina/shared';
-import {
-  BlockProductionWonSlotsStatus,
-} from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
+import { BlockProductionWonSlotsStatus } from '@shared/types/block-production/won-slots/block-production-won-slots-slot.type';
 
 @Component({
-    selector: 'mina-block-production-won-slots-filters',
-    templateUrl: './block-production-won-slots-filters.component.html',
-    styleUrls: ['./block-production-won-slots-filters.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-xl w-100 flex-row border-top border-bottom' },
-    standalone: false
+  selector: 'mina-block-production-won-slots-filters',
+  templateUrl: './block-production-won-slots-filters.component.html',
+  styleUrls: ['./block-production-won-slots-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-xl w-100 flex-row border-top border-bottom' },
+  standalone: false,
 })
-export class BlockProductionWonSlotsFiltersComponent extends StoreDispatcher implements OnInit {
-
+export class BlockProductionWonSlotsFiltersComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   protected readonly isMobile = isMobile();
 
   filters: BlockProductionWonSlotsFilters;
@@ -44,16 +42,30 @@ export class BlockProductionWonSlotsFiltersComponent extends StoreDispatcher imp
   private listenToActiveEpoch(): void {
     this.select(BlockProductionWonSlotsSelectors.slots, slots => {
       this.totalWonSlots = slots.length;
-      this.totalCanonical = slots.filter(s => s.status === BlockProductionWonSlotsStatus.Canonical).length;
-      this.totalOrphaned = slots.filter(s => s.status === BlockProductionWonSlotsStatus.Orphaned).length;
-      this.totalFuture = slots.filter(s => !s.status || s.status === BlockProductionWonSlotsStatus.Scheduled).length;
-      this.totalDiscarded = slots.filter(s => s.status === BlockProductionWonSlotsStatus.Discarded).length;
+      this.totalCanonical = slots.filter(
+        s => s.status === BlockProductionWonSlotsStatus.Canonical,
+      ).length;
+      this.totalOrphaned = slots.filter(
+        s => s.status === BlockProductionWonSlotsStatus.Orphaned,
+      ).length;
+      this.totalFuture = slots.filter(
+        s => !s.status || s.status === BlockProductionWonSlotsStatus.Scheduled,
+      ).length;
+      this.totalDiscarded = slots.filter(
+        s => s.status === BlockProductionWonSlotsStatus.Discarded,
+      ).length;
       this.detect();
     });
   }
 
-  changeFilter(filter: keyof BlockProductionWonSlotsFilters, value: boolean): void {
-    this.dispatch2(BlockProductionWonSlotsActions.changeFilters({ filters: { ...this.filters, [filter]: value } }));
+  changeFilter(
+    filter: keyof BlockProductionWonSlotsFilters,
+    value: boolean,
+  ): void {
+    this.dispatch2(
+      BlockProductionWonSlotsActions.changeFilters({
+        filters: { ...this.filters, [filter]: value },
+      }),
+    );
   }
-
 }

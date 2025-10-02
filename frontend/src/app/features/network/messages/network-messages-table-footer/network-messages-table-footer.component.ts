@@ -1,5 +1,15 @@
-import { ChangeDetectionStrategy, Component, ComponentRef, EventEmitter, OnInit, Output } from '@angular/core';
-import { NetworkMessagesState, selectNetworkTimestampInterval } from '@network/messages/network-messages.state';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ComponentRef,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  NetworkMessagesState,
+  selectNetworkTimestampInterval,
+} from '@network/messages/network-messages.state';
 import {
   NetworkMessagesGetPaginatedMessages,
   NetworkMessagesGoLive,
@@ -15,7 +25,7 @@ import {
   IntervalSelectComponent,
   MergedRoute,
   ONE_THOUSAND,
-  TimestampInterval
+  TimestampInterval,
 } from '@openmina/shared';
 import { DatePipe } from '@angular/common';
 import { Router } from '@angular/router';
@@ -24,15 +34,17 @@ import { selectNetworkMessagesState } from '@network/network.state';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-    selector: 'mina-network-messages-table-footer',
-    templateUrl: './network-messages-table-footer.component.html',
-    styleUrls: ['./network-messages-table-footer.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'fx-row-vert-cent border-top h-lg' },
-    standalone: false
+  selector: 'mina-network-messages-table-footer',
+  templateUrl: './network-messages-table-footer.component.html',
+  styleUrls: ['./network-messages-table-footer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'fx-row-vert-cent border-top h-lg' },
+  standalone: false,
 })
-export class NetworkMessagesTableFooterComponent extends StoreDispatcher implements OnInit {
-
+export class NetworkMessagesTableFooterComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   @Output() onScrollTopClick: EventEmitter<void> = new EventEmitter<void>();
 
   state: NetworkMessagesState;
@@ -45,9 +57,13 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
   private currentTimestamp: TimestampInterval;
   private urlMessageId: string;
 
-  constructor(private datePipe: DatePipe,
-              private overlay: Overlay,
-              private router: Router) { super(); }
+  constructor(
+    private datePipe: DatePipe,
+    private overlay: Overlay,
+    private router: Router,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToNetworkMessages();
@@ -64,32 +80,48 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
   private listenToNetworkMessages(): void {
     this.select(selectNetworkMessagesState, (state: NetworkMessagesState) => {
       this.state = state;
-      this.isFirstPage = state.activePage.start?.id === 0
-        || !state.activePage.firstPageIdWithTimestamp && state.messages.length < state.limit
-        || state.activePage.firstPageIdWithFilters === state.activePage.start?.id
-        || state.activePage.firstPageIdWithTimestamp && state.activePage.start?.id <= state.activePage.firstPageIdWithTimestamp;
-      this.isLastPage = state.stream
-        || (
-          !state.activePage.firstPageIdWithTimestamp
-          && (state.pages.length === 0 || state.activePage.end?.id === state.pages[state.pages.length - 1])
-        )
-        || state.activePage.lastPageIdWithFilters === state.activePage.end.id
-        || state.activePage.lastPageIdWithTimestamp === state.activePage.end.id;
+      this.isFirstPage =
+        state.activePage.start?.id === 0 ||
+        (!state.activePage.firstPageIdWithTimestamp &&
+          state.messages.length < state.limit) ||
+        state.activePage.firstPageIdWithFilters ===
+          state.activePage.start?.id ||
+        (state.activePage.firstPageIdWithTimestamp &&
+          state.activePage.start?.id <=
+            state.activePage.firstPageIdWithTimestamp);
+      this.isLastPage =
+        state.stream ||
+        (!state.activePage.firstPageIdWithTimestamp &&
+          (state.pages.length === 0 ||
+            state.activePage.end?.id ===
+              state.pages[state.pages.length - 1])) ||
+        state.activePage.lastPageIdWithFilters === state.activePage.end.id ||
+        state.activePage.lastPageIdWithTimestamp === state.activePage.end.id;
       this.detect();
     });
   }
 
   private listenToTimestampIntervalChange(): void {
-    this.select(selectNetworkTimestampInterval, (timestamp: TimestampInterval) => {
-      this.currentTimestamp = timestamp;
-      const from = this.datePipe.transform(timestamp.from * ONE_THOUSAND, 'MMM d, H:mm:ss');
-      let to = this.datePipe.transform(timestamp.to * ONE_THOUSAND, 'MMM d, H:mm:ss');
-      if (from.split(',')[0] === to.split(',')[0]) {
-        to = this.datePipe.transform(timestamp.to * ONE_THOUSAND, 'H:mm:ss');
-      }
-      this.activeInterval = from + ' - ' + to;
-      this.detect();
-    }, filter(timestamp => !!timestamp.from));
+    this.select(
+      selectNetworkTimestampInterval,
+      (timestamp: TimestampInterval) => {
+        this.currentTimestamp = timestamp;
+        const from = this.datePipe.transform(
+          timestamp.from * ONE_THOUSAND,
+          'MMM d, H:mm:ss',
+        );
+        let to = this.datePipe.transform(
+          timestamp.to * ONE_THOUSAND,
+          'MMM d, H:mm:ss',
+        );
+        if (from.split(',')[0] === to.split(',')[0]) {
+          to = this.datePipe.transform(timestamp.to * ONE_THOUSAND, 'H:mm:ss');
+        }
+        this.activeInterval = from + ' - ' + to;
+        this.detect();
+      },
+      filter(timestamp => !!timestamp.from),
+    );
   }
 
   goLive(): void {
@@ -149,7 +181,10 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
     let payload: NetworkMessagesGetPaginatedMessages['payload'];
     if (this.currentTimestamp) {
       payload = {
-        timestamp: { from: this.currentTimestamp.to, to: this.currentTimestamp.from },
+        timestamp: {
+          from: this.currentTimestamp.to,
+          to: this.currentTimestamp.from,
+        },
         direction: NetworkMessagesDirection.REVERSE,
       };
     } else {
@@ -169,20 +204,24 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
 
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(event?.target as HTMLElement)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: -35,
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'top',
+            offsetY: -35,
+          },
+        ]),
     });
     event?.stopPropagation();
 
     const portal = new ComponentPortal(IntervalSelectComponent);
-    this.intervalSelectComponent = this.overlayRef.attach<IntervalSelectComponent>(portal);
+    this.intervalSelectComponent =
+      this.overlayRef.attach<IntervalSelectComponent>(portal);
     this.intervalSelectComponent.instance.from = this.currentTimestamp?.from;
     this.intervalSelectComponent.instance.to = this.currentTimestamp?.to;
     setTimeout(() => {
@@ -195,14 +234,23 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
         this.intervalSelectComponent.instance.animate = false;
         this.intervalSelectComponent.instance.detect();
         if (response) {
-          this.router.navigate(this.urlMessageId ? [Routes.NETWORK, Routes.MESSAGES, this.urlMessageId] : [Routes.NETWORK, Routes.MESSAGES], {
-            queryParamsHandling: 'merge',
-            queryParams: {
-              from: response.from / ONE_THOUSAND, to: response.to / ONE_THOUSAND,
+          this.router.navigate(
+            this.urlMessageId
+              ? [Routes.NETWORK, Routes.MESSAGES, this.urlMessageId]
+              : [Routes.NETWORK, Routes.MESSAGES],
+            {
+              queryParamsHandling: 'merge',
+              queryParams: {
+                from: response.from / ONE_THOUSAND,
+                to: response.to / ONE_THOUSAND,
+              },
             },
-          });
+          );
           this.dispatch(NetworkMessagesSetTimestampInterval, {
-            timestamp: { from: response.from / ONE_THOUSAND, to: response.to / ONE_THOUSAND },
+            timestamp: {
+              from: response.from / ONE_THOUSAND,
+              to: response.to / ONE_THOUSAND,
+            },
             direction: NetworkMessagesDirection.FORWARD,
           });
         }
@@ -224,12 +272,18 @@ export class NetworkMessagesTableFooterComponent extends StoreDispatcher impleme
   clearTimestampInterval(event: MouseEvent): void {
     event.stopPropagation();
     this.activeInterval = this.currentTimestamp = undefined;
-    this.router.navigate(this.urlMessageId ? [Routes.NETWORK, Routes.MESSAGES, this.urlMessageId] : [Routes.NETWORK, Routes.MESSAGES], {
-      queryParamsHandling: 'merge',
-      queryParams: {
-        from: undefined, to: undefined,
+    this.router.navigate(
+      this.urlMessageId
+        ? [Routes.NETWORK, Routes.MESSAGES, this.urlMessageId]
+        : [Routes.NETWORK, Routes.MESSAGES],
+      {
+        queryParamsHandling: 'merge',
+        queryParams: {
+          from: undefined,
+          to: undefined,
+        },
       },
-    });
+    );
     this.dispatch(NetworkMessagesSetTimestampInterval, {
       timestamp: { from: undefined, to: undefined },
       direction: NetworkMessagesDirection.REVERSE,

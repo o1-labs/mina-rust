@@ -8,15 +8,12 @@ import {
   MinaJsonViewerComponent,
   MinaSidePanelStepperComponent,
 } from '@openmina/shared';
-import {
-  NetworkNodeDhtSidePanelComponent,
-} from '@network/node-dht/network-node-dht-side-panel/network-node-dht-side-panel.component';
+import { NetworkNodeDhtSidePanelComponent } from '@network/node-dht/network-node-dht-side-panel/network-node-dht-side-panel.component';
 import { NetworkNodeDhtRouting } from '@network/node-dht/network-node-dht.routing';
 import { EffectsModule } from '@ngrx/effects';
 import { NetworkNodeDhtEffects } from '@network/node-dht/network-node-dht.effects';
 import { NetworkNodeDhtLineComponent } from './network-node-dht-line/network-node-dht-line.component';
 import { NetworkNodeDhtTableComponent } from './network-node-dht-table/network-node-dht-table.component';
-
 
 @NgModule({
   declarations: [

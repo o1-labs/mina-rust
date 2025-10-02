@@ -9,27 +9,28 @@ import { SharedModule } from '@shared/shared.module';
 import { EffectsModule } from '@ngrx/effects';
 import { NodesOverviewEffects } from '@nodes/overview/nodes-overview.effects';
 import { NodesOverviewLedgersComponent } from '@nodes/overview/nodes-overview-ledgers/nodes-overview-ledgers.component';
-import { CopyComponent, HorizontalMenuComponent, HorizontalResizableContainerComponent } from '@openmina/shared';
-
+import {
+  CopyComponent,
+  HorizontalMenuComponent,
+  HorizontalResizableContainerComponent,
+} from '@openmina/shared';
 
 @NgModule({
-	declarations: [
-		NodesOverviewComponent,
-		NodesOverviewTableComponent,
-		NodesOverviewSidePanelComponent,
-		NodesOverviewToolbarComponent,
-		NodesOverviewLedgersComponent,
-	],
-	imports: [
-		SharedModule,
-		NodesOverviewRouting,
-		HorizontalResizableContainerComponent,
-		EffectsModule.forFeature(NodesOverviewEffects),
-		HorizontalMenuComponent,
-		CopyComponent,
-	],
-	exports: [
-		NodesOverviewLedgersComponent,
-	],
+  declarations: [
+    NodesOverviewComponent,
+    NodesOverviewTableComponent,
+    NodesOverviewSidePanelComponent,
+    NodesOverviewToolbarComponent,
+    NodesOverviewLedgersComponent,
+  ],
+  imports: [
+    SharedModule,
+    NodesOverviewRouting,
+    HorizontalResizableContainerComponent,
+    EffectsModule.forFeature(NodesOverviewEffects),
+    HorizontalMenuComponent,
+    CopyComponent,
+  ],
+  exports: [NodesOverviewLedgersComponent],
 })
 export class NodesOverviewModule {}

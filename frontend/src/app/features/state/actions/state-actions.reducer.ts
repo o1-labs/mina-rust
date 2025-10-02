@@ -27,9 +27,11 @@ const initialState: StateActionsState = {
   },
 };
 
-export function reducer(state: StateActionsState = initialState, action: StateActionsActions): StateActionsState {
+export function reducer(
+  state: StateActionsState = initialState,
+  action: StateActionsActions,
+): StateActionsState {
   switch (action.type) {
-
     case STATE_ACTIONS_GET_ACTIONS: {
       return {
         ...state,
@@ -86,27 +88,37 @@ export function reducer(state: StateActionsState = initialState, action: StateAc
   }
 }
 
-function searchActionsInGroups(toSearch: string, groups: StateActionGroup[]): StateActionGroup[] {
+function searchActionsInGroups(
+  toSearch: string,
+  groups: StateActionGroup[],
+): StateActionGroup[] {
   return !toSearch
     ? groups.map(group => ({ ...group, display: true }))
-    : groups.map(group => {
-      return {
-        ...group,
-        actions: group.actions.map(action => {
-          if (action.fullTitle.toLowerCase().includes(toSearch.toLowerCase())) {
-            return { ...action, display: true };
+    : groups
+        .map(group => {
+          return {
+            ...group,
+            actions: group.actions.map(action => {
+              if (
+                action.fullTitle.toLowerCase().includes(toSearch.toLowerCase())
+              ) {
+                return { ...action, display: true };
+              }
+              return { ...action, display: false };
+            }),
+          };
+        })
+        .map(group => {
+          if (group.actions.some(action => action.display)) {
+            return { ...group, display: true };
           }
-          return { ...action, display: false };
-        }),
-      };
-    }).map(group => {
-      if (group.actions.some(action => action.display)) {
-        return { ...group, display: true };
-      }
-      return { ...group, display: false };
-    });
+          return { ...group, display: false };
+        });
 }
 
-function sortGroups(blocks: StateActionGroup[], tableSort: TableSort<StateActionGroup>): StateActionGroup[] {
+function sortGroups(
+  blocks: StateActionGroup[],
+  tableSort: TableSort<StateActionGroup>,
+): StateActionGroup[] {
   return sort<StateActionGroup>(blocks, tableSort, []);
 }

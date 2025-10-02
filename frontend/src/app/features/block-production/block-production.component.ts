@@ -1,11 +1,10 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
-    selector: 'mina-block-production',
-    templateUrl: './block-production.component.html',
-    styleUrls: ['./block-production.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-block-production',
+  templateUrl: './block-production.component.html',
+  styleUrls: ['./block-production.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class BlockProductionComponent {
-}
+export class BlockProductionComponent {}

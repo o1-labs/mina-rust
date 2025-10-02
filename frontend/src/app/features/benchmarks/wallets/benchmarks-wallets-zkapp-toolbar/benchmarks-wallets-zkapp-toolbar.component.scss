@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .live-button {
   width: 110px;
@@ -34,31 +34,35 @@
     display: grid;
     height: 24px;
     grid-template-columns: 18px 1fr 125px;
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
     box-sizing: border-box;
 
-    span:nth-child(2), span:nth-child(4):hover {
-      color: openmina.$base-primary;
+    span:nth-child(2),
+    span:nth-child(4):hover {
+      color: mina-rust.$base-primary;
     }
 
     &:hover:not(.active) {
-      background-color: openmina.$base-container;
+      background-color: mina-rust.$base-container;
     }
 
     &.active {
-      background-color: openmina.$selected-container;
+      background-color: mina-rust.$selected-container;
 
-      span:nth-child(1), span:nth-child(2), span:nth-child(4):hover {
-        color: openmina.$selected-primary;
+      span:nth-child(1),
+      span:nth-child(2),
+      span:nth-child(4):hover {
+        color: mina-rust.$selected-primary;
       }
 
-      span:nth-child(3), span:nth-child(4) {
-        color: openmina.$selected-secondary;
+      span:nth-child(3),
+      span:nth-child(4) {
+        color: mina-rust.$selected-secondary;
       }
     }
 
     &:not(.active) .mina-icon {
-      color: openmina.$base-divider;
+      color: mina-rust.$base-divider;
     }
 
     &:last-child {

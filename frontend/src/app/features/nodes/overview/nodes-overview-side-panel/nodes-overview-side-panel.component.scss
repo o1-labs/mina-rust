@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .h-minus-lg {
   .fx-row-vert-cent {
@@ -9,23 +9,23 @@
     }
 
     &:nth-child(2) .circle {
-      background-color: openmina.$warn-primary;
+      background-color: mina-rust.$warn-primary;
     }
 
     &:nth-child(3) .circle {
-      background-color: openmina.$base-tertiary;
+      background-color: mina-rust.$base-tertiary;
     }
 
     &:nth-child(4) .circle {
-      background-color: openmina.$base-secondary;
+      background-color: mina-rust.$base-secondary;
     }
 
     &:nth-child(5) .circle {
-      background-color: openmina.$selected-primary;
+      background-color: mina-rust.$selected-primary;
     }
 
     &:nth-child(6) .circle {
-      background-color: openmina.$success-primary;
+      background-color: mina-rust.$success-primary;
     }
   }
 
@@ -35,7 +35,7 @@
       cursor: pointer;
       width: 18px;
       height: 18px;
-      border: 1px solid openmina.$base-background;
+      border: 1px solid mina-rust.$base-background;
 
       &::before {
         position: absolute;
@@ -54,42 +54,42 @@
       }
 
       &.Missing {
-        background-color: openmina.$warn-container;
+        background-color: mina-rust.$warn-container;
 
         &::before {
-          background-color: openmina.$warn-secondary;
+          background-color: mina-rust.$warn-secondary;
         }
       }
 
       &.Fetching {
-        background-color: openmina.$base-container;
+        background-color: mina-rust.$base-container;
 
         &::before {
-          background-color: openmina.$base-tertiary
+          background-color: mina-rust.$base-tertiary;
         }
       }
 
       &.Fetched {
-        background-color: openmina.$base-container;
+        background-color: mina-rust.$base-container;
 
         &::before {
-          background-color: openmina.$base-secondary;
+          background-color: mina-rust.$base-secondary;
         }
       }
 
       &.Applying {
-        background-color: openmina.$selected-container;
+        background-color: mina-rust.$selected-container;
 
         &::before {
-          background-color: openmina.$selected-secondary
+          background-color: mina-rust.$selected-secondary;
         }
       }
 
       &.Applied {
-        background-color: openmina.$success-container;
+        background-color: mina-rust.$success-container;
 
         &::before {
-          background-color: openmina.$success-secondary;
+          background-color: mina-rust.$success-secondary;
         }
       }
     }

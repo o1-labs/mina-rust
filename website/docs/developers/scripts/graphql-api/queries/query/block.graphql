@@ -1,0 +1,19 @@
+query GetLatestBlock {
+  bestChain(maxLength: 1) {
+    stateHash
+    protocolState {
+      consensusState {
+        blockHeight
+      }
+    }
+    creator
+    transactions {
+      userCommands {
+        amount
+        fee
+        from
+        to
+      }
+    }
+  }
+}

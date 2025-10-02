@@ -1,0 +1,68 @@
+name: Test Documentation Scripts - Infrastructure
+
+# Test infrastructure connectivity and infrastructure scripts
+# This workflow validates:
+# 1. Seed node connectivity and format verification
+# 2. Plain node GraphQL endpoints and API capabilities
+# 3. Infrastructure script functionality
+# Scripts can be run locally for development and debugging
+on:
+  schedule:
+    # Run daily at 6 AM UTC to catch infrastructure issues early
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allow manual triggering for testing
+  pull_request:
+    # Always run on pull requests
+  push:
+    branches: [ main, develop ]
+
+jobs:
+  test-seed-nodes:
+    name: Test Seed Node Connectivity
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test seed node connectivity
+        run: ./.github/scripts/test-seed-node-connectivity.sh
+
+      - name: Test seed node response headers
+        run: ./.github/scripts/test-seed-node-headers.sh
+
+  verify-seed-node-format:
+    name: Verify Seed Node Address Format
+    timeout-minutes: 2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Verify seed nodes are subset of official seeds
+        run: ./.github/scripts/test-seed-node-format.sh
+
+  test-plain-nodes:
+    name: Test Plain Node Connectivity
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test plain node GraphQL endpoints
+        run: ./.github/scripts/test-plain-node-connectivity.sh
+
+      - name: Test plain node API capabilities
+        run: ./.github/scripts/test-plain-node-capabilities.sh
+
+      - name: Test infrastructure scripts
+        run: ./.github/scripts/test-infrastructure-scripts.sh
+

@@ -1,10 +1,11 @@
-<mina-horizontal-resizable-container [leftTemplate]="left"
-                                     [rightTemplate]="right"
-                                     [show]="openSidePanel"
-                                     [minWidth]="320"
-                                     [maxWidthElement]="el.nativeElement"
-                                     localStorageKey="network-dht-side-panel-width">
-</mina-horizontal-resizable-container>
+<mina-horizontal-resizable-container
+  [leftTemplate]="left"
+  [rightTemplate]="right"
+  [show]="openSidePanel"
+  [minWidth]="320"
+  [maxWidthElement]="el.nativeElement"
+  localStorageKey="network-dht-side-panel-width"
+></mina-horizontal-resizable-container>
 
 <ng-template #left>
   <div class="flex-column h-100">

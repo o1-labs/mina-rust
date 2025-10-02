@@ -10,24 +10,27 @@ import { WebNodeNotSupportedComponent } from '@web-node/web-node-not-supported/w
 import { WebNodeFileUploadComponent } from '@web-node/web-node-file-upload/web-node-file-upload.component';
 
 @Component({
-    selector: 'mina-web-node',
-    imports: [
-        WebNodeInitializationComponent,
-        WebNodeNotSupportedComponent,
-        WebNodeFileUploadComponent,
-    ],
-    templateUrl: './web-node.component.html',
-    styleUrl: './web-node.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'mina-web-node',
+  imports: [
+    WebNodeInitializationComponent,
+    WebNodeNotSupportedComponent,
+    WebNodeFileUploadComponent,
+  ],
+  templateUrl: './web-node.component.html',
+  styleUrl: './web-node.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class WebNodeComponent extends StoreDispatcher implements OnInit {
-
   supported: boolean = false;
   isPhone: boolean = false;
   showFileUpload: boolean = true;
 
-  constructor(private platform: Platform,
-              private webNodeService: WebNodeService) { super(); }
+  constructor(
+    private platform: Platform,
+    private webNodeService: WebNodeService,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     document.body.style.backgroundColor = 'var(--base-background)';
@@ -41,21 +44,25 @@ export class WebNodeComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToRoute(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      let initial = 176;
-      if (route.queryParams['initial']) {
-        initial = Number(route.queryParams['initial']);
-      }
-      let maximum = 65536;
-      if (route.queryParams['maximum']) {
-        maximum = Number(route.queryParams['maximum']);
-      }
-      let shared = true;
-      if (route.queryParams['shared']) {
-        shared = route.queryParams['shared'] === 'true';
-      }
-      this.webNodeService.memory = { initial, maximum, shared };
-    }, filter(Boolean));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        let initial = 176;
+        if (route.queryParams['initial']) {
+          initial = Number(route.queryParams['initial']);
+        }
+        let maximum = 65536;
+        if (route.queryParams['maximum']) {
+          maximum = Number(route.queryParams['maximum']);
+        }
+        let shared = true;
+        if (route.queryParams['shared']) {
+          shared = route.queryParams['shared'] === 'true';
+        }
+        this.webNodeService.memory = { initial, maximum, shared };
+      },
+      filter(Boolean),
+    );
   }
 
   private checkIfDeviceIsSupported(): void {

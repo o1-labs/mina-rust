@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 $blue: #57d7ff;
 $pink: #fda2ff;
@@ -6,7 +6,12 @@ $orange: #ff833d;
 
 :host {
   //linear-gradient(64deg, rgba(87, 215, 255, 0.15) 10%, rgba(253, 162, 255, 0.15) 60%, rgba(255, 131, 61, 0.15) 82%)
-  background: linear-gradient(70deg, rgba($blue, .15) 5%, rgba($pink, .15) 45%, rgba($orange, .15) 90%);
+  background: linear-gradient(
+    70deg,
+    rgba($blue, 0.15) 5%,
+    rgba($pink, 0.15) 45%,
+    rgba($orange, 0.15) 90%
+  );
 }
 
 .top {
@@ -26,14 +31,20 @@ $orange: #ff833d;
     top: 1px;
     left: -50px;
     width: 50px;
-    background: radial-gradient(openmina.$success-primary, openmina.$success-primary, openmina.$success-primary, transparent, transparent);
+    background: radial-gradient(
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
+      mina-rust.$success-primary,
+      transparent,
+      transparent
+    );
     border-radius: 20px;
     animation: move 9s linear infinite;
   }
 
   .progress {
     height: 2px;
-    background-color: openmina.$success-primary;
+    background-color: mina-rust.$success-primary;
     top: 2px;
     left: 0;
   }
@@ -55,9 +66,13 @@ $orange: #ff833d;
 }
 
 .mina-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20 !important;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 20 !important;
   transition: none;
-  color: openmina.$base-divider;
+  color: mina-rust.$base-divider;
 
   &.success-primary {
     transition: 0.3s;
@@ -66,25 +81,24 @@ $orange: #ff833d;
 
 .step {
   .mina-icon {
-    color: openmina.$success-primary;
+    color: mina-rust.$success-primary;
     transition: 0.3s;
   }
 
   &.incomplete {
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     .mina-icon {
-      color: openmina.$base-divider;
+      color: mina-rust.$base-divider;
       transition: none;
     }
   }
 }
 
 .bg-container {
-
   &:hover {
     .step > .mina-icon {
-      color: openmina.$base-primary !important;
+      color: mina-rust.$base-primary !important;
     }
   }
 

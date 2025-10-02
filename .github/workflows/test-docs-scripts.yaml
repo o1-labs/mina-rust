@@ -79,7 +79,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest]
 
     steps:
       - name: Checkout repository
@@ -141,7 +141,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v19
+        uses: DeterminateSystems/nix-installer-action@v20
 
       - name: Setup Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
@@ -205,7 +205,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest]
 
     steps:
       - name: Checkout repository
@@ -227,7 +227,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest, ubuntu-latest]
 
     steps:
       - name: Checkout repository

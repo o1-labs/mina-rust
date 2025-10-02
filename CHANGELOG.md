@@ -7,6 +7,48 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### OCaml node
+
+- Update the CI and code to compare with the latest release 3.3.0-alpha1-6929a7e
+  ([#1454](https://github.com/o1-labs/mina-rust/pull/1454))
+
+### Added
+
+- **CI**: add workflow to test GraphQL queries with the OCaml node
+  ([#1465](https://github.com/o1-labs/mina-rust/pull/1465))
+- **Website**: add o1Labs infrastructure entry, describing the nodes managed by
+  o1Labs, including seed and plain nodes
+  ([#1430](https://github.com/o1-labs/mina-rust/pull/1430)). The infrastructure
+  is tested accordingly in the CI at every push.
+- **Website**: add comparison list of implemented and missing GraphQL endpoints
+  ([#1486](https://github.com/o1-labs/mina-rust/pull/1466))
+- **Frontend**: use a Makefile for scripts in package.json
+  ([#1468](https://github.com/o1-labs/mina-rust/pull/1468))
+- **Frontend**: define one Makefile target per build configuration
+  ([#1469](https://github.com/o1-labs/mina-rust/pull/1469))
+- **Frontend**: revamping the Docker image, and provide a better support and
+  documentation for the different configuration.
+  ([#1473](https://github.com/o1-labs/mina-rust/pull/1473))
+- **Website**: add "Join devnet" page with instructions for community members to
+  join the devnet program and test the Rust node implementation
+  ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
+
+### Changed
+
+- **CI**: Speed up CI by decoupling test runs from full build completion.
+  Created dedicated single-platform build jobs that run only on ubuntu-22.04
+  to produce artifacts needed for testing, allowing tests to start as soon as
+  those builds complete instead of waiting for all cross-platform matrix builds
+  ([#1427](https://github.com/o1-labs/mina-rust/issues/1427))
+- **CI**: Update CI to test on specific macOS versions (13, 14, 15) instead of
+  only macos-latest, providing better coverage across macOS versions that
+  developers are using ([#1421](https://github.com/o1-labs/mina-rust/pull/1421))
+- **Website**: update GraphQL API page by extracting all endpoints and run it in
+  CI, at every push, with the o1Labs managed plain nodes
+  ([#1421](https://github.com/o1-labs/mina-rust/pull/1421)).
+- **Frontend**: rename all occurences of openmina.scss to mina-rust.scss
+  ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
+
 ## v0.17.0
 
 ### OCaml node

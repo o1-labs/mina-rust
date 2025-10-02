@@ -1,0 +1,2 @@
+cd frontend
+make start
