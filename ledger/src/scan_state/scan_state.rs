@@ -531,7 +531,7 @@ pub mod transaction_snark {
     }
 
     pub mod work {
-        use ark_ff::fields::arithmetic::InvalidBigInt;
+        use mina_p2p_messages::bigint::InvalidBigInt;
 
         use super::*;
 

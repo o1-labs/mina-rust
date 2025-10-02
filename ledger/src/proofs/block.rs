@@ -1,11 +1,10 @@
 use std::{rc::Rc, sync::Arc};
 
 use anyhow::Context;
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use consensus::ConsensusState;
 use mina_core::constants::{constraint_constants, ForkConstants};
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use poseidon::hash::{
     params::{MINA_PROTO_STATE, MINA_PROTO_STATE_BODY},
     Inputs,
@@ -316,17 +315,17 @@ mod floating_point {
     }
 
     const COEFFICIENTS: [(Sgn, BigInteger256); 11] = [
-        (Sgn::Pos, BigInteger256::from_64x4([405058, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([1007582, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([465602, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([161365, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([44739, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([10337, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([2047, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([354, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([54, 0, 0, 0])),
-        (Sgn::Neg, BigInteger256::from_64x4([7, 0, 0, 0])),
-        (Sgn::Pos, BigInteger256::from_64x4([0, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([405058, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([1007582, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([465602, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([161365, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([44739, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([10337, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([2047, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([354, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([54, 0, 0, 0])),
+        (Sgn::Neg, BigInteger256::new([7, 0, 0, 0])),
+        (Sgn::Pos, BigInteger256::new([0, 0, 0, 0])),
     ];
 
     pub struct Params {
@@ -501,7 +500,7 @@ mod floating_point {
 
         pub fn constant(value: &BigInteger256, precision: usize) -> anyhow::Result<Self> {
             Ok(Self {
-                value: (*value).try_into()?,
+                value: (*value).into(),
                 precision,
             })
         }
@@ -1881,10 +1880,10 @@ pub(super) fn generate_block_proof(
     };
 
     let dlog_plonk_index = super::merge::dlog_plonk_index(block_wrap_prover);
-    let verifier_index = &**block_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let verifier_index = block_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let tx_dlog_plonk_index = super::merge::dlog_plonk_index(tx_wrap_prover);
-    let tx_verifier_index = &**tx_wrap_prover.index.verifier_index.as_ref().unwrap();
+    let tx_verifier_index = tx_wrap_prover.index.verifier_index.as_ref().unwrap();
 
     let dlog_plonk_index_cvar = dlog_plonk_index.to_cvar(CircuitVar::Var);
     let tx_dlog_plonk_index_cvar = tx_dlog_plonk_index.to_cvar(CircuitVar::Constant);

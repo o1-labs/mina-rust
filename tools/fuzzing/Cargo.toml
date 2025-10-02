@@ -1,11 +1,11 @@
 [package]
 name = "transaction_fuzzer"
-version = "0.16.0"
+version = "0.17.0"
 edition = "2021"
 
 
 [dependencies]
-ark-ec = { version = "0.3.0", features = ["std"] }
+ark-ec.workspace = true
 ark-ff = { workspace = true }
 ark-serialize = "0.4.2"
 bitvec = "1.0.1"

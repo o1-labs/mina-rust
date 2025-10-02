@@ -1,4 +1,4 @@
-use ark_ec::AffineCurve;
+use ark_ec::{AffineRepr, CurveGroup};
 use ark_ff::PrimeField;
 use ledger::AccountIndex;
 use message::VrfMessage;
@@ -19,8 +19,8 @@ mod serialize;
 mod threshold;
 
 type VrfResult<T> = std::result::Result<T, VrfError>;
-type BaseField = <CurvePoint as AffineCurve>::BaseField;
-type ScalarField = <CurvePoint as AffineCurve>::ScalarField;
+type BaseField = <CurvePoint as AffineRepr>::BaseField;
+type ScalarField = <CurvePoint as AffineRepr>::ScalarField;
 
 #[derive(Error, Debug)]
 pub enum VrfError {
@@ -114,12 +114,14 @@ fn calculate_vrf(
     global_slot: u32,
     delegator_index: &AccountIndex,
 ) -> VrfResult<VrfOutput> {
+    use core::ops::Mul;
     let vrf_message = VrfMessage::new(global_slot, epoch_seed, delegator_index.as_u64());
 
     let vrf_message_hash_curve_point = vrf_message.to_group()?;
 
-    let scaled_message_hash =
-        producer_key.secret_multiply_with_curve_point(vrf_message_hash_curve_point);
+    let scaled_message_hash = vrf_message_hash_curve_point
+        .mul(producer_key.secret.clone().into_scalar())
+        .into_affine();
 
     Ok(VrfOutput::new(vrf_message, scaled_message_hash))
 }
@@ -138,7 +140,7 @@ pub fn evaluate_vrf(vrf_input: VrfEvaluationInput) -> VrfResult<VrfEvaluationOut
 
     let vrf_output = calculate_vrf(&producer_key, epoch_seed, global_slot, &delegator_index)?;
 
-    let value = vrf_output.truncated().into_repr();
+    let value = vrf_output.truncated().into_bigint();
     let threshold = Threshold::new(delegated_stake, total_currency);
 
     if threshold.threshold_met(value) {

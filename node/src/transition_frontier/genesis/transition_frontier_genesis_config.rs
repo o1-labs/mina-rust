@@ -7,7 +7,6 @@ use std::{
 };
 
 use crate::{account::AccountSecretKey, daemon_json::EpochData};
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
     proofs::caching::{ensure_path_exists, mina_cache_path},
     scan_state::currency::Balance,
@@ -16,6 +15,7 @@ use ledger::{
 use mina_core::constants::{constraint_constants, DEFAULT_GENESIS_TIMESTAMP_MILLISECONDS};
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot::{
         self,
         macros::{BinProtRead, BinProtWrite},

@@ -3,12 +3,13 @@ use std::{
     fmt::Display,
 };
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use ark_ff::Zero;
 use itertools::{FoldWhile, Itertools};
 use mina_core::constants::ConstraintConstants;
 use mina_hasher::{Fp, Hashable, ROInput};
 use mina_macros::SerdeYojsonEnum;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot,
     v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2},
 };
@@ -4310,9 +4311,10 @@ pub mod verifiable {
 
     pub fn compressed_to_pubkey(pubkey: &CompressedPubKey) -> mina_signer::PubKey {
         // Taken from https://github.com/o1-labs/proof-systems/blob/e3fc04ce87f8695288de167115dea80050ab33f4/signer/src/pubkey.rs#L95-L106
-        let mut pt = mina_signer::CurvePoint::get_point_from_x(pubkey.x, pubkey.is_odd).unwrap();
+        let mut pt =
+            mina_signer::CurvePoint::get_point_from_x_unchecked(pubkey.x, pubkey.is_odd).unwrap();
 
-        if pt.y.into_repr().is_even() == pubkey.is_odd {
+        if pt.y.into_bigint().is_even() == pubkey.is_odd {
             pt.y = pt.y.neg();
         }
 
@@ -7284,8 +7286,8 @@ pub mod transaction_union_payload {
                 arbitrary values different from the default token-id, for this
                 we will extract the LS u64 of the token-id.
             */
-            let fee_token_id = self.common.fee_token.0.into_repr().to_64x4()[0];
-            let token_id = self.body.token_id.0.into_repr().to_64x4()[0];
+            let fee_token_id = self.common.fee_token.0.into_bigint().0[0];
+            let token_id = self.body.token_id.0.into_bigint().0[0];
 
             let mut roi = LegacyInput::new()
                 .append_field(self.common.fee_payer_pk.x)

@@ -1,3 +1,10 @@
+---
+sidebar_position: 5
+title: Network Connectivity Testing
+description: Detailed network connectivity and peer management testing scenarios
+slug: /developers/testing/network-connectivity
+---
+
 # Network Connectivity and Peer Management
 
 ## Network Connectivity
@@ -7,7 +14,7 @@ synchronize with the network.
 
 _This test assesses the blockchain node's ability to maintain consistent network
 connectivity. It evaluates whether a node can gracefully handle temporary
-disconnections from the network and subsequently reestablish connections. _
+disconnections from the network and subsequently reestablish connections._
 
 We want to ensure that new nodes can join the network and handle being
 overwhelmed with connections or data requests, including various resilience and
@@ -19,19 +26,19 @@ participate in the blockchain's consensus process.
 
 We are testing two versions of the node:
 
-### Solo node
+## Solo node
 
 We want to be able to test whether the Rust node is compatible with the OCaml
-node. We achieve this by attempting to connect the Must Rust node to the
-existing OCaml testnet.
+node. We achieve this by attempting to connect the Rust node to the existing
+OCaml testnet.
 
-For that purpose, we are utilizing a _solo node_, which is a single Open Mina
-node connected to a network of OCaml nodes. Currently, we are using the public
+For that purpose, we are utilizing a _solo node_, which is a single Rust node
+connected to a network of OCaml nodes. Currently, we are using the public
 testnet, but later on we want to use our own network of OCaml nodes on our
 cluster.
 
-This test is performed by launching an Must Rust node and connecting it to seed
-nodes of the public (or private) OCaml testnet.
+This test is performed by launching a Rust node and connecting it to seed nodes
+of the public (or private) OCaml testnet.
 
 _The source code for this test can be found in this repo:_
 
@@ -39,21 +46,21 @@ _The source code for this test can be found in this repo:_
 
 We are testing these scenarios:
 
-1. Whether the Must Rust node can accept an incoming connection from OCaml node.
-   This test will prove our Must Rust node is listening to incoming connections
-   and can accept them.
-2. Whether the OCaml node can discover and connect to an Must Rust node that is
-   advertising itself. This is done by advertising the Must Rust node so that
-   the OCaml node can discover it and connect to the node.
+1. Whether the Rust node can accept an incoming connection from OCaml node. This
+   test will prove our Rust node is listening to incoming connections and can
+   accept them.
+2. Whether the OCaml node can discover and connect to a Rust node that is
+   advertising itself. This is done by advertising the Rust node so that the
+   OCaml node can discover it and connect to the node.
 
    This test is the same as the previous one, except we do not inform the OCaml
    node to connect to it explicitly, it should find it automatically and connect
    using peer discovery (performed through Kademlia). This test will ensure the
-   Must Rust node uses Kademlia in a way that is compatible with the OCaml node.
+   Rust node uses Kademlia in a way that is compatible with the OCaml node.
 
 However, with this test, we are currently experiencing problems that may be
-caused by OCaml nodes not being currently able to "see" the Must Rust nodes,
-because our implementation of the p2p layer is incomplete.
+caused by OCaml nodes not being currently able to "see" the Rust nodes, because
+our implementation of the p2p layer is incomplete.
 
 We have implemented the missing protocol (Kademlia) into the p2p layer to make
 OCaml nodes see our node. Despite being successfully implemented, the main test
@@ -64,7 +71,7 @@ We are also missing certain p2p protocols like `/mina/peer-exchange`,
 `/mina/bitswap-exchange`, `/mina/node-status`, `/ipfs/id/1.0.0`
 
 While these p2p protocol may not be relevant, it is possible OCaml nodes do not
-recognize the Must Rust node because we are missing some of them.
+recognize the Rust node because we are missing some of them.
 
 We run these tests until:
 
@@ -74,11 +81,10 @@ We run these tests until:
 - The test is failed if the specified number of steps occur but the conditions
   are not met.
 
-#### Kademlia peer discovery
+### Kademlia peer discovery
 
-We want the Open Mina node to be able to connect to peers, both other Open Mina
-nodes (that are written in Rust) as well as native Mina nodes (written in
-OCaml).
+We want the Rust node to be able to connect to peers, both other Rust nodes as
+well as native Mina nodes (written in OCaml).
 
 Native Mina nodes use Kademlia (KAD), a distributed hash table (DHT) for
 peer-to-peer computer networks. Hash tables are data structures that map _keys_
@@ -91,10 +97,10 @@ the network.
 
 Since we initially focused on other parts of the node, we used the RPC
 get_initial_peers as a sort-of workaround to connect our nodes between
-themselves. Now, to ensure compatibility with the native Mina node, we’ve
-implemented KAD for peer discovery for the Open Mina node.
+themselves. Now, to ensure compatibility with the native Mina node, we've
+implemented KAD for peer discovery for the Rust node.
 
-#### How does Mina utilize Kademlia?
+### How does Mina utilize Kademlia?
 
 Kademlia has two main parts - the routing table and the peer store.
 
@@ -114,14 +120,14 @@ messages.
 A provider in Kademlia announces possession of specific data (identified by a
 unique key) and shares it with others. In MINA's case, all providers use the
 same key, which is the SHA256 hash of a specific string pattern. In MINA, every
-node acts as a “provider,” making the advertisement as providers redundant.
+node acts as a "provider," making the advertisement as providers redundant.
 Non-network nodes are filtered at the PNet layer.
 
 If there are no peers, KAD will automatically search for new ones. KAD will also
 search for new peers whenever the node is restarted. If a connection is already
 made, it will search for more peers every hour.
 
-#### Message types
+### Message types
 
 - AddProvider - informs the peer that you can provide the information described
   by the specified key.
@@ -130,10 +136,10 @@ made, it will search for more peers every hour.
   where your node should be. Or it may find a node that you need to send an
   AddProvider (or GetProviders) message to.
 
-#### Potential issues identified
+### Potential issues identified
 
-- An earlier issue in the Open Mina (Rust node) with incorrect provider key
-  advertising is now fixed.
+- An earlier issue in the Rust node with incorrect provider key advertising is
+  now fixed.
 - The protocol's use in OCaml nodes might be a potential security risk; an
   adversary could exploit this to DoS the network. One possible solution is to
   treat all Kademlia peers as providers.
@@ -146,7 +152,7 @@ made, it will search for more peers every hour.
 - The malicious peer can deliberately choose the peer_id and deny access to the
   information, just always say there are no providers. This problem has been
   inherited from the OCaml implementation of the node. We have mitigated it by
-  making the Must Rust node not rely on GetProviders, instead, we only do
+  making the Rust node not rely on GetProviders, instead, we only do
   AddProviders to advertise ourselves, but treat any peer of the Kademlia
   network as a valid Mina peer, no matter if it is a provider or not, so a
   malicious peer can prevent OCaml nodes from discovering us, but it will not
@@ -162,12 +168,12 @@ made, it will search for more peers every hour.
 - We need more testing on support for IPv6. libp2p_helper code can't handle IPv6
   for the IP range filtering.
 
-### Multi node
+## Multi node
 
-We also want to test a scenario in which the network consists only of Must Rust
-nodes. If the Must Rust node is using a functionality that is implemented only
-in the OCaml node, and it does not perform it correctly, then we will not be
-able to see it with solo node test.
+We also want to test a scenario in which the network consists only of Rust
+nodes. If the Rust node is using a functionality that is implemented only in the
+OCaml node, and it does not perform it correctly, then we will not be able to
+see it with solo node test.
 
 For that purpose, we utilize a Multi node test, which involves a network of our
 nodes, without any third party, so that the testing is completely local and
@@ -177,7 +183,7 @@ _The source code for this test can be found in this repo:_
 
 [https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9](https://github.com/o1-labs/mina-rust/blob/develop/node/testing/src/scenarios/multi_node/basic_connectivity_initial_joining.rs#L9)
 
-#### How it's tested
+### How it's tested
 
 **Node cluster**: We use a `ClusterRunner` utility to manage the setup and
 execution of test scenarios on a cluster of nodes.
@@ -212,3 +218,10 @@ scenarios, ensuring parent scenarios are run before their children.
 asynchronous method for setting up a cluster according to a specified
 configuration and running all parent scenarios to prepare the environment for a
 specific test.
+
+## Related Documentation
+
+- [Testing Framework Overview](testing-framework): Main testing documentation
+- [Scenario Tests](scenario-tests): Scenario-based testing framework
+- [P2P Tests](p2p-tests): P2P networking specific tests
+- [OCaml Node Tests](ocaml-node-tests): OCaml interoperability testing

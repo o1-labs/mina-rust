@@ -17,40 +17,35 @@ const sidebars: SidebarsConfig = {
   nodeRunnersSidebar: [
     {
       type: 'category',
-      label: 'Introduction',
+      label: 'Getting Started',
       items: [
         'node-operators/getting-started',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Installation',
+      items: [
+        'node-operators/docker-usage',
         'node-operators/building-from-source',
       ],
     },
     {
       type: 'category',
-      label: 'Node Types',
+      label: 'Node Operations',
       items: [
         'node-operators/block-producer',
         'node-operators/archive-node',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Operations',
-      items: [
-        'node-operators/local-demo',
-        'node-operators/alpha-testing',
         'node-operators/network-configuration',
       ],
     },
     {
       type: 'category',
-      label: 'Web Node',
+      label: 'Advanced Topics',
       items: [
+        'node-operators/local-demo',
+        'node-operators/alpha-testing',
         'node-operators/webnode/local-webnode',
-      ],
-    },
-    {
-      type: 'category',
-      label: 'Testing',
-      items: [
         'node-operators/testing/overview',
       ],
     },
@@ -72,6 +67,8 @@ const sidebars: SidebarsConfig = {
       items: [
         'developers/why-rust',
         'developers/architecture',
+        'developers/circuits',
+        'developers/ledger-crate',
       ],
     },
     {
@@ -88,6 +85,29 @@ const sidebars: SidebarsConfig = {
         'developers/p2p-networking',
         'developers/webrtc',
         'developers/libp2p',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Testing',
+      items: [
+        'developers/testing/testing-framework',
+        'developers/testing/unit-tests',
+        'developers/testing/scenario-tests',
+        'developers/testing/ledger-tests',
+        'developers/testing/p2p-tests',
+        'developers/testing/network-connectivity',
+        'developers/testing/ocaml-node-tests',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Future Work',
+      items: [
+        'developers/future-work',
+        'developers/mainnet-readiness',
+        'developers/p2p-evolution',
+        'developers/persistence-design',
       ],
     },
   ],

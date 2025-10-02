@@ -2,8 +2,8 @@ pub mod read;
 pub mod write;
 
 mod ledger_config;
-use ark_ff::fields::arithmetic::InvalidBigInt;
 pub use ledger_config::*;
+use mina_p2p_messages::bigint::InvalidBigInt;
 
 mod ledger_event;
 pub use ledger_event::*;

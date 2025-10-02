@@ -24,7 +24,6 @@ use crate::{
         },
     },
 };
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ledger::{
     scan_state::{
         currency::Slot,
@@ -56,6 +55,7 @@ use mina_core::{
 };
 use mina_curves::pasta::Fp;
 use mina_p2p_messages::{
+    bigint::InvalidBigInt,
     binprot::BinProtRead,
     list::List,
     v2::{

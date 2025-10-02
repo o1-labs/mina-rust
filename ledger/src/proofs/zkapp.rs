@@ -1,9 +1,10 @@
 use std::{cell::RefCell, rc::Rc};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Zero};
+use ark_ff::{BigInteger256, Zero};
 use kimchi::proof::PointEvaluations;
 use mina_curves::pasta::{Fp, Fq};
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
+use poly_commitment::ipa::OpeningProof;
 use poseidon::hash::{
     hash_with_kimchi,
     params::{MINA_ACCOUNT_UPDATE_CONS, MINA_PROTO_STATE_BODY},
@@ -1421,7 +1422,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                                     lookup,
                                 },
                             proof:
-                                poly_commitment::evaluation_proof::OpeningProof {
+                                OpeningProof {
                                     lr,
                                     delta,
                                     z1,
@@ -1503,7 +1504,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                                         prechallenge: v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge {
                                             inner: {
                                                 let bigint: BigInteger256 = bulletproof_challenges[i].into();
-                                                let bigint = bigint.to_64x4();
+                                                let bigint = bigint.0;
                                                 PaddedSeq([v2::LimbVectorConstantHex64StableV1(bigint[0].into()), v2::LimbVectorConstantHex64StableV1(bigint[1].into())])
                                             },
                                         },
@@ -1516,7 +1517,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                             v2::CompositionTypesDigestConstantStableV1({
                                 let bigint: BigInteger256 =
                                     (*sponge_digest_before_evaluations).into();
-                                let bigint = bigint.to_64x4();
+                                let bigint = bigint.0;
                                 PaddedSeq(
                                     bigint
                                         .each_ref()
@@ -1536,7 +1537,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                                         prechallenge: v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge {
                                             inner: {
                                                 let bigint: BigInteger256 = old_bulletproof_challenges[i][j].into();
-                                                let bigint = bigint.to_64x4();
+                                                let bigint = bigint.0;
                                                 PaddedSeq([v2::LimbVectorConstantHex64StableV1(bigint[0].into()), v2::LimbVectorConstantHex64StableV1(bigint[1].into())])
                                             },
                                         },
@@ -1564,7 +1565,7 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
                                 prechallenge: v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2AChallenge {
                                     inner: {
                                         let bigint: BigInteger256 = v[i].into();
-                                        let bigint = bigint.to_64x4();
+                                        let bigint = bigint.0;
                                         PaddedSeq([v2::LimbVectorConstantHex64StableV1(bigint[0].into()), v2::LimbVectorConstantHex64StableV1(bigint[1].into())])
                                     },
                                 },
@@ -1598,9 +1599,9 @@ impl From<&WrapProof> for v2::PicklesProofProofsVerified2ReprStableV2 {
             },
             proof: v2::PicklesWrapWireProofStableV1 {
                 commitments: v2::PicklesWrapWireProofCommitmentsStableV1 {
-                    w_comm: PaddedSeq(w_comm.each_ref().map(|w| to_tuple(&w.elems[0]))),
-                    z_comm: to_tuple(&z_comm.elems[0]),
-                    t_comm: PaddedSeq(array::from_fn(|i| to_tuple(&t_comm.elems[i]))),
+                    w_comm: PaddedSeq(w_comm.each_ref().map(|w| to_tuple(&w.chunks[0]))),
+                    z_comm: to_tuple(&z_comm.chunks[0]),
+                    t_comm: PaddedSeq(array::from_fn(|i| to_tuple(&t_comm.chunks[i]))),
                 },
                 evaluations: {
                     let kimchi::proof::ProofEvaluations {

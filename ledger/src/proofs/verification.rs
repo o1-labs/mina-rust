@@ -1,10 +1,10 @@
 use std::rc::Rc;
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use ark_poly::{EvaluationDomain, Radix2EvaluationDomain};
 use ark_serialize::Write;
 use itertools::Itertools;
-use poly_commitment::srs::SRS;
+use mina_p2p_messages::bigint::InvalidBigInt;
+use poly_commitment::ipa::SRS;
 
 use crate::{
     proofs::{
@@ -502,7 +502,7 @@ fn verify_with(
 ) -> Result<(), VerifyError> {
     use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
-    use poly_commitment::evaluation_proof::OpeningProof;
+    use poly_commitment::ipa::OpeningProof;
 
     type SpongeParams = mina_poseidon::constants::PlonkSpongeConstantsKimchi;
     type EFqSponge = DefaultFqSponge<PallasParameters, SpongeParams>;
@@ -527,7 +527,7 @@ pub struct VerificationContext<'a> {
 fn batch_verify(proofs: &[VerificationContext]) -> Result<(), VerifyError> {
     use kimchi::{groupmap::GroupMap, mina_curves::pasta::PallasParameters, verifier::Context};
     use mina_poseidon::sponge::{DefaultFqSponge, DefaultFrSponge};
-    use poly_commitment::evaluation_proof::OpeningProof;
+    use poly_commitment::ipa::OpeningProof;
 
     type SpongeParams = mina_poseidon::constants::PlonkSpongeConstantsKimchi;
     type EFqSponge = DefaultFqSponge<PallasParameters, SpongeParams>;

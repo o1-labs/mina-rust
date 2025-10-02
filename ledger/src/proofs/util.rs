@@ -1,7 +1,10 @@
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, Field};
+use std::fmt::Debug;
+
+use ark_ff::{BigInteger256, Field};
 use kimchi::proof::{PointEvaluations, ProofEvaluations};
 use mina_p2p_messages::{
-    bigint::BigInt, pseq::PaddedSeq,
+    bigint::{BigInt, InvalidBigInt},
+    pseq::PaddedSeq,
     v2::PicklesReducedMessagesForNextProofOverSameFieldWrapChallengesVectorStableV2A,
 };
 
@@ -55,25 +58,26 @@ pub fn extract_bulletproof<
         .collect()
 }
 
-pub fn four_u64_to_field<F>(v: &[u64; 4]) -> Result<F, InvalidBigInt>
+pub fn four_u64_to_field<F, E>(v: &[u64; 4]) -> Result<F, InvalidBigInt>
 where
-    F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>,
+    F: Field + TryFrom<BigInteger256, Error = E>,
 {
     let mut bigint: [u64; 4] = [0; 4];
     bigint[..4].copy_from_slice(v);
 
-    let bigint = BigInteger256::from_64x4(bigint);
-    F::try_from(bigint)
+    let bigint = BigInteger256::new(bigint);
+    F::try_from(bigint).map_err(|_| InvalidBigInt)
 }
 
-pub fn two_u64_to_field<F>(v: &[u64; 2]) -> F
+pub fn two_u64_to_field<F, E>(v: &[u64; 2]) -> F
 where
-    F: Field + TryFrom<BigInteger256, Error = InvalidBigInt>,
+    F: Field + TryFrom<BigInteger256, Error = E>,
+    E: Debug,
 {
     let mut bigint: [u64; 4] = [0; 4];
     bigint[..2].copy_from_slice(v);
 
-    let bigint = BigInteger256::from_64x4(bigint);
+    let bigint = BigInteger256::new(bigint);
     F::try_from(bigint).unwrap() // Never fail with 2 limbs
 }
 

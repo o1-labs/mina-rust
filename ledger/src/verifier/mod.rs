@@ -1,7 +1,9 @@
 use std::sync::{Arc, Mutex};
 
 use crate::{
-    proofs::{field::FieldWitness, verification, verifiers::TransactionVerifier, VerifierIndex},
+    proofs::{
+        self, field::FieldWitness, verification, verifiers::TransactionVerifier, VerifierIndex,
+    },
     scan_state::{
         scan_state::transaction_snark::{
             LedgerProof, LedgerProofWithSokMessage, SokMessage, TransactionSnark,
@@ -23,7 +25,7 @@ use mina_p2p_messages::v2::{
 };
 use mina_signer::CompressedPubKey;
 use once_cell::sync::Lazy;
-use poly_commitment::srs::SRS;
+use poly_commitment::{ipa::SRS, SRS as _};
 
 // TODO: Move this into `Verifier` struct above
 pub static VERIFIER_INDEX: Lazy<Arc<VerifierIndex<Fq>>> = Lazy::new(|| {
@@ -37,7 +39,7 @@ pub fn get_srs<F: FieldWitness>() -> Arc<SRS<F::OtherCurve>> {
     cache! {
         Arc<SRS<F::OtherCurve>>,
         {
-            let srs = SRS::<F::OtherCurve>::create(F::Scalar::SRS_DEPTH);
+            let srs = SRS::<F::OtherCurve>::create(<F as proofs::field::FieldWitness>::Scalar::SRS_DEPTH);
             Arc::new(srs)
         }
     }
@@ -48,7 +50,7 @@ pub fn get_srs_mut<F: FieldWitness>() -> Arc<Mutex<SRS<F::OtherCurve>>> {
     cache! {
         Arc<Mutex<SRS<F::OtherCurve>>>,
         {
-            let srs = SRS::<F::OtherCurve>::create(F::Scalar::SRS_DEPTH);
+            let srs = SRS::<F::OtherCurve>::create(<F as proofs::field::FieldWitness>::Scalar::SRS_DEPTH);
             Arc::new(Mutex::new(srs))
         }
     }
@@ -229,6 +231,8 @@ impl Verifier {
 pub mod common {
     use std::sync::Arc;
 
+    use ark_ec::{AffineRepr, CurveGroup};
+    use ark_ff::PrimeField;
     use mina_p2p_messages::v2::PicklesProofProofsVerifiedMaxStableV2;
     use mina_signer::{CompressedPubKey, PubKey, Signature};
     use poseidon::hash::hash_with_kimchi;
@@ -376,27 +380,26 @@ pub mod common {
         pubkey: &PubKey,
         msg: &TransactionCommitment,
     ) -> bool {
-        use ark_ec::{AffineCurve, ProjectiveCurve};
-        use ark_ff::{BigInteger, PrimeField, Zero};
+        use ark_ff::{BigInteger, Zero};
+        use core::ops::{Mul, Neg};
         use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
-        use std::ops::Neg;
 
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;
 
         let signature_prefix = mina_core::NetworkConfig::global().signature_prefix;
         let hash = hash_with_kimchi(signature_prefix, &[**msg, *x, *y, *rx]);
-        let hash: Fq = Fq::try_from(hash.into_repr()).unwrap(); // Never fail, `Fq` is larger than `Fp`
+        let hash: Fq = Fq::from(hash.into_bigint()); // Never fail, `Fq` is larger than `Fp`
 
-        let sv: CurvePoint = CurvePoint::prime_subgroup_generator().mul(*s).into_affine();
+        let sv: CurvePoint = CurvePoint::generator().mul(*s).into_affine();
         // Perform addition and infinity check in projective coordinates for performance
-        let rv = pubkey.point().mul(hash).neg().add_mixed(&sv);
+        let rv = pubkey.point().mul(hash).neg() + sv;
         if rv.is_zero() {
             return false;
         }
         let rv = rv.into_affine();
-        rv.y.into_repr().is_even() && rv.x == *rx
+        rv.y.into_bigint().is_even() && rv.x == *rx
     }
 
     /// Verify signature with legacy style
@@ -406,11 +409,10 @@ pub mod common {
         msg: &TransactionUnionPayload,
     ) -> bool {
         use ::poseidon::hash::legacy;
-        use ark_ec::{AffineCurve, ProjectiveCurve};
-        use ark_ff::{BigInteger, PrimeField, Zero};
+        use ark_ff::{BigInteger, Zero};
+        use core::ops::{Mul, Neg};
         use mina_curves::pasta::{Fq, Pallas};
         use mina_signer::CurvePoint;
-        use std::ops::Neg;
 
         let Pallas { x, y, .. } = pubkey.point();
         let Signature { rx, s } = signature;
@@ -423,15 +425,15 @@ pub mod common {
         inputs.append_field(*rx);
 
         let hash = legacy::hash_with_kimchi(signature_prefix, &inputs.to_fields());
-        let hash: Fq = Fq::try_from(hash.into_repr()).unwrap(); // Never fail, `Fq` is larger than `Fp`
+        let hash: Fq = Fq::from(hash.into_bigint()); // Never fail, `Fq` is larger than `Fp`
 
-        let sv: CurvePoint = CurvePoint::prime_subgroup_generator().mul(*s).into_affine();
+        let sv: CurvePoint = CurvePoint::generator().mul(*s).into_affine();
         // Perform addition and infinity check in projective coordinates for performance
-        let rv = pubkey.point().mul(hash).neg().add_mixed(&sv);
+        let rv = pubkey.point().mul(hash).neg() + sv;
         if rv.is_zero() {
             return false;
         }
         let rv = rv.into_affine();
-        rv.y.into_repr().is_even() && rv.x == *rx
+        rv.y.into_bigint().is_even() && rv.x == *rx
     }
 }

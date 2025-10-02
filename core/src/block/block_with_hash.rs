@@ -1,5 +1,4 @@
-use ark_ff::fields::arithmetic::InvalidBigInt;
-use mina_p2p_messages::v2;
+use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use redux::Timestamp;
 use serde::{Deserialize, Serialize};
 

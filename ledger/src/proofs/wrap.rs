@@ -1,22 +1,26 @@
 use std::{borrow::Cow, ops::Neg, rc::Rc};
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, BigInteger256, One, Zero};
-use ark_poly::{univariate::DensePolynomial, EvaluationDomain, UVPolynomial};
+use ark_ff::{BigInteger256, One, Zero};
+use ark_poly::{univariate::DensePolynomial, DenseUVPolynomial, EvaluationDomain};
 use kimchi::{
     circuits::{expr::RowOffset, scalars::RandomOracles, wires::COLUMNS},
     oracles::OraclesResult,
     proof::{PointEvaluations, ProofEvaluations, RecursionChallenge},
 };
 use mina_curves::pasta::{Fp, Fq, Pallas, Vesta};
-use mina_p2p_messages::v2::{
-    CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
-    PicklesBaseProofsVerifiedStableV1,
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{
+        CompositionTypesBranchDataDomainLog2StableV1, CompositionTypesBranchDataStableV1,
+        PicklesBaseProofsVerifiedStableV1,
+    },
 };
 use mina_poseidon::{sponge::ScalarChallenge, FqSponge};
-use poly_commitment::{commitment::b_poly_coefficients, PolyComm};
+use poly_commitment::{commitment::b_poly_coefficients, ipa::OpeningProof, PolyComm, SRS};
 
 use crate::{
     proofs::{
+        self,
         field::{field, Boolean, CircuitVar, FieldWitness, ToBoolean},
         opt_sponge::OptSponge,
         public_input::{
@@ -199,9 +203,9 @@ pub fn create_oracle_with_public_input<F: FieldWitness>(
     use poly_commitment::commitment::shift_scalar;
 
     // TODO: Don't clone the SRS here
-    let mut srs = (*verifier_index.srs).clone();
+    let srs = (*verifier_index.srs).clone();
     let log_size_of_group = verifier_index.domain.log_size_of_group;
-    let lgr_comm = make_lagrange::<F>(&mut srs, log_size_of_group);
+    let lgr_comm = make_lagrange::<F>(&srs, log_size_of_group);
 
     let lgr_comm: Vec<PolyComm<F::OtherCurve>> =
         lgr_comm.into_iter().take(public_input.len()).collect();
@@ -258,17 +262,16 @@ pub fn create_oracle_with_public_input<F: FieldWitness>(
 }
 
 fn make_lagrange<F: FieldWitness>(
-    srs: &mut poly_commitment::srs::SRS<F::OtherCurve>,
+    srs: &poly_commitment::ipa::SRS<F::OtherCurve>,
     domain_log2: u32,
 ) -> Vec<PolyComm<F::OtherCurve>> {
     let domain_size = 2u64.pow(domain_log2) as usize;
 
     let x_domain = EvaluationDomain::<F>::new(domain_size).expect("invalid argument");
 
-    srs.add_lagrange_basis(x_domain);
-
-    let lagrange_bases = &srs.lagrange_bases[&x_domain.size()];
-    lagrange_bases[..domain_size].to_vec()
+    let lagrange_bases = srs.get_lagrange_basis(x_domain)[..domain_size].to_vec();
+    // lagrange_bases[..domain_size].to_vec()
+    lagrange_bases.clone()
 }
 
 /// Defined in `plonk_checks.ml`
@@ -338,7 +341,7 @@ fn deferred_values(params: DeferredValuesParams) -> DeferredValuesAndHints {
 
     let to_bytes = |f: Fp| {
         let bigint: BigInteger256 = f.into();
-        let [a, b, c, d] = bigint.to_64x4();
+        let [a, b, c, d] = bigint.0;
         assert_eq!([c, d], [0, 0]);
         [a, b]
     };
@@ -498,22 +501,12 @@ fn make_public_input(
         unfinalized_proofs.to_field_elements(&mut fields);
     }
 
-    let to_fp = |v: [u64; 4]| Fp::try_from(BigInteger256::from_64x4(v)).unwrap(); // Never fail, `messages_for_next_step_proof_hash` was a `Fp`
+    let to_fp = |v: [u64; 4]| Fp::from(BigInteger256::new(v)); // Never fail, `messages_for_next_step_proof_hash` was a `Fp`
     to_fp(messages_for_next_step_proof_hash).to_field_elements(&mut fields);
 
     // `messages_for_next_wrap_proof_hash` were `Fq` previously, so we have to
     // build a `Fp` from them with care: they can overflow
-    let to_fp = |v: [u64; 4]| {
-        match Fp::try_from(BigInteger256::from_64x4(v)) {
-            Ok(fp) => fp, // fast-path: we get the `Fp` without modulo/reducing
-            Err(_) => {
-                // slow path: we build the `Fp` bit by bit, so it will reduce it
-                let bits =
-                    crate::proofs::transaction::bigint_to_bits::<255>(BigInteger256::from_64x4(v));
-                super::util::field_of_bits(&bits)
-            }
-        }
-    };
+    let to_fp = |v: [u64; 4]| Fp::from(BigInteger256::new(v));
     for msg in messages_for_next_wrap_proof_hash.iter().copied().map(to_fp) {
         msg.to_field_elements(&mut fields);
     }
@@ -542,7 +535,9 @@ fn exists_prev_statement(
     for unfinalized in &step_statement.proof_state.unfinalized_proofs {
         w.exists_no_check(unfinalized);
     }
-    w.exists(four_u64_to_field::<Fq>(&messages_for_next_step_proof_hash)?);
+    w.exists(four_u64_to_field::<Fq, _>(
+        &messages_for_next_step_proof_hash,
+    )?);
     Ok(())
 }
 
@@ -569,7 +564,7 @@ pub fn dummy_ipa_wrap_sg() -> GroupAffine<Fp> {
             let srs = get_srs::<Fq>();
             srs.commit_non_hiding(&p, 1)
         };
-        comm.elems[0]
+        comm.chunks[0]
     })
 }
 
@@ -683,7 +678,7 @@ pub fn wrap<C: ProofConstants + ForWrapData>(
         prover_index: step_prover_index,
     });
 
-    let to_fq = |[a, b]: [u64; 2]| Fq::try_from(BigInteger256::from_64x4([a, b, 0, 0])).unwrap(); // Never fail with 2 limbs
+    let to_fq = |[a, b]: [u64; 2]| Fq::from(BigInteger256::new([a, b, 0, 0])); // Never fail with 2 limbs
     let to_fqs = |v: &[[u64; 2]]| v.iter().copied().map(to_fq).collect::<Vec<_>>();
 
     let messages_for_next_wrap_proof = MessagesForNextWrapProof {
@@ -761,7 +756,7 @@ pub fn wrap<C: ProofConstants + ForWrapData>(
                     .proof_state
                     .sponge_digest_before_evaluations
                     .into();
-                bigint.to_64x4()
+                bigint.0
             },
             messages_for_next_wrap_proof: messages_for_next_wrap_proof_prepared.hash(),
         },
@@ -792,7 +787,7 @@ pub fn wrap<C: ProofConstants + ForWrapData>(
         .iter()
         .map(|m| RecursionChallenge {
             comm: poly_commitment::PolyComm::<Pallas> {
-                elems: vec![m.commitment.to_affine()],
+                chunks: vec![m.commitment.to_affine()],
             },
             chals: m.challenges.to_vec(),
         })
@@ -833,15 +828,15 @@ impl Check<Fq> for ShiftedValue<Fp> {
     fn check(&self, w: &mut Witness<Fq>) {
         // TODO: Compute those values instead of hardcoded
         const FORBIDDEN_SHIFTED_VALUES: &[Fq; 2] = &[
-            ark_ff::field_new!(Fq, "91120631062839412180561524743370440705"),
-            ark_ff::field_new!(Fq, "91120631062839412180561524743370440706"),
+            ark_ff::MontFp!("91120631062839412180561524743370440705"),
+            ark_ff::MontFp!("91120631062839412180561524743370440706"),
         ];
 
         let bools = FORBIDDEN_SHIFTED_VALUES.map(|forbidden| {
             let shifted: Fq = {
                 let ShiftedValue { shifted } = self.clone();
                 let f: BigInteger256 = shifted.into();
-                f.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+                f.into() // Never fail, `Fq` is larger than `Fp`
             };
             field::equal(shifted, forbidden, w)
         });
@@ -854,10 +849,10 @@ impl Check<Fp> for ShiftedValue<Fq> {
         // TODO: Compute those values instead of hardcoded
         #[rustfmt::skip]
         const FORBIDDEN_SHIFTED_VALUES: &[(Fp, Boolean); 4] = &[
-            (ark_ff::field_new!(Fp, "45560315531506369815346746415080538112"), Boolean::False),
-            (ark_ff::field_new!(Fp, "45560315531506369815346746415080538113"), Boolean::False),
-            (ark_ff::field_new!(Fp, "14474011154664524427946373126085988481727088556502330059655218120611762012161"), Boolean::True),
-            (ark_ff::field_new!(Fp, "14474011154664524427946373126085988481727088556502330059655218120611762012161"), Boolean::True),
+            (ark_ff::MontFp!("45560315531506369815346746415080538112"), Boolean::False),
+            (ark_ff::MontFp!("45560315531506369815346746415080538113"), Boolean::False),
+            (ark_ff::MontFp!("14474011154664524427946373126085988481727088556502330059655218120611762012161"), Boolean::True),
+            (ark_ff::MontFp!("14474011154664524427946373126085988481727088556502330059655218120611762012161"), Boolean::True),
         ];
 
         fn of_bits<F: FieldWitness>(bs: &[bool; 254]) -> F {
@@ -1356,7 +1351,7 @@ pub const PERMUTS_MINUS_1_ADD_N1: usize = 6;
 const OTHER_FIELD_PACKED_CONSTANT_SIZE_IN_BITS: usize = 255;
 
 fn ft_comm<F: FieldWitness, Scale>(
-    plonk: &Plonk<F::Scalar>,
+    plonk: &Plonk<<F as proofs::field::FieldWitness>::Scalar>,
     t_comm: &PolyComm<GroupAffine<F>>,
     verification_key: &PlonkVerificationKeyEvals<F>,
     scale: Scale,
@@ -1365,7 +1360,7 @@ fn ft_comm<F: FieldWitness, Scale>(
 where
     Scale: Fn(
         GroupAffine<F>,
-        <F::Scalar as FieldWitness>::Shifting,
+        <<F as proofs::field::FieldWitness>::Scalar as FieldWitness>::Shifting,
         &mut Witness<F>,
     ) -> GroupAffine<F>,
 {
@@ -1382,7 +1377,7 @@ where
         .unwrap();
 
     let chunked_t_comm = t_comm
-        .elems
+        .chunks
         .iter()
         .rev()
         .copied()
@@ -1449,10 +1444,12 @@ pub mod pcs_batch {
 pub mod wrap_verifier {
     use std::sync::Arc;
 
+    use ark_ec::short_weierstrass::{Affine, Projective};
     use itertools::Itertools;
-    use poly_commitment::{evaluation_proof::OpeningProof, srs::SRS};
+    use poly_commitment::{ipa::SRS, SRS as _};
 
     use crate::proofs::{
+        self,
         public_input::plonk_checks::{self, ft_eval0_checked},
         step::Opt,
         transaction::scalar_challenge::{self, to_field_checked},
@@ -1473,7 +1470,7 @@ pub mod wrap_verifier {
         let vk = prover_index.verifier_index.as_ref().unwrap();
 
         let to_curve = |v: &PolyComm<Vesta>| {
-            let v = v.elems[0];
+            let v = v.chunks[0];
             InnerCurve::<Fq>::of_affine(v)
         };
 
@@ -1560,11 +1557,11 @@ pub mod wrap_verifier {
     }
 
     pub fn lowest_128_bits<F: FieldWitness>(f: F, assert_low_bits: bool, w: &mut Witness<F>) -> F {
-        let (_, endo) = endos::<F::Scalar>();
+        let (_, endo) = endos::<<F as crate::proofs::field::FieldWitness>::Scalar>();
 
         let (lo, hi): (F, F) = w.exists({
             let bigint: BigInteger256 = f.into();
-            let [a, b, c, d] = bigint.to_64x4();
+            let [a, b, c, d] = bigint.0;
             (two_u64_to_field(&[a, b]), two_u64_to_field(&[c, d]))
         });
 
@@ -1674,7 +1671,7 @@ pub mod wrap_verifier {
 
         let to_bytes = |f: Fq| {
             let bigint: BigInteger256 = f.into();
-            let [a, b, c, d] = bigint.to_64x4();
+            let [a, b, c, d] = bigint.0;
             [a, b, c, d]
         };
 
@@ -1811,16 +1808,16 @@ pub mod wrap_verifier {
     }
 
     pub fn lagrange_commitment<F: FieldWitness>(
-        srs: &mut SRS<GroupAffine<F>>,
+        srs: &SRS<GroupAffine<F>>,
         d: u64,
         i: usize,
     ) -> PolyComm<GroupAffine<F>> {
         let d = d as usize;
-        let x_domain = EvaluationDomain::<F::Scalar>::new(d).expect("invalid argument");
+        let x_domain =
+            EvaluationDomain::<<F as crate::proofs::field::FieldWitness>::Scalar>::new(d)
+                .expect("invalid argument");
 
-        srs.add_lagrange_basis(x_domain);
-
-        let lagrange_bases = &srs.lagrange_bases[&x_domain.size()];
+        let lagrange_bases = &srs.get_lagrange_basis(x_domain);
         lagrange_bases[i].clone()
     }
 
@@ -1834,7 +1831,7 @@ pub mod wrap_verifier {
             .filter(|(_, b)| b.as_bool())
             .map(|(d, _)| {
                 let d = 2u64.pow(d.h.log2_size() as u32);
-                match lagrange_commitment::<Fq>(srs, d, i).elems.as_slice() {
+                match lagrange_commitment::<Fq>(srs, d, i).chunks.as_slice() {
                     &[GroupAffine::<Fq> { x, y, .. }] => (x, y),
                     _ => unreachable!(),
                 }
@@ -1867,9 +1864,9 @@ pub mod wrap_verifier {
         let actual_shift = { OPS_BITS_PER_CHUNK * chunks_needed(input_length) };
         let pow2pow = |x: InnerCurve<Fq>, n: usize| (0..n).fold(x, |acc, _| acc.clone() + acc);
 
-        let mut base_and_correction = |h: Domain| {
+        let base_and_correction = |h: Domain| {
             let d = 2u64.pow(h.log2_size() as u32);
-            match lagrange_commitment::<Fq>(srs, d, i).elems.as_slice() {
+            match lagrange_commitment::<Fq>(srs, d, i).chunks.as_slice() {
                 &[g] => {
                     let g = InnerCurve::of_affine(g);
                     let b = pow2pow(g.clone(), actual_shift).neg();
@@ -1902,17 +1899,22 @@ pub mod wrap_verifier {
                     };
                     (x, y)
                 })
-                .reduce(|mut acc, v| {
-                    acc.0 += &v.0;
-                    acc.1 += &v.1;
-                    acc
-                })
-                .unwrap();
+                .fold(
+                    (Projective::default(), Projective::default()),
+                    |mut acc, v| {
+                        acc.0 += v.0;
+                        acc.1 += v.1;
+                        acc
+                    },
+                );
 
             w.exists([y.y, y.x]);
             w.exists([x.y, x.x]);
 
-            (InnerCurve::of_affine(x), InnerCurve::of_affine(y))
+            (
+                InnerCurve::of_affine(Affine::from(x)),
+                InnerCurve::of_affine(Affine::from(y)),
+            )
         };
 
         // TODO: Hack until we have proper cvar :(
@@ -1969,7 +1971,7 @@ pub mod wrap_verifier {
         let s_parts = w.exists({
             // TODO: Here `s` is a `F` but needs to be read as a `F::Scalar`
             let bigint: BigInteger256 = s.into();
-            let bigint: [u64; 4] = bigint.to_64x4();
+            let bigint: [u64; 4] = bigint.0;
             let s_odd = bigint[0] & 1 != 0;
             let v = if s_odd { s - F::one() } else { s };
             (v / F::from(2u64), s_odd.to_boolean())
@@ -2169,7 +2171,7 @@ pub mod wrap_verifier {
 
         let combined_inner_product: Fq = {
             let bigint: BigInteger256 = advice.combined_inner_product.shifted.into();
-            bigint.try_into().unwrap() // Never fail, `Fq` is larger than `Fp`
+            bigint.into() // Never fail, `Fq` is larger than `Fp`
         };
         sponge.absorb(&[combined_inner_product], w);
 
@@ -2222,8 +2224,8 @@ pub mod wrap_verifier {
 
     #[derive(Debug)]
     pub struct Advice<F: FieldWitness> {
-        pub b: ShiftedValue<F::Scalar>,
-        pub combined_inner_product: ShiftedValue<F::Scalar>,
+        pub b: ShiftedValue<<F as proofs::field::FieldWitness>::Scalar>,
+        pub combined_inner_product: ShiftedValue<<F as proofs::field::FieldWitness>::Scalar>,
     }
 
     pub(super) struct IncrementallyVerifyProofParams<'a> {
@@ -2398,7 +2400,7 @@ pub mod wrap_verifier {
 
         let w_comm = &messages.w_comm;
 
-        for w in w_comm.iter().flat_map(|w| &w.elems) {
+        for w in w_comm.iter().flat_map(|w| &w.chunks) {
             absorb_curve(
                 &CircuitVar::Constant(Boolean::True),
                 &InnerCurve::of_affine(*w),
@@ -2410,7 +2412,7 @@ pub mod wrap_verifier {
         let _gamma = sample(&mut sponge, w);
 
         let z_comm = &messages.z_comm;
-        for z in z_comm.elems.iter() {
+        for z in z_comm.chunks.iter() {
             absorb_curve(
                 &CircuitVar::Constant(Boolean::True),
                 &InnerCurve::of_affine(*z),
@@ -2421,7 +2423,7 @@ pub mod wrap_verifier {
         let _alpha = sample_scalar(&mut sponge, w);
 
         let t_comm = &messages.t_comm;
-        for t in t_comm.elems.iter() {
+        for t in t_comm.chunks.iter() {
             absorb_curve(
                 &CircuitVar::Constant(Boolean::True),
                 &InnerCurve::of_affine(*t),
@@ -2458,7 +2460,7 @@ pub mod wrap_verifier {
                 let sg_old = sg_old.iter().map(|(b, v)| (*b, v.to_affine()));
                 let rest = [x_hat, ft_comm]
                     .into_iter()
-                    .chain(z_comm.elems.iter().cloned())
+                    .chain(z_comm.chunks.iter().cloned())
                     .chain([
                         verification_key.generic.to_affine(),
                         verification_key.psm.to_affine(),
@@ -2467,7 +2469,7 @@ pub mod wrap_verifier {
                         verification_key.emul.to_affine(),
                         verification_key.endomul_scalar.to_affine(),
                     ])
-                    .chain(w_comm.iter().flat_map(|w| w.elems.iter().cloned()))
+                    .chain(w_comm.iter().flat_map(|w| w.chunks.iter().cloned()))
                     .chain(verification_key.coefficients.iter().map(|v| v.to_affine()))
                     .chain(sigma_comm_init.iter().map(|v| v.to_affine()))
                     .map(|v| (CircuitVar::Constant(Boolean::True), v));
@@ -2519,7 +2521,7 @@ pub mod one_hot_vector {
     }
 }
 
-impl Check<Fq> for poly_commitment::evaluation_proof::OpeningProof<Vesta> {
+impl Check<Fq> for OpeningProof<Vesta> {
     fn check(&self, w: &mut Witness<Fq>) {
         let Self {
             lr,
@@ -2543,7 +2545,7 @@ impl Check<Fq> for poly_commitment::evaluation_proof::OpeningProof<Vesta> {
     }
 }
 
-impl ToFieldElements<Fq> for poly_commitment::evaluation_proof::OpeningProof<Vesta> {
+impl ToFieldElements<Fq> for OpeningProof<Vesta> {
     fn to_field_elements(&self, fields: &mut Vec<Fq>) {
         let Self {
             lr,
@@ -2597,8 +2599,8 @@ impl ToFieldElements<Fq> for kimchi::proof::ProverCommitments<Vesta> {
         } = self;
 
         let mut push_poly = |poly: &PolyComm<Vesta>| {
-            let PolyComm { elems } = poly;
-            for GroupAffine::<Fq> { x, y, .. } in elems {
+            let PolyComm { chunks } = poly;
+            for GroupAffine::<Fq> { x, y, .. } in chunks {
                 x.to_field_elements(fields);
                 y.to_field_elements(fields);
             }
@@ -2621,8 +2623,8 @@ impl Check<Fq> for kimchi::proof::ProverCommitments<Vesta> {
         assert!(lookup.is_none());
 
         let mut check_poly = |poly: &PolyComm<Vesta>| {
-            let PolyComm { elems } = poly;
-            for affine in elems {
+            let PolyComm { chunks } = poly;
+            for affine in chunks {
                 InnerCurve::of_affine(*affine).check(w);
             }
         };
@@ -2728,7 +2730,7 @@ fn pack_statement(
         packed.extend(
             bulletproof_challenges
                 .iter()
-                .map(|v| Packed::PackedBits(var(two_u64_to_field::<Fq>(v)), 128)), // Never fail with 2 limbs
+                .map(|v| Packed::PackedBits(var(two_u64_to_field::<Fq, _>(v)), 128)), // Never fail with 2 limbs
         );
 
         // Bool
@@ -2761,7 +2763,7 @@ fn pack_statement(
 
 fn split_field(x: Fq, w: &mut Witness<Fq>) -> (Fq, Boolean) {
     let n: BigInteger256 = x.into();
-    let n: [u64; 4] = n.to_64x4();
+    let n: [u64; 4] = n.0;
 
     let is_odd = n[0] & 1 != 0;
 

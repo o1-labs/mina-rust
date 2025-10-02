@@ -6,7 +6,7 @@ use kimchi::{
 };
 use mina_curves::pasta::{Fp, Pallas};
 use once_cell::sync::Lazy;
-use poly_commitment::{commitment::CommitmentCurve, evaluation_proof::OpeningProof};
+use poly_commitment::{commitment::CommitmentCurve, ipa::OpeningProof};
 
 use super::{util::extract_bulletproof, ProverProof};
 use mina_curves::pasta::Fq;
@@ -42,7 +42,7 @@ pub fn make_padded_proof_from_p2p(
 
     let make_poly = |poly: &(BigInt, BigInt)| -> anyhow::Result<_> {
         Ok(PolyComm {
-            elems: vec![of_coord(poly)?],
+            chunks: vec![of_coord(poly)?],
         })
     };
 
@@ -50,13 +50,13 @@ pub fn make_padded_proof_from_p2p(
         crate::try_array_into_with(&proof.commitments.w_comm, make_poly)?;
     let z_comm: PolyComm<Pallas> = make_poly(&proof.commitments.z_comm)?;
     let t_comm: PolyComm<Pallas> = {
-        let elems = proof
+        let chunks = proof
             .commitments
             .t_comm
             .iter()
             .map(of_coord)
             .collect::<Result<_, _>>()?;
-        PolyComm { elems }
+        PolyComm { chunks }
     };
 
     let bulletproof = &proof.bulletproof;
@@ -131,7 +131,9 @@ pub fn make_padded_proof_from_p2p(
 
     let make_poly = |poly: &(BigInt, BigInt)| -> anyhow::Result<_> {
         let point = of_coord(poly)?;
-        Ok(PolyComm { elems: vec![point] })
+        Ok(PolyComm {
+            chunks: vec![point],
+        })
     };
 
     let mut challenge_polynomial_commitments = Cow::Borrowed(

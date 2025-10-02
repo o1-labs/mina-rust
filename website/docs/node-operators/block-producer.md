@@ -1,4 +1,4 @@
-# Run Block Producing Node on Devnet
+# Run Block Producing Node
 
 This guide is intended for setting up block producer nodes on **Mina Devnet**
 only. Do not use this guide for Mina Mainnet until necessary security audits are
@@ -15,13 +15,13 @@ Ensure Docker and Docker Compose are installed on your system -
 
 1. **Download the Latest Release**
 
-- Visit the [Open Mina Releases](https://github.com/o1-labs/mina-rust/releases)
-- Download the latest `openmina-vX.Y.Z-docker-compose.zip`
+- Visit the [Mina Rust Releases](https://github.com/o1-labs/mina-rust/releases)
+- Download the latest `mina-rust-vX.Y.Z-docker-compose.zip`
 - Extract the Files:
 
   ```bash
-  unzip openmina-vX.Y.Z-docker-compose.zip
-  cd openmina-vX.Y.Z-docker-compose
+  unzip mina-rust-vX.Y.Z-docker-compose.zip
+  cd mina-rust-vX.Y.Z-docker-compose
   mkdir mina-workdir
   ```
 
@@ -29,7 +29,32 @@ Ensure Docker and Docker Compose are installed on your system -
 
    [Docker Compose](https://github.com/o1-labs/mina-rust/blob/develop/docker-compose.block-producer.yml)
    references `mina-workdir`. It stores a private key and logs for block
-   production. Place your block producer's private key into the `mina-workdir`
+   production.
+
+   **Option A: Generate a new key pair (if you don't have one)**
+
+   If you don't have a block producer key, you can generate one using the
+   Makefile target:
+
+   ```bash
+   # Clone the repository first if you haven't already
+   git clone https://github.com/o1-labs/mina-rust.git
+   cd mina-rust
+
+   # Generate a new encrypted key pair
+   make generate-block-producer-key
+
+   # Or generate with a password
+   make generate-block-producer-key MINA_PRIVKEY_PASS="YourPassword"
+   ```
+
+   This will create:
+   - `mina-workdir/producer-key` (encrypted private key)
+   - `mina-workdir/producer-key.pub` (public key)
+
+   **Option B: Use an existing key**
+
+   If you already have a block producer key, place it into the `mina-workdir`
    directory and name it `producer-key`:
 
    ```bash
@@ -49,12 +74,29 @@ Ensure Docker and Docker Compose are installed on your system -
    docker compose -f docker-compose.block-producer.yml up -d --pull always
    ```
 
-   Optional parameters:
+   **Configuration Options:**
+   - `MINA_RUST_TAG` - Docker image tag for the mina-rust node (default:
+     `latest`)
+   - `MINA_FRONTEND_TAG` - Docker image tag for the frontend (default: `latest`)
+   - `MINA_LIBP2P_EXTERNAL_IP` - Sets your node's external IP address to help
+     other nodes find it
+   - `MINA_LIBP2P_PORT` - Sets the port for Libp2p communication
+   - `COINBASE_RECEIVER` - Wallet address to receive block rewards
+   - `MINA_PRIVKEY_PASS` - Password for encrypted private key
 
-   `MINA_LIBP2P_EXTERNAL_IP` Sets your node's external IP address to help other
-   nodes find it.
+   **Examples with different versions:**
 
-   `MINA_LIBP2P_PORT` Sets the port for Libp2p communication.
+   ```bash
+   # Use specific version (recommended for production)
+   env MINA_RUST_TAG="v1.4.2" MINA_FRONTEND_TAG="v1.4.2" \
+   COINBASE_RECEIVER="YourWalletAddress" MINA_PRIVKEY_PASS="YourPassword" \
+   docker compose -f docker-compose.block-producer.yml up -d --pull always
+
+   # Use development version (latest features, may be unstable)
+   env MINA_RUST_TAG="develop" MINA_FRONTEND_TAG="develop" \
+   COINBASE_RECEIVER="YourWalletAddress" MINA_PRIVKEY_PASS="YourPassword" \
+   docker compose -f docker-compose.block-producer.yml up -d --pull always
+   ```
 
 4. **Go to Dashboard**
 
@@ -62,7 +104,7 @@ Ensure Docker and Docker Compose are installed on your system -
    [monitor sync](http://localhost:8070/dashboard) and
    [block production](http://localhost:8070/block-production).
 
-## Alternative: Using Make Command
+## Using Make Command
 
 As an alternative to Docker Compose, you can run the block producer directly
 using the Makefile target. This method requires building from source.

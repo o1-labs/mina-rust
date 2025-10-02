@@ -1,0 +1,130 @@
+name: Release Branch Name Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - 'release/**'
+
+jobs:
+  check-release-branch-name:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/release/') || (github.event_name == 'pull_request' && startsWith(github.head_ref, 'release/'))
+    steps:
+      - name: Check release branch naming convention
+        id: check
+        run: |
+          # Get the branch name
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          else
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          fi
+
+          echo "Checking branch: $BRANCH_NAME"
+
+          # Check if it's a release branch
+          if [[ "$BRANCH_NAME" == release/* ]]; then
+            # Extract the version part after "release/"
+            VERSION="${BRANCH_NAME#release/}"
+
+            # Check if the version starts with 'v' and has all three version
+            # components
+            if [[ "$VERSION" =~ ^v[0-9]+\.[0-9]+\.[0-9]+ ]]; then
+              echo "✅ Branch name follows correct format: $BRANCH_NAME"
+              echo "Version: $VERSION"
+              echo "valid=true" >> $GITHUB_OUTPUT
+            else
+              echo "❌ ERROR: Release branch must follow the format 'release/vX.Y.Z'"
+              echo "Current branch: $BRANCH_NAME"
+              echo "Expected format examples:"
+              echo "  - release/v1.0.0"
+              echo "  - release/v1.2.3"
+              echo "  - release/v2.0.0"
+              echo "  - release/v2.0.0-beta.1"
+              echo ""
+              if [[ "$VERSION" =~ ^[0-9] ]]; then
+                echo "Your branch should be named: release/v${VERSION}"
+                echo "suggestion=release/v${VERSION}" >> $GITHUB_OUTPUT
+              else
+                echo "Your branch should be named: release/v<major>.<minor>.<patch>"
+                echo "suggestion=release/v<major>.<minor>.<patch>" >> $GITHUB_OUTPUT
+              fi
+              echo "valid=false" >> $GITHUB_OUTPUT
+              echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+              echo "version=$VERSION" >> $GITHUB_OUTPUT
+              exit 1
+            fi
+          else
+            echo "Not a release branch, skipping check"
+            echo "valid=skip" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Comment PR on validation failure
+        if: failure() && github.event_name == 'pull_request' && steps.check.outputs.valid == 'false'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const branch = '${{ steps.check.outputs.branch }}';
+            const version = '${{ steps.check.outputs.version }}';
+            const suggestion = '${{ steps.check.outputs.suggestion }}';
+
+            const body = `## ❌ Release Branch Naming Convention Error
+
+            The branch name **\`${branch}\`** does not follow the required naming convention.
+
+            ### Required Format
+            Release branches must follow the format: **\`release/vX.Y.Z\`**
+
+            Where:
+            - The version must start with a lowercase \`v\`
+            - X, Y, and Z are version numbers (all three components required)
+
+            ### Valid Examples
+            - \`release/v1.0.0\`
+            - \`release/v1.2.3\`
+            - \`release/v2.0.0\`
+            - \`release/v2.0.0-beta.1\`
+
+            ### Your Branch Issue
+            ${version.startsWith('v') ?
+              'Missing patch version component (Z in vX.Y.Z)' :
+              version.match(/^[0-9]/) ?
+                'Missing the required \`v\` prefix' :
+                'Invalid version format'}
+
+            ### Suggested Fix
+            Your branch should be named: **\`${suggestion}\`**
+
+            Please rename your branch to follow the convention and push again.`;
+
+            // Check if we already commented
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes('Release Branch Naming Convention Error')
+            );
+
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

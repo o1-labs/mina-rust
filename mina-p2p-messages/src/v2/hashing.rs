@@ -1,6 +1,5 @@
 use std::{fmt, io, sync::Arc};
 
-use ark_ff::fields::arithmetic::InvalidBigInt;
 use binprot::{BinProtRead, BinProtWrite};
 use generated::MinaStateBlockchainStateValueStableV2;
 use mina_curves::pasta::Fp;
@@ -15,7 +14,11 @@ use sha2::{
     Digest, Sha256,
 };
 
-use crate::{bigint::BigInt, hash::MinaHash, hash_input::FailableToInputs};
+use crate::{
+    bigint::{BigInt, InvalidBigInt},
+    hash::MinaHash,
+    hash_input::FailableToInputs,
+};
 
 use super::{
     generated, ConsensusBodyReferenceStableV1, ConsensusGlobalSlotStableV1,
@@ -402,7 +405,7 @@ impl StateHash {
         body_hash: &MinaBaseStateBodyHashStableV1,
     ) -> Result<Self, InvalidBigInt> {
         Ok(Self::from_fp(fp_state_hash_from_fp_hashes(
-            pred_state_hash.to_field()?,
+            pred_state_hash.to_field().map_err(|_| InvalidBigInt)?,
             body_hash.to_field()?,
         )))
     }
@@ -467,7 +470,9 @@ impl MinaHash for MinaStateProtocolStateBodyValueStableV2 {
 impl MinaHash for MinaStateProtocolStateValueStableV2 {
     fn try_hash(&self) -> Result<mina_curves::pasta::Fp, InvalidBigInt> {
         Ok(fp_state_hash_from_fp_hashes(
-            self.previous_state_hash.to_field()?,
+            self.previous_state_hash
+                .to_field()
+                .map_err(|_| InvalidBigInt)?,
             MinaHash::try_hash(&self.body)?,
         ))
     }

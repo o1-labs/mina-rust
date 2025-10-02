@@ -1,12 +1,13 @@
 [package]
 name = "mina-p2p-messages"
-version = "0.6.4"
+version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ark-serialize = { workspace = true }
 base64 = "0.22"
 binprot = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
 binprot_derive = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
@@ -16,7 +17,7 @@ derive_more = "0.99.17"
 hex = "0.4.3"
 lazy_static = "1.4.0"
 num-bigint = "0.4.6"
-serde = { version = "1.0.142", features = ["derive"] }
+serde = { workspace = true }
 serde_bytes = "0.11"
 serde_json = { version = "1.0.83" }
 sha2 = { version = "0.10.2" }

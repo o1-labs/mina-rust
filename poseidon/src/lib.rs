@@ -2,7 +2,7 @@
 
 use std::marker::PhantomData;
 
-use ark_ff::{BigInteger256, Field};
+use ark_ff::{BigInt, BigInteger256, Field};
 use mina_curves::pasta::{Fp, Fq};
 
 pub mod hash;
@@ -274,7 +274,7 @@ impl<F: Field + SpongeParamsForField<F> + Into<BigInteger256>> FqSponge<F> {
             limbs
         } else {
             let x: BigInteger256 = self.sponge.squeeze().into();
-            let x: [u64; 4] = x.to_64x4();
+            let BigInt(x) = x;
             self.last_squeezed
                 .extend(&x.as_ref()[0..HIGH_ENTROPY_LIMBS]);
             self.squeeze_limbs::<NUM_LIMBS>()

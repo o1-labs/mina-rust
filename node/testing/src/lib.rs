@@ -1,3 +1,36 @@
+//! # Mina Node Testing Framework
+//!
+//! A comprehensive testing framework for the Mina Rust node implementation.
+//! Provides scenario-based testing capabilities with deterministic execution,
+//! cluster management, and cross-implementation compatibility testing.
+//!
+//! ## Key Features
+//!
+//! - **Scenario-based testing**: Deterministic, repeatable test sequences
+//! - **Cluster orchestration**: Multi-node test coordination
+//! - **Cross-implementation**: Tests both Rust and OCaml node compatibility
+//! - **Recording/replay**: Capture and reproduce test scenarios
+//! - **Network simulation**: Controlled network environments
+//!
+//! ## Documentation
+//!
+//! For detailed usage and examples, see:
+//! - [Scenario Tests](https://o1-labs.github.io/mina-rust/developers/testing/scenario-tests)
+//! - [Testing Framework](https://o1-labs.github.io/mina-rust/developers/testing/testing-framework)
+//! - [Network Connectivity](https://o1-labs.github.io/mina-rust/developers/testing/network-connectivity)
+//!
+//! ## Usage
+//!
+//! The main entry point is the `mina-node-testing` binary:
+//!
+//! ```bash
+//! # List available scenarios
+//! cargo run --release --bin mina-node-testing -- scenarios-list
+//!
+//! # Run a specific scenario
+//! cargo run --release --bin mina-node-testing -- scenarios-run --name scenario-name
+//! ```
+
 mod exit_with_error;
 
 use std::sync::Arc;

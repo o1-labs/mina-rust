@@ -111,7 +111,6 @@ impl NetworkConfig {
 pub mod devnet {
     use super::{CircuitsConfig, NetworkId};
     use crate::constants::{ConstraintConstants, ForkConstants};
-    use mina_curves::pasta::Fp;
 
     pub const NETWORK_ID: NetworkId = NetworkId::TESTNET;
     pub const NAME: &str = "devnet";
@@ -151,8 +150,7 @@ pub mod devnet {
         // ourselves right now, we cannot react to changes in this value,
         // so it will be hardcoded for now.
         fork: Some(ForkConstants {
-            state_hash: ark_ff::field_new!(
-                Fp,
+            state_hash: ark_ff::MontFp!(
                 "7908066420535064797069631664846455037440232590837253108938061943122344055350"
             ),
             blockchain_length: 296371,
@@ -191,7 +189,6 @@ pub mod devnet {
 pub mod mainnet {
     use super::{CircuitsConfig, NetworkId};
     use crate::constants::{ConstraintConstants, ForkConstants};
-    use mina_curves::pasta::Fp;
 
     pub const NETWORK_ID: NetworkId = NetworkId::MAINNET;
     pub const NAME: &str = "mainnet";
@@ -231,8 +228,7 @@ pub mod mainnet {
         // ourselves right now, we cannot react to changes in this value,
         // so it will be hardcoded for now.
         fork: Some(ForkConstants {
-            state_hash: ark_ff::field_new!(
-                Fp,
+            state_hash: ark_ff::MontFp!(
                 "24465973112608446515163575794792913472627621028836869800891179577915755065526"
             ),
             blockchain_length: 359604,

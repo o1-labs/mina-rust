@@ -1,5 +1,6 @@
-use ark_ec::{AffineCurve, ProjectiveCurve};
-use ark_ff::{Field, SquareRootField, UniformRand};
+use ark_ec::{AffineRepr, CurveGroup};
+use ark_ff::{Field, UniformRand};
+use core::ops::Mul;
 use ledger::{
     generators::zkapp_command_builder::get_transaction_commitments,
     proofs::{
@@ -155,9 +156,7 @@ impl Generator<Keypair> for FuzzerCtx {
     fn gen(&mut self) -> Keypair {
         let sec_key: SecKey = self.gen();
         let scalar = sec_key.into_scalar();
-        let public: CurvePoint = CurvePoint::prime_subgroup_generator()
-            .mul(scalar)
-            .into_affine();
+        let public: CurvePoint = CurvePoint::generator().mul(scalar).into_affine();
 
         let keypair = Keypair::from_parts_unsafe(scalar, public);
 
@@ -199,7 +198,7 @@ impl Generator<Memo> for FuzzerCtx {
 
 pub struct CurvePointGenerator<F>(F, F);
 
-impl<F: Field + From<i32> + SquareRootField> Generator<CurvePointGenerator<F>> for FuzzerCtx {
+impl<F: Field + From<i32>> Generator<CurvePointGenerator<F>> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> CurvePointGenerator<F> {
         /*
@@ -223,10 +222,14 @@ impl<F: Field + From<i32> + SquareRootField> Generator<CurvePointGenerator<F>> f
 impl Generator<(Fp, Fp)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fp, Fp) {
+        use core::ops::Mul;
         if let Some((x, y)) = self.state.cache_curve_point_fp {
-            let p = GroupAffine::<Fp>::new(x, y, false);
-            let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fp> = p.mul(rand_scalar).into();
+            let p = GroupAffine::<Fp>::new(x, y);
+            let rand_scalar: u64 = self.r#gen.rng.gen();
+            let scalar_field_elem =
+                <Fp as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+
+            let new_p: GroupAffine<Fp> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fp> = self.gen();
@@ -240,9 +243,11 @@ impl Generator<(Fq, Fq)> for FuzzerCtx {
     #[coverage(off)]
     fn gen(&mut self) -> (Fq, Fq) {
         if let Some((x, y)) = self.state.cache_curve_point_fq {
-            let p = GroupAffine::<Fq>::new(x, y, false);
+            let p = GroupAffine::<Fq>::new(x, y);
             let rand_scalar: u64 = self.gen.rng.gen();
-            let new_p: GroupAffine<Fq> = p.mul(rand_scalar).into();
+            let scalar_field_elem =
+                <Fq as ledger::proofs::field::FieldWitness>::Scalar::from(rand_scalar);
+            let new_p: GroupAffine<Fq> = p.mul(scalar_field_elem).into();
             (new_p.x, new_p.y)
         } else {
             let p: CurvePointGenerator<Fq> = self.gen();
@@ -1882,7 +1887,7 @@ pub fn sign_account_updates(
                     true => full_txn_commitment,
                     false => txn_commitment,
                 };
-                Some(signer.sign(&kp, input))
+                Some(signer.sign(&kp, input, false))
             }
             _ => None,
         };
@@ -1918,7 +1923,7 @@ impl Generator<ZkAppCommand> for FuzzerCtx {
             Some(keypair) => keypair.clone(),
             None => self.gen(),
         };
-        zkapp_command.fee_payer.authorization = signer.sign(&keypair, &full_txn_commitment);
+        zkapp_command.fee_payer.authorization = signer.sign(&keypair, &full_txn_commitment, false);
 
         sign_account_updates(
             self,
@@ -1969,7 +1974,7 @@ impl Generator<StakeDelegationPayload> for FuzzerCtx {
 fn sign_payload(keypair: &Keypair, payload: &SignedCommandPayload) -> Signature {
     let tx = TransactionUnionPayload::of_user_command_payload(payload);
     let mut signer = mina_signer::create_legacy(NetworkId::TESTNET);
-    signer.sign(keypair, &tx)
+    signer.sign(keypair, &tx, false)
 }
 
 impl Generator<SignedCommandPayload> for FuzzerCtx {

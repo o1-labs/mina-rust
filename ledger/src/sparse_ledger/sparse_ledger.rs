@@ -3,9 +3,10 @@ use std::{
     sync::{Arc, Mutex},
 };
 
-use ark_ff::{fields::arithmetic::InvalidBigInt, Zero};
+use ark_ff::Zero;
 use mina_core::constants::constraint_constants;
 use mina_curves::pasta::Fp;
+use mina_p2p_messages::bigint::InvalidBigInt;
 
 use crate::{
     scan_state::{

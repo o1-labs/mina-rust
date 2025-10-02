@@ -1,18 +1,17 @@
 /// Copy-pasted from https://github.com/MinaProtocol/mina/blob/cf2a732ae39f4e784707e1fc32832da805bb7d09/src/lib/crypto/kimchi_bindings/stubs/src/urs_utils.rs
-use ark_ec::{msm::VariableBaseMSM, ProjectiveCurve};
-use ark_ff::{batch_inversion, One, PrimeField, UniformRand, Zero};
+use ark_ec::{AffineRepr, CurveGroup, VariableBaseMSM};
+use ark_ff::{batch_inversion, One, UniformRand, Zero};
 use poly_commitment::{
     commitment::{b_poly_coefficients, CommitmentCurve},
-    srs::SRS,
+    ipa::SRS,
 };
 use rayon::prelude::*;
 
 // TODO: Not compatible with variable rounds
-pub fn batch_dlog_accumulator_check<G: CommitmentCurve>(
-    urs: &SRS<G>,
-    comms: &[G],
-    chals: &[G::ScalarField],
-) -> bool {
+pub fn batch_dlog_accumulator_check<G>(urs: &SRS<G>, comms: &[G], chals: &[G::ScalarField]) -> bool
+where
+    G: CommitmentCurve + AffineRepr,
+{
     let k = comms.len();
 
     if k == 0 {
@@ -65,8 +64,7 @@ pub fn batch_dlog_accumulator_check<G: CommitmentCurve>(
         }
     }
 
-    let scalars: Vec<_> = scalars.iter().map(|x| x.into_repr()).collect();
-    VariableBaseMSM::multi_scalar_mul(&points, &scalars) == G::Projective::zero()
+    <G::Group as VariableBaseMSM>::msm(&points, &scalars).unwrap() == G::Group::zero()
 }
 
 #[allow(unused)]
@@ -90,12 +88,11 @@ pub fn batch_dlog_accumulator_generate<G: CommitmentCurve>(
         .chunks(rounds)
         .map(|chals| {
             let chals: Vec<G::ScalarField> = chals.into_iter().copied().collect();
-            let scalars: Vec<_> = b_poly_coefficients(&chals)
-                .into_iter()
-                .map(|x| x.into_repr())
-                .collect();
+            let scalars: Vec<_> = b_poly_coefficients(&chals);
             let points: Vec<_> = urs.g.clone();
-            VariableBaseMSM::multi_scalar_mul(&points, &scalars).into_affine()
+            <G::Group as VariableBaseMSM>::msm(&points, &scalars)
+                .unwrap() // Not sure have safe this unwrap is but function is unused
+                .into_affine()
         })
         .collect();
 

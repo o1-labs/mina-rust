@@ -61,6 +61,55 @@ it to `main`, and then tagging from `main`.
 - Documentation updates
 - No new features
 
+## Release Communication Checklist
+
+### Slack/Communication Template
+
+Copy and paste this checklist when announcing a release in progress:
+
+```markdown
+## 🚀 Release in Progress: vX.Y.Z
+
+**Release Manager:** @[your-name] **Target Date:** [date] **Type:** [ ] Major [
+] Minor [ ] Patch
+
+### Pre-Release
+
+- [ ] Develop branch stability verified
+- [ ] CHANGELOG.md updated
+- [ ] Version compatibility checked
+- [ ] Release branch created (if major/minor)
+- [ ] Version numbers updated in Cargo.toml files
+
+### Release Process
+
+- [ ] PR created from release branch to main
+- [ ] CI tests passing
+- [ ] Required approvals obtained
+- [ ] PR merged to main
+- [ ] Git tag created and pushed
+- [ ] Docker images building (automated)
+- [ ] GitHub release draft created
+
+### Verification
+
+- [ ] Docker images available on Docker Hub
+- [ ] Multi-arch images verified (amd64/arm64)
+- [ ] CI pipeline completed successfully
+- [ ] GitHub release published
+
+### Post-Release
+
+- [ ] Main branch merged back to develop
+- [ ] Documentation updated
+- [ ] Release announced in #announcements
+- [ ] Known issues documented (if any)
+
+**Tracking:** [Link to PR/Issue] **Status:** 🟡 In Progress
+
+_Updates will be posted in this thread_
+```
+
 ## Pre-Release Checklist
 
 1. **Verify develop branch stability**
@@ -100,6 +149,33 @@ it to `main`, and then tagging from `main`.
 
 ### 1. Create Release Branch (for major/minor releases)
 
+<!-- prettier-ignore-start -->
+
+:::info Release Branch Naming Convention
+
+Release branches **must** follow the format `release/vX.Y.Z` where:
+
+- The version **must** start with a lowercase `v`
+- X, Y, and Z are version numbers following semantic versioning (all three
+  components required)
+
+**Valid examples:**
+
+- `release/v1.5.0`
+- `release/v1.2.3`
+- `release/v2.0.0`
+
+**Invalid examples:**
+
+- `release/1.5.0` ❌ (missing 'v' prefix)
+- `release/v1.5` ❌ (missing patch version)
+- `release/V1.5.0` ❌ (uppercase 'V')
+
+This naming convention is enforced by CI checks. Any push to a branch starting
+with `release/` that doesn't follow this format will fail validation. :::
+
+<!-- prettier-ignore-stop -->
+
 ```bash
 # Create release branch from develop
 git checkout develop
@@ -118,8 +194,8 @@ reviewed.
 
 **Images will be available as:**
 
-- `o1labs/mina-rust:release/v1.5.0`
-- `o1labs/mina-rust-frontend:release/v1.5.0`
+- `o1labs/mina-rust:v1.5.0`
+- `o1labs/mina-rust-frontend:v1.5.0`
 
 **To test locally:** See
 [Docker Images documentation](../developers/docker-images) for complete usage
@@ -127,8 +203,8 @@ instructions.
 
 ```bash
 # Example usage
-docker pull o1labs/mina-rust:release/v1.5.0
-docker run -p 8302:8302 o1labs/mina-rust:release/v1.5.0
+docker pull o1labs/mina-rust:v1.5.0
+docker run -p 8302:8302 o1labs/mina-rust:v1.5.0
 ```
 
 :::
@@ -357,7 +433,7 @@ For urgent patches to released versions:
    - Verify Docker builds
    - Create GitHub release
 
-## Rollback Procedure
+## Addressing Release problems
 
 If issues are discovered after release:
 

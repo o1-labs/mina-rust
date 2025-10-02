@@ -1,8 +1,15 @@
 services:
   mina-node:
-    image: openmina/openmina:${MINA_TAG:-latest}
-    entrypoint: >
-      sh -c "mina node --producer-key /root/.mina/producer-key $${COINBASE_RECEIVER:+--coinbase-receiver $$COINBASE_RECEIVER} $${MINA_LIBP2P_EXTERNAL_IP:+--libp2p-external-ip $$MINA_LIBP2P_EXTERNAL_IP} $${MINA_LIBP2P_PORT:+--libp2p-port $$MINA_LIBP2P_PORT}"
+    image: o1labs/mina-rust:${MINA_RUST_TAG:-latest}
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "
+      ARGS='node --producer-key /root/.mina/producer-key';
+      if [ -n \"$$COINBASE_RECEIVER\" ]; then ARGS=\"$$ARGS --coinbase-receiver $$COINBASE_RECEIVER\"; fi;
+      if [ -n \"$$MINA_LIBP2P_EXTERNAL_IP\" ]; then ARGS=\"$$ARGS --libp2p-external-ip $$MINA_LIBP2P_EXTERNAL_IP\"; fi;
+      if [ -n \"$$MINA_LIBP2P_PORT\" ]; then ARGS=\"$$ARGS --libp2p-port $$MINA_LIBP2P_PORT\"; fi;
+      exec mina $$ARGS
+      "
     ports:
       - "3000:3000"
       - "${MINA_LIBP2P_PORT:-8302}:${MINA_LIBP2P_PORT:-8302}"
@@ -11,12 +18,12 @@ services:
     environment:
       MINA_PRIVKEY_PASS: "${MINA_PRIVKEY_PASS:-}"
       COINBASE_RECEIVER: "${COINBASE_RECEIVER:-}"
-      MINA_LIBP2P_EXTERNAL_IP: "${MINA_LIBP2P_EXTERNAL_IP}"
-      MINA_LIBP2P_PORT: "${MINA_LIBP2P_PORT}"
+      MINA_LIBP2P_EXTERNAL_IP: "${MINA_LIBP2P_EXTERNAL_IP:-}"
+      MINA_LIBP2P_PORT: "${MINA_LIBP2P_PORT:-8302}"
 
   frontend:
-    image: openmina/frontend:${MINA_FRONTEND_TAG:-latest}
+    image: o1labs/mina-rust-frontend:${MINA_FRONTEND_TAG:-latest}
     environment:
       MINA_FRONTEND_ENVIRONMENT: compose-producer
     ports:
-      - "8070:80"
+      - "8070:8070"
