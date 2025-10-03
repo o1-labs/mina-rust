@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website**: add "Join devnet" page with instructions for community members to
   join the devnet program and test the Rust node implementation
   ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
+- **Website**: add documentation guidelines
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1493))
 
 ### Changed
 

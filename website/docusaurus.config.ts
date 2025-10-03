@@ -65,6 +65,8 @@ const config: Config = {
     ],
   ],
 
+  themes: ['docusaurus-theme-github-codeblock'],
+
 
   themeConfig: {
     // Replace with your project's social card

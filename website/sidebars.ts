@@ -135,6 +135,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Documentation',
+      items: [
+        'developers/documentation-guidelines',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Future Work',
       items: [
         'developers/future-work',
