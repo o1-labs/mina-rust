@@ -6,6 +6,9 @@ description:
 slug: /developers/zkapps
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 # zkApps and zkApp Commands
 
 ## Overview
@@ -42,9 +45,24 @@ to multiple accounts atomically. It consists of:
 
 <!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L3588-L3592 -->
 
+<Tabs groupId="implementation">
+  <TabItem value="rust" label="Rust" default>
+
 ```rust reference title="ledger/src/scan_state/transaction_logic.rs"
 https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L3588-L3592
 ```
+
+  </TabItem>
+  <TabItem value="ocaml" label="OCaml">
+
+<!-- CODE_REFERENCE: src/lib/mina_base/zkapp_command.ml#L8-L13 -->
+
+```ocaml reference title="src/lib/mina_base/zkapp_command.ml"
+https://github.com/MinaProtocol/mina/blob/compatible/src/lib/mina_base/zkapp_command.ml#L8-L13
+```
+
+  </TabItem>
+</Tabs>
 
 ### Components
 

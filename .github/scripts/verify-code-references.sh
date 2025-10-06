@@ -121,25 +121,34 @@ while IFS= read -r doc_file; do
                         branch="${BASH_REMATCH[3]}"
                         gh_file_path="${BASH_REMATCH[4]}"
 
-                        raw_url="https://raw.githubusercontent.com/${org}/${repo}/${branch}/${gh_file_path}"
+                        # Only check code discrepancy for o1-labs/mina-rust references
+                        if [[ "${org}" == "o1-labs" && "${repo}" == "mina-rust" ]]; then
+                            raw_url="https://raw.githubusercontent.com/${org}/${repo}/${branch}/${gh_file_path}"
 
-                        # Fetch the code from GitHub
-                        github_code=$(curl -s "${raw_url}" | sed -n "${start_line},${end_line}p")
+                            # Fetch the code from GitHub
+                            github_code=$(curl -s "${raw_url}" | sed -n "${start_line},${end_line}p")
 
-                        # Compare local code with GitHub code
-                        if [[ "${actual_code}" == "${github_code}" ]]; then
+                            # Compare local code with GitHub code
+                            if [[ "${actual_code}" == "${github_code}" ]]; then
+                                echo -e "${GREEN}✓${NC} Valid reference in ${doc_file}:${line_num}"
+                                echo "  ${file_path}#L${start_line}-L${end_line}"
+                                echo "  Local code matches GitHub (${branch})"
+                                VALID_REFS=$((VALID_REFS + 1))
+                            else
+                                echo -e "${RED}✗${NC} Code mismatch in ${doc_file}:${line_num}"
+                                echo "  ${file_path}#L${start_line}-L${end_line}"
+                                echo "  Local code differs from GitHub (${branch})"
+                                echo "  This may indicate uncommitted changes or branch divergence"
+                                add_error "- **${doc_file_rel}:${line_num}** - Code reference to \`${file_path}#L${start_line}-L${end_line}\` differs from GitHub (\`${branch}\` branch). The referenced code may have been modified locally but not yet merged to \`${branch}\`."
+                                INVALID_REFS=$((INVALID_REFS + 1))
+                                EXIT_CODE=1
+                            fi
+                        else
+                            # For external repository references, just validate format
                             echo -e "${GREEN}✓${NC} Valid reference in ${doc_file}:${line_num}"
                             echo "  ${file_path}#L${start_line}-L${end_line}"
-                            echo "  Local code matches GitHub (${branch})"
+                            echo "  External reference (${org}/${repo}) - skipping code comparison"
                             VALID_REFS=$((VALID_REFS + 1))
-                        else
-                            echo -e "${RED}✗${NC} Code mismatch in ${doc_file}:${line_num}"
-                            echo "  ${file_path}#L${start_line}-L${end_line}"
-                            echo "  Local code differs from GitHub (${branch})"
-                            echo "  This may indicate uncommitted changes or branch divergence"
-                            add_error "- **${doc_file_rel}:${line_num}** - Code reference to \`${file_path}#L${start_line}-L${end_line}\` differs from GitHub (\`${branch}\` branch). The referenced code may have been modified locally but not yet merged to \`${branch}\`."
-                            INVALID_REFS=$((INVALID_REFS + 1))
-                            EXIT_CODE=1
                         fi
                     else
                         echo -e "${YELLOW}⚠${NC} Could not parse GitHub URL in ${doc_file}:${line_num}"
