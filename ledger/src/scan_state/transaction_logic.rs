@@ -5135,7 +5135,7 @@ pub mod local_state {
             numbers::nat::CheckedNat,
             to_field_elements::ToFieldElements,
         },
-        zkapps::intefaces::{
+        zkapps::interfaces::{
             CallStackInterface, IndexInterface, SignedAmountInterface, StackFrameInterface,
         },
         ToInputs,
