@@ -50,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1421](https://github.com/o1-labs/mina-rust/pull/1421)).
 - **Frontend**: rename all occurences of openmina.scss to mina-rust.scss
   ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
+- **Website**: bump up to docusaurus 3.9.1
+  ([#1500](https://github.com/o1-labs/mina-rust/pull/1500))
 
 ## v0.17.0
 
