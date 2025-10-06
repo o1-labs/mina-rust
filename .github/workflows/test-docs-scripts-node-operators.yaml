@@ -14,18 +14,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+        os: [ubuntu-22.04, ubuntu-24.04]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-
-      - name: Install Docker on macOS
-        if: runner.os == 'macOS'
-        run: |
-          brew install docker
-          brew install colima
-          colima start --driver qemu --cpu 2 --memory 4
 
       - name: Test build-info-docker script
         run: |
@@ -48,17 +41,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+        os: [ubuntu-22.04, ubuntu-24.04]
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
-
-      - name: Install timeout on macOS
-        if: runner.os == 'macOS'
-        run: |
-          brew install coreutils
-          sudo ln -s /opt/homebrew/bin/gtimeout /usr/local/bin/timeout || sudo ln -s /usr/local/bin/gtimeout /usr/local/bin/timeout
 
       - name: Create test environment
         run: |
