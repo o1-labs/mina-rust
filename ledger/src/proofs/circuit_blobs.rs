@@ -191,7 +191,6 @@ pub async fn fetch(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
         option_env!("CIRCUIT_BLOBS_HTTP_PREFIX").unwrap_or("/assets/webnode/circuit-blobs");
     let url = format!("{prefix}/{}", filename.as_ref().to_str().unwrap());
     mina_core::http::get_bytes(&url).await
-    // http::get_bytes(&git_release_url(filename)).await
 }
 
 #[cfg(target_family = "wasm")]
