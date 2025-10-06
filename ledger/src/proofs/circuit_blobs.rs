@@ -53,8 +53,13 @@
 //! If files are not found locally, the system automatically downloads them from:
 //!
 //! ```text
-//! https://github.com/o1-labs/circuit-blobs/releases/download/<filename>
+//! https://github.com/o1-labs/circuit-blobs/raw/main/<tag>/<filename>
 //! ```
+//!
+//! The `<tag>` corresponds to the circuit version (e.g.,
+//! `20251006-berkeley-devnet`) and is defined by the `TAG` constant in the
+//! `git_release_url` function. To use a different version, modify the constant
+//! in the source code.
 //!
 //! Downloaded files are cached locally for future use.
 //!
@@ -105,6 +110,9 @@
 //! export MINA_CIRCUIT_BLOBS_BASE_DIR=/path/to/your/circuit-blobs
 //! ```
 //!
+//! To use a different circuit version when downloading from GitHub, modify the
+//! `TAG` constant in the `git_release_url` function in this file.
+//!
 //! ## Related Modules
 //!
 //! - [`crate::proofs::provers`]: Prover creation using circuit data
@@ -120,10 +128,16 @@ pub fn home_base_dir() -> Option<std::path::PathBuf> {
 }
 
 fn git_release_url(filename: &impl AsRef<Path>) -> String {
-    const RELEASES_PATH: &str = "https://github.com/o1-labs/circuit-blobs/releases/download";
+    const RAW_GITHUB_BASE: &str = "https://github.com/o1-labs/circuit-blobs/raw/refs/tags";
+    const TAG: &str = "20251006-berkeley-devnet";
+    // This only works for devnet right now. For mainnet, we need to change this
+    // to "mainnet" or make it configurable. It is used for now as this to
+    // replace the requirement of adding assets to the release.
+    const VERSION: &str = "berkeley-devnet";
+
     let filename_str = filename.as_ref().to_str().unwrap();
 
-    format!("{RELEASES_PATH}/{filename_str}")
+    format!("{RAW_GITHUB_BASE}/{TAG}/{VERSION}/{filename_str}")
 }
 
 #[cfg(not(target_family = "wasm"))]
@@ -200,4 +214,36 @@ pub fn fetch_blocking(filename: &impl AsRef<Path>) -> std::io::Result<Vec<u8>> {
         option_env!("CIRCUIT_BLOBS_HTTP_PREFIX").unwrap_or("/assets/webnode/circuit-blobs");
     let url = format!("{prefix}/{}", filename.as_ref().to_str().unwrap());
     mina_core::http::get_bytes_blocking(&url)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Run with:
+    // ```
+    // cargo test \
+    //  --package mina-tree \
+    //  --lib \
+    //  -- proofs::circuit_blobs::tests::test_fetch_circuit_file --ignored
+    // ```
+    #[test]
+    fn test_fetch_circuit_file() {
+        // NOTE: Update this filename if the TAG constant changes in git_release_url
+        // This file should exist in the release tagged by TAG
+        let filename = "step-step-proving-key-blockchain-snark-step-0-55f640777b6486a6fd3fdbc3fcffcc60_rows_rev.bin";
+
+        let url = git_release_url(&filename);
+        let response = reqwest::blocking::Client::new()
+            .head(&url)
+            .send()
+            .expect("Failed to send HEAD request");
+
+        assert!(
+            response.status().is_success(),
+            "Circuit file URL returned status {}: {}",
+            response.status(),
+            url
+        );
+    }
 }

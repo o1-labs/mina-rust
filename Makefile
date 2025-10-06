@@ -33,6 +33,9 @@ NETWORK ?= devnet
 VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
+# Circuit blobs configuration
+CIRCUIT_BLOBS_TAG ?= 20251006-berkeley-devnet
+
 # Documentation server port
 DOCS_PORT ?= 3000
 
@@ -193,9 +196,9 @@ clean: ## Clean build artifacts
 	cargo clean
 
 .PHONY: download-circuits
-download-circuits: ## Download the circuits used by Mina from GitHub
+download-circuits: ## Download the circuits used by Mina from GitHub (uses CIRCUIT_BLOBS_TAG)
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git; \
+	  git clone --depth 1 --branch $(CIRCUIT_BLOBS_TAG) https://github.com/o1-labs/circuit-blobs.git; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
 	else \
