@@ -34,6 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
 - **Website**: add documentation guidelines
   ([#1493](https://github.com/o1-labs/mina-rust/pull/1493))
+- **Website**: add search bar with Algolia
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
 
 ### Changed
 
