@@ -25,7 +25,7 @@ jobs:
         run: |
           brew install docker
           brew install colima
-          colima start
+          colima start --driver qemu --cpu 2 --memory 4
 
       - name: Test build-info-docker script
         run: |
