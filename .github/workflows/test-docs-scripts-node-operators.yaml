@@ -1,0 +1,36 @@
+name: Test Documentation Scripts - Node Operators
+
+# Test node-operators documentation scripts to ensure they work correctly
+# These scripts demonstrate node management commands for users
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  test-build-info-scripts:
+    name: Test Build Info Scripts (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Make scripts executable
+        run: |
+          chmod +x website/docs/node-operators/scripts/*.sh
+
+      - name: Test build-info-docker script
+        run: |
+          bash website/docs/node-operators/scripts/build-info-docker.sh
+
+      - name: Test build-info-docker-version script
+        run: |
+          bash website/docs/node-operators/scripts/build-info-docker-version.sh
+
+      - name: Test verify-build-info-docker script
+        run: |
+          bash website/docs/node-operators/scripts/verify-build-info-docker.sh
