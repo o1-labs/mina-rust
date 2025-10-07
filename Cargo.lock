@@ -246,7 +246,7 @@ checksum = "d69eab57e8d2663efa5c63135b2af4f396d66424f88954c21104125ab6b3e6bc"
 dependencies = [
  "ark-ec",
  "ark-ff",
- "ark-std 0.5.0",
+ "ark-std",
 ]
 
 [[package]]
@@ -258,8 +258,8 @@ dependencies = [
  "ahash 0.8.8",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
- "ark-std 0.5.0",
+ "ark-serialize",
+ "ark-std",
  "educe",
  "fnv",
  "hashbrown 0.15.2",
@@ -279,8 +279,8 @@ checksum = "a177aba0ed1e0fbb62aa9f6d0502e9b46dad8c2eab04c14258a1212d2557ea70"
 dependencies = [
  "ark-ff-asm",
  "ark-ff-macros",
- "ark-serialize 0.5.0",
- "ark-std 0.5.0",
+ "ark-serialize",
+ "ark-std",
  "arrayvec",
  "digest 0.10.7",
  "educe",
@@ -323,23 +323,12 @@ checksum = "579305839da207f02b89cd1679e50e67b4331e2f9294a57693e5051b7703fe27"
 dependencies = [
  "ahash 0.8.8",
  "ark-ff",
- "ark-serialize 0.5.0",
- "ark-std 0.5.0",
+ "ark-serialize",
+ "ark-std",
  "educe",
  "fnv",
  "hashbrown 0.15.2",
  "rayon",
-]
-
-[[package]]
-name = "ark-serialize"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "adb7b85a02b83d2f22f89bd5cac66c9c89474240cb6207cb1efc16d098e822a5"
-dependencies = [
- "ark-std 0.4.0",
- "digest 0.10.7",
- "num-bigint",
 ]
 
 [[package]]
@@ -349,7 +338,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3f4d068aaf107ebcd7dfb52bc748f8030e0fc930ac8e360146ca54c1203088f7"
 dependencies = [
  "ark-serialize-derive",
- "ark-std 0.5.0",
+ "ark-std",
  "arrayvec",
  "digest 0.10.7",
  "num-bigint",
@@ -365,16 +354,6 @@ dependencies = [
  "proc-macro2 1.0.95",
  "quote 1.0.35",
  "syn 2.0.96",
-]
-
-[[package]]
-name = "ark-std"
-version = "0.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "94893f1e0c6eeab764ade8dc4c0db24caf4fe7cbbaafc0eba0a9030f447b5185"
-dependencies = [
- "num-traits",
- "rand",
 ]
 
 [[package]]
@@ -1453,7 +1432,6 @@ version = "0.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f5353f36341f7451062466f0b755b96ac3a9547e4d7f6b70d603fc721a7d7896"
 dependencies = [
- "sha2 0.10.8",
  "tinyvec",
 ]
 
@@ -1736,13 +1714,13 @@ dependencies = [
  "mina-node-native",
  "mina-p2p-messages",
  "mina-tree",
- "nix 0.26.4",
+ "nix 0.27.1",
  "node",
  "num_cpus",
  "rand",
  "rayon",
  "redux",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "sha2 0.10.8",
@@ -3532,7 +3510,7 @@ dependencies = [
 name = "hash-tool"
 version = "0.17.0"
 dependencies = [
- "bs58 0.5.0",
+ "bs58 0.4.0",
  "hex",
  "structopt",
 ]
@@ -4420,7 +4398,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "blake2",
  "groupmap",
  "hex",
@@ -4486,7 +4464,7 @@ dependencies = [
  "mina-signer",
  "mina-tree",
  "node",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "structopt",
@@ -5116,7 +5094,7 @@ dependencies = [
  "binprot",
  "clap 4.5.20",
  "mina-p2p-messages",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "similar",
@@ -5129,7 +5107,7 @@ version = "0.17.0"
 dependencies = [
  "base64 0.22.1",
  "binprot",
- "bs58 0.5.0",
+ "bs58 0.4.0",
  "env_logger",
  "libp2p",
  "libp2p-rpc-behaviour",
@@ -5217,7 +5195,7 @@ dependencies = [
 name = "mina-gossipsub-sandbox"
 version = "0.17.0"
 dependencies = [
- "bs58 0.5.0",
+ "bs58 0.4.0",
  "env_logger",
  "libp2p",
  "log",
@@ -5348,13 +5326,13 @@ dependencies = [
  "mina-producer-dashboard",
  "mina-signer",
  "mina-tree",
- "nix 0.26.4",
+ "nix 0.27.1",
  "node",
  "o1-utils",
  "rand",
  "rayon",
  "redux",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "sha3",
@@ -5399,7 +5377,7 @@ dependencies = [
  "rand",
  "rayon",
  "redux",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "strum",
@@ -5449,7 +5427,7 @@ dependencies = [
  "alloc-test",
  "anyhow",
  "ark-ff",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "base64 0.22.1",
  "binprot",
  "binprot_derive",
@@ -5493,7 +5471,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "mina-curves",
  "o1-utils",
  "once_cell",
@@ -5515,7 +5493,7 @@ dependencies = [
  "mina-p2p-messages",
  "num-bigint",
  "num-traits",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "serde",
  "serde_json",
  "sled",
@@ -5566,9 +5544,9 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "backtrace",
- "base64 0.13.1",
+ "base64 0.22.1",
  "bitvec",
  "blake2",
  "bs58 0.4.0",
@@ -5601,7 +5579,7 @@ dependencies = [
  "rand_seeder",
  "rayon",
  "redux",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "rsa",
  "serde",
  "serde_json",
@@ -6178,7 +6156,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "bcs",
  "hex",
  "num-bigint",
@@ -6433,7 +6411,7 @@ dependencies = [
  "rand",
  "rcgen 0.13.1",
  "redux",
- "reqwest 0.11.24",
+ "reqwest 0.12.12",
  "salsa-simple",
  "serde",
  "serde_json",
@@ -6853,7 +6831,7 @@ dependencies = [
  "ark-ec",
  "ark-ff",
  "ark-poly",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "blake2",
  "groupmap",
  "hex",
@@ -6929,7 +6907,7 @@ name = "poseidon"
 version = "0.17.0"
 dependencies = [
  "ark-ff",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "mina-curves",
  "o1-utils",
  "once_cell",
@@ -9687,7 +9665,7 @@ version = "0.17.0"
 dependencies = [
  "ark-ec",
  "ark-ff",
- "ark-serialize 0.4.2",
+ "ark-serialize",
  "binprot",
  "binprot_derive",
  "bitvec",
@@ -10077,7 +10055,7 @@ dependencies = [
  "anyhow",
  "ark-ec",
  "ark-ff",
- "ark-serialize 0.5.0",
+ "ark-serialize",
  "bs58 0.4.0",
  "hex",
  "itertools 0.12.1",
@@ -10511,7 +10489,7 @@ dependencies = [
  "rand",
  "sha2 0.10.8",
  "sudo",
- "thiserror 2.0.11",
+ "thiserror 1.0.60",
 ]
 
 [[package]]

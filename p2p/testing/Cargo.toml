@@ -10,9 +10,9 @@ mina-p2p-messages = { path = "../../mina-p2p-messages" }
 p2p = { path = "..", features = ["p2p-libp2p"] }
 redux = { workspace = true }
 
-derive_more = "0.99.17"
-futures = "0.3.30"
-lazy_static = "1.4.0"
+derive_more = { workspace = true }
+futures = { workspace = true }
+lazy_static = { workspace = true }
 libp2p = { workspace = true, features = [
   "macros",
   "serde",
@@ -28,19 +28,15 @@ libp2p = { workspace = true, features = [
 ] }
 libp2p-rpc-behaviour = { path = "../libp2p-rpc-behaviour" }
 mina-core = { path = "../../core" }
-pin-project-lite = "0.2"
-rand = "0.8.5"
-serde_json.workspace = true
-thiserror = "1.0.57"
-tokio = { version = "1.26.0", features = ["sync", "macros"] }
-tracing = "0.1.40"
-tracing-log = "0.2.0"
-tracing-subscriber = "0.3.18"
+pin-project-lite = { workspace = true }
+rand = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tokio = { workspace = true, features = ["sync", "macros"] }
+tracing = { workspace = true }
+tracing-log = { workspace = true }
+tracing-subscriber = { workspace = true }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }
-libp2p-identity = { version = "=0.2.7", features = [
-  "ed25519",
-  "rand",
-  "serde",
-] }
+libp2p-identity = { workspace = true, features = ["ed25519", "rand", "serde"] }

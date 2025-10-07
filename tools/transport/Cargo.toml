@@ -4,10 +4,10 @@ version = "0.17.0"
 edition = "2021"
 
 [dependencies]
-blake2 = { version = "0.10.6" }
-hex = { version = "0.4.3" }
-log = { version = "0.4.17" }
-pin-project-lite = { version = "0.2.10" }
+blake2 = { workspace = true }
+hex = { workspace = true }
+log = { workspace = true }
+pin-project-lite = { workspace = true }
 
 libp2p = { workspace = true, features = [
   "tokio",

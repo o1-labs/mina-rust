@@ -4,6 +4,6 @@ version = "0.17.0"
 edition = "2021"
 
 [dependencies]
-bs58 = { version = "0.5.0", features = ["check"] }
-hex = { version = "0.4.3" }
-structopt = { version = "0.3.26" }
+bs58 = { workspace = true, features = ["check"] }
+hex = { workspace = true }
+structopt = { workspace = true }
