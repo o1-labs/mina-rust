@@ -17,6 +17,13 @@ use crate::{
 
 use super::common::{range_check, range_check_flag, ForZkappCheck};
 
+/// Trait for converting unchecked nat types to checked types
+pub trait ToCheckedNat {
+    type Checked<F: FieldWitness>;
+
+    fn to_checked<F: FieldWitness>(&self) -> Self::Checked<F>;
+}
+
 pub trait CheckedNat<F: FieldWitness, const NBITS: usize>:
     Sized + ToFieldElements<F> + Check<F> + Clone
 {
@@ -260,8 +267,10 @@ macro_rules! impl_nat {
             }
         }
 
-        impl $unchecked {
-            pub fn to_checked<F: FieldWitness>(&self) -> $name<F> {
+        impl ToCheckedNat for $unchecked {
+            type Checked<F: FieldWitness> = $name<F>;
+
+            fn to_checked<F: FieldWitness>(&self) -> $name<F> {
                 $name::from_inner(*self)
             }
         }

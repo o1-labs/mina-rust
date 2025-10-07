@@ -16,6 +16,20 @@ use crate::{
 
 use super::common::{range_check, ForZkappCheck};
 
+/// Trait for converting unchecked currency types to checked types
+pub trait ToChecked {
+    type Checked<F: FieldWitness>;
+
+    fn to_checked<F: FieldWitness>(&self) -> Self::Checked<F>;
+}
+
+/// Trait for converting unchecked signed currency types to checked signed types
+pub trait ToCheckedSigned {
+    type Checked<F: FieldWitness>;
+
+    fn to_checked<F: FieldWitness>(&self) -> Self::Checked<F>;
+}
+
 #[derive(Debug)]
 pub enum RangeCheckFlaggedKind {
     Add,
@@ -510,14 +524,18 @@ macro_rules! impl_currency {
             }
         }
 
-        impl $unchecked {
-            pub fn to_checked<F: FieldWitness>(&self) -> $name<F> {
+        impl ToChecked for $unchecked {
+            type Checked<F: FieldWitness> = $name<F>;
+
+            fn to_checked<F: FieldWitness>(&self) -> $name<F> {
                 $name::from_inner(*self)
             }
         }
 
-        impl Signed<$unchecked> {
-            pub fn to_checked<F: FieldWitness>(&self) -> CheckedSigned<F, $name<F>> {
+        impl ToCheckedSigned for Signed<$unchecked> {
+            type Checked<F: FieldWitness> = CheckedSigned<F, $name<F>>;
+
+            fn to_checked<F: FieldWitness>(&self) -> CheckedSigned<F, $name<F>> {
                 CheckedSigned {
                     magnitude: self.magnitude.to_checked(),
                     sgn: CircuitVar::Var(self.sgn),

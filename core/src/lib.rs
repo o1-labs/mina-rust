@@ -1,10 +1,18 @@
 extern crate graphannis_malloc_size_of as malloc_size_of;
 extern crate graphannis_malloc_size_of_derive as malloc_size_of_derive;
 
+pub mod conversions;
 pub mod distributed_pool;
 pub mod invariants;
 pub mod log;
+pub mod number;
 pub mod requests;
+
+// Re-export number types for convenience
+pub use number::{
+    Amount, Balance, BlockTime, BlockTimeSpan, Epoch, Fee, Index, Length, Magnitude, MinMax, Nonce,
+    Sgn, Signed, Slot, SlotSpan, TxnVersion, N,
+};
 
 // TODO(binier): refactor
 #[cfg(target_family = "wasm")]

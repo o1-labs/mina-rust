@@ -119,8 +119,23 @@ mod consensus {
         }
     }
 
-    // Consensus epoch
-    impl Epoch {
+    // Consensus epoch extension trait
+    pub trait EpochExt {
+        fn of_time_exn(constants: &Constants, time: BlockTime) -> Result<Self, String>
+        where
+            Self: Sized;
+        fn start_time(constants: &Constants, epoch: Self) -> BlockTime
+        where
+            Self: Sized;
+        fn epoch_and_slot_of_time_exn(
+            constants: &Constants,
+            time: BlockTime,
+        ) -> Result<(Self, Slot), String>
+        where
+            Self: Sized;
+    }
+
+    impl EpochExt for Epoch {
         fn of_time_exn(constants: &Constants, time: BlockTime) -> Result<Self, String> {
             if time < constants.genesis_state_timestamp {
                 return Err(
@@ -144,7 +159,7 @@ mod consensus {
             BlockTime::of_span_since_epoch(BlockTimeSpan::of_ms(ms))
         }
 
-        pub fn epoch_and_slot_of_time_exn(
+        fn epoch_and_slot_of_time_exn(
             constants: &Constants,
             time: BlockTime,
         ) -> Result<(Self, Slot), String> {
