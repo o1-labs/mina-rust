@@ -2642,11 +2642,19 @@ pub mod zkapp_command {
     /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/pickles/pickles_intf.ml#L316>
     pub type SideLoadedProof = Arc<mina_p2p_messages::v2::PicklesProofProofsVerifiedMaxStableV2>;
 
+    /// Authorization methods for zkApp account updates.
+    ///
+    /// Defines how an account update is authorized to modify an account's state.
+    ///
     /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/control.ml#L11>
     #[derive(Clone, PartialEq)]
     pub enum Control {
+        /// Verified by a zero-knowledge proof against the account's verification
+        /// key.
         Proof(SideLoadedProof),
+        /// Signed by the account's private key.
         Signature(Signature),
+        /// No authorization (only valid for certain operations).
         NoneGiven,
     }
 
