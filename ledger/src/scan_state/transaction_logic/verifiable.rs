@@ -4,8 +4,7 @@ use ark_ff::{BigInteger, PrimeField};
 use mina_signer::CompressedPubKey;
 
 use super::{
-    signed_command, transaction_union_payload::TransactionUnionPayload, valid,
-    zkapp_command,
+    signed_command, transaction_union_payload::TransactionUnionPayload, valid, zkapp_command,
 };
 
 #[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]

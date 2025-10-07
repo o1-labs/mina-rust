@@ -1,13 +1,11 @@
-use mina_hasher::Fp;
-use mina_p2p_messages::v2::MinaBaseUserCommandStableV2;
-use serde::{Deserialize, Serialize};
-
+use super::{GenericCommand, GenericTransaction};
 use crate::{
     scan_state::currency::{Fee, Nonce},
     AccountId,
 };
-
-use super::{GenericCommand, GenericTransaction};
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::v2::MinaBaseUserCommandStableV2;
+use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug, Hash, PartialEq, Eq)]
 pub struct VerificationKeyHash(pub Fp);

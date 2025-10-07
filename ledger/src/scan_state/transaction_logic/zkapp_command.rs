@@ -1,20 +1,8 @@
-use std::{collections::HashMap, sync::Arc};
-
-use ark_ff::{UniformRand, Zero};
-use itertools::Itertools;
-use mina_hasher::Fp;
-use mina_p2p_messages::v2::MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA;
-use mina_signer::{CompressedPubKey, Signature};
-use poseidon::hash::{
-    hash_noinputs, hash_with_kimchi,
-    params::{
-        MINA_ACCOUNT_UPDATE_CONS, MINA_ACCOUNT_UPDATE_NODE, MINA_ZKAPP_EVENT, MINA_ZKAPP_EVENTS,
-        MINA_ZKAPP_SEQ_EVENTS, NO_INPUT_MINA_ZKAPP_ACTIONS_EMPTY, NO_INPUT_MINA_ZKAPP_EVENTS_EMPTY,
-    },
-    Inputs,
+use super::{
+    protocol_state::{self, ProtocolStateView},
+    zkapp_statement::TransactionCommitment,
+    Memo, TransactionFailure, TransactionStatus, WithStatus,
 };
-use rand::{seq::SliceRandom, Rng};
-
 use crate::{
     dummy, gen_compressed, gen_keypair,
     hash::AppendToInputs,
@@ -37,12 +25,21 @@ use crate::{
     ToInputs, TokenId, TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppAccount,
     ZkAppUri,
 };
-
-use super::{
-    protocol_state::{self, ProtocolStateView},
-    zkapp_statement::TransactionCommitment,
-    Memo, TransactionFailure, TransactionStatus, WithStatus,
+use ark_ff::{UniformRand, Zero};
+use itertools::Itertools;
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::v2::MinaBaseZkappCommandTStableV1WireStableV1AccountUpdatesA;
+use mina_signer::{CompressedPubKey, Signature};
+use poseidon::hash::{
+    hash_noinputs, hash_with_kimchi,
+    params::{
+        MINA_ACCOUNT_UPDATE_CONS, MINA_ACCOUNT_UPDATE_NODE, MINA_ZKAPP_EVENT, MINA_ZKAPP_EVENTS,
+        MINA_ZKAPP_SEQ_EVENTS, NO_INPUT_MINA_ZKAPP_ACTIONS_EMPTY, NO_INPUT_MINA_ZKAPP_EVENTS_EMPTY,
+    },
+    Inputs,
 };
+use rand::{seq::SliceRandom, Rng};
+use std::{collections::HashMap, sync::Arc};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Event(pub Vec<Fp>);

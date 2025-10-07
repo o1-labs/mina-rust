@@ -1,11 +1,41 @@
-use std::{
-    collections::{BTreeMap, HashMap, HashSet},
-    fmt::Display,
+use self::{
+    local_state::{
+        apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, CallStack, LocalStateEnv,
+        StackFrame,
+    },
+    protocol_state::{GlobalState, ProtocolStateView},
+    signed_command::{SignedCommand, SignedCommandPayload},
+    transaction_applied::{
+        signed_command_applied::{self, SignedCommandApplied},
+        TransactionApplied, ZkappCommandApplied,
+    },
+    zkapp_command::{AccessedOrNot, AccountUpdate, WithHash, ZkAppCommand},
 };
-
+use super::{
+    currency::{Amount, Balance, Fee, Index, Length, Magnitude, Nonce, Signed, Slot},
+    fee_excess::FeeExcess,
+    fee_rate::FeeRate,
+    scan_state::transaction_snark::OneOrTwo,
+};
+use crate::{
+    proofs::witness::Witness,
+    scan_state::transaction_logic::{
+        transaction_applied::{CommandApplied, Varying},
+        transaction_partially_applied::FullyApplied,
+        zkapp_command::MaybeWithStatus,
+    },
+    sparse_ledger::{LedgerIntf, SparseLedger},
+    zkapps,
+    zkapps::{
+        non_snark::{LedgerNonSnark, ZkappNonSnark},
+        zkapp_logic::ZkAppCommandElt,
+    },
+    Account, AccountId, AccountIdOrderable, AppendToInputs, BaseLedger, ControlTag,
+    ReceiptChainHash, Timing, TokenId, VerificationKeyWire,
+};
 use itertools::FoldWhile;
 use mina_core::constants::ConstraintConstants;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 use mina_macros::SerdeYojsonEnum;
 use mina_p2p_messages::{
     bigint::InvalidBigInt,
@@ -18,42 +48,10 @@ use poseidon::hash::{
     params::{CODA_RECEIPT_UC, MINA_ZKAPP_MEMO},
     Inputs,
 };
-
-use crate::{
-    proofs::witness::Witness,
-    scan_state::transaction_logic::{
-        transaction_applied::{CommandApplied, Varying},
-        transaction_partially_applied::FullyApplied,
-        zkapp_command::MaybeWithStatus,
-    },
-    sparse_ledger::{LedgerIntf, SparseLedger},
-    zkapps,
-    zkapps::non_snark::{LedgerNonSnark, ZkappNonSnark},
-    Account, AccountId, AccountIdOrderable, AppendToInputs, BaseLedger, ControlTag,
-    ReceiptChainHash, Timing, TokenId, VerificationKeyWire,
+use std::{
+    collections::{BTreeMap, HashMap, HashSet},
+    fmt::Display,
 };
-
-use self::{
-    local_state::{
-        apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, CallStack,
-        LocalStateEnv, StackFrame,
-    },
-    protocol_state::{GlobalState, ProtocolStateView},
-    signed_command::{SignedCommand, SignedCommandPayload},
-    transaction_applied::{
-        signed_command_applied::{self, SignedCommandApplied},
-        TransactionApplied, ZkappCommandApplied,
-    },
-    zkapp_command::{AccessedOrNot, AccountUpdate, WithHash, ZkAppCommand},
-};
-
-use super::{
-    currency::{Amount, Balance, Fee, Index, Length, Magnitude, Nonce, Signed, Slot},
-    fee_excess::FeeExcess,
-    fee_rate::FeeRate,
-    scan_state::transaction_snark::OneOrTwo,
-};
-use crate::zkapps::zkapp_logic::ZkAppCommandElt;
 
 /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L9>
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
@@ -1034,11 +1032,11 @@ impl From<&Transaction> for MinaTransactionTransactionStableV2 {
     }
 }
 
-pub mod transaction_applied;
-pub mod transaction_witness;
-pub mod protocol_state;
 pub mod local_state;
+pub mod protocol_state;
+pub mod transaction_applied;
 pub mod transaction_partially_applied;
+pub mod transaction_witness;
 pub use transaction_partially_applied::{
     apply_transaction_first_pass, apply_transaction_second_pass, apply_transactions,
     apply_user_command, set_with_location, AccountState,

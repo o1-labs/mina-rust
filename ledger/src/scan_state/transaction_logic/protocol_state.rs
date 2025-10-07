@@ -1,13 +1,12 @@
-use mina_hasher::Fp;
-use mina_p2p_messages::{
-    bigint::InvalidBigInt,
-    v2::{self, MinaStateProtocolStateValueStableV2},
-};
-
 use crate::{
     proofs::field::FieldWitness,
     scan_state::currency::{Amount, Length, Signed, Slot},
     sparse_ledger::LedgerIntf,
+};
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::{
+    bigint::InvalidBigInt,
+    v2::{self, MinaStateProtocolStateValueStableV2},
 };
 
 #[derive(Debug, Clone)]

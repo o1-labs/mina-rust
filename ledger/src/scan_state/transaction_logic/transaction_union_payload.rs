@@ -1,25 +1,27 @@
-use ark_ff::{PrimeField, Zero};
-use mina_hasher::{Hashable, ROInput as LegacyInput, Fp};
-use mina_signer::{CompressedPubKey, NetworkId, PubKey, Signature};
-use poseidon::hash::{hash_with_kimchi, params::CODA_RECEIPT_UC, Inputs};
-
-use crate::{
-    decompress_pk,
-    proofs::{field::Boolean, witness::Witness},
-    scan_state::currency::{Amount, Balance, Fee, Index, Magnitude, Nonce, Slot},
-    sparse_ledger::LedgerIntf,
-    zkapps::zkapp_logic::ZkAppCommandElt,
-    Account, AccountId, AppendToInputs, ReceiptChainHash, Timing, TokenId,
-};
-
-use crate::scan_state::scan_state::transaction_snark::OneOrTwo;
-
 use super::{
-    signed_command::{self, PaymentPayload, SignedCommand, SignedCommandPayload, StakeDelegationPayload},
+    signed_command::{
+        self, PaymentPayload, SignedCommand, SignedCommandPayload, StakeDelegationPayload,
+    },
     transaction_partially_applied::set_with_location,
     Coinbase, CoinbaseFeeTransfer, Memo, SingleFeeTransfer, Transaction, TransactionFailure,
     UserCommand,
 };
+use crate::{
+    decompress_pk,
+    proofs::{field::Boolean, witness::Witness},
+    scan_state::{
+        currency::{Amount, Balance, Fee, Index, Magnitude, Nonce, Slot},
+        scan_state::transaction_snark::OneOrTwo,
+    },
+    sparse_ledger::LedgerIntf,
+    zkapps::zkapp_logic::ZkAppCommandElt,
+    Account, AccountId, AppendToInputs, ReceiptChainHash, Timing, TokenId,
+};
+use ark_ff::{PrimeField, Zero};
+use mina_curves::pasta::Fp;
+use mina_hasher::{Hashable, ROInput as LegacyInput};
+use mina_signer::{CompressedPubKey, NetworkId, PubKey, Signature};
+use poseidon::hash::{hash_with_kimchi, params::CODA_RECEIPT_UC, Inputs};
 
 #[derive(Clone)]
 pub struct Common {
@@ -316,9 +318,9 @@ impl TransactionUnion {
                 let CoinbaseFeeTransfer {
                     receiver_pk: other_pk,
                     fee: other_amount,
-                } = fee_transfer.clone().unwrap_or_else(|| {
-                    CoinbaseFeeTransfer::create(receiver.clone(), Fee::zero())
-                });
+                } = fee_transfer
+                    .clone()
+                    .unwrap_or_else(|| CoinbaseFeeTransfer::create(receiver.clone(), Fee::zero()));
 
                 let signer = decompress_pk(&other_pk).unwrap();
                 let payload = TransactionUnionPayload {
@@ -400,278 +402,277 @@ impl TransactionUnion {
 
 /// Returns the new `receipt_chain_hash`
 pub fn cons_signed_command_payload(
-command_payload: &SignedCommandPayload,
-last_receipt_chain_hash: ReceiptChainHash,
+    command_payload: &SignedCommandPayload,
+    last_receipt_chain_hash: ReceiptChainHash,
 ) -> ReceiptChainHash {
-// Note: Not sure why they use the legacy way of hashing here
+    // Note: Not sure why they use the legacy way of hashing here
 
-use poseidon::hash::legacy;
+    use poseidon::hash::legacy;
 
-let ReceiptChainHash(last_receipt_chain_hash) = last_receipt_chain_hash;
-let union = TransactionUnionPayload::of_user_command_payload(command_payload);
+    let ReceiptChainHash(last_receipt_chain_hash) = last_receipt_chain_hash;
+    let union = TransactionUnionPayload::of_user_command_payload(command_payload);
 
-let mut inputs = union.to_input_legacy();
-inputs.append_field(last_receipt_chain_hash);
-let hash = legacy::hash_with_kimchi(&legacy::params::CODA_RECEIPT_UC, &inputs.to_fields());
+    let mut inputs = union.to_input_legacy();
+    inputs.append_field(last_receipt_chain_hash);
+    let hash = legacy::hash_with_kimchi(&legacy::params::CODA_RECEIPT_UC, &inputs.to_fields());
 
-ReceiptChainHash(hash)
+    ReceiptChainHash(hash)
 }
 
 /// Returns the new `receipt_chain_hash`
 pub fn checked_cons_signed_command_payload(
-payload: &TransactionUnionPayload,
-last_receipt_chain_hash: ReceiptChainHash,
-w: &mut Witness<Fp>,
+    payload: &TransactionUnionPayload,
+    last_receipt_chain_hash: ReceiptChainHash,
+    w: &mut Witness<Fp>,
 ) -> ReceiptChainHash {
-use crate::proofs::transaction::{
-    legacy_input::CheckedLegacyInput, transaction_snark::checked_legacy_hash,
-};
-use poseidon::hash::legacy;
+    use crate::proofs::transaction::{
+        legacy_input::CheckedLegacyInput, transaction_snark::checked_legacy_hash,
+    };
+    use poseidon::hash::legacy;
 
-let mut inputs = payload.to_checked_legacy_input_owned(w);
-inputs.append_field(last_receipt_chain_hash.0);
+    let mut inputs = payload.to_checked_legacy_input_owned(w);
+    inputs.append_field(last_receipt_chain_hash.0);
 
-let receipt_chain_hash = checked_legacy_hash(&legacy::params::CODA_RECEIPT_UC, inputs, w);
+    let receipt_chain_hash = checked_legacy_hash(&legacy::params::CODA_RECEIPT_UC, inputs, w);
 
-ReceiptChainHash(receipt_chain_hash)
+    ReceiptChainHash(receipt_chain_hash)
 }
 
 /// prepend account_update index computed by Zkapp_command_logic.apply
 ///
 /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/mina_base/receipt.ml#L66>
 pub fn cons_zkapp_command_commitment(
-index: Index,
-e: ZkAppCommandElt,
-receipt_hash: &ReceiptChainHash,
+    index: Index,
+    e: ZkAppCommandElt,
+    receipt_hash: &ReceiptChainHash,
 ) -> ReceiptChainHash {
-let ZkAppCommandElt::ZkAppCommandCommitment(x) = e;
+    let ZkAppCommandElt::ZkAppCommandCommitment(x) = e;
 
-let mut inputs = Inputs::new();
+    let mut inputs = Inputs::new();
 
-inputs.append(&index);
-inputs.append_field(x.0);
-inputs.append(receipt_hash);
+    inputs.append(&index);
+    inputs.append_field(x.0);
+    inputs.append(receipt_hash);
 
-ReceiptChainHash(hash_with_kimchi(&CODA_RECEIPT_UC, &inputs.to_fields()))
+    ReceiptChainHash(hash_with_kimchi(&CODA_RECEIPT_UC, &inputs.to_fields()))
 }
 
 pub fn validate_nonces(txn_nonce: Nonce, account_nonce: Nonce) -> Result<(), String> {
-if account_nonce == txn_nonce {
-    return Ok(());
-}
+    if account_nonce == txn_nonce {
+        return Ok(());
+    }
 
-Err(format!(
-    "Nonce in account {:?} different from nonce in transaction {:?}",
-    account_nonce, txn_nonce,
-))
+    Err(format!(
+        "Nonce in account {:?} different from nonce in transaction {:?}",
+        account_nonce, txn_nonce,
+    ))
 }
 
 pub fn validate_timing(
-account: &Account,
-txn_amount: Amount,
-txn_global_slot: &Slot,
+    account: &Account,
+    txn_amount: Amount,
+    txn_global_slot: &Slot,
 ) -> Result<Timing, String> {
-let (timing, _) = validate_timing_with_min_balance(account, txn_amount, txn_global_slot)?;
+    let (timing, _) = validate_timing_with_min_balance(account, txn_amount, txn_global_slot)?;
 
-Ok(timing)
+    Ok(timing)
 }
 
 pub fn account_check_timing(
-txn_global_slot: &Slot,
-account: &Account,
+    txn_global_slot: &Slot,
+    account: &Account,
 ) -> (TimingValidation<bool>, Timing) {
-let (invalid_timing, timing, _) =
-    validate_timing_with_min_balance_impl(account, Amount::from_u64(0), txn_global_slot);
-// TODO: In OCaml the returned Timing is actually converted to None/Some(fields of Timing structure)
-(invalid_timing, timing)
+    let (invalid_timing, timing, _) =
+        validate_timing_with_min_balance_impl(account, Amount::from_u64(0), txn_global_slot);
+    // TODO: In OCaml the returned Timing is actually converted to None/Some(fields of Timing structure)
+    (invalid_timing, timing)
 }
 
 fn validate_timing_with_min_balance(
-account: &Account,
-txn_amount: Amount,
-txn_global_slot: &Slot,
+    account: &Account,
+    txn_amount: Amount,
+    txn_global_slot: &Slot,
 ) -> Result<(Timing, MinBalance), String> {
-use TimingValidation::*;
+    use TimingValidation::*;
 
-let (possibly_error, timing, min_balance) =
-    validate_timing_with_min_balance_impl(account, txn_amount, txn_global_slot);
+    let (possibly_error, timing, min_balance) =
+        validate_timing_with_min_balance_impl(account, txn_amount, txn_global_slot);
 
-match possibly_error {
-    InsufficientBalance(true) => Err(format!(
-        "For timed account, the requested transaction for amount {:?} \
+    match possibly_error {
+        InsufficientBalance(true) => Err(format!(
+            "For timed account, the requested transaction for amount {:?} \
          at global slot {:?}, the balance {:?} \
          is insufficient",
-        txn_amount, txn_global_slot, account.balance
-    )),
-    InvalidTiming(true) => Err(format!(
-        "For timed account {}, the requested transaction for amount {:?} \
+            txn_amount, txn_global_slot, account.balance
+        )),
+        InvalidTiming(true) => Err(format!(
+            "For timed account {}, the requested transaction for amount {:?} \
          at global slot {:?}, applying the transaction would put the \
          balance below the calculated minimum balance of {:?}",
-        account.public_key.into_address(),
-        txn_amount,
-        txn_global_slot,
-        min_balance.0
-    )),
-    InsufficientBalance(false) => {
-        panic!("Broken invariant in validate_timing_with_min_balance'")
+            account.public_key.into_address(),
+            txn_amount,
+            txn_global_slot,
+            min_balance.0
+        )),
+        InsufficientBalance(false) => {
+            panic!("Broken invariant in validate_timing_with_min_balance'")
+        }
+        InvalidTiming(false) => Ok((timing, min_balance)),
     }
-    InvalidTiming(false) => Ok((timing, min_balance)),
-}
 }
 
 pub fn timing_error_to_user_command_status(
-timing_result: Result<Timing, String>,
+    timing_result: Result<Timing, String>,
 ) -> Result<Timing, TransactionFailure> {
-match timing_result {
-    Ok(timing) => Ok(timing),
-    Err(err_str) => {
-        /*
-            HACK: we are matching over the full error string instead
-            of including an extra tag string to the Err variant
-        */
-        if err_str.contains("minimum balance") {
-            return Err(TransactionFailure::SourceMinimumBalanceViolation);
-        }
+    match timing_result {
+        Ok(timing) => Ok(timing),
+        Err(err_str) => {
+            /*
+                HACK: we are matching over the full error string instead
+                of including an extra tag string to the Err variant
+            */
+            if err_str.contains("minimum balance") {
+                return Err(TransactionFailure::SourceMinimumBalanceViolation);
+            }
 
-        if err_str.contains("is insufficient") {
-            return Err(TransactionFailure::SourceInsufficientBalance);
-        }
+            if err_str.contains("is insufficient") {
+                return Err(TransactionFailure::SourceInsufficientBalance);
+            }
 
-        panic!("Unexpected timed account validation error")
+            panic!("Unexpected timed account validation error")
+        }
     }
-}
 }
 
 pub enum TimingValidation<B> {
-InsufficientBalance(B),
-InvalidTiming(B),
+    InsufficientBalance(B),
+    InvalidTiming(B),
 }
 
 #[derive(Debug)]
 struct MinBalance(Balance);
 
 fn validate_timing_with_min_balance_impl(
-account: &Account,
-txn_amount: Amount,
-txn_global_slot: &Slot,
+    account: &Account,
+    txn_amount: Amount,
+    txn_global_slot: &Slot,
 ) -> (TimingValidation<bool>, Timing, MinBalance) {
-use crate::Timing::*;
-use TimingValidation::*;
+    use crate::Timing::*;
+    use TimingValidation::*;
 
-match &account.timing {
-    Untimed => {
-        // no time restrictions
-        match account.balance.sub_amount(txn_amount) {
-            None => (
-                InsufficientBalance(true),
-                Untimed,
-                MinBalance(Balance::zero()),
-            ),
-            Some(_) => (InvalidTiming(false), Untimed, MinBalance(Balance::zero())),
+    match &account.timing {
+        Untimed => {
+            // no time restrictions
+            match account.balance.sub_amount(txn_amount) {
+                None => (
+                    InsufficientBalance(true),
+                    Untimed,
+                    MinBalance(Balance::zero()),
+                ),
+                Some(_) => (InvalidTiming(false), Untimed, MinBalance(Balance::zero())),
+            }
         }
-    }
-    Timed {
-        initial_minimum_balance,
-        ..
-    } => {
-        let account_balance = account.balance;
+        Timed {
+            initial_minimum_balance,
+            ..
+        } => {
+            let account_balance = account.balance;
 
-        let (invalid_balance, invalid_timing, curr_min_balance) =
-            match account_balance.sub_amount(txn_amount) {
-                None => {
-                    // NB: The [initial_minimum_balance] here is the incorrect value,
-                    // but:
-                    // * we don't use it anywhere in this error case; and
-                    // * we don't want to waste time computing it if it will be unused.
-                    (true, false, *initial_minimum_balance)
-                }
-                Some(proposed_new_balance) => {
-                    let curr_min_balance = account.min_balance_at_slot(*txn_global_slot);
-
-                    if proposed_new_balance < curr_min_balance {
-                        (false, true, curr_min_balance)
-                    } else {
-                        (false, false, curr_min_balance)
+            let (invalid_balance, invalid_timing, curr_min_balance) =
+                match account_balance.sub_amount(txn_amount) {
+                    None => {
+                        // NB: The [initial_minimum_balance] here is the incorrect value,
+                        // but:
+                        // * we don't use it anywhere in this error case; and
+                        // * we don't want to waste time computing it if it will be unused.
+                        (true, false, *initial_minimum_balance)
                     }
-                }
+                    Some(proposed_new_balance) => {
+                        let curr_min_balance = account.min_balance_at_slot(*txn_global_slot);
+
+                        if proposed_new_balance < curr_min_balance {
+                            (false, true, curr_min_balance)
+                        } else {
+                            (false, false, curr_min_balance)
+                        }
+                    }
+                };
+
+            // once the calculated minimum balance becomes zero, the account becomes untimed
+            let possibly_error = if invalid_balance {
+                InsufficientBalance(invalid_balance)
+            } else {
+                InvalidTiming(invalid_timing)
             };
 
-        // once the calculated minimum balance becomes zero, the account becomes untimed
-        let possibly_error = if invalid_balance {
-            InsufficientBalance(invalid_balance)
-        } else {
-            InvalidTiming(invalid_timing)
-        };
-
-        if curr_min_balance > Balance::zero() {
-            (
-                possibly_error,
-                account.timing.clone(),
-                MinBalance(curr_min_balance),
-            )
-        } else {
-            (possibly_error, Untimed, MinBalance(Balance::zero()))
+            if curr_min_balance > Balance::zero() {
+                (
+                    possibly_error,
+                    account.timing.clone(),
+                    MinBalance(curr_min_balance),
+                )
+            } else {
+                (possibly_error, Untimed, MinBalance(Balance::zero()))
+            }
         }
     }
-}
 }
 
 pub fn sub_amount(balance: Balance, amount: Amount) -> Result<Balance, String> {
-balance
-    .sub_amount(amount)
-    .ok_or_else(|| "insufficient funds".to_string())
+    balance
+        .sub_amount(amount)
+        .ok_or_else(|| "insufficient funds".to_string())
 }
 
 pub fn add_amount(balance: Balance, amount: Amount) -> Result<Balance, String> {
-balance
-    .add_amount(amount)
-    .ok_or_else(|| "overflow".to_string())
+    balance
+        .add_amount(amount)
+        .ok_or_else(|| "overflow".to_string())
 }
 
 #[derive(Clone, Debug)]
 pub enum ExistingOrNew<Loc> {
-Existing(Loc),
-New,
+    Existing(Loc),
+    New,
 }
 
 pub fn get_with_location<L>(
-ledger: &mut L,
-account_id: &AccountId,
+    ledger: &mut L,
+    account_id: &AccountId,
 ) -> Result<(ExistingOrNew<L::Location>, Box<Account>), String>
 where
-L: LedgerIntf,
+    L: LedgerIntf,
 {
-match ledger.location_of_account(account_id) {
-    Some(location) => match ledger.get(&location) {
-        Some(account) => Ok((ExistingOrNew::Existing(location), account)),
-        None => panic!("Ledger location with no account"),
-    },
-    None => Ok((
-        ExistingOrNew::New,
-        Box::new(Account::create_with(account_id.clone(), Balance::zero())),
-    )),
-}
+    match ledger.location_of_account(account_id) {
+        Some(location) => match ledger.get(&location) {
+            Some(account) => Ok((ExistingOrNew::Existing(location), account)),
+            None => panic!("Ledger location with no account"),
+        },
+        None => Ok((
+            ExistingOrNew::New,
+            Box::new(Account::create_with(account_id.clone(), Balance::zero())),
+        )),
+    }
 }
 
 pub fn get_account<L>(
-ledger: &mut L,
-account_id: AccountId,
+    ledger: &mut L,
+    account_id: AccountId,
 ) -> (Box<Account>, ExistingOrNew<L::Location>)
 where
-L: LedgerIntf,
+    L: LedgerIntf,
 {
-let (loc, account) = get_with_location(ledger, &account_id).unwrap();
-(account, loc)
+    let (loc, account) = get_with_location(ledger, &account_id).unwrap();
+    (account, loc)
 }
 
 pub fn set_account<'a, L>(
-l: &'a mut L,
-(a, loc): (Box<Account>, &ExistingOrNew<L::Location>),
+    l: &'a mut L,
+    (a, loc): (Box<Account>, &ExistingOrNew<L::Location>),
 ) -> &'a mut L
 where
-L: LedgerIntf,
+    L: LedgerIntf,
 {
-set_with_location(l, loc, a).unwrap();
-l
+    set_with_location(l, loc, a).unwrap();
+    l
 }
-

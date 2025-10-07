@@ -1,5 +1,5 @@
 use mina_core::constants::ConstraintConstants;
-use mina_hasher::Fp;
+use mina_curves::pasta::Fp;
 
 use crate::{Account, AccountId};
 

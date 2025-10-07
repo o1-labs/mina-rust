@@ -1,13 +1,10 @@
-use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
-
-use ark_ff::Zero;
-use itertools::{FoldWhile, Itertools};
-use mina_core::constants::ConstraintConstants;
-use mina_hasher::Fp;
-use poseidon::hash::{
-    hash_with_kimchi, params::MINA_ACCOUNT_UPDATE_STACK_FRAME, Inputs,
+use super::{
+    protocol_state::{GlobalState, ProtocolStateView},
+    transaction_applied::ZkappCommandApplied,
+    transaction_partially_applied::ZkappCommandPartiallyApplied,
+    zkapp_command::{AccountUpdate, CallForest, WithHash, ZkAppCommand},
+    TransactionFailure, TransactionStatus, WithStatus,
 };
-
 use crate::{
     proofs::{
         field::{field, Boolean, ToBoolean},
@@ -26,14 +23,12 @@ use crate::{
     },
     AccountId, AccountIdOrderable, AppendToInputs, ToInputs, TokenId,
 };
-
-use super::{
-    protocol_state::{GlobalState, ProtocolStateView},
-    transaction_applied::ZkappCommandApplied,
-    transaction_partially_applied::ZkappCommandPartiallyApplied,
-    zkapp_command::{AccountUpdate, CallForest, WithHash, ZkAppCommand},
-    TransactionFailure, TransactionStatus, WithStatus,
-};
+use ark_ff::Zero;
+use itertools::{FoldWhile, Itertools};
+use mina_core::constants::ConstraintConstants;
+use mina_curves::pasta::Fp;
+use poseidon::hash::{hash_with_kimchi, params::MINA_ACCOUNT_UPDATE_STACK_FRAME, Inputs};
+use std::{cell::RefCell, collections::BTreeMap, rc::Rc};
 
 #[derive(Debug, Clone)]
 pub struct StackFrame {
@@ -559,407 +554,407 @@ impl LocalState {
 }
 
 fn step_all<A, L>(
-_constraint_constants: &ConstraintConstants,
-f: &impl Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
-user_acc: &mut A,
-(g_state, l_state): (&mut GlobalState<L>, &mut LocalStateEnv<L>),
+    _constraint_constants: &ConstraintConstants,
+    f: &impl Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
+    user_acc: &mut A,
+    (g_state, l_state): (&mut GlobalState<L>, &mut LocalStateEnv<L>),
 ) -> Result<Vec<Vec<TransactionFailure>>, String>
 where
-L: LedgerNonSnark,
+    L: LedgerNonSnark,
 {
-while !l_state.stack_frame.calls.is_empty() {
-    zkapps::non_snark::step(g_state, l_state)?;
-    f(user_acc, g_state, l_state);
-}
-Ok(l_state.failure_status_tbl.clone())
+    while !l_state.stack_frame.calls.is_empty() {
+        zkapps::non_snark::step(g_state, l_state)?;
+        f(user_acc, g_state, l_state);
+    }
+    Ok(l_state.failure_status_tbl.clone())
 }
 
 /// apply zkapp command fee payer's while stubbing out the second pass ledger
 /// CAUTION: If you use the intermediate local states, you MUST update the
 /// [`LocalStateEnv::will_succeed`] field to `false` if the `status` is [`TransactionStatus::Failed`].*)
 pub fn apply_zkapp_command_first_pass_aux<A, F, L>(
-constraint_constants: &ConstraintConstants,
-global_slot: Slot,
-state_view: &ProtocolStateView,
-init: &mut A,
-f: F,
-fee_excess: Option<Signed<Amount>>,
-supply_increase: Option<Signed<Amount>>,
-ledger: &mut L,
-command: &ZkAppCommand,
+    constraint_constants: &ConstraintConstants,
+    global_slot: Slot,
+    state_view: &ProtocolStateView,
+    init: &mut A,
+    f: F,
+    fee_excess: Option<Signed<Amount>>,
+    supply_increase: Option<Signed<Amount>>,
+    ledger: &mut L,
+    command: &ZkAppCommand,
 ) -> Result<ZkappCommandPartiallyApplied<L>, String>
 where
-L: LedgerNonSnark,
-F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
+    L: LedgerNonSnark,
+    F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
 {
-let fee_excess = fee_excess.unwrap_or_else(Signed::zero);
-let supply_increase = supply_increase.unwrap_or_else(Signed::zero);
+    let fee_excess = fee_excess.unwrap_or_else(Signed::zero);
+    let supply_increase = supply_increase.unwrap_or_else(Signed::zero);
 
-let previous_hash = ledger.merkle_root();
-let original_first_pass_account_states = {
-    let id = command.fee_payer();
-    let location = {
-        let loc = ledger.location_of_account(&id);
-        let account = loc.as_ref().and_then(|loc| ledger.get(loc));
-        loc.zip(account)
-    };
-
-    vec![(id, location)]
-};
-// let perform = |eff: Eff<L>| Env::perform(eff);
-
-let (mut global_state, mut local_state) = (
-    GlobalState {
-        protocol_state: state_view.clone(),
-        first_pass_ledger: ledger.clone(),
-        second_pass_ledger: {
-            // We stub out the second_pass_ledger initially, and then poke the
-            // correct value in place after the first pass is finished.
-            <L as LedgerIntf>::empty(0)
-        },
-        fee_excess,
-        supply_increase,
-        block_global_slot: global_slot,
-    },
-    LocalStateEnv {
-        stack_frame: StackFrame::default(),
-        call_stack: CallStack::new(),
-        transaction_commitment: Fp::zero(),
-        full_transaction_commitment: Fp::zero(),
-        excess: Signed::<Amount>::zero(),
-        supply_increase,
-        ledger: <L as LedgerIntf>::empty(0),
-        success: true,
-        account_update_index: IndexInterface::zero(),
-        failure_status_tbl: Vec::new(),
-        will_succeed: true,
-    },
-);
-
-f(init, &global_state, &local_state);
-let account_updates = command.all_account_updates();
-
-zkapps::non_snark::start(
-    &mut global_state,
-    &mut local_state,
-    zkapps::non_snark::StartData {
-        account_updates,
-        memo_hash: command.memo.hash(),
-        // It's always valid to set this value to true, and it will
-        // have no effect outside of the snark.
-        will_succeed: true,
-    },
-)?;
-
-let command = command.clone();
-let constraint_constants = constraint_constants.clone();
-let state_view = state_view.clone();
-
-let res = ZkappCommandPartiallyApplied {
-    command,
-    previous_hash,
-    original_first_pass_account_states,
-    constraint_constants,
-    state_view,
-    global_state,
-    local_state,
-};
-
-Ok(res)
-}
-
-pub fn apply_zkapp_command_first_pass<L>(
-constraint_constants: &ConstraintConstants,
-global_slot: Slot,
-state_view: &ProtocolStateView,
-fee_excess: Option<Signed<Amount>>,
-supply_increase: Option<Signed<Amount>>,
-ledger: &mut L,
-command: &ZkAppCommand,
-) -> Result<ZkappCommandPartiallyApplied<L>, String>
-where
-L: LedgerNonSnark,
-{
-let mut acc = ();
-let partial_stmt = apply_zkapp_command_first_pass_aux(
-    constraint_constants,
-    global_slot,
-    state_view,
-    &mut acc,
-    |_acc, _g, _l| {},
-    fee_excess,
-    supply_increase,
-    ledger,
-    command,
-)?;
-
-Ok(partial_stmt)
-}
-
-pub fn apply_zkapp_command_second_pass_aux<A, F, L>(
-constraint_constants: &ConstraintConstants,
-init: &mut A,
-f: F,
-ledger: &mut L,
-c: ZkappCommandPartiallyApplied<L>,
-) -> Result<ZkappCommandApplied, String>
-where
-L: LedgerNonSnark,
-F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
-{
-// let perform = |eff: Eff<L>| Env::perform(eff);
-
-let original_account_states: Vec<(AccountId, Option<_>)> = {
-    // get the original states of all the accounts in each pass.
-    // If an account updated in the first pass is referenced in account
-    // updates, then retain the value before first pass application*)
-
-    let accounts_referenced = c.command.accounts_referenced();
-
-    let mut account_states = BTreeMap::<AccountIdOrderable, Option<_>>::new();
-
-    let referenced = accounts_referenced.into_iter().map(|id| {
+    let previous_hash = ledger.merkle_root();
+    let original_first_pass_account_states = {
+        let id = command.fee_payer();
         let location = {
             let loc = ledger.location_of_account(&id);
             let account = loc.as_ref().and_then(|loc| ledger.get(loc));
             loc.zip(account)
         };
-        (id, location)
+
+        vec![(id, location)]
+    };
+    // let perform = |eff: Eff<L>| Env::perform(eff);
+
+    let (mut global_state, mut local_state) = (
+        GlobalState {
+            protocol_state: state_view.clone(),
+            first_pass_ledger: ledger.clone(),
+            second_pass_ledger: {
+                // We stub out the second_pass_ledger initially, and then poke the
+                // correct value in place after the first pass is finished.
+                <L as LedgerIntf>::empty(0)
+            },
+            fee_excess,
+            supply_increase,
+            block_global_slot: global_slot,
+        },
+        LocalStateEnv {
+            stack_frame: StackFrame::default(),
+            call_stack: CallStack::new(),
+            transaction_commitment: Fp::zero(),
+            full_transaction_commitment: Fp::zero(),
+            excess: Signed::<Amount>::zero(),
+            supply_increase,
+            ledger: <L as LedgerIntf>::empty(0),
+            success: true,
+            account_update_index: IndexInterface::zero(),
+            failure_status_tbl: Vec::new(),
+            will_succeed: true,
+        },
+    );
+
+    f(init, &global_state, &local_state);
+    let account_updates = command.all_account_updates();
+
+    zkapps::non_snark::start(
+        &mut global_state,
+        &mut local_state,
+        zkapps::non_snark::StartData {
+            account_updates,
+            memo_hash: command.memo.hash(),
+            // It's always valid to set this value to true, and it will
+            // have no effect outside of the snark.
+            will_succeed: true,
+        },
+    )?;
+
+    let command = command.clone();
+    let constraint_constants = constraint_constants.clone();
+    let state_view = state_view.clone();
+
+    let res = ZkappCommandPartiallyApplied {
+        command,
+        previous_hash,
+        original_first_pass_account_states,
+        constraint_constants,
+        state_view,
+        global_state,
+        local_state,
+    };
+
+    Ok(res)
+}
+
+pub fn apply_zkapp_command_first_pass<L>(
+    constraint_constants: &ConstraintConstants,
+    global_slot: Slot,
+    state_view: &ProtocolStateView,
+    fee_excess: Option<Signed<Amount>>,
+    supply_increase: Option<Signed<Amount>>,
+    ledger: &mut L,
+    command: &ZkAppCommand,
+) -> Result<ZkappCommandPartiallyApplied<L>, String>
+where
+    L: LedgerNonSnark,
+{
+    let mut acc = ();
+    let partial_stmt = apply_zkapp_command_first_pass_aux(
+        constraint_constants,
+        global_slot,
+        state_view,
+        &mut acc,
+        |_acc, _g, _l| {},
+        fee_excess,
+        supply_increase,
+        ledger,
+        command,
+    )?;
+
+    Ok(partial_stmt)
+}
+
+pub fn apply_zkapp_command_second_pass_aux<A, F, L>(
+    constraint_constants: &ConstraintConstants,
+    init: &mut A,
+    f: F,
+    ledger: &mut L,
+    c: ZkappCommandPartiallyApplied<L>,
+) -> Result<ZkappCommandApplied, String>
+where
+    L: LedgerNonSnark,
+    F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
+{
+    // let perform = |eff: Eff<L>| Env::perform(eff);
+
+    let original_account_states: Vec<(AccountId, Option<_>)> = {
+        // get the original states of all the accounts in each pass.
+        // If an account updated in the first pass is referenced in account
+        // updates, then retain the value before first pass application*)
+
+        let accounts_referenced = c.command.accounts_referenced();
+
+        let mut account_states = BTreeMap::<AccountIdOrderable, Option<_>>::new();
+
+        let referenced = accounts_referenced.into_iter().map(|id| {
+            let location = {
+                let loc = ledger.location_of_account(&id);
+                let account = loc.as_ref().and_then(|loc| ledger.get(loc));
+                loc.zip(account)
+            };
+            (id, location)
+        });
+
+        c.original_first_pass_account_states
+            .into_iter()
+            .chain(referenced)
+            .for_each(|(id, acc_opt)| {
+                use std::collections::btree_map::Entry::Vacant;
+
+                let id_with_order: AccountIdOrderable = id.into();
+                if let Vacant(entry) = account_states.entry(id_with_order) {
+                    entry.insert(acc_opt);
+                };
+            });
+
+        account_states
+            .into_iter()
+            // Convert back the `AccountIdOrder` into `AccountId`, now that they are sorted
+            .map(|(id, account): (AccountIdOrderable, Option<_>)| (id.into(), account))
+            .collect()
+    };
+
+    let mut account_states_after_fee_payer = {
+        // To check if the accounts remain unchanged in the event the transaction
+        // fails. First pass updates will remain even if the transaction fails to
+        // apply zkapp account updates*)
+
+        c.command.accounts_referenced().into_iter().map(|id| {
+            let loc = ledger.location_of_account(&id);
+            let a = loc.as_ref().and_then(|loc| ledger.get(loc));
+
+            match a {
+                Some(a) => (id, Some((loc.unwrap(), a))),
+                None => (id, None),
+            }
+        })
+    };
+
+    let accounts = || {
+        original_account_states
+            .iter()
+            .map(|(id, account)| (id.clone(), account.as_ref().map(|(_loc, acc)| acc.clone())))
+            .collect::<Vec<_>>()
+    };
+
+    // Warning(OCaml): This is an abstraction leak / hack.
+    // Here, we update global second pass ledger to be the input ledger, and
+    // then update the local ledger to be the input ledger *IF AND ONLY IF*
+    // there are more transaction segments to be processed in this pass.
+
+    // TODO(OCaml): Remove this, and uplift the logic into the call in staged ledger.
+
+    let mut global_state = GlobalState {
+        second_pass_ledger: ledger.clone(),
+        ..c.global_state
+    };
+
+    let mut local_state = {
+        if c.local_state.stack_frame.calls.is_empty() {
+            // Don't mess with the local state; we've already finished the
+            // transaction after the fee payer.
+            c.local_state
+        } else {
+            // Install the ledger that should already be in the local state, but
+            // may not be in some situations depending on who the caller is.
+            LocalStateEnv {
+                ledger: global_state.second_pass_ledger(),
+                ..c.local_state
+            }
+        }
+    };
+
+    f(init, &global_state, &local_state);
+    let start = (&mut global_state, &mut local_state);
+
+    let reversed_failure_status_tbl = step_all(constraint_constants, &f, init, start)?;
+
+    let failure_status_tbl = reversed_failure_status_tbl
+        .into_iter()
+        .rev()
+        .collect::<Vec<_>>();
+
+    let account_ids_originally_not_in_ledger =
+        original_account_states
+            .iter()
+            .filter_map(|(acct_id, loc_and_acct)| {
+                if loc_and_acct.is_none() {
+                    Some(acct_id)
+                } else {
+                    None
+                }
+            });
+
+    let successfully_applied = failure_status_tbl.concat().is_empty();
+
+    // if the zkapp command fails in at least 1 account update,
+    // then all the account updates would be cancelled except
+    // the fee payer one
+    let failure_status_tbl = if successfully_applied {
+        failure_status_tbl
+    } else {
+        failure_status_tbl
+            .into_iter()
+            .enumerate()
+            .map(|(idx, fs)| {
+                if idx > 0 && fs.is_empty() {
+                    vec![TransactionFailure::Cancelled]
+                } else {
+                    fs
+                }
+            })
+            .collect()
+    };
+
+    // accounts not originally in ledger, now present in ledger
+    let new_accounts = account_ids_originally_not_in_ledger
+        .filter(|acct_id| ledger.location_of_account(acct_id).is_some())
+        .cloned()
+        .collect::<Vec<_>>();
+
+    let new_accounts_is_empty = new_accounts.is_empty();
+
+    let valid_result = Ok(ZkappCommandApplied {
+        accounts: accounts(),
+        command: WithStatus {
+            data: c.command,
+            status: if successfully_applied {
+                TransactionStatus::Applied
+            } else {
+                TransactionStatus::Failed(failure_status_tbl)
+            },
+        },
+        new_accounts,
     });
 
-    c.original_first_pass_account_states
-        .into_iter()
-        .chain(referenced)
-        .for_each(|(id, acc_opt)| {
-            use std::collections::btree_map::Entry::Vacant;
-
-            let id_with_order: AccountIdOrderable = id.into();
-            if let Vacant(entry) = account_states.entry(id_with_order) {
-                entry.insert(acc_opt);
-            };
-        });
-
-    account_states
-        .into_iter()
-        // Convert back the `AccountIdOrder` into `AccountId`, now that they are sorted
-        .map(|(id, account): (AccountIdOrderable, Option<_>)| (id.into(), account))
-        .collect()
-};
-
-let mut account_states_after_fee_payer = {
-    // To check if the accounts remain unchanged in the event the transaction
-    // fails. First pass updates will remain even if the transaction fails to
-    // apply zkapp account updates*)
-
-    c.command.accounts_referenced().into_iter().map(|id| {
-        let loc = ledger.location_of_account(&id);
-        let a = loc.as_ref().and_then(|loc| ledger.get(loc));
-
-        match a {
-            Some(a) => (id, Some((loc.unwrap(), a))),
-            None => (id, None),
-        }
-    })
-};
-
-let accounts = || {
-    original_account_states
-        .iter()
-        .map(|(id, account)| (id.clone(), account.as_ref().map(|(_loc, acc)| acc.clone())))
-        .collect::<Vec<_>>()
-};
-
-// Warning(OCaml): This is an abstraction leak / hack.
-// Here, we update global second pass ledger to be the input ledger, and
-// then update the local ledger to be the input ledger *IF AND ONLY IF*
-// there are more transaction segments to be processed in this pass.
-
-// TODO(OCaml): Remove this, and uplift the logic into the call in staged ledger.
-
-let mut global_state = GlobalState {
-    second_pass_ledger: ledger.clone(),
-    ..c.global_state
-};
-
-let mut local_state = {
-    if c.local_state.stack_frame.calls.is_empty() {
-        // Don't mess with the local state; we've already finished the
-        // transaction after the fee payer.
-        c.local_state
-    } else {
-        // Install the ledger that should already be in the local state, but
-        // may not be in some situations depending on who the caller is.
-        LocalStateEnv {
-            ledger: global_state.second_pass_ledger(),
-            ..c.local_state
-        }
-    }
-};
-
-f(init, &global_state, &local_state);
-let start = (&mut global_state, &mut local_state);
-
-let reversed_failure_status_tbl = step_all(constraint_constants, &f, init, start)?;
-
-let failure_status_tbl = reversed_failure_status_tbl
-    .into_iter()
-    .rev()
-    .collect::<Vec<_>>();
-
-let account_ids_originally_not_in_ledger =
-    original_account_states
-        .iter()
-        .filter_map(|(acct_id, loc_and_acct)| {
-            if loc_and_acct.is_none() {
-                Some(acct_id)
-            } else {
-                None
-            }
-        });
-
-let successfully_applied = failure_status_tbl.concat().is_empty();
-
-// if the zkapp command fails in at least 1 account update,
-// then all the account updates would be cancelled except
-// the fee payer one
-let failure_status_tbl = if successfully_applied {
-    failure_status_tbl
-} else {
-    failure_status_tbl
-        .into_iter()
-        .enumerate()
-        .map(|(idx, fs)| {
-            if idx > 0 && fs.is_empty() {
-                vec![TransactionFailure::Cancelled]
-            } else {
-                fs
-            }
-        })
-        .collect()
-};
-
-// accounts not originally in ledger, now present in ledger
-let new_accounts = account_ids_originally_not_in_ledger
-    .filter(|acct_id| ledger.location_of_account(acct_id).is_some())
-    .cloned()
-    .collect::<Vec<_>>();
-
-let new_accounts_is_empty = new_accounts.is_empty();
-
-let valid_result = Ok(ZkappCommandApplied {
-    accounts: accounts(),
-    command: WithStatus {
-        data: c.command,
-        status: if successfully_applied {
-            TransactionStatus::Applied
-        } else {
-            TransactionStatus::Failed(failure_status_tbl)
-        },
-    },
-    new_accounts,
-});
-
-if successfully_applied {
-    valid_result
-} else {
-    let other_account_update_accounts_unchanged = account_states_after_fee_payer
-        .fold_while(true, |acc, (_, loc_opt)| match loc_opt {
-            Some((loc, a)) => match ledger.get(&loc) {
-                Some(a_) if !(a == a_) => FoldWhile::Done(false),
-                _ => FoldWhile::Continue(acc),
-            },
-            _ => FoldWhile::Continue(acc),
-        })
-        .into_inner();
-
-    // Other zkapp_command failed, therefore, updates in those should not get applied
-    if new_accounts_is_empty && other_account_update_accounts_unchanged {
+    if successfully_applied {
         valid_result
     } else {
-        Err("Zkapp_command application failed but new accounts created or some of the other account_update updates applied".to_string())
+        let other_account_update_accounts_unchanged = account_states_after_fee_payer
+            .fold_while(true, |acc, (_, loc_opt)| match loc_opt {
+                Some((loc, a)) => match ledger.get(&loc) {
+                    Some(a_) if !(a == a_) => FoldWhile::Done(false),
+                    _ => FoldWhile::Continue(acc),
+                },
+                _ => FoldWhile::Continue(acc),
+            })
+            .into_inner();
+
+        // Other zkapp_command failed, therefore, updates in those should not get applied
+        if new_accounts_is_empty && other_account_update_accounts_unchanged {
+            valid_result
+        } else {
+            Err("Zkapp_command application failed but new accounts created or some of the other account_update updates applied".to_string())
+        }
     }
-}
 }
 
 pub fn apply_zkapp_command_second_pass<L>(
-constraint_constants: &ConstraintConstants,
-ledger: &mut L,
-c: ZkappCommandPartiallyApplied<L>,
+    constraint_constants: &ConstraintConstants,
+    ledger: &mut L,
+    c: ZkappCommandPartiallyApplied<L>,
 ) -> Result<ZkappCommandApplied, String>
 where
-L: LedgerNonSnark,
+    L: LedgerNonSnark,
 {
-let x = apply_zkapp_command_second_pass_aux(
-    constraint_constants,
-    &mut (),
-    |_, _, _| {},
-    ledger,
-    c,
-)?;
-Ok(x)
+    let x = apply_zkapp_command_second_pass_aux(
+        constraint_constants,
+        &mut (),
+        |_, _, _| {},
+        ledger,
+        c,
+    )?;
+    Ok(x)
 }
 
 fn apply_zkapp_command_unchecked_aux<A, F, L>(
-constraint_constants: &ConstraintConstants,
-global_slot: Slot,
-state_view: &ProtocolStateView,
-init: &mut A,
-f: F,
-fee_excess: Option<Signed<Amount>>,
-supply_increase: Option<Signed<Amount>>,
-ledger: &mut L,
-command: &ZkAppCommand,
+    constraint_constants: &ConstraintConstants,
+    global_slot: Slot,
+    state_view: &ProtocolStateView,
+    init: &mut A,
+    f: F,
+    fee_excess: Option<Signed<Amount>>,
+    supply_increase: Option<Signed<Amount>>,
+    ledger: &mut L,
+    command: &ZkAppCommand,
 ) -> Result<ZkappCommandApplied, String>
 where
-L: LedgerNonSnark,
-F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
+    L: LedgerNonSnark,
+    F: Fn(&mut A, &GlobalState<L>, &LocalStateEnv<L>),
 {
-let partial_stmt = apply_zkapp_command_first_pass_aux(
-    constraint_constants,
-    global_slot,
-    state_view,
-    init,
-    &f,
-    fee_excess,
-    supply_increase,
-    ledger,
-    command,
-)?;
+    let partial_stmt = apply_zkapp_command_first_pass_aux(
+        constraint_constants,
+        global_slot,
+        state_view,
+        init,
+        &f,
+        fee_excess,
+        supply_increase,
+        ledger,
+        command,
+    )?;
 
-apply_zkapp_command_second_pass_aux(constraint_constants, init, &f, ledger, partial_stmt)
+    apply_zkapp_command_second_pass_aux(constraint_constants, init, &f, ledger, partial_stmt)
 }
 
 fn apply_zkapp_command_unchecked<L>(
-constraint_constants: &ConstraintConstants,
-global_slot: Slot,
-state_view: &ProtocolStateView,
-ledger: &mut L,
-command: &ZkAppCommand,
+    constraint_constants: &ConstraintConstants,
+    global_slot: Slot,
+    state_view: &ProtocolStateView,
+    ledger: &mut L,
+    command: &ZkAppCommand,
 ) -> Result<(ZkappCommandApplied, (LocalStateEnv<L>, Signed<Amount>)), String>
 where
-L: LedgerNonSnark,
+    L: LedgerNonSnark,
 {
-let zkapp_partially_applied: ZkappCommandPartiallyApplied<L> = apply_zkapp_command_first_pass(
-    constraint_constants,
-    global_slot,
-    state_view,
-    None,
-    None,
-    ledger,
-    command,
-)?;
+    let zkapp_partially_applied: ZkappCommandPartiallyApplied<L> = apply_zkapp_command_first_pass(
+        constraint_constants,
+        global_slot,
+        state_view,
+        None,
+        None,
+        ledger,
+        command,
+    )?;
 
-let mut state_res = None;
-let account_update_applied = apply_zkapp_command_second_pass_aux(
-    constraint_constants,
-    &mut state_res,
-    |acc, global_state, local_state| {
-        *acc = Some((local_state.clone(), global_state.fee_excess))
-    },
-    ledger,
-    zkapp_partially_applied,
-)?;
-let (state, amount) = state_res.unwrap();
+    let mut state_res = None;
+    let account_update_applied = apply_zkapp_command_second_pass_aux(
+        constraint_constants,
+        &mut state_res,
+        |acc, global_state, local_state| {
+            *acc = Some((local_state.clone(), global_state.fee_excess))
+        },
+        ledger,
+        zkapp_partially_applied,
+    )?;
+    let (state, amount) = state_res.unwrap();
 
-Ok((account_update_applied, (state.clone(), amount)))
+    Ok((account_update_applied, (state.clone(), amount)))
 }

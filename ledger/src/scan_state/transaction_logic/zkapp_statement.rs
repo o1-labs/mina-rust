@@ -1,9 +1,9 @@
+use super::zkapp_command::{self, AccountUpdate, CallForest, Tree};
 use ark_ff::Zero;
-use mina_hasher::{Fp, Hashable, ROInput};
+use mina_curves::pasta::Fp;
+use mina_hasher::{Hashable, ROInput};
 use mina_signer::NetworkId;
 use poseidon::hash::{hash_with_kimchi, params::MINA_ACCOUNT_UPDATE_CONS};
-
-use super::zkapp_command::{self, AccountUpdate, CallForest, Tree};
 
 #[derive(Copy, Clone, Debug, derive_more::Deref, derive_more::From)]
 pub struct TransactionCommitment(pub Fp);
