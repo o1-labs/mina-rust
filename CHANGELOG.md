@@ -54,6 +54,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
 - **Website**: bump up to docusaurus 3.9.1
   ([#1500](https://github.com/o1-labs/mina-rust/pull/1500))
+- **Dependencies**: move all dependencies to the workspace Cargo.toml
+  ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
 
 ## v0.17.0
 
