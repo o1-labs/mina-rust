@@ -46,17 +46,98 @@ arithmetic_side_effects = "warn"
 indexing_slicing = "warn"
 
 [workspace.dependencies]
+aes = "0.8"
+aes-gcm = "0.10.3"
+alloc-test = { git = "https://github.com/openmina/alloc-test.git" }
+anyhow = "1.0.81"
+argon2 = { version = "0.5.3", features = ["std"] }
 ark-ec = { version = "0.5.0", features = ["std"] }
 ark-ff = { version = "0.5.0", features = ["parallel", "asm", "std"] }
 ark-poly = { version = "0.5.0" }
 ark-serialize = { version = "0.5.0", features = ["std"] }
+aws-config = { version = "1.1.7", features = ["behavior-version-latest"] }
+aws-sdk-s3 = "1.73.0"
+axum = "0.7"
+backtrace = "0.3"
+base64 = "0.22"
+bincode = "1.3.3"
+binprot = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
+binprot_derive = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
+bitflags = "2.8.0"
+bitvec = "1.0.1"
+blake2 = "0.10"
+bs58 = "0.4.0"
+btreemultimap = "0.1.1"
+bytes = "1.4.0"
+cbc = { version = "0.1", features = ["block-padding", "alloc"] }
+cfg-if = "1.0.0"
+chacha20poly1305 = "0.10.1"
+chrono = "0.4"
+clap = { version = "4.5", features = ["derive"] }
+console = "0.15.5"
+console_error_panic_hook = "0.1"
+crc32fast = "1"
+crypto-bigint = { version = "0.5.5", features = [
+  "generic-array",
+  "serde",
+  "alloc",
+] }
+crypto_secretbox = { version = "0.1.1", features = ["std"] }
+ctrlc = "3.4.2"
+curve25519-dalek = { version = "4.1", features = ["legacy_compatibility"] }
+datachannel = { git = "https://github.com/openmina/datachannel-rs.git", rev = "1bfb064d0ff3e54a93ae0288409902aab8d102d3", features = [
+  "vendored",
+] }
+dataloader = "0.18"
+derive_more = "0.99.17"
+dialoguer = "0.10.4"
+documented = { version = "0.6" }
+dotenv = "0.15"
+dotenvy = "0.15"
+ed25519-dalek = { version = "2.1.1", features = ["serde", "pem"] }
+env_logger = "0.11.6"
+etherparse = "0.17.0"
+faster-stun = "1.0.1"
+firestore = "0.44"
+flate2 = "1.0.24"
+flume = { version = "0.11.1", features = ["async", "spin"] }
+fraction = { version = "=0.15.1", default-features = false, features = [
+  "with-serde-support",
+] }
+futures = "0.3.30"
+fuzzcheck = "0.12.1"
+gcloud-sdk = { version = "0.26.0", default-features = false, features = [
+  "google-firestore-v1",
+] }
+generic-array = "0.14.7"
+getrandom = "0.2.15"
+gloo-timers = { version = "0.3", features = ["futures"] }
+gloo-utils = "0.2"
+google-cloud-auth = "0.17.2"
+google-cloud-storage = "0.24.0"
 graphannis-malloc_size_of = { git = "https://github.com/openmina/graphannis-malloc_size_of.git", rev = "f7da9f6" }
 graphannis-malloc_size_of_derive = { git = "https://github.com/openmina/graphannis-malloc_size_of_derive.git" }
+graphql_client = { version = "0.14", features = ["reqwest"] }
+hex = "0.4.3"
+hkdf = "0.12.4"
+hmac = "0.12"
+inout = "0.1"
+itertools = "0.12"
+js-sys = "0.3.64"
+jsonpath-rust = "0.5.0"
 juniper = { version = "0.16" }
+juniper_warp = "0.8.0"
 kimchi = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
+lazy_static = "1.4.0"
+leb128 = "0.2.1"
 ledger = { path = "ledger", package = "mina-tree" }
+libc = "0.2.151"
 libp2p = { git = "https://github.com/openmina/rust-libp2p", rev = "5c44c7d9", default-features = false }
+libp2p-identity = { version = "=0.2.7", features = ["peerid"] }
 linkme = "0.3.22"
+local-ip-address = "0.6.1"
+log = "0.4.25"
+md5 = "0.7.0"
 mina-curves = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 mina-hasher = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 mina-node-account = { path = "node/account" }
@@ -64,18 +145,104 @@ mina-p2p-messages = { path = "mina-p2p-messages" }
 mina-poseidon = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 mina-producer-dashboard = { path = "producer-dashboard" }
 mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
-num-bigint = { git = "https://github.com/openmina/num-bigint", branch = "rebase-onstack" } # branch: rebase-onstack
+mio = { version = "1.0.4", features = ["os-poll", "net"] }
+multiaddr = "0.18.1"
+multihash = { version = "0.18.1", features = ["blake2b"] }
+nix = { version = "0.27.1", features = ["process", "signal"] }
+nom = "8.0.0"
+num = { version = "0.4", features = ["std"] }
+num-bigint = { git = "https://github.com/openmina/num-bigint", branch = "rebase-onstack" }
+num-traits = "0.2"
+num_cpus = "1.0"
+num_enum = "0.5.7"
 o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
+object = "0.37.1"
+ocaml-interop = { git = "https://github.com/sebastiencs/ocaml-interop.git", branch = "closure-values" }
+once_cell = "1"
+p256 = { version = "0.13", features = ["default", "ecdh", "ecdsa"] }
+p384 = "0.13"
+pcap = "2.3"
+pin-project-lite = "0.2.10"
 poly-commitment = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 poseidon = { path = "poseidon" }
+postcard = { version = "1.0.9", features = ["use-std"] }
+proc-macro2 = "1.0.95"
+prost = "0.12.4"
+prost-build = "0.14.1"
+quick-protobuf = "0.8.1"
+quote = "1.0.35"
+rand = "0.8"
+rand_distr = "0.4.3"
+rand_pcg = "0.3"
+rand_seeder = "0.2"
+rayon = "1.5"
+rcgen = { version = "0.13", features = ["pem", "x509-parser"] }
 redux = { git = "https://github.com/o1-labs/redux-rs.git", rev = "06c8366", features = [
   "serde",
 ] }
+regex = "1"
+reqwest = { version = "0.12.8", features = ["blocking", "json"] }
+ring_buffer = "2.0.2"
+rsa = "0.9"
+rsexp = "0.2.3"
+rsexp-derive = "0.2.3"
+rsprocmaps = "0.3.2"
+rust-format = "0.3"
+salsa20 = "0.10.2"
 serde = { version = "1.0.190", features = ["derive", "rc"] }
+serde_bytes = "0.11"
 serde_json = "1.0.107"
 serde_with = { version = "3.7.0", features = ["hex"] }
+sha2 = "0.10"
+sha3 = "0.10.8"
+shellexpand = "3.1.0"
+similar = "2.6.0"
+slab = { version = "0.4.7", features = ["serde"] }
+sled = "0.34"
+smallvec = "1.10.0"
+sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "json"] }
 static_assertions = "1.1.0"
+structopt = "0.3.26"
+strum = "0.26.2"
+strum_macros = "0.26.4"
+sudo = "0.6.0"
+syn = "2.0.53"
+temp-dir = "0.1.11"
+tempfile = "3.8.0"
+text-diff = "0.4.0"
+thiserror = "1.0.60"
+tikv-jemallocator = "0.6"
+time = { version = "0.3.36", features = ["formatting", "macros", "parsing"] }
+tokio = { version = "1.26.0" }
+toml = "0.5.9"
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+tracing = "0.1.40"
+tracing-appender = "0.2.3"
+tracing-log = "0.2.0"
+tracing-subscriber = { version = "0.3.18", features = ["json", "env-filter"] }
+tracing-wasm = "0.2"
+tuple-map = "0.4.0"
+unsigned-varint = "0.8.0"
+url = "2.3.1"
+uuid = { version = "1", features = ["v4"] }
+vergen = { version = "8.2.4", features = [
+  "build",
+  "cargo",
+  "git",
+  "gitcl",
+  "rustc",
+] }
 vrf = { path = "vrf" }
+warp = "0.3"
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+wasm-bindgen-test = "0.3.33"
+wasm_thread = { version = "0.3", features = ["es_modules"] }
+web-sys = { version = "0.3.64" }
+webrtc = { git = "https://github.com/openmina/webrtc.git", rev = "aeaa62682b97f6984627bedd6e6811fe17af18eb" }
+x25519-dalek = { version = "2.0.1", features = ["static_secrets"] }
+zeroize = "1.8"
+zstd = "0.12"
 
 # UNCOMMENTED_IN_CI mina-curves = { git = "https://github.com/o1-labs/proof-systems", rev = "d1912bca54d2609296b9af9d09ad1ef78702e203", features = [ "32x9" ] }
 # UNCOMMENTED_IN_CI ark-ff = { git = "https://github.com/openmina/algebra", branch = "rebase-fix-openmina-webnode", features = ["parallel", "asm", "std", "32x9" ] }

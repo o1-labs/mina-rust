@@ -13,14 +13,14 @@ name = "mina-node-testing"
 path = "src/main.rs"
 
 [dependencies]
-anyhow = "1.0.70"
-axum = "0.7"
-base64 = "0.22"
-bs58 = { version = "0.4" }
-derive_more = "0.99.17"
-documented = { version = "0.6", optional = true }
-hex = "0.4.3"
-lazy_static = "1.4.0"
+anyhow = { workspace = true }
+axum = { workspace = true }
+base64 = { workspace = true }
+bs58 = { workspace = true }
+derive_more = { workspace = true }
+documented = { workspace = true, optional = true }
+hex = { workspace = true }
+lazy_static = { workspace = true }
 ledger = { workspace = true }
 libp2p = { workspace = true, features = [
   "macros",
@@ -36,34 +36,34 @@ libp2p = { workspace = true, features = [
   "kad",
 ] }
 mina-p2p-messages = { workspace = true }
-multiaddr = { version = "0.18.1" }
-multihash = "0.18.1"
-num_cpus = "1.0"
-postcard = { version = "1.0.9", features = ["use-std"] }
-rand = "0.8"
-rayon = "1.5"
+multiaddr = { workspace = true }
+multihash = { workspace = true }
+num_cpus = { workspace = true }
+postcard = { workspace = true }
+rand = { workspace = true }
+rayon = { workspace = true }
 redux = { workspace = true }
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = [
+serde = { workspace = true }
+serde_json = { workspace = true, features = [
   "unbounded_depth",
   "arbitrary_precision",
 ] }
-strum = "0.26"
-strum_macros = "0.26"
-thiserror = "1.0.37"
-time = { version = "0.3", features = ["formatting"] }
-tokio = { version = "1.26.0" }
-tower-http = { version = "0.6", features = ["cors", "fs"] }
-tracing = { version = "0.1", features = ["std"] }
-tracing-log = "0.2.0"
+strum = { workspace = true }
+strum_macros = { workspace = true }
+thiserror = { workspace = true }
+time = { workspace = true, features = ["formatting"] }
+tokio = { workspace = true }
+tower-http = { workspace = true }
+tracing = { workspace = true }
+tracing-log = { workspace = true }
 vrf = { workspace = true }
 
-clap = { version = "4.3", features = ["derive", "env"] }
-console = "0.15.5"
-ctrlc = "3.4.2"
-nix = { version = "0.27.1", features = ["process", "signal"] }
-reqwest = { version = "0.11.22", features = ["blocking", "json"] }
-temp-dir = "0.1.11"
+clap = { workspace = true, features = ["derive", "env"] }
+console = { workspace = true }
+ctrlc = { workspace = true }
+nix = { workspace = true }
+reqwest = { workspace = true, features = ["blocking", "json"] }
+temp-dir = { workspace = true }
 
 mina-core = { path = "../../core" }
 mina-node-invariants = { path = "../../node/invariants" }
@@ -72,11 +72,7 @@ node = { path = "../../node" }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }
-libp2p-identity = { version = "=0.2.7", features = [
-  "ed25519",
-  "rand",
-  "serde",
-] }
+libp2p-identity = { workspace = true, features = ["ed25519", "rand", "serde"] }
 
 [features]
 default = ["p2p-libp2p", "scenario-generators"]

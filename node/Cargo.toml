@@ -8,33 +8,33 @@ license = "Apache-2.0"
 workspace = true
 
 [dependencies]
-anyhow = "1.0.70"
+anyhow = { workspace = true }
 ark-ff = { workspace = true }
-base64 = "0.22"
-blake2 = "0.10"
-derive_more = "0.99.17"
-hex = "0.4"
-lazy_static = "1.4.0"
+base64 = { workspace = true }
+blake2 = { workspace = true }
+derive_more = { workspace = true }
+hex = { workspace = true }
+lazy_static = { workspace = true }
 ledger = { workspace = true }
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
-multihash = { version = "0.18.1", features = ["blake2b"] }
-num_enum = "0.5.7"
+multihash = { workspace = true }
+num_enum = { workspace = true }
 poseidon = { workspace = true }
-rand = "0.8.0"
+rand = { workspace = true }
 redux = { workspace = true }
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = [
+serde = { workspace = true }
+serde_json = { workspace = true, features = [
   "unbounded_depth",
   "arbitrary_precision",
 ] }
-serde_with = { version = "3.6.1", features = ["time_0_3"] }
-strum = "0.26.2"
-strum_macros = "0.26.4"
-thiserror = "1.0.37"
-time = { version = "0.3.36", features = ["parsing"] }
+serde_with = { workspace = true, features = ["time_0_3"] }
+strum = { workspace = true }
+strum_macros = { workspace = true }
+thiserror = { workspace = true }
+time = { workspace = true, features = ["parsing"] }
 vrf = { workspace = true }
 
 graphannis-malloc_size_of = { workspace = true }
@@ -43,28 +43,22 @@ graphannis-malloc_size_of_derive = { workspace = true }
 mina-core = { path = "../core" }
 mina-node-account = { workspace = true }
 p2p = { path = "../p2p" }
-postcard = { version = "1.0.9", features = ["use-std"] }
+postcard = { workspace = true }
 snark = { path = "../snark" }
-static_assertions.workspace = true
-tokio = { version = "1.26.0" }
+static_assertions = { workspace = true }
+tokio = { workspace = true }
 
 [build-dependencies]
-regex = "1"
-rust-format = "0.3"
-vergen = { version = "8.2.4", features = [
-  "build",
-  "cargo",
-  "git",
-  "gitcl",
-  "rustc",
-] }
+regex = { workspace = true }
+rust-format = { workspace = true }
+vergen = { workspace = true }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 linkme = { workspace = true }
 redux = { workspace = true, features = ["serializable_callbacks"] }
 
 [target.'cfg(target_family = "wasm")'.dependencies]
-wasm-bindgen = "0.2"
+wasm-bindgen = { workspace = true }
 
 [features]
 serializable_callbacks = []

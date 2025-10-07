@@ -9,21 +9,21 @@ name = "mina-producer-dashboard"
 path = "src/bin/producer_dashboard.rs"
 
 [dependencies]
-bincode = "1.3.3"
-clap = { version = "4.5", features = ["derive"] }
-dotenvy = "0.15"
-graphql_client = { version = "0.14", features = ["reqwest"] }
+bincode = { workspace = true }
+clap = { workspace = true }
+dotenvy = { workspace = true }
+graphql_client = { workspace = true }
 mina-node-account = { workspace = true }
 mina-p2p-messages = { workspace = true }
-num-bigint = "0.4"
-num-traits = "0.2"
+num-bigint = { workspace = true }
+num-traits = { workspace = true }
 reqwest = { version = "0.11", features = ["json"] }
-serde = { version = "1.0", features = ["derive"] }
-serde_json = { version = "1.0.83" }
-sled = "0.34"
-sqlx = { version = "0.8", features = ["runtime-tokio", "postgres", "json"] }
-thiserror = "1.0.44"
-time = { version = "0.3", features = ["formatting", "parsing"] }
-tokio = { version = "1", features = ["full"] }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+sled = { workspace = true }
+sqlx = { workspace = true }
+thiserror = { workspace = true }
+time = { workspace = true }
+tokio = { workspace = true, features = ["full"] }
 vrf = { workspace = true }
-warp = "0.3"
+warp = { workspace = true }
