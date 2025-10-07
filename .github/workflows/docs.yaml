@@ -51,7 +51,29 @@ jobs:
           # - ./github/workflows/lint.yaml
           toolchain: nightly
 
-      - name: Verify code references in documentation
+      - name: Verify code references in documentation (PR mode)
+        if: github.event_name == 'pull_request'
+        id: verify-pr
+        run: |
+          bash .github/scripts/verify-code-references.sh --pr-comment /tmp/pr-comment.md
+          if [ -f /tmp/pr-comment.md ]; then
+            echo "has_errors=true" >> $GITHUB_OUTPUT
+            echo "Comment file created, will post to PR"
+            cat /tmp/pr-comment.md
+          else
+            echo "has_errors=false" >> $GITHUB_OUTPUT
+            echo "No errors found, no comment needed"
+          fi
+
+      - name: Comment PR on verification failure
+        if: github.event_name == 'pull_request' && steps.verify-pr.outputs.has_errors == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: /tmp/pr-comment.md
+          comment-tag: code-reference-verification
+
+      - name: Verify code references in documentation (non-PR mode)
+        if: github.event_name != 'pull_request'
         run: bash .github/scripts/verify-code-references.sh
 
       - name: Build documentation
