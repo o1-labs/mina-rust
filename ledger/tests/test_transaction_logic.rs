@@ -48,8 +48,8 @@ fn test_cons_receipt_hash_ocaml() {
         nonce: Nonce::from_u32(1609569868),
         valid_until: Slot::from_u32(2127252111),
         memo: Memo([
-            1, 32, 101, 26, 225, 104, 115, 118, 55, 102, 76, 118, 108, 78, 114, 50, 0, 115,
-            110, 108, 53, 75, 109, 112, 50, 110, 88, 97, 76, 66, 76, 81, 235, 79,
+            1, 32, 101, 26, 225, 104, 115, 118, 55, 102, 76, 118, 108, 78, 114, 50, 0, 115, 110,
+            108, 53, 75, 109, 112, 50, 110, 88, 97, 76, 66, 76, 81, 235, 79,
         ]),
     };
 
@@ -81,8 +81,8 @@ fn test_receipt_hash_update() {
         nonce: Nonce::from_u32(15),
         valid_until: Slot::from_u32(-1i32 as u32),
         memo: Memo([
-            1, 7, 84, 104, 101, 32, 49, 48, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-            0, 0, 0, 0, 0, 0, 0, 0, 0,
+            1, 7, 84, 104, 101, 32, 49, 48, 49, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0,
         ]),
     };
 
@@ -94,14 +94,12 @@ fn test_receipt_hash_update() {
     let tx = SignedCommandPayload { common, body };
 
     let mut prev =
-        hex::decode("09ac04c9965b885acfc9c54141dbecfc63b2394a4532ea2c598d086b894bfb14")
-            .unwrap();
+        hex::decode("09ac04c9965b885acfc9c54141dbecfc63b2394a4532ea2c598d086b894bfb14").unwrap();
     prev.reverse();
     let prev_receipt_chain_hash = ReceiptChainHash(Fp::from_bytes(&prev).unwrap());
 
     let mut next =
-        hex::decode("3ecaa73739df77549a2f92f7decf822562d0593373cff1e480bb24b4c87dc8f0")
-            .unwrap();
+        hex::decode("3ecaa73739df77549a2f92f7decf822562d0593373cff1e480bb24b4c87dc8f0").unwrap();
     next.reverse();
     let next_receipt_chain_hash = ReceiptChainHash(Fp::from_bytes(&next).unwrap());
 
