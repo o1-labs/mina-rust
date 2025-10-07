@@ -5493,7 +5493,7 @@ dependencies = [
  "mina-p2p-messages",
  "num-bigint",
  "num-traits",
- "reqwest 0.12.12",
+ "reqwest 0.11.24",
  "serde",
  "serde_json",
  "sled",

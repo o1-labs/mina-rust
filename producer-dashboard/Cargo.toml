@@ -17,7 +17,7 @@ mina-node-account = { workspace = true }
 mina-p2p-messages = { workspace = true }
 num-bigint = { workspace = true }
 num-traits = { workspace = true }
-reqwest = { workspace = true, features = ["json"] }
+reqwest = { version = "0.11", features = ["json"] }
 serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 sled = { workspace = true }
