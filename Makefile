@@ -520,7 +520,11 @@ docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@DATABASE_URL="sqlite::memory:" \
+		RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" \
+		cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps \
+		--document-private-items --workspace \
+		--exclude heartbeats-processor --lib
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 
