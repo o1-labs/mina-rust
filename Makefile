@@ -195,9 +195,9 @@ clean: ## Clean build artifacts
 .PHONY: download-circuits
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git; \
+	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git -b dw/add-berkeley-687bf44e97328e1cc0e85291663009410f64bd99; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
-	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
+	  ln -s "$$PWD"/circuit-blobs/berkeley-devnet ledger/; \
 	else \
 	  echo "circuit-blobs already exists, skipping download."; \
 	fi
