@@ -2319,7 +2319,7 @@ pub mod zkapp_command {
     /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/account_update.ml#L758>
     #[derive(Debug, Clone, PartialEq)]
     pub struct Preconditions {
-        pub(crate) network: ZkAppPreconditions,
+        pub network: ZkAppPreconditions,
         pub account: AccountPreconditions,
         pub valid_while: Numeric<Slot>,
     }
