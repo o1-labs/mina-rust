@@ -44,7 +44,7 @@ jobs:
           DATABASE_URL: "sqlite:///tmp/heartbeats.db"
 
   lint-tx-fuzzing:
-    timeout-minutes: 5
+    timeout-minutes: 10
     name: Lint transaction Fuzzing - ${{ matrix.os }} - Rust ${{ matrix.toolchain }}
     runs-on: ${{ matrix.os }}
     strategy:
