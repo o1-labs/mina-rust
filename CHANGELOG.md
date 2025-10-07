@@ -58,6 +58,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1500](https://github.com/o1-labs/mina-rust/pull/1500))
 - **Dependencies**: move all dependencies to the workspace Cargo.toml
   ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
+- **scan_state**: refactorize `transaction_logic.rs` in smaller modules
+  ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
 
 ## v0.17.0
 
