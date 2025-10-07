@@ -1,39 +1,28 @@
 use self::{
-    local_state::{
-        apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, CallStack, LocalStateEnv,
-        StackFrame,
-    },
+    local_state::{apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, LocalStateEnv},
     protocol_state::{GlobalState, ProtocolStateView},
     signed_command::{SignedCommand, SignedCommandPayload},
     transaction_applied::{
         signed_command_applied::{self, SignedCommandApplied},
-        TransactionApplied, ZkappCommandApplied,
+        TransactionApplied,
     },
-    zkapp_command::{AccessedOrNot, AccountUpdate, WithHash, ZkAppCommand},
+    zkapp_command::{AccessedOrNot, ZkAppCommand},
 };
 use super::{
-    currency::{Amount, Balance, Fee, Index, Length, Magnitude, Nonce, Signed, Slot},
+    currency::{Amount, Balance, Fee, Magnitude, Nonce, Signed, Slot},
     fee_excess::FeeExcess,
     fee_rate::FeeRate,
     scan_state::transaction_snark::OneOrTwo,
 };
 use crate::{
-    proofs::witness::Witness,
     scan_state::transaction_logic::{
         transaction_applied::{CommandApplied, Varying},
-        transaction_partially_applied::FullyApplied,
         zkapp_command::MaybeWithStatus,
     },
-    sparse_ledger::{LedgerIntf, SparseLedger},
-    zkapps,
-    zkapps::{
-        non_snark::{LedgerNonSnark, ZkappNonSnark},
-        zkapp_logic::ZkAppCommandElt,
-    },
-    Account, AccountId, AccountIdOrderable, AppendToInputs, BaseLedger, ControlTag,
-    ReceiptChainHash, Timing, TokenId, VerificationKeyWire,
+    sparse_ledger::LedgerIntf,
+    zkapps::non_snark::LedgerNonSnark,
+    Account, AccountId, BaseLedger, ControlTag, Timing, TokenId, VerificationKeyWire,
 };
-use itertools::FoldWhile;
 use mina_core::constants::ConstraintConstants;
 use mina_curves::pasta::Fp;
 use mina_macros::SerdeYojsonEnum;
@@ -43,11 +32,7 @@ use mina_p2p_messages::{
     v2::{MinaBaseUserCommandStableV2, MinaTransactionTransactionStableV2},
 };
 use mina_signer::CompressedPubKey;
-use poseidon::hash::{
-    hash_with_kimchi,
-    params::{CODA_RECEIPT_UC, MINA_ZKAPP_MEMO},
-    Inputs,
-};
+use poseidon::hash::params::MINA_ZKAPP_MEMO;
 use std::{
     collections::{BTreeMap, HashMap, HashSet},
     fmt::Display,

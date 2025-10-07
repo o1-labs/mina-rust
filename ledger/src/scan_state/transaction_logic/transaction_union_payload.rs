@@ -17,7 +17,7 @@ use crate::{
     zkapps::zkapp_logic::ZkAppCommandElt,
     Account, AccountId, AppendToInputs, ReceiptChainHash, Timing, TokenId,
 };
-use ark_ff::{PrimeField, Zero};
+use ark_ff::PrimeField;
 use mina_curves::pasta::Fp;
 use mina_hasher::{Hashable, ROInput as LegacyInput};
 use mina_signer::{CompressedPubKey, NetworkId, PubKey, Signature};
