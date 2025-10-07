@@ -49,7 +49,7 @@ use crate::{
 
 use super::{
     checks::{InSnarkOps, ZkappCheck},
-    intefaces::{
+    interfaces::{
         AccountIdInterface, AccountInterface, AccountUpdateInterface, ActionsInterface,
         AmountInterface, BalanceInterface, BoolInterface, BranchEvaluation, BranchInterface,
         BranchParam, CallForestInterface, CallStackInterface, ControllerInterface,

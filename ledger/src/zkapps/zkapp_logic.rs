@@ -11,7 +11,7 @@ use crate::{
             TimingValidation, TransactionFailure,
         },
     },
-    zkapps::intefaces::*,
+    zkapps::interfaces::*,
     AuthRequired, MyCow, Permissions, SetVerificationKey, TokenId, VerificationKeyWire,
 };
 
