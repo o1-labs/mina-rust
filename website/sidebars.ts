@@ -137,7 +137,8 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Documentation',
       items: [
-        'developers/documentation-guidelines',
+        'developers/referencing-code-in-documentation',
+        'developers/ocaml-reference-tracking',
       ],
     },
     {
