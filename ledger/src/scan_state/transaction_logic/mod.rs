@@ -60,7 +60,9 @@ pub use transaction_union_payload::{
     ExistingOrNew, Tag, TimingValidation, TransactionUnion, TransactionUnionPayload,
 };
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L9>
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-51
+/// Commit: 2ee6e004ba8c6a0541056076aab22ea162f7eb3a
+/// Last verified: 2025-10-08
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum TransactionFailure {
     Predicate,
@@ -176,7 +178,9 @@ impl Display for TransactionFailure {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L452>
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:452-454
+/// Commit: 2ee6e004ba8c6a0541056076aab22ea162f7eb3a
+/// Last verified: 2025-10-08
 #[derive(SerdeYojsonEnum, Debug, Clone, PartialEq, Eq)]
 pub enum TransactionStatus {
     Applied,
@@ -192,7 +196,9 @@ impl TransactionStatus {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/with_status.ml#L6>
+/// OCaml reference: src/lib/mina_base/with_status.ml L:6-10
+/// Commit: 2ee6e004ba8c6a0541056076aab22ea162f7eb3a
+/// Last verified: 2025-10-08
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
 pub struct WithStatus<T> {
     pub data: T,
