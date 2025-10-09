@@ -182,6 +182,22 @@ echo ""
 
 if [[ $EXIT_CODE -eq 0 ]]; then
     echo -e "${GREEN}✓ All code references are valid!${NC}"
+
+    # If in PR comment mode, write success message to file
+    if [[ -n "${COMMENT_FILE}" ]]; then
+        cat > "${COMMENT_FILE}" <<EOF
+## ✓ Code Reference Verification Passed
+
+All code references in the documentation have been verified successfully!
+
+**Total references checked:** ${TOTAL_REFS}
+**Valid references:** ${VALID_REFS}
+
+The documentation is in sync with the codebase on the \`develop\` branch.
+EOF
+        echo ""
+        echo "PR success comment written to: ${COMMENT_FILE}"
+    fi
 else
     echo -e "${RED}✗ Some code references are invalid. Please update the documentation.${NC}"
 
