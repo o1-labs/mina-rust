@@ -11,6 +11,10 @@
 name: Check OCaml References
 
 on:
+  pull_request:
+    branches:
+      - develop
+      - main
   schedule:
     # Run every Monday at 9:00 AM UTC
     - cron: '0 9 * * 1'
@@ -46,17 +50,68 @@ jobs:
           OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
         run: |
           set +e
+          # Capture output to file
           ./.github/scripts/check-ocaml-refs.sh \
             --repo "$OCAML_REPO" \
-            --branch "$OCAML_BRANCH"
+            --branch "$OCAML_BRANCH" 2>&1 | tee validation_output.txt
           exit_code=$?
           if [ $exit_code -ne 0 ]; then
             echo "has_issues=true" >> $GITHUB_OUTPUT
-            exit 0
+          else
+            echo "has_issues=false" >> $GITHUB_OUTPUT
+          fi
+          # Store output for PR comment
+          echo "output_file=validation_output.txt" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Prepare PR comment
+        if: github.event_name == 'pull_request'
+        id: prepare-comment
+        env:
+          HAS_ISSUES: ${{ steps.check.outputs.has_issues }}
+          OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
+          OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
+        run: |
+          # Determine status message
+          if [ "$HAS_ISSUES" = "true" ]; then
+            STATUS_MSG="❌ Validation failed"
+          else
+            STATUS_MSG="✓ Validation passed"
           fi
 
+          # Create comment body
+          cat > comment.md <<COMMENT_EOF
+          ## OCaml Reference Validation Results
+
+          **Repository**: ${OCAML_REPO}
+          **Branch**: ${OCAML_BRANCH}
+          **Status**: ${STATUS_MSG}
+
+          <details>
+          <summary>Click to see full validation output</summary>
+
+          \`\`\`
+          COMMENT_EOF
+
+          # Append validation output
+          cat validation_output.txt >> comment.md
+
+          # Close the code block and details
+          cat >> comment.md <<'COMMENT_EOF'
+          ```
+
+          </details>
+          COMMENT_EOF
+
+      - name: Post PR comment with validation results
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: comment.md
+
       - name: Update references if stale
-        if: steps.check.outputs.has_issues != 'true'
+        if: steps.check.outputs.has_issues != 'true' && github.event_name != 'pull_request'
         env:
           OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
           OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
@@ -67,6 +122,7 @@ jobs:
             --update
 
       - name: Check for changes
+        if: github.event_name != 'pull_request'
         id: changes
         run: |
           if git diff --quiet; then
@@ -76,7 +132,7 @@ jobs:
           fi
 
       - name: Create Pull Request
-        if: steps.changes.outputs.has_changes == 'true'
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name != 'pull_request'
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -118,6 +174,8 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           if [ "${{ steps.check.outputs.has_issues }}" == "true" ]; then
             echo "❌ Validation failed - some OCaml references are invalid" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "✓ Validation completed - results posted as PR comment" >> $GITHUB_STEP_SUMMARY
           elif [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
             echo "✓ Validation passed - created PR to update stale references" >> $GITHUB_STEP_SUMMARY
           else
