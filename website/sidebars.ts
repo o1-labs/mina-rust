@@ -77,6 +77,15 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Hardforks',
+      items: [
+        'developers/hardforks/index',
+        'developers/hardforks/berkeley',
+        'developers/hardforks/mesa',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Architecture',
       items: [
         'developers/why-rust',
