@@ -221,7 +221,7 @@ Please follow this workflow:
 2. Create a follow-up PR with the documentation updates that reference the merged code
 3. The verification will pass once the code is available on \`develop\`
 
-See the [documentation guidelines](https://o1-labs.github.io/mina-rust/developers/documentation-guidelines) for more information about the two-PR workflow.
+See the [documentation guidelines](https://o1-labs.github.io/mina-rust/docs/developers/documentation-guidelines) for more information about the two-PR workflow.
 EOF
         echo ""
         echo "PR comment written to: ${COMMENT_FILE}"
