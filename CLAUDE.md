@@ -272,10 +272,10 @@ files.
 
 **Capitalization in headings and bullet points:**
 
-- Use lowercase for section headings (e.g., "Test design", "Resource
-  management")
-- Use lowercase for bullet point labels (e.g., "**Connection policies**",
-  "**State inspection**")
+- Capitalize the first letter of section headings (e.g., "Test design",
+  "Resource management")
+- Use lowercase for bullet point labels (e.g., "**connection policies**",
+  "**state inspection**")
 - Maintain proper capitalization for proper nouns and technical terms
 - Apply this style consistently across all documentation files
 
