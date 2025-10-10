@@ -188,7 +188,7 @@ where
         .collect()
 }
 
-struct FailureCollection {
+pub struct FailureCollection {
     inner: Vec<Vec<TransactionFailure>>,
 }
 
@@ -245,7 +245,7 @@ impl FailureCollection {
 ///     `[[failure-of-fee-transfer];[]]`
 ///
 /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L2022>
-fn apply_coinbase<L>(
+pub fn apply_coinbase<L>(
     constraint_constants: &ConstraintConstants,
     txn_global_slot: &Slot,
     ledger: &mut L,
@@ -405,7 +405,7 @@ where
 }
 
 /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L1991>
-fn apply_fee_transfer<L>(
+pub fn apply_fee_transfer<L>(
     constraint_constants: &ConstraintConstants,
     txn_global_slot: &Slot,
     ledger: &mut L,
@@ -516,7 +516,7 @@ fn get_new_accounts<T>(action: AccountState, data: T) -> Option<T> {
 ///     [[];[failure-of-second-fee-transfer]]
 ///   First fails and second succeeds:
 ///     [[failure-of-first-fee-transfer];[]]
-fn process_fee_transfer<L, FunBalance, FunTiming>(
+pub fn process_fee_transfer<L, FunBalance, FunTiming>(
     ledger: &mut L,
     fee_transfer: &FeeTransfer,
     modify_balance: FunBalance,
