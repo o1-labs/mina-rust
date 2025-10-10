@@ -21,17 +21,28 @@ pub struct ForkConstants {
     pub global_slot_since_genesis: u32,
 }
 
+/// Protocol constraint constants
 #[derive(Clone, Debug)]
 pub struct ConstraintConstants {
+    /// Number of sub-windows in a single slot window
     pub sub_windows_per_window: u64,
+    /// Depth of the account ledger Merkle tree
     pub ledger_depth: u64,
+    /// Number of slots to delay SNARK work for proof generation
     pub work_delay: u64,
+    /// Duration of each block window in milliseconds
     pub block_window_duration_ms: u64,
+    /// Log2 of maximum transactions per block
     pub transaction_capacity_log_2: u64,
+    /// Depth of the pending coinbase Merkle tree
     pub pending_coinbase_depth: usize,
+    /// Base amount awarded for producing a block
     pub coinbase_amount: u64,
+    /// Multiplier for coinbase when account is "supercharged"
     pub supercharged_coinbase_factor: u64,
+    /// Fee charged for creating a new account
     pub account_creation_fee: u64,
+    /// Optional fork configuration for protocol upgrades
     pub fork: Option<ForkConstants>,
 }
 #[derive(Clone, Debug, BinProtWrite)]
