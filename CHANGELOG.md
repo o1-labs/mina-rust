@@ -60,6 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
 - **scan_state**: refactorize `transaction_logic.rs` in smaller modules
   ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
+- **Website/CI**: run most commands from the page node management in CI after
+  moving them into scripts imported on the page
+  ([#1511](https://github.com/o1-labs/mina-rust/pull/1511))
 
 ## v0.17.0
 
