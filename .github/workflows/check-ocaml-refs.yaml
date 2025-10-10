@@ -79,8 +79,9 @@ jobs:
             STATUS_MSG="✓ Validation passed"
           fi
 
-          # Create comment body
+          # Create comment body with hidden identifier
           cat > comment.md <<COMMENT_EOF
+          <!-- ocaml-ref-validation -->
           ## OCaml Reference Validation Results
 
           **Repository**: ${OCAML_REPO}
@@ -103,12 +104,23 @@ jobs:
           </details>
           COMMENT_EOF
 
+      - name: Find existing OCaml validation comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- ocaml-ref-validation -->'
+
       - name: Post PR comment with validation results
         if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body-path: comment.md
+          edit-mode: replace
 
       - name: Update references if stale
         if: steps.check.outputs.has_issues != 'true' && github.event_name != 'pull_request'
