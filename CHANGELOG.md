@@ -69,6 +69,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **ledger/scan_state/transaction_logic**: move submodule `for_tests` into a
   new file `zkapp_command/for_tests.rs`
   ([#1527](https://github.com/o1-labs/mina-rust/pull/1527)).
+- **ledger/scan_state/transaction_logic**: update OCaml references in `mod.rs`
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525))
 
 ## v0.17.0
 
