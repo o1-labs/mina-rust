@@ -19,7 +19,6 @@ use crate::{
         fee_excess::FeeExcess,
         GenesisConstant, GENESIS_CONSTANT,
     },
-    sparse_ledger::LedgerIntf,
     zkapps::checks::{ZkappCheck, ZkappCheckOps},
     AccountId, AuthRequired, ControlTag, MutableFp, MyCow, Permissions, SetVerificationKey,
     ToInputs, TokenId, TokenSymbol, VerificationKey, VerificationKeyWire, VotingFor, ZkAppAccount,
@@ -39,7 +38,13 @@ use poseidon::hash::{
     Inputs,
 };
 use rand::{seq::SliceRandom, Rng};
-use std::{collections::HashMap, sync::Arc};
+use std::sync::Arc;
+
+pub mod from_applied_sequence;
+pub mod from_unapplied_sequence;
+pub mod valid;
+pub mod verifiable;
+pub mod zkapp_weight;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Event(pub Vec<Fp>);
@@ -48,9 +53,11 @@ impl Event {
     pub fn empty() -> Self {
         Self(Vec::new())
     }
+
     pub fn hash(&self) -> Fp {
         hash_with_kimchi(&MINA_ZKAPP_EVENT, &self.0[..])
     }
+
     pub fn len(&self) -> usize {
         let Self(list) = self;
         list.len()
@@ -86,23 +93,30 @@ pub trait MakeEvents {
     const DERIVER_NAME: (); // Unused here for now
 
     fn get_salt_phrase() -> &'static LazyParam;
+
     fn get_hash_prefix() -> &'static LazyParam;
+
     fn events(&self) -> &[Event];
+
     fn empty_hash() -> Fp;
 }
 
 /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_account.ml#L100>
 impl MakeEvents for Events {
     const DERIVER_NAME: () = ();
+
     fn get_salt_phrase() -> &'static LazyParam {
         &NO_INPUT_MINA_ZKAPP_EVENTS_EMPTY
     }
+
     fn get_hash_prefix() -> &'static poseidon::hash::LazyParam {
         &MINA_ZKAPP_EVENTS
     }
+
     fn events(&self) -> &[Event] {
         self.0.as_slice()
     }
+
     fn empty_hash() -> Fp {
         cache_one!(Fp, events_to_field(&Events::empty()))
     }
@@ -111,15 +125,19 @@ impl MakeEvents for Events {
 /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/zkapp_account.ml#L156>
 impl MakeEvents for Actions {
     const DERIVER_NAME: () = ();
+
     fn get_salt_phrase() -> &'static LazyParam {
         &NO_INPUT_MINA_ZKAPP_ACTIONS_EMPTY
     }
+
     fn get_hash_prefix() -> &'static poseidon::hash::LazyParam {
         &MINA_ZKAPP_SEQ_EVENTS
     }
+
     fn events(&self) -> &[Event] {
         self.0.as_slice()
     }
+
     fn empty_hash() -> Fp {
         cache_one!(Fp, events_to_field(&Actions::empty()))
     }
@@ -2944,196 +2962,6 @@ impl ZkAppCommand {
     }
 }
 
-pub mod verifiable {
-    use mina_p2p_messages::v2::MinaBaseZkappCommandVerifiableStableV1;
-
-    use super::*;
-
-    #[derive(Debug, Clone, serde::Deserialize, serde::Serialize)]
-    #[serde(try_from = "MinaBaseZkappCommandVerifiableStableV1")]
-    #[serde(into = "MinaBaseZkappCommandVerifiableStableV1")]
-    pub struct ZkAppCommand {
-        pub fee_payer: FeePayer,
-        pub account_updates: CallForest<(AccountUpdate, Option<VerificationKeyWire>)>,
-        pub memo: Memo,
-    }
-
-    fn ok_if_vk_hash_expected(
-        got: VerificationKeyWire,
-        expected: Fp,
-    ) -> Result<VerificationKeyWire, String> {
-        if got.hash() == expected {
-            return Ok(got.clone());
-        }
-        Err(format!(
-            "Expected vk hash doesn't match hash in vk we received\
-                     expected: {:?}\
-                     got: {:?}",
-            expected, got
-        ))
-    }
-
-    pub fn find_vk_via_ledger<L>(
-        ledger: L,
-        expected_vk_hash: Fp,
-        account_id: &AccountId,
-    ) -> Result<VerificationKeyWire, String>
-    where
-        L: LedgerIntf + Clone,
-    {
-        let vk = ledger
-            .location_of_account(account_id)
-            .and_then(|location| ledger.get(&location))
-            .and_then(|account| {
-                account
-                    .zkapp
-                    .as_ref()
-                    .and_then(|zkapp| zkapp.verification_key.clone())
-            });
-
-        match vk {
-            Some(vk) => ok_if_vk_hash_expected(vk, expected_vk_hash),
-            None => Err(format!(
-                "No verification key found for proved account update\
-                                 account_id: {:?}",
-                account_id
-            )),
-        }
-    }
-
-    fn check_authorization(p: &AccountUpdate) -> Result<(), String> {
-        use AuthorizationKind as AK;
-        use Control as C;
-
-        match (&p.authorization, &p.body.authorization_kind) {
-            (C::NoneGiven, AK::NoneGiven)
-            | (C::Proof(_), AK::Proof(_))
-            | (C::Signature(_), AK::Signature) => Ok(()),
-            _ => Err(format!(
-                "Authorization kind does not match the authorization\
-                             expected={:#?}\
-                             got={:#?}",
-                p.body.authorization_kind, p.authorization
-            )),
-        }
-    }
-
-    /// Ensures that there's a verification_key available for all account_updates
-    /// and creates a valid command associating the correct keys with each
-    /// account_id.
-    ///
-    /// If an account_update replaces the verification_key (or deletes it),
-    /// subsequent account_updates use the replaced key instead of looking in the
-    /// ledger for the key (ie set by a previous transaction).
-    pub fn create(
-        zkapp: &super::ZkAppCommand,
-        is_failed: bool,
-        find_vk: impl Fn(Fp, &AccountId) -> Result<VerificationKeyWire, String>,
-    ) -> Result<ZkAppCommand, String> {
-        let super::ZkAppCommand {
-            fee_payer,
-            account_updates,
-            memo,
-        } = zkapp;
-
-        let mut tbl = HashMap::with_capacity(128);
-        // Keep track of the verification keys that have been set so far
-        // during this transaction.
-        let mut vks_overridden: HashMap<AccountId, Option<VerificationKeyWire>> =
-            HashMap::with_capacity(128);
-
-        let account_updates = account_updates.try_map_to(|p| {
-            let account_id = p.account_id();
-
-            check_authorization(p)?;
-
-            let result = match (&p.body.authorization_kind, is_failed) {
-                (AuthorizationKind::Proof(vk_hash), false) => {
-                    let prioritized_vk = {
-                        // only lookup _past_ vk setting, ie exclude the new one we
-                        // potentially set in this account_update (use the non-'
-                        // vks_overrided) .
-
-                        match vks_overridden.get(&account_id) {
-                            Some(Some(vk)) => ok_if_vk_hash_expected(vk.clone(), *vk_hash)?,
-                            Some(None) => {
-                                // we explicitly have erased the key
-                                return Err(format!(
-                                    "No verification key found for proved account \
-                                                    update: the verification key was removed by a \
-                                                    previous account update\
-                                                    account_id={:?}",
-                                    account_id
-                                ));
-                            }
-                            None => {
-                                // we haven't set anything; lookup the vk in the fallback
-                                find_vk(*vk_hash, &account_id)?
-                            }
-                        }
-                    };
-
-                    tbl.insert(account_id, prioritized_vk.hash());
-
-                    Ok((p.clone(), Some(prioritized_vk)))
-                }
-
-                _ => Ok((p.clone(), None)),
-            };
-
-            // NOTE: we only update the overriden map AFTER verifying the update to make sure
-            // that the verification for the VK update itself is done against the previous VK.
-            if let SetOrKeep::Set(vk_next) = &p.body.update.verification_key {
-                vks_overridden.insert(p.account_id().clone(), Some(vk_next.clone()));
-            }
-
-            result
-        })?;
-
-        Ok(ZkAppCommand {
-            fee_payer: fee_payer.clone(),
-            account_updates,
-            memo: memo.clone(),
-        })
-    }
-}
-
-pub mod valid {
-    use crate::scan_state::transaction_logic::zkapp_command::verifiable::create;
-
-    use super::*;
-
-    #[derive(Clone, Debug, PartialEq)]
-    pub struct ZkAppCommand {
-        pub zkapp_command: super::ZkAppCommand,
-    }
-
-    impl ZkAppCommand {
-        pub fn forget(self) -> super::ZkAppCommand {
-            self.zkapp_command
-        }
-        pub fn forget_ref(&self) -> &super::ZkAppCommand {
-            &self.zkapp_command
-        }
-    }
-
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/zkapp_command.ml#L1499>
-    pub fn of_verifiable(cmd: verifiable::ZkAppCommand) -> ZkAppCommand {
-        ZkAppCommand {
-            zkapp_command: super::ZkAppCommand::of_verifiable(cmd),
-        }
-    }
-
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/zkapp_command.ml#L1507>
-    pub fn to_valid(
-        zkapp_command: super::ZkAppCommand,
-        status: &TransactionStatus,
-        find_vk: impl Fn(Fp, &AccountId) -> Result<VerificationKeyWire, String>,
-    ) -> Result<ZkAppCommand, String> {
-        create(&zkapp_command, status.is_failed(), find_vk).map(of_verifiable)
-    }
-}
-
 pub struct MaybeWithStatus<T> {
     pub cmd: T,
     pub status: Option<TransactionStatus>,
@@ -3211,87 +3039,5 @@ pub trait ToVerifiableStrategy {
             }
         }
         Ok(verified_cmd)
-    }
-}
-
-pub mod from_unapplied_sequence {
-    use super::*;
-
-    pub struct Cache {
-        cache: HashMap<AccountId, HashMap<Fp, VerificationKeyWire>>,
-    }
-
-    impl Cache {
-        pub fn new(cache: HashMap<AccountId, HashMap<Fp, VerificationKeyWire>>) -> Self {
-            Self { cache }
-        }
-    }
-
-    impl ToVerifiableCache for Cache {
-        fn find(&self, account_id: &AccountId, vk_hash: &Fp) -> Option<&VerificationKeyWire> {
-            let vks = self.cache.get(account_id)?;
-            vks.get(vk_hash)
-        }
-        fn add(&mut self, account_id: AccountId, vk: VerificationKeyWire) {
-            let vks = self.cache.entry(account_id).or_default();
-            vks.insert(vk.hash(), vk);
-        }
-    }
-
-    pub struct FromUnappliedSequence;
-
-    impl ToVerifiableStrategy for FromUnappliedSequence {
-        type Cache = Cache;
-    }
-}
-
-pub mod from_applied_sequence {
-    use super::*;
-
-    pub struct Cache {
-        cache: HashMap<AccountId, VerificationKeyWire>,
-    }
-
-    impl Cache {
-        pub fn new(cache: HashMap<AccountId, VerificationKeyWire>) -> Self {
-            Self { cache }
-        }
-    }
-
-    impl ToVerifiableCache for Cache {
-        fn find(&self, account_id: &AccountId, vk_hash: &Fp) -> Option<&VerificationKeyWire> {
-            self.cache
-                .get(account_id)
-                .filter(|vk| &vk.hash() == vk_hash)
-        }
-        fn add(&mut self, account_id: AccountId, vk: VerificationKeyWire) {
-            self.cache.insert(account_id, vk);
-        }
-    }
-
-    pub struct FromAppliedSequence;
-
-    impl ToVerifiableStrategy for FromAppliedSequence {
-        type Cache = Cache;
-    }
-}
-
-/// <https://github.com/MinaProtocol/mina/blob/1551e2faaa246c01636908aabe5f7981715a10f4/src/lib/mina_base/zkapp_command.ml#L1421>
-pub mod zkapp_weight {
-    use crate::scan_state::transaction_logic::zkapp_command::{
-        AccountUpdate, CallForest, FeePayer,
-    };
-
-    pub fn account_update(_: &AccountUpdate) -> u64 {
-        1
-    }
-    pub fn fee_payer(_: &FeePayer) -> u64 {
-        1
-    }
-    pub fn account_updates(list: &CallForest<AccountUpdate>) -> u64 {
-        list.fold(0, |acc, p| acc + account_update(p))
-    }
-    pub fn memo(_: &super::Memo) -> u64 {
-        0
     }
 }
