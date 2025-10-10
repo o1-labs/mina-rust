@@ -73,7 +73,15 @@ const sidebars: SidebarsConfig = {
       items: [
         'developers/getting-started',
         'developers/updating-ocaml-node',
-        'developers/mesa-upgrade',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Hardforks',
+      items: [
+        'developers/hardforks/index',
+        'developers/hardforks/berkeley',
+        'developers/hardforks/mesa',
       ],
     },
     {
