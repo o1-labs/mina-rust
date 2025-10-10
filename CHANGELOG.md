@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
 - **Ledger/ZkAppCommand**: show how to build a ZkAppCommand from scratch, with
   dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
+- **CI/Documentation**: add a script to check the references to the OCaml code
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525)).
 
 ### Changed
 
@@ -62,6 +64,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
 - **CI/tests**: run the step `build-wasm` for each push and PR to `develop`
   ([#1497](https://github.com/o1-labs/mina-rust/pull/1497))
+- **ledger/scan_state/transaction_logic**: update OCaml references in `mod.rs`
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525))
 
 ## v0.17.0
 
