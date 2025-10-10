@@ -283,14 +283,17 @@ pub struct TransactionUnion {
 }
 
 impl TransactionUnion {
-    /// For SNARK purposes, we inject [Transaction.t]s into a single-variant 'tagged-union' record capable of
-    /// representing all the variants. We interpret the fields of this union in different ways depending on
-    /// the value of the [payload.body.tag] field, which represents which variant of [Transaction.t] the value
-    /// corresponds to.
+    /// For SNARK purposes, we inject [Transaction.t]s into a single-variant
+    /// 'tagged-union' record capable of representing all the variants. We
+    /// interpret the fields of this union in different ways depending on the
+    /// value of the [payload.body.tag] field, which represents which variant of
+    /// [Transaction.t] the value corresponds to.
     ///
-    /// Sometimes we interpret fields in surprising ways in different cases to save as much space in the SNARK as possible (e.g.,
-    /// [payload.body.public_key] is interpreted as the recipient of a payment, the new delegate of a stake
-    /// delegation command, and a fee transfer recipient for both coinbases and fee-transfers.
+    /// Sometimes we interpret fields in surprising ways in different cases to
+    /// save as much space in the SNARK as possible (e.g.,
+    /// [payload.body.public_key] is interpreted as the recipient of a payment,
+    /// the new delegate of a stake delegation command, and a fee transfer
+    /// recipient for both coinbases and fee-transfers.
     pub fn of_transaction(tx: &Transaction) -> Self {
         match tx {
             Transaction::Command(cmd) => {
