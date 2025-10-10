@@ -1,3 +1,67 @@
+//! Unified transaction representation for SNARK circuits
+//!
+//! This module provides a single, unified structure ([`TransactionUnion`]) that
+//! can represent all transaction types (payments, stake delegations, fee
+//! transfers, coinbase) for SNARK circuit processing. This enables efficient
+//! proof generation by using a single circuit design regardless of the specific
+//! transaction type.
+//!
+//! # Transaction Union
+//!
+//! The [`TransactionUnion`] type encodes all transaction variants using a
+//! tagged union approach:
+//!
+//! - [`Common`]: Fields present in all transactions (fee, nonce, memo, etc.)
+//! - [`Body`]: Transaction-specific fields with interpretation based on [`Tag`]
+//! - [`Tag`]: Discriminates between Payment, StakeDelegation, FeeTransfer, and
+//!   Coinbase
+//!
+//! # Field Interpretation
+//!
+//! Fields in [`Body`] are interpreted differently based on the [`Tag`] value:
+//!
+//! - **Payment**: `source_pk` and `receiver_pk` are sender and recipient
+//! - **Stake Delegation**: `receiver_pk` is the new delegate
+//! - **Fee Transfer**: `receiver_pk` is the fee recipient, `amount` is the fee
+//! - **Coinbase**: `receiver_pk` is the block producer, `amount` is the reward
+//!
+//! # Receipt Chain Hash
+//!
+//! This module also provides functions for computing receipt chain hashes,
+//! which commit to the sequence of transactions applied to an account:
+//!
+//! - [`cons_signed_command_payload`]: Updates receipt chain hash for signed
+//!   commands
+//! - [`cons_zkapp_command_commitment`]: Updates receipt chain hash for zkApp
+//!   commands
+//! - [`checked_cons_signed_command_payload`]: Checked version for use in
+//!   circuits
+//!
+//! # Timing and Vesting
+//!
+//! The module implements timing validation for timed (vested) accounts:
+//!
+//! - [`validate_timing`]: Ensures timing constraints are met for an account
+//!   deduction
+//! - [`validate_nonces`]: Validates transaction nonce matches account nonce
+//! - [`account_check_timing`]: Checks timing status for an account
+//! - [`timing_error_to_user_command_status`]: Converts timing errors to
+//!   transaction failures
+//!
+//! Timed accounts have a minimum balance that decreases over time according to
+//! a vesting schedule. When the minimum balance reaches zero, the account
+//! automatically becomes untimed.
+//!
+//! # Account Helpers
+//!
+//! Utility functions for account operations:
+//!
+//! - [`get_with_location`]: Retrieves an account or creates a placeholder for
+//!   new accounts
+//! - [`ExistingOrNew`]: Indicates whether an account exists or is newly created
+//! - [`add_amount`]/[`sub_amount`]: Safe balance arithmetic with
+//!   overflow/underflow checking
+
 use super::{
     signed_command::{
         self, PaymentPayload, SignedCommand, SignedCommandPayload, StakeDelegationPayload,
