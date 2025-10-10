@@ -1,3 +1,44 @@
+//! Two-phase transaction application
+//!
+//! This module implements the two-phase transaction application model used in Mina.
+//! This approach enables efficient proof generation, particularly for zkApp commands.
+//!
+//! # Application Phases
+//!
+//! ## First Pass
+//!
+//! The first pass ([`apply_transaction_first_pass`]) performs:
+//! - Transaction validation (nonces, balances, permissions)
+//! - Fee payment
+//! - For zkApp commands: applies fee payer and begins account update processing
+//! - For other transactions: completes the entire application
+//! - Records the previous ledger hash
+//!
+//! ## Second Pass
+//!
+//! The second pass ([`apply_transaction_second_pass`]) performs:
+//! - For zkApp commands: completes account update processing and emits events/actions
+//! - For other transactions: simply packages the results from first pass
+//!
+//! # Key Types
+//!
+//! - [`TransactionPartiallyApplied`]: Intermediate state between passes
+//! - [`ZkappCommandPartiallyApplied`]: zkApp-specific intermediate state
+//! - [`FullyApplied`]: Wrapper for non-zkApp transactions that complete in first pass
+//!
+//! # Fee Transfers and Coinbase
+//!
+//! Fee transfers and coinbase transactions also use helper functions in this module:
+//! - [`apply_fee_transfer`]: Distributes fees to block producers
+//! - [`apply_coinbase`]: Handles block rewards and optional fee transfers
+//! - [`process_fee_transfer`]: Core logic for fee distribution with permission checks
+//!
+//! Both transactions have structured failure status to indicate which part failed:
+//! - Single transfer: `[[failure]]`
+//! - Two transfers both fail: `[[failure1]; [failure2]]`
+//! - First succeeds, second fails: `[[]; [failure2]]`
+//! - First fails, second succeeds: `[[failure1]; []]`
+
 use super::{
     transaction_applied::{CoinbaseApplied, FeeTransferApplied},
     *,
@@ -46,6 +87,106 @@ where
     }
 }
 
+/// Applies the first pass of transaction application.
+///
+/// This function performs the initial phase of transaction processing, which includes
+/// validation, fee payment, and partial application. The behavior differs based on
+/// transaction type:
+///
+/// # Transaction Type Handling
+///
+/// - **Signed Commands** (payments, stake delegations): Fully applied in the first pass.
+///   The result is wrapped in [`FullyApplied`] since no second pass work is needed.
+///
+/// - **zkApp Commands**: Partially applied. The first pass:
+///   - Validates the zkApp command structure and permissions
+///   - Applies the fee payer account update
+///   - Begins processing the first phase of account updates
+///   - Records intermediate state in [`ZkappCommandPartiallyApplied`]
+///
+/// - **Fee Transfers**: Fully applied in the first pass, distributing fees to block
+///   producers according to the protocol rules.
+///
+/// - **Coinbase**: Fully applied in the first pass, crediting block rewards and any
+///   associated fee transfers to the designated accounts.
+///
+/// # Ledger State Changes
+///
+/// The ledger is mutated during the first pass as follows:
+///
+/// - **Signed Commands**:
+///   - Fee payer balance decreased by fee amount
+///   - Fee payer nonce incremented
+///   - Fee payer receipt chain hash updated
+///   - Fee payer timing updated based on vesting schedule
+///   - For payments: sender balance decreased, receiver balance increased
+///   - For payments: new account created if receiver doesn't exist
+///   - For stake delegations: delegate field updated
+///
+/// - **zkApp Commands**:
+///   - Fee payer account fully updated (balance, nonce, receipt chain, timing)
+///   - First phase account updates applied to ledger
+///   - New accounts may be created
+///
+/// - **Fee Transfers**:
+///   - Receiver account balances increased by fee amounts
+///   - Timing updated when balances increase
+///   - New accounts created if receivers don't exist
+///
+/// - **Coinbase**:
+///   - Block producer balance increased by reward amount
+///   - Fee transfer recipient balance increased (if applicable)
+///   - Timing updated when balances increase
+///   - New accounts created if recipients don't exist
+///
+/// # Parameters
+///
+/// - `constraint_constants`: Protocol constants including account creation fees and limits
+/// - `global_slot`: Current global slot number for timing validation
+/// - `txn_state_view`: View of the protocol state for validating transaction preconditions
+/// - `ledger`: Mutable reference to the ledger being updated
+/// - `transaction`: The transaction to apply
+///
+/// # Returns
+///
+/// Returns a [`TransactionPartiallyApplied`] containing either:
+/// - [`FullyApplied`] result for transactions that complete in first pass
+/// - [`ZkappCommandPartiallyApplied`] for zkApp commands needing second pass
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - Transaction validation fails (invalid nonce, insufficient balance, etc.)
+/// - Fee payment fails
+/// - Account permissions are insufficient
+/// - Timing constraints are violated
+///
+/// ## Error Side Effects
+///
+/// When an error occurs, the ledger state depends on where the error occurred:
+///
+/// - **Errors during fee payment** (invalid nonce, nonexistent fee payer): Ledger
+///   remains completely unchanged.
+///
+/// - **Errors after fee payment** (insufficient balance for payment, permission
+///   errors): The fee has already been charged to ensure network compensation. The
+///   fee payer's account will have: balance decreased by fee, nonce incremented,
+///   receipt chain hash updated. However, the actual payment/operation is NOT
+///   performed.
+///
+/// # Tests
+///
+/// Test coverage (in `ledger/tests/test_transaction_logic_first_pass.rs`):
+///
+/// - [`test_apply_payment_success`]: successful payment with ledger state verification
+/// - [`test_apply_payment_insufficient_balance`]: payment exceeding sender balance
+/// - [`test_apply_payment_invalid_nonce`]: payment with incorrect nonce
+/// - [`test_apply_payment_nonexistent_fee_payer`]: payment from nonexistent account
+///
+/// [`test_apply_payment_success`]: ../../tests/test_transaction_logic_first_pass.rs
+/// [`test_apply_payment_insufficient_balance`]: ../../tests/test_transaction_logic_first_pass.rs
+/// [`test_apply_payment_invalid_nonce`]: ../../tests/test_transaction_logic_first_pass.rs
+/// [`test_apply_payment_nonexistent_fee_payer`]: ../../tests/test_transaction_logic_first_pass.rs
 pub fn apply_transaction_first_pass<L>(
     constraint_constants: &ConstraintConstants,
     global_slot: Slot,
@@ -108,6 +249,71 @@ where
     }
 }
 
+/// Completes the second pass of transaction application.
+///
+/// This function finalizes transaction processing by completing any remaining work
+/// from the first pass. The behavior differs based on transaction type:
+///
+/// # Transaction Type Handling
+///
+/// - **Signed Commands**: No additional work needed. Simply unwraps the [`FullyApplied`]
+///   result from the first pass and packages it into a [`TransactionApplied`].
+///
+/// - **zkApp Commands**: Completes the second phase of application:
+///   - Processes the second phase of account updates
+///   - Emits events and actions from the zkApp execution
+///   - Updates the zkApp's on-chain state
+///   - Validates all preconditions are satisfied
+///
+/// - **Fee Transfers**: No additional work needed. Simply packages the first pass result.
+///
+/// - **Coinbase**: No additional work needed. Simply packages the first pass result.
+///
+/// # Ledger State Changes
+///
+/// The ledger is mutated during the second pass only for zkApp commands:
+///
+/// - **Signed Commands**: No ledger changes (all modifications completed in first pass)
+///
+/// - **zkApp Commands**:
+///   - Second phase account updates applied
+///   - Account balances modified based on zkApp logic
+///   - Account app state fields updated
+///   - Account permissions may be modified
+///   - Action state and event sequence numbers updated
+///   - New accounts may be created
+///
+/// - **Fee Transfers**: No ledger changes (all modifications completed in first pass)
+///
+/// - **Coinbase**: No ledger changes (all modifications completed in first pass)
+///
+/// # Parameters
+///
+/// - `constraint_constants`: Protocol constants including account creation fees and limits
+/// - `ledger`: Mutable reference to the ledger being updated
+/// - `partial_transaction`: The partially applied transaction from the first pass
+///
+/// # Returns
+///
+/// Returns a [`TransactionApplied`] containing the complete application result with:
+/// - Previous ledger hash (recorded during first pass)
+/// - Full transaction status (Applied or Failed with specific error codes)
+/// - Account updates and new account information
+/// - Events and actions (for zkApp commands)
+///
+/// # Errors
+///
+/// Returns an error if:
+/// - Second phase zkApp account updates fail
+/// - zkApp preconditions fail during second pass
+/// - Account permissions are insufficient
+///
+/// # Notes
+///
+/// For non-zkApp transactions, this function performs minimal work since the first
+/// pass already completed the application. The two-phase model exists primarily to
+/// enable efficient zkApp proof generation where different account updates can be
+/// processed in separate circuit phases.
 pub fn apply_transaction_second_pass<L>(
     constraint_constants: &ConstraintConstants,
     ledger: &mut L,
