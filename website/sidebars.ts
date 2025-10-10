@@ -83,6 +83,8 @@ const sidebars: SidebarsConfig = {
         'developers/architecture',
         'developers/circuits',
         'developers/ledger-crate',
+        'developers/transactions',
+        'developers/zkapps',
       ],
     },
     {
@@ -137,7 +139,8 @@ const sidebars: SidebarsConfig = {
       type: 'category',
       label: 'Documentation',
       items: [
-        'developers/documentation-guidelines',
+        'developers/referencing-code-in-documentation',
+        'developers/ocaml-reference-tracking',
       ],
     },
     {

@@ -1,0 +1,244 @@
+---
+sidebar_position: 6
+title: zkApps and zkApp Commands
+description:
+  Understanding zkApps and zkApp commands in the Mina protocol implementation
+slug: /developers/zkapps
+---
+
+# zkApps and zkApp Commands
+
+## Overview
+
+zkApps (zero-knowledge applications) are programmable smart contracts on the
+Mina blockchain that leverage zero-knowledge proofs for private, verifiable
+computation. A **zkApp command** is the transaction type used to interact with
+zkApps, containing account updates that can be authorized by signatures or
+zero-knowledge proofs.
+
+This document provides an entry point for developers joining the team to
+understand how zkApps are implemented in the Rust codebase.
+
+## What is a zkApp?
+
+A zkApp is a smart contract on Mina that:
+
+- Stores state in on-chain accounts (8 field elements of app state)
+- Executes logic verified by zero-knowledge proofs
+- Can interact with multiple accounts atomically
+- Supports custom permissions and verification keys
+
+Unlike traditional smart contracts that execute on-chain, zkApp logic executes
+off-chain and produces a zero-knowledge proof that the computation was performed
+correctly. Only the proof is verified on-chain, keeping the blockchain
+lightweight.
+
+## What is a zkApp Command?
+
+A **zkApp command** (`ZkAppCommand`) is a transaction type that applies updates
+to multiple accounts atomically. It consists of:
+
+### Structure
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L3588-L3592 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L3588-L3592
+```
+
+### Components
+
+#### 1. Fee Payer
+
+The account that pays for the transaction. It must be authorized with a
+signature and its nonce must increase.
+
+#### 2. Account Updates
+
+A forest (list of trees) of account updates, where each `AccountUpdate`:
+
+- Specifies an account to modify (identified by public key and token)
+- Declares preconditions that must be satisfied
+- Specifies state changes (balance, app state, permissions, etc.)
+- Provides authorization (signature, proof, or none)
+- Can make nested calls to other accounts
+
+**Key type:**
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L2758-L2761 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L2758-L2761
+```
+
+#### 3. Memo
+
+Optional data field (up to 32 bytes) for auxiliary information.
+
+## Authorization Methods
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L2645-L2659 -->
+
+```rust reference
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L2645-L2659
+```
+
+## Transaction Commitments and Signing
+
+zkApp commands use transaction commitments for signing:
+
+1. **Partial commitment** - Hash of account updates (for account update
+   signatures)
+2. **Full commitment** - Includes memo and fee payer (for fee payer signature)
+
+Account updates can specify whether to use the full commitment via the
+`use_full_commitment` flag.
+
+### Commitment Computation
+
+<!-- CODE_REFERENCE: ledger/src/generators/zkapp_command_builder.rs#L11-L22 -->
+
+```rust reference title="ledger/src/generators/zkapp_command_builder.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/generators/zkapp_command_builder.rs#L11-L22
+```
+
+### Signing Implementation
+
+The signing logic replaces dummy authorizations with valid signatures/proofs:
+
+<!-- CODE_REFERENCE: ledger/src/generators/zkapp_command_builder.rs#L28-L44 -->
+
+```rust reference title="ledger/src/generators/zkapp_command_builder.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/generators/zkapp_command_builder.rs#L28-L44
+```
+
+<!-- prettier-ignore-start -->
+:::note
+
+The actual cryptographic signature generation is currently a TODO in the
+codebase (returns `Signature::dummy()`).
+
+:::
+<!-- prettier-ignore-end -->
+
+## Application Logic
+
+The core zkApp business logic is implemented in:
+
+- **[`ledger/src/zkapps/zkapp_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/zkapp_logic.rs)** -
+  Main application logic for processing zkApp commands
+- **[`ledger/src/zkapps/non_snark.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/non_snark.rs)** -
+  Non-SNARK verification paths
+- **[`ledger/src/zkapps/snark.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/snark.rs)** -
+  SNARK-based verification
+- **[`ledger/src/zkapps/checks.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/checks.rs)** -
+  Precondition and permission checks
+
+## Processing Pipeline
+
+When a zkApp command is applied to the ledger:
+
+1. **Validation** - Check transaction is well-formed and within cost limits
+2. **Fee payer verification** - Verify fee payer signature and sufficient
+   balance
+3. **Account update processing** - For each account update:
+   - Verify authorization (signature or proof)
+   - Check preconditions (account state, protocol state)
+   - Check permissions
+   - Apply state changes atomically
+4. **Failure handling** - If any step fails, the entire command fails (except
+   fee is still deducted)
+
+**Key entry point:**
+[`ledger/src/scan_state/transaction_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs)
+(search for `apply_zkapp_command`)
+
+## Cost and Weight Limits
+
+zkApp commands have cost limits to prevent resource exhaustion:
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L3668-L3684 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L3668-L3684
+```
+
+The cost considers:
+
+- Number of proof verifications
+- Number of signature verifications
+- Whether signatures verify single or paired account updates
+
+## Testing and Generators
+
+For testing, the codebase includes zkApp command generators:
+
+- **[`ledger/src/generators/zkapp_command.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/generators/zkapp_command.rs)** -
+  Generates random zkApp commands for testing
+- **[`ledger/src/generators/zkapp_command_builder.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/generators/zkapp_command_builder.rs)** -
+  Utility functions for building and signing zkApp commands
+
+## Key Files Reference
+
+### Core Types
+
+- [`ledger/src/scan_state/transaction_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs) -
+  `ZkAppCommand`, `AccountUpdate`, `Control`, `FeePayer`
+
+### Business Logic
+
+- [`ledger/src/zkapps/zkapp_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/zkapp_logic.rs) -
+  Main zkApp processing logic
+- [`ledger/src/zkapps/checks.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/checks.rs) -
+  Precondition and permission validation
+- [`ledger/src/zkapps/snark.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/snark.rs) -
+  SNARK verification implementation
+- [`ledger/src/zkapps/non_snark.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/non_snark.rs) -
+  Non-SNARK paths
+
+### Signing and Building
+
+- [`ledger/src/generators/zkapp_command_builder.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/generators/zkapp_command_builder.rs) -
+  Transaction signing and authorization
+
+### Proofs
+
+- [`ledger/src/proofs/zkapp.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/proofs/zkapp.rs) -
+  zkApp proof verification
+
+## Transaction Failures
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic.rs#L59-L154 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L59-L154
+```
+
+## Comparison to Other Transaction Types
+
+Mina has three transaction types:
+
+1. **[Signed Commands](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L849)** -
+   Simple payments and delegation changes, authorized by signature
+2. **[zkApp Commands](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L3588)** -
+   Complex multi-account updates with proof or signature authorization
+3. **[Coinbase](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs#L500)** -
+   Block rewards (internal, not user-submitted)
+
+zkApp commands are more powerful but have higher complexity and cost limits.
+
+## Getting Started
+
+To start working with zkApps in the codebase:
+
+1. Read the core types in
+   [`ledger/src/scan_state/transaction_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic.rs)
+   (search for `ZkAppCommand`)
+2. Explore the application logic in
+   [`ledger/src/zkapps/zkapp_logic.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/zkapps/zkapp_logic.rs)
+3. Review test generators in
+   [`ledger/src/generators/`](https://github.com/o1-labs/mina-rust/tree/develop/ledger/src/generators)
+4. Study how zkApp commands flow through the transaction pool and staged ledger
+
+For questions, consult the inline documentation in the source files or refer to
+the OCaml implementation for semantic clarity.

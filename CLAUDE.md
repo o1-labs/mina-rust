@@ -162,6 +162,40 @@ The website is available at http://localhost:3000 when running locally.
 The website supports versioning and will be automatically deployed when commits
 are made to `develop` or when tags are created.
 
+### OCaml Reference Tracking
+
+The Rust codebase maintains references to the corresponding OCaml implementation
+to track correspondence and detect when updates are needed.
+
+**Comment format:**
+
+```rust
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-113
+/// Commit: 55582d249cdb225f722dbbb3b1420ce7570d501f
+/// Last verified: 2025-10-08
+pub enum TransactionFailure {
+    // ...
+}
+```
+
+**Validation:**
+
+```bash
+# Check all OCaml references
+./.github/scripts/check-ocaml-refs.sh
+
+# Update stale commit hashes
+./.github/scripts/check-ocaml-refs.sh --update
+
+# Check against specific branch
+./.github/scripts/check-ocaml-refs.sh --branch develop
+```
+
+The validation script verifies that referenced OCaml files exist, line ranges
+are valid, code at the referenced commit matches the current branch, and tracks
+commit staleness. A GitHub Actions workflow runs weekly to automatically update
+references and create PRs.
+
 ## Additional Resources
 
 - `docs/handover/` - Comprehensive architecture documentation
@@ -238,10 +272,10 @@ files.
 
 **Capitalization in headings and bullet points:**
 
-- Use lowercase for section headings (e.g., "Test design", "Resource
-  management")
-- Use lowercase for bullet point labels (e.g., "**Connection policies**",
-  "**State inspection**")
+- Capitalize the first letter of section headings (e.g., "Test design",
+  "Resource management")
+- Use lowercase for bullet point labels (e.g., "**connection policies**",
+  "**state inspection**")
 - Maintain proper capitalization for proper nouns and technical terms
 - Apply this style consistently across all documentation files
 

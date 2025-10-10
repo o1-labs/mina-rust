@@ -12,26 +12,42 @@ use crate::{
 
 use super::{zkapp_command::AccessedOrNot, Memo, TransactionStatus};
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.ml#L75>
+/// Common fields shared by all signed command payloads.
+///
+/// OCaml reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.ml#L75>
 #[derive(Debug, Clone, PartialEq)]
 pub struct Common {
+    /// Fee paid to the block producer
     pub fee: Fee,
+    /// Public key paying the fee
     pub fee_payer_pk: CompressedPubKey,
+    /// Account nonce for replay protection
     pub nonce: Nonce,
+    /// Slot after which the transaction expires
     pub valid_until: Slot,
+    /// Optional memo field (34 bytes)
     pub memo: Memo,
 }
 
+/// Payment payload for transferring MINA tokens.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PaymentPayload {
+    /// Recipient's public key
     pub receiver_pk: CompressedPubKey,
+    /// Amount to transfer
     pub amount: Amount,
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/mina_base/stake_delegation.ml#L11>
+/// Stake delegation payload for delegating stake to another account.
+///
+/// OCaml reference: <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/mina_base/stake_delegation.ml#L11>
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StakeDelegationPayload {
-    SetDelegate { new_delegate: CompressedPubKey },
+    /// Delegate stake to a new delegate
+    SetDelegate {
+        /// Public key of the new delegate
+        new_delegate: CompressedPubKey,
+    },
 }
 
 impl StakeDelegationPayload {
@@ -48,17 +64,25 @@ impl StakeDelegationPayload {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.mli#L24>
+/// The body of a signed command, which can be either a payment or stake delegation.
+///
+/// OCaml reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.mli#L24>
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Body {
+    /// Transfer MINA tokens from fee payer to receiver
     Payment(PaymentPayload),
+    /// Delegate fee payer's stake to another account
     StakeDelegation(StakeDelegationPayload),
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.mli#L165>
+/// Signed command payload containing common fields and the transaction body.
+///
+/// OCaml reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/signed_command_payload.mli#L165>
 #[derive(Debug, Clone, PartialEq)]
 pub struct SignedCommandPayload {
+    /// Common fields (fee, fee payer, nonce, valid_until, memo)
     pub common: Common,
+    /// Transaction body (payment or stake delegation)
     pub body: Body,
 }
 
@@ -102,12 +126,20 @@ mod weight {
     }
 }
 
+/// A signed command is a transaction that transfers value or delegates stake.
+///
+/// Signed commands are authorized by a cryptographic signature and consist of
+/// a payload (containing the transaction details) and the signature proving
+/// authorization.
 #[derive(Debug, Clone, PartialEq, serde::Serialize, serde::Deserialize)]
 #[serde(into = "MinaBaseSignedCommandStableV2")]
 #[serde(try_from = "MinaBaseSignedCommandStableV2")]
 pub struct SignedCommand {
+    /// The transaction payload (common fields and body)
     pub payload: SignedCommandPayload,
+    /// The public key that signed the transaction
     pub signer: CompressedPubKey, // TODO: This should be a `mina_signer::PubKey`
+    /// The cryptographic signature
     pub signature: Signature,
 }
 

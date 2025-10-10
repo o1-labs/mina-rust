@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
 - **Ledger/ZkAppCommand**: show how to build a ZkAppCommand from scratch, with
   dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
+- **CI/Documentation**: add a script to check the references to the OCaml code
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525)).
 
 ### Changed
 
@@ -60,6 +62,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
 - **scan_state**: refactorize `transaction_logic.rs` in smaller modules
   ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
+- **ledger/scan_state/transaction_logic**: update OCaml references in `mod.rs`
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525))
+- **ledger/scan_state/transaction_logic**: move submodule `for_tests` into a
+  new file `zkapp_command/for_tests.rs`
+  ([#1527](https://github.com/o1-labs/mina-rust/pull/1527)).
+- **Ledger/scan-state/transaction-logic**: split
+  `ledger::scan_state::transaction_logic::zkapp_command` into submodules in a
+  new directory `zkapp_command`
+  ([#1528](https://github.com/o1-labs/mina-rust/pull/1528/))
 
 ## v0.17.0
 

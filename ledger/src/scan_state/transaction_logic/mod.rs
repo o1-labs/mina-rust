@@ -60,7 +60,9 @@ pub use transaction_union_payload::{
     ExistingOrNew, Tag, TimingValidation, TransactionUnion, TransactionUnionPayload,
 };
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L9>
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-51
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-08
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq)]
 pub enum TransactionFailure {
     Predicate,
@@ -176,7 +178,9 @@ impl Display for TransactionFailure {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/transaction_status.ml#L452>
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:452-454
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-08
 #[derive(SerdeYojsonEnum, Debug, Clone, PartialEq, Eq)]
 pub enum TransactionStatus {
     Applied,
@@ -192,7 +196,9 @@ impl TransactionStatus {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/with_status.ml#L6>
+/// OCaml reference: src/lib/mina_base/with_status.ml L:6-10
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-08
 #[derive(serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq)]
 pub struct WithStatus<T> {
     pub data: T,
@@ -259,7 +265,9 @@ where
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_transfer.ml#L19>
+/// OCaml reference: src/lib/mina_base/fee_transfer.ml L:76-80
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq)]
 pub struct SingleFeeTransfer {
     pub receiver_pk: CompressedPubKey,
@@ -284,7 +292,9 @@ impl SingleFeeTransfer {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/fee_transfer.ml#L68>
+/// OCaml reference: src/lib/mina_base/fee_transfer.ml L:68-69
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq)]
 pub struct FeeTransfer(pub(super) OneOrTwo<SingleFeeTransfer>);
 
@@ -312,7 +322,9 @@ impl FeeTransfer {
         })
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/e5183ca1dde1c085b4c5d37d1d9987e24c294c32/src/lib/mina_base/fee_transfer.ml#L109>
+    /// OCaml reference: src/lib/mina_base/fee_transfer.ml L:110-114
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn fee_excess(&self) -> Result<FeeExcess, String> {
         let one_or_two = self.0.map(|SingleFeeTransfer { fee, fee_token, .. }| {
             (fee_token.clone(), Signed::<Fee>::of_unsigned(*fee).negate())
@@ -320,7 +332,9 @@ impl FeeTransfer {
         FeeExcess::of_one_or_two(one_or_two)
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/fee_transfer.ml#L84>
+    /// OCaml reference: src/lib/mina_base/fee_transfer.ml L:85-97
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn of_singles(singles: OneOrTwo<SingleFeeTransfer>) -> Result<Self, String> {
         match singles {
             OneOrTwo::One(a) => Ok(Self(OneOrTwo::One(a))),
@@ -359,7 +373,9 @@ impl CoinbaseFeeTransfer {
     }
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_base/coinbase.ml#L17>
+/// OCaml reference: src/lib/mina_base/coinbase.ml L:17-21
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq)]
 pub struct Coinbase {
     pub receiver: CompressedPubKey,
@@ -401,7 +417,9 @@ impl Coinbase {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/f6756507ff7380a691516ce02a3cf7d9d32915ae/src/lib/mina_base/coinbase.ml#L76>
+    /// OCaml reference: src/lib/mina_base/coinbase.ml L:92-100
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     fn expected_supply_increase(&self) -> Result<Amount, String> {
         let Self {
             amount,
@@ -423,12 +441,16 @@ impl Coinbase {
         self.expected_supply_increase().map(|_| FeeExcess::empty())
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/coinbase.ml#L39>
+    /// OCaml reference: src/lib/mina_base/coinbase.ml L:39-39
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn receiver(&self) -> AccountId {
         AccountId::new(self.receiver.clone(), TokenId::default())
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/coinbase.ml#L51>
+    /// OCaml reference: src/lib/mina_base/coinbase.ml L:51-65
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn account_access_statuses(
         &self,
         status: &TransactionStatus,
@@ -449,7 +471,9 @@ impl Coinbase {
         ids
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/coinbase.ml#L61>
+    /// OCaml reference: src/lib/mina_base/coinbase.ml L:67-69
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn accounts_referenced(&self) -> Vec<AccountId> {
         self.account_access_statuses(&TransactionStatus::Applied)
             .into_iter()
@@ -552,7 +576,9 @@ impl Memo {
         self.0.as_slice()
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/3a78f0e0c1343d14e2729c8b00205baa2ec70c93/src/lib/mina_base/signed_command_memo.ml#L151>
+    /// OCaml reference: src/lib/mina_base/signed_command_memo.ml L:156-156
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn dummy() -> Self {
         // TODO
         Self([0; 34])
@@ -579,7 +605,9 @@ impl Memo {
         Self(s.into_bytes().try_into().unwrap())
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/d7dad23d8ea2052f515f5d55d187788fe0701c7f/src/lib/mina_base/signed_command_memo.ml#L103>
+    /// OCaml reference: src/lib/mina_base/signed_command_memo.ml L:117-120
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     fn create_by_digesting_string_exn(s: &str) -> Self {
         if s.len() > Self::MAX_DIGESTIBLE_STRING_LENGTH {
             panic!("Too_long_digestible_string");
@@ -600,7 +628,9 @@ impl Memo {
         Self(memo)
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/d7dad23d8ea2052f515f5d55d187788fe0701c7f/src/lib/mina_base/signed_command_memo.ml#L193>
+    /// OCaml reference: src/lib/mina_base/signed_command_memo.ml L:205-207
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn gen() -> Self {
         use rand::distributions::{Alphanumeric, DistString};
         let random_string = Alphanumeric.sample_string(&mut rand::thread_rng(), 50);
@@ -661,7 +691,9 @@ impl binprot::BinProtRead for UserCommand {
 }
 
 impl UserCommand {
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/user_command.ml#L239>
+    /// OCaml reference: src/lib/mina_base/user_command.ml L:239
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn account_access_statuses(
         &self,
         status: &TransactionStatus,
@@ -672,7 +704,9 @@ impl UserCommand {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/2ff0292b637684ce0372e7b8e23ec85404dc5091/src/lib/mina_base/user_command.ml#L247>
+    /// OCaml reference: src/lib/mina_base/user_command.ml L:306-307
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn accounts_referenced(&self) -> Vec<AccountId> {
         self.account_access_statuses(&TransactionStatus::Applied)
             .into_iter()
@@ -708,7 +742,9 @@ impl UserCommand {
         self.applicable_at_nonce().succ()
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/05c2f73d0f6e4f1341286843814ce02dcb3919e0/src/lib/mina_base/user_command.ml#L192>
+    /// OCaml reference: src/lib/mina_base/user_command.ml L:283-287
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn fee(&self) -> Fee {
         match self {
             UserCommand::SignedCommand(cmd) => cmd.fee(),
@@ -742,7 +778,9 @@ impl UserCommand {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/mina_base/user_command.ml#L339>
+    /// OCaml reference: src/lib/mina_base/user_command.ml L:388-401
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn to_valid_unsafe(self) -> valid::UserCommand {
         match self {
             UserCommand::SignedCommand(cmd) => valid::UserCommand::SignedCommand(cmd),
@@ -754,7 +792,9 @@ impl UserCommand {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/3fe924c80a4d01f418b69f27398f5f93eb652514/src/lib/mina_base/user_command.ml#L162>
+    /// OCaml reference: src/lib/mina_base/user_command.ml L:220-226
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn to_verifiable<F>(
         &self,
         status: &TransactionStatus,
@@ -977,7 +1017,9 @@ impl Transaction {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/transaction/transaction.ml#L98>
+    /// OCaml reference: src/lib/transaction/transaction.ml L:98-110
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn public_keys(&self) -> Vec<CompressedPubKey> {
         use Transaction::*;
         use UserCommand::*;
@@ -992,7 +1034,9 @@ impl Transaction {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/transaction/transaction.ml#L112>
+    /// OCaml reference: src/lib/transaction/transaction.ml L:112-124
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn account_access_statuses(
         &self,
         status: &TransactionStatus,
@@ -1011,7 +1055,9 @@ impl Transaction {
         }
     }
 
-    /// <https://github.com/MinaProtocol/mina/blob/436023ba41c43a50458a551b7ef7a9ae61670b25/src/lib/transaction/transaction.ml#L125>
+    /// OCaml reference: src/lib/transaction/transaction.ml L:126-128
+    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// Last verified: 2025-10-10
     pub fn accounts_referenced(&self) -> Vec<AccountId> {
         self.account_access_statuses(&TransactionStatus::Applied)
             .into_iter()
@@ -1031,285 +1077,4 @@ impl From<&Transaction> for MinaTransactionTransactionStableV2 {
 }
 
 #[cfg(any(test, feature = "fuzzing"))]
-pub mod for_tests {
-    use mina_signer::Keypair;
-    use rand::Rng;
-
-    use crate::{
-        gen_keypair, scan_state::parallel_scan::ceil_log2, AuthRequired, Mask, Permissions,
-        VerificationKey, ZkAppAccount, TXN_VERSION_CURRENT,
-    };
-
-    use super::*;
-
-    const MIN_INIT_BALANCE: u64 = 8000000000;
-    const MAX_INIT_BALANCE: u64 = 8000000000000;
-    const NUM_ACCOUNTS: u64 = 10;
-    const NUM_TRANSACTIONS: u64 = 10;
-    const DEPTH: u64 = ceil_log2(NUM_ACCOUNTS + NUM_TRANSACTIONS);
-
-    /// Use this for tests only
-    /// Hashmaps are not deterministic
-    #[derive(Debug, PartialEq, Eq)]
-    pub struct HashableKeypair(pub Keypair);
-
-    impl std::hash::Hash for HashableKeypair {
-        fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-            let compressed = self.0.public.into_compressed();
-            HashableCompressedPubKey(compressed).hash(state);
-        }
-    }
-
-    /// Use this for tests only
-    /// Hashmaps are not deterministic
-    #[derive(Clone, Debug, Eq, derive_more::From)]
-    pub struct HashableCompressedPubKey(pub CompressedPubKey);
-
-    impl PartialEq for HashableCompressedPubKey {
-        fn eq(&self, other: &Self) -> bool {
-            self.0 == other.0
-        }
-    }
-
-    impl std::hash::Hash for HashableCompressedPubKey {
-        fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-            self.0.x.hash(state);
-            self.0.is_odd.hash(state);
-        }
-    }
-
-    impl PartialOrd for HashableCompressedPubKey {
-        fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
-            match self.0.x.partial_cmp(&other.0.x) {
-                Some(core::cmp::Ordering::Equal) => {}
-                ord => return ord,
-            };
-            self.0.is_odd.partial_cmp(&other.0.is_odd)
-        }
-    }
-
-    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/transaction_logic/mina_transaction_logic.ml#L2194>
-    #[derive(Debug)]
-    pub struct InitLedger(pub Vec<(Keypair, u64)>);
-
-    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/transaction_logic/mina_transaction_logic.ml#L2230>
-    #[derive(Debug)]
-    pub struct TransactionSpec {
-        pub fee: Fee,
-        pub sender: (Keypair, Nonce),
-        pub receiver: CompressedPubKey,
-        pub amount: Amount,
-    }
-
-    /// <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/transaction_logic/mina_transaction_logic.ml#L2283>
-    #[derive(Debug)]
-    pub struct TestSpec {
-        pub init_ledger: InitLedger,
-        pub specs: Vec<TransactionSpec>,
-    }
-
-    impl InitLedger {
-        pub fn init(&self, zkapp: Option<bool>, ledger: &mut impl LedgerIntf) {
-            let zkapp = zkapp.unwrap_or(true);
-
-            self.0.iter().for_each(|(kp, amount)| {
-                let (_tag, mut account, loc) = ledger
-                    .get_or_create(&AccountId::new(
-                        kp.public.into_compressed(),
-                        TokenId::default(),
-                    ))
-                    .unwrap();
-
-                use AuthRequired::Either;
-                let permissions = Permissions {
-                    edit_state: Either,
-                    access: AuthRequired::None,
-                    send: Either,
-                    receive: AuthRequired::None,
-                    set_delegate: Either,
-                    set_permissions: Either,
-                    set_verification_key: crate::SetVerificationKey {
-                        auth: Either,
-                        txn_version: TXN_VERSION_CURRENT,
-                    },
-                    set_zkapp_uri: Either,
-                    edit_action_state: Either,
-                    set_token_symbol: Either,
-                    increment_nonce: Either,
-                    set_voting_for: Either,
-                    set_timing: Either,
-                };
-
-                let zkapp = if zkapp {
-                    let zkapp = ZkAppAccount {
-                        verification_key: Some(VerificationKeyWire::new(
-                            crate::dummy::trivial_verification_key(),
-                        )),
-                        ..Default::default()
-                    };
-
-                    Some(zkapp.into())
-                } else {
-                    None
-                };
-
-                account.balance = Balance::from_u64(*amount);
-                account.permissions = permissions;
-                account.zkapp = zkapp;
-
-                ledger.set(&loc, account);
-            });
-        }
-
-        pub fn gen() -> Self {
-            let mut rng = rand::thread_rng();
-
-            let mut tbl = HashSet::with_capacity(256);
-
-            let init = (0..NUM_ACCOUNTS)
-                .map(|_| {
-                    let kp = loop {
-                        let keypair = gen_keypair();
-                        let compressed = keypair.public.into_compressed();
-                        if !tbl.contains(&HashableCompressedPubKey(compressed)) {
-                            break keypair;
-                        }
-                    };
-
-                    let amount = rng.gen_range(MIN_INIT_BALANCE..MAX_INIT_BALANCE);
-                    tbl.insert(HashableCompressedPubKey(kp.public.into_compressed()));
-                    (kp, amount)
-                })
-                .collect();
-
-            Self(init)
-        }
-    }
-
-    impl TransactionSpec {
-        pub fn gen(init_ledger: &InitLedger, nonces: &mut HashMap<HashableKeypair, Nonce>) -> Self {
-            let mut rng = rand::thread_rng();
-
-            let pk = |(kp, _): (Keypair, u64)| kp.public.into_compressed();
-
-            let receiver_is_new: bool = rng.gen();
-
-            let mut gen_index = || rng.gen_range(0..init_ledger.0.len().checked_sub(1).unwrap());
-
-            let receiver_index = if receiver_is_new {
-                None
-            } else {
-                Some(gen_index())
-            };
-
-            let receiver = match receiver_index {
-                None => gen_keypair().public.into_compressed(),
-                Some(i) => pk(init_ledger.0[i].clone()),
-            };
-
-            let sender = {
-                let i = match receiver_index {
-                    None => gen_index(),
-                    Some(j) => loop {
-                        let i = gen_index();
-                        if i != j {
-                            break i;
-                        }
-                    },
-                };
-                init_ledger.0[i].0.clone()
-            };
-
-            let nonce = nonces
-                .get(&HashableKeypair(sender.clone()))
-                .cloned()
-                .unwrap();
-
-            let amount = Amount::from_u64(rng.gen_range(1_000_000..100_000_000));
-            let fee = Fee::from_u64(rng.gen_range(1_000_000..100_000_000));
-
-            let old = nonces.get_mut(&HashableKeypair(sender.clone())).unwrap();
-            *old = old.incr();
-
-            Self {
-                fee,
-                sender: (sender, nonce),
-                receiver,
-                amount,
-            }
-        }
-    }
-
-    impl TestSpec {
-        fn mk_gen(num_transactions: Option<u64>) -> TestSpec {
-            let num_transactions = num_transactions.unwrap_or(NUM_TRANSACTIONS);
-
-            let init_ledger = InitLedger::gen();
-
-            let mut map = init_ledger
-                .0
-                .iter()
-                .map(|(kp, _)| (HashableKeypair(kp.clone()), Nonce::zero()))
-                .collect();
-
-            let specs = (0..num_transactions)
-                .map(|_| TransactionSpec::gen(&init_ledger, &mut map))
-                .collect();
-
-            Self { init_ledger, specs }
-        }
-
-        pub fn gen() -> Self {
-            Self::mk_gen(Some(NUM_TRANSACTIONS))
-        }
-    }
-
-    #[derive(Debug)]
-    pub struct UpdateStatesSpec {
-        pub fee: Fee,
-        pub sender: (Keypair, Nonce),
-        pub fee_payer: Option<(Keypair, Nonce)>,
-        pub receivers: Vec<(CompressedPubKey, Amount)>,
-        pub amount: Amount,
-        pub zkapp_account_keypairs: Vec<Keypair>,
-        pub memo: Memo,
-        pub new_zkapp_account: bool,
-        pub snapp_update: zkapp_command::Update,
-        // Authorization for the update being performed
-        pub current_auth: AuthRequired,
-        pub actions: Vec<Vec<Fp>>,
-        pub events: Vec<Vec<Fp>>,
-        pub call_data: Fp,
-        pub preconditions: Option<zkapp_command::Preconditions>,
-    }
-
-    pub fn trivial_zkapp_account(
-        permissions: Option<Permissions<AuthRequired>>,
-        vk: VerificationKey,
-        pk: CompressedPubKey,
-    ) -> Account {
-        let id = AccountId::new(pk, TokenId::default());
-        let mut account = Account::create_with(id, Balance::from_u64(1_000_000_000_000_000));
-        account.permissions = permissions.unwrap_or_else(Permissions::user_default);
-        account.zkapp = Some(
-            ZkAppAccount {
-                verification_key: Some(VerificationKeyWire::new(vk)),
-                ..Default::default()
-            }
-            .into(),
-        );
-        account
-    }
-
-    pub fn create_trivial_zkapp_account(
-        permissions: Option<Permissions<AuthRequired>>,
-        vk: VerificationKey,
-        ledger: &mut Mask,
-        pk: CompressedPubKey,
-    ) {
-        let id = AccountId::new(pk.clone(), TokenId::default());
-        let account = trivial_zkapp_account(permissions, vk, pk);
-        assert!(BaseLedger::location_of_account(ledger, &id).is_none());
-        ledger.get_or_create_account(id, account).unwrap();
-    }
-}
+pub mod for_tests;
