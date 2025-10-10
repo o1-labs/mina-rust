@@ -73,6 +73,7 @@ const sidebars: SidebarsConfig = {
       items: [
         'developers/getting-started',
         'developers/updating-ocaml-node',
+        'developers/mesa-upgrade',
       ],
     },
     {
