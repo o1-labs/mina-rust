@@ -16,7 +16,7 @@ env:
   RUST_BACKTRACE: full
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
-  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}

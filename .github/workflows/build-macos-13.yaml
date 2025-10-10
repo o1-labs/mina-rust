@@ -16,3 +16,4 @@ jobs:
       os: macos-13
       cache-prefix: macos-13-
       build-wasm: true
+      rustflags: "-C link-args=-Wl,-undefined,dynamic_lookup"
