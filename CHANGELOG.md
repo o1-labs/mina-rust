@@ -38,6 +38,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
 - **Ledger/ZkAppCommand**: show how to build a ZkAppCommand from scratch, with
   dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
+- **Website**: add pages regarding Mina hardforks
+  ([#1529](https://github.com/o1-labs/mina-rust/pull/1529))
 
 ### Changed
 
