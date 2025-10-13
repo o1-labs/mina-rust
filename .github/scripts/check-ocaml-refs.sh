@@ -62,7 +62,7 @@ echo "Current OCaml commit: ${CURRENT_COMMIT}"
 
 # Find all Rust files with OCaml references
 cd "${RUST_ROOT}"
-RUST_FILES=$(rg -l "^/// OCaml reference:" --type rust || true)
+RUST_FILES=$(git grep -l -E "^/// OCaml reference:" "*.rs" "**/*.rs" || true)
 
 if [ -z "$RUST_FILES" ]; then
     echo "No OCaml references found in Rust code"
