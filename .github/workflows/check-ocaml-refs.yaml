@@ -40,14 +40,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Install ripgrep
-        run: sudo apt-get update && sudo apt-get install -y ripgrep
-
       - name: Run OCaml reference validation
         id: check
         env:
           OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
           OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
+        shell: bash
         run: |
           set +e
           # Capture output to file
