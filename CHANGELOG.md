@@ -75,6 +75,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1528](https://github.com/o1-labs/mina-rust/pull/1528/))
 - **Codebase**: remove unused `ledger/src/poseidon/fp.rs` file
   ([#1538](https://github.com/o1-labs/mina-rust/pull/1538))
+- **Ledger**: convert unused binary to proper criterion benchmarks with CI
+  support across all platforms
+  ([#1539](https://github.com/o1-labs/mina-rust/pull/1539))
 
 ## v0.17.0
 
