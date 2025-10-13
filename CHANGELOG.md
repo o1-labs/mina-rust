@@ -73,6 +73,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `ledger::scan_state::transaction_logic::zkapp_command` into submodules in a
   new directory `zkapp_command`
   ([#1528](https://github.com/o1-labs/mina-rust/pull/1528/))
+- **Codebase**: remove unused `ledger/src/poseidon/fp.rs` file
+  ([#1538](https://github.com/o1-labs/mina-rust/pull/1538))
 
 ## v0.17.0
 
