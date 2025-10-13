@@ -16,7 +16,7 @@ env:
   RUST_BACKTRACE: full
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
-  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -284,6 +284,27 @@ jobs:
           path: target/release/tests
           retention-days: 7
 
+  build-wasm:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: nightly
+          cache-prefix: build-wasm-v0
+
+      - name: Setup wasm tooling
+        run: make setup-wasm
+
+      - name: Build WebAssembly node
+        run: make build-wasm
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]

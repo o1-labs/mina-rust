@@ -60,6 +60,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
 - **scan_state**: refactorize `transaction_logic.rs` in smaller modules
   ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
+- **CI/tests**: run the step `build-wasm` for each push and PR to `develop`
+  ([#1497](https://github.com/o1-labs/mina-rust/pull/1497))
 
 ## v0.17.0
 

@@ -22,18 +22,25 @@ on:
         type: boolean
         default: false
         description: "Whether to build WASM targets"
+      rustflags:
+        required: false
+        type: string
+        default: ""
+        description: "Additional RUSTFLAGS to append (e.g., macOS-specific linker flags)"
 
 env:
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: full
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
-  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
 
 jobs:
   build:
     timeout-minutes: 60
     runs-on: ${{ inputs.os }}
+    env:
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -75,6 +82,8 @@ jobs:
   build-tests:
     timeout-minutes: 60
     runs-on: ${{ inputs.os }}
+    env:
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -99,6 +108,8 @@ jobs:
   build-tests-webrtc:
     timeout-minutes: 60
     runs-on: ${{ inputs.os }}
+    env:
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
