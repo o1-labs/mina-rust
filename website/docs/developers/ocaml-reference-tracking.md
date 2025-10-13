@@ -131,5 +131,6 @@ For single-line references, use the same number: `L:42-42`
 
 ## Example references
 
-See `ledger/src/scan_state/transaction_logic/mod.rs` for examples of properly
-formatted OCaml references.
+See
+[`ledger/src/scan_state/transaction_logic/mod.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs)
+for examples of properly formatted OCaml references.
