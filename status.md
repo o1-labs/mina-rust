@@ -384,7 +384,7 @@ See [Testing](./p2p/testing/README.md) for more details.
   - [ ] [RPCs support](https://github.com/JanSlobodnik/pre-publishing/blob/main/RPCs.md) -
         in progress
   - [x] [GossipSub](https://github.com/openmina/mina-wiki/blob/3ea9041e52fb2e606918f6c60bd3a32b8652f016/p2p/mina-gossip.md)
-- [x] [Scan state](https://github.com/openmina/openmina/blob/main/docs/scan-state.md)
+- [x] [Scan state](https://github.com/o1-labs/mina-rust/blob/main/website/docs/researchers/scan-state.md)
 - [x] [SNARKs](https://github.com/openmina/openmina/blob/main/docs/snark-work.md)
 - Developer tools
   - [x] [Debugger](https://github.com/openmina/mina-network-debugger/blob/main/README.md)
