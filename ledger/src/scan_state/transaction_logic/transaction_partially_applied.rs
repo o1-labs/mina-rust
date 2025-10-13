@@ -1265,15 +1265,4 @@ where
     account.timing = timing;
 
     Ok((location, account))
-
-    // in
-    // ( location
-    // , { account with
-    //     balance
-    //   ; nonce = Account.Nonce.succ account.nonce
-    //   ; receipt_chain_hash =
-    //       Receipt.Chain_hash.cons_signed_command_payload command
-    //         account.receipt_chain_hash
-    //   ; timing
-    //   } )
 }
