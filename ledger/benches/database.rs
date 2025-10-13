@@ -15,6 +15,7 @@ use mina_tree::*;
 
 fn benchmark_account_generation(c: &mut Criterion) {
     let mut group = c.benchmark_group("account_generation");
+    group.sample_size(10);
 
     for naccounts in [1_000, 10_000, 120_000] {
         group.bench_with_input(
@@ -42,6 +43,7 @@ fn benchmark_account_generation(c: &mut Criterion) {
 
 fn benchmark_merkle_root_computation(c: &mut Criterion) {
     let mut group = c.benchmark_group("merkle_root_computation");
+    group.sample_size(10);
 
     for naccounts in [1_000, 10_000, 120_000] {
         // Prepare the database with accounts
