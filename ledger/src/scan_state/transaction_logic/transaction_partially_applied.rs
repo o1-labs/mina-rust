@@ -1235,7 +1235,7 @@ where
     )
 }
 
-fn pay_fee_impl<L>(
+pub fn pay_fee_impl<L>(
     command: &SignedCommandPayload,
     nonce: Nonce,
     fee_payer: AccountId,
