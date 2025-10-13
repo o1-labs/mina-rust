@@ -1,19 +1,17 @@
 ---
 sidebar_position: 10
-title: Documentation Guidelines
+title: Referencing code in documentation
 description: Best practices for writing and maintaining documentation
-slug: /developers/documentation-guidelines
+slug: /developers/referencing-code-in-documentation
 ---
 
-# Documentation Guidelines
+# Referencing code in documentation
 
 This guide explains how to write and maintain documentation for the Mina Rust
 project, including how to reference code from the codebase. Referencing code
 from codebases can be useful to check compatibility between implementations. For
 instance, we can have pages where the Rust code is compared to the OCaml code to
 discuss the differences or similarities.
-
-## Referencing Code in Documentation
 
 To keep documentation synchronized with the actual codebase, we use the
 [`docusaurus-theme-github-codeblock`](https://github.com/christian-bromann/docusaurus-theme-github-codeblock)
