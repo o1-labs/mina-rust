@@ -375,7 +375,7 @@ See [Testing](./p2p/testing/README.md) for more details.
 
 ### By module
 
-- [x] [Openmina Node](https://github.com/openmina/openmina#the-open-mina-node)
+- [x] [Openmina Node](https://github.com/o1-labs/mina-rust#the-open-mina-node)
 - [x] [The Mina Web Node](https://github.com/openmina/webnode/blob/main/README.md)
 - P2P
   - [ ] [P2P Networking Stack](https://github.com/openmina/openmina/blob/develop/p2p/readme.md)
