@@ -448,14 +448,6 @@ impl BaseLedger for Mask {
         let addr_length = addr.length();
         let res = self.with(|this| this.merkle_path(addr.clone()));
         assert_eq!(res.len(), addr_length);
-
-        // elog!(
-        //     "merkle_path addr={:?} path_len={:?} path={:?}",
-        //     addr,
-        //     res.len(),
-        //     res
-        // );
-
         res
     }
 
