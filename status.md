@@ -378,7 +378,7 @@ See [Testing](./p2p/testing/README.md) for more details.
 - [x] [Openmina Node](https://github.com/o1-labs/mina-rust#the-open-mina-node)
 - [x] [The Mina Web Node](https://github.com/openmina/webnode/blob/main/README.md)
 - P2P
-  - [ ] [P2P Networking Stack](https://github.com/openmina/openmina/blob/develop/p2p/readme.md)
+  - [ ] [P2P Networking Stack](https://github.com/openmina/openmina/blob/develop/p2p/README.md)
         in progress
   - [x] [P2P services](https://github.com/openmina/openmina/blob/documentation/docs/p2p_service.md)
   - [ ] [RPCs support](https://github.com/JanSlobodnik/pre-publishing/blob/main/RPCs.md) -
