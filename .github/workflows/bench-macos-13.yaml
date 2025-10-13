@@ -1,0 +1,18 @@
+name: Bench macOS 13
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bench:
+    uses: ./.github/workflows/bench-reusable.yaml
+    with:
+      os: macos-13
+      cache-prefix: macos-13-
+      rustflags: "-C link-args=-Wl,-undefined,dynamic_lookup"

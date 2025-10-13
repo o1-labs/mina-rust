@@ -6,9 +6,9 @@ license = "Apache-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[[bin]]
-name = "ledger"
-path = "src/bin/ledger.rs"
+[[bench]]
+name = "database"
+harness = false
 
 [lib]
 crate-type = ["staticlib", "cdylib", "lib"]
@@ -87,6 +87,7 @@ ocaml-interop = { workspace = true, optional = true }
 reqwest = { workspace = true, features = ["blocking"] }
 
 [dev-dependencies]
+criterion = { workspace = true }
 rand_pcg = { workspace = true }
 rand_seeder = { workspace = true }
 tuple-map = { workspace = true }

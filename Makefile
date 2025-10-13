@@ -123,6 +123,22 @@ build-wasm: ## Build WebAssembly node
 		--out-dir pkg \
 		target/wasm32-unknown-unknown/release/mina_node_web.wasm
 
+.PHONY: build-benches
+build-benches: ## Build all benchmarks without running them
+	@cargo bench --no-run
+
+.PHONY: build-bench-database
+build-bench-database: ## Build ledger database benchmark
+	@cargo bench --bench database --no-run
+
+.PHONY: bench
+bench: ## Run all benchmarks
+	@cargo bench
+
+.PHONY: bench-database
+bench-database: ## Run ledger database benchmark
+	@cargo bench --bench database
+
 .PHONY: check
 check: ## Check code for compilation errors
 	cargo check --all-targets
