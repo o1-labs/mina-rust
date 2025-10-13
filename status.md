@@ -380,7 +380,7 @@ See [Testing](./p2p/testing/README.md) for more details.
 - P2P
   - [ ] [P2P Networking Stack](https://github.com/openmina/openmina/blob/develop/p2p/README.md)
         in progress
-  - [x] [P2P services](https://github.com/openmina/openmina/blob/documentation/docs/p2p_service.md)
+  - [x] [P2P services](https://github.com/o1-labs/mina-rust/blob/documentation/docs/p2p_service.md)
   - [ ] [RPCs support](https://github.com/JanSlobodnik/pre-publishing/blob/main/RPCs.md) -
         in progress
   - [x] [GossipSub](https://github.com/openmina/mina-wiki/blob/3ea9041e52fb2e606918f6c60bd3a32b8652f016/p2p/mina-gossip.md)
