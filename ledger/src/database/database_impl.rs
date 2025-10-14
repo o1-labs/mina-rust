@@ -44,15 +44,9 @@ impl<T: TreeVersion> std::fmt::Debug for DatabaseImpl<T> {
     }
 }
 
-// #[derive(Debug, PartialEq, Eq)]
-// pub enum DatabaseError {
-//     OutOfLeaves,
-// }
-
 impl DatabaseImpl<V2> {
     pub fn clone_db(&self, new_directory: PathBuf) -> Self {
         Self {
-            // root: self.root.clone(),
             accounts: self.accounts.clone(),
             id_to_addr: self.id_to_addr.clone(),
             token_owners: self.token_owners.clone(),
@@ -62,7 +56,6 @@ impl DatabaseImpl<V2> {
             uuid: next_uuid(),
             directory: new_directory,
             hashes_matrix: self.hashes_matrix.clone(),
-            // root_hash: RefCell::new(*self.root_hash.borrow()),
         }
     }
 
@@ -82,10 +75,6 @@ impl DatabaseImpl<V2> {
         account_id: AccountId,
         account: Account,
     ) -> Result<GetOrCreated, DatabaseError> {
-        // if self.root.is_none() {
-        //     self.root = Some(NodeOrLeaf::Node(Node::default()));
-        // }
-
         if let Some(addr) = self.id_to_addr.get(&account_id).cloned() {
             return Ok(GetOrCreated::Existed(addr));
         }
@@ -99,9 +88,6 @@ impl DatabaseImpl<V2> {
         assert_eq!(location.to_index(), self.accounts.len());
         self.accounts.push(Some(account));
 
-        // let root = self.root.as_mut().unwrap();
-        // root.add_account_on_path(account, location.iter());
-
         self.last_location = Some(location.clone());
         self.naccounts += 1;
 
@@ -111,8 +97,6 @@ impl DatabaseImpl<V2> {
             }
         }
         self.id_to_addr.insert(account_id, location.clone());
-
-        // self.root_hash.borrow_mut().take();
 
         Ok(GetOrCreated::Added(location))
     }
@@ -139,15 +123,6 @@ impl DatabaseImpl<V2> {
             return *hash;
         };
 
-        // let tree_depth = self.depth() as usize;
-        // let mut children = addr.iter_children(tree_depth);
-
-        // // First child
-        // let first_account_index = children.next().unwrap().to_index().0 as u64;
-        // let mut nremaining = self
-        //     .naccounts()
-        //     .saturating_sub(first_account_index as usize);
-
         let last_account = self
             .last_filled()
             .unwrap_or_else(|| Address::first(self.depth as usize));
@@ -155,7 +130,6 @@ impl DatabaseImpl<V2> {
         self.emulate_tree_recursive(addr, &last_account)
     }
 
-    // fn emulate_recursive(&mut self, addr: Address, nremaining: &mut usize) -> Fp {
     pub fn emulate_tree_recursive(&mut self, addr: Address, last_account: &Address) -> Fp {
         let tree_depth = self.depth as usize;
         let current_depth = tree_depth - addr.length();
@@ -290,10 +264,6 @@ impl DatabaseImpl<V1> {
         _account_id: (),
         account: AccountLegacy,
     ) -> Result<Address, DatabaseError> {
-        // if self.root.is_none() {
-        //     self.root = Some(NodeOrLeaf::Node(Node::default()));
-        // }
-
         let location = match self.last_location.as_ref() {
             Some(last) => last.next().ok_or(DatabaseError::OutOfLeaves)?,
             None => Address::first(self.depth as usize),
@@ -301,10 +271,6 @@ impl DatabaseImpl<V1> {
 
         assert_eq!(location.to_index(), self.accounts.len());
         self.accounts.push(Some(account));
-
-        // let root = self.root.as_mut().unwrap();
-        // let path_iter = location.clone().into_iter();
-        // root.add_account_on_path(account, path_iter);
 
         self.last_location = Some(location.clone());
         self.naccounts += 1;
@@ -333,16 +299,6 @@ impl DatabaseImpl<V2> {
             }
         };
 
-        // elog!(
-        //     "DB depth={:?} uuid={:?} pid={:?} path={:?}",
-        //     depth,
-        //     uuid,
-        //     crate::util::pid(),
-        //     path
-        // );
-
-        // std::fs::create_dir_all(&path).ok();
-
         Self {
             depth,
             accounts: Vec::with_capacity(Self::NACCOUNTS),
@@ -353,7 +309,6 @@ impl DatabaseImpl<V2> {
             uuid,
             directory: path,
             hashes_matrix: HashesMatrix::new(depth as usize),
-            // root_hash: Default::default(),
         }
     }
 
@@ -386,20 +341,6 @@ impl DatabaseImpl<V2> {
         self.accounts.iter().filter_map(Option::as_ref).count()
     }
 
-    // fn naccounts_recursive(&self, elem: &NodeOrLeaf<T>, naccounts: &mut usize) {
-    //     match elem {
-    //         NodeOrLeaf::Leaf(_) => *naccounts += 1,
-    //         NodeOrLeaf::Node(node) => {
-    //             if let Some(left) = node.left.as_ref() {
-    //                 self.naccounts_recursive(left, naccounts);
-    //             };
-    //             if let Some(right) = node.right.as_ref() {
-    //                 self.naccounts_recursive(right, naccounts);
-    //             };
-    //         }
-    //     }
-    // }
-
     fn get_account_ref(&self, addr: Address) -> Option<&Account> {
         let index = addr.to_index();
         let index: usize = index.0 as usize;
@@ -415,19 +356,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             .filter_map(Option::as_ref)
             .cloned()
             .collect()
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return Vec::new(),
-        // };
-
-        // let mut accounts = Vec::with_capacity(100);
-
-        // root.iter_recursive(&mut |account| {
-        //     accounts.push(account.clone());
-        //     ControlFlow::Continue(())
-        // });
-
-        // accounts
     }
 
     fn iter<F>(&self, fun: F)
@@ -438,16 +366,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             .iter()
             .filter_map(Option::as_ref)
             .for_each(fun);
-
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return,
-        // };
-
-        // root.iter_recursive(&mut |account| {
-        //     fun(account);
-        //     ControlFlow::Continue(())
-        // });
     }
 
     fn fold<B, F>(&self, init: B, mut fun: F) -> B
@@ -459,20 +377,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             accum = fun(accum, account);
         }
         accum
-
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return init,
-        // };
-
-        // let mut accum = Some(init);
-        // root.iter_recursive(&mut |account| {
-        //     let res = fun(accum.take().unwrap(), account);
-        //     accum = Some(res);
-        //     ControlFlow::Continue(())
-        // });
-
-        // accum.unwrap()
     }
 
     fn fold_with_ignored_accounts<B, F>(
@@ -493,15 +397,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             }
         }
         accum
-        // self.fold(init, |accum, account| {
-        //     let account_id = account.id();
-
-        //     if !ignoreds.contains(&account_id) {
-        //         fun(accum, account)
-        //     } else {
-        //         accum
-        //     }
-        // })
     }
 
     fn fold_until<B, F>(&self, init: B, mut fun: F) -> B
@@ -521,25 +416,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             }
         }
         accum
-
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return init,
-        // };
-
-        // let mut accum = Some(init);
-        // root.iter_recursive(&mut |account| match fun(accum.take().unwrap(), account) {
-        //     ControlFlow::Continue(account) => {
-        //         accum = Some(account);
-        //         ControlFlow::Continue(())
-        //     }
-        //     ControlFlow::Break(account) => {
-        //         accum = Some(account);
-        //         ControlFlow::Break(())
-        //     }
-        // });
-
-        // accum.unwrap()
     }
 
     fn accounts(&self) -> HashSet<AccountId> {
@@ -560,31 +436,11 @@ impl BaseLedger for DatabaseImpl<V2> {
                 set.insert(account.token_id.clone());
             }
         }
-
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return HashSet::default(),
-        // };
-
-        // let mut set = HashSet::with_capacity(self.naccounts);
-
-        // root.iter_recursive(&mut |account| {
-        //     if account.public_key == public_key {
-        //         set.insert(account.token_id.clone());
-        //     }
-
-        //     ControlFlow::Continue(())
-        // });
-
         set
     }
 
     fn location_of_account(&self, account_id: &AccountId) -> Option<Address> {
-        let res = self.id_to_addr.get(account_id).cloned();
-
-        // elog!("location_of_account id={:?}\n{:?}", account_id, res);
-
-        res
+        self.id_to_addr.get(account_id).cloned()
     }
 
     fn location_of_account_batch(
@@ -672,16 +528,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             .map(|addr| (addr.clone(), self.get(addr.clone())))
             .collect();
 
-        // let root = match self.root.as_ref() {
-        //     Some(root) => Cow::Borrowed(root),
-        //     None => Cow::Owned(NodeOrLeaf::Node(Node::default())),
-        // };
-
-        // let res: Vec<_> = addr
-        //     .iter()
-        //     .map(|addr| (addr.clone(), root.get_on_path(addr.iter()).cloned()))
-        //     .collect();
-
         elog!("get_batch addrs={:?}\nres={:?}={:?}", addr, res.len(), res);
 
         res
@@ -698,12 +544,7 @@ impl BaseLedger for DatabaseImpl<V2> {
             self.accounts.resize(index + 1, None);
         }
 
-        // if self.root.is_none() {
-        //     self.root = Some(NodeOrLeaf::Node(Node::default()));
-        // }
-
         let id = account.id();
-        // let root = self.root.as_mut().unwrap();
 
         // Remove account at the address and it's index
         if let Some(account) = self.get(addr.clone()) {
@@ -725,7 +566,6 @@ impl BaseLedger for DatabaseImpl<V2> {
         }
         self.id_to_addr.insert(id, addr.clone());
         self.accounts[index] = Some(*account);
-        // root.add_account_on_path(account, addr.iter());
 
         if self
             .last_location
@@ -735,13 +575,10 @@ impl BaseLedger for DatabaseImpl<V2> {
         {
             self.last_location = Some(addr);
         }
-
-        // self.root_hash.borrow_mut().take();
     }
 
     fn set_batch(&mut self, list: &[(Address, Box<Account>)]) {
         elog!("SET_BATCH {:?}", list.len());
-        // elog!("SET_BATCH {:?} {:?}", list.len(), list);
         for (addr, account) in list {
             assert_eq!(addr.length(), self.depth as usize, "addr={:?}", addr);
             self.set(addr.clone(), account.clone());
@@ -757,8 +594,6 @@ impl BaseLedger for DatabaseImpl<V2> {
         let addr = Address::from_index(index, self.depth as usize);
         self.set(addr, account);
 
-        // self.root_hash.borrow_mut().take();
-
         Ok(())
     }
 
@@ -767,30 +602,7 @@ impl BaseLedger for DatabaseImpl<V2> {
     }
 
     fn merkle_root(&mut self) -> Fp {
-        // let now = crate::util::Instant::now();
-
         self.root_hash()
-
-        // let root = match *self.root_hash.borrow() {
-        //     Some(root) => root,
-        //     None => self.root_hash(),
-        // };
-
-        // elog!(
-        //     "uuid={:?} ROOT={} num_account={:?} elapsed={:?}",
-        //     self.get_uuid(),
-        //     root,
-        //     self.num_accounts(),
-        //     now.elapsed(),
-        // );
-
-        // self.root_hash.borrow_mut().replace(root);
-
-        // elog!("PATH={:#?}", self.merkle_path(Address::first(self.depth as usize)));
-
-        // self.merkle_path(Address::first(self.depth as usize));
-
-        // root
     }
 
     fn merkle_path(&mut self, addr: Address) -> Vec<MerklePath> {
@@ -804,8 +616,6 @@ impl BaseLedger for DatabaseImpl<V2> {
             .last_filled()
             .unwrap_or_else(|| Address::first(self.depth as usize));
 
-        // let tree_index = TreeIndex::root(self.depth() as usize);
-
         self.emulate_tree_to_get_path(addr, &last_account, &mut path, &mut merkle_path);
 
         merkle_path
@@ -817,11 +627,6 @@ impl BaseLedger for DatabaseImpl<V2> {
     }
 
     fn remove_accounts(&mut self, ids: &[AccountId]) {
-        // let root = match self.root.as_mut() {
-        //     Some(root) => root,
-        //     None => return,
-        // };
-
         let mut addrs = ids
             .iter()
             .map(|accound_id| self.id_to_addr.remove(accound_id).unwrap())
@@ -829,16 +634,6 @@ impl BaseLedger for DatabaseImpl<V2> {
         addrs.sort_by_key(Address::to_index);
 
         for addr in addrs.iter().rev() {
-            // let leaf = match root.get_mut_leaf_on_path(addr.iter()) {
-            //     Some(leaf) => leaf,
-            //     None => continue,
-            // };
-
-            // let account = match leaf.account.take() {
-            //     Some(account) => account,
-            //     None => continue,
-            // };
-
             let account_index = addr.to_index();
             self.hashes_matrix.invalidate_hashes(account_index);
 
@@ -846,9 +641,6 @@ impl BaseLedger for DatabaseImpl<V2> {
                 Some(account) => account,
                 None => continue,
             };
-
-            // let index = addr.to_index();
-            // let account = std::mem::take()
 
             let id = account.id();
             self.id_to_addr.remove(&id);
@@ -872,8 +664,6 @@ impl BaseLedger for DatabaseImpl<V2> {
                 self.last_location = addr.prev();
             }
         }
-
-        // self.root_hash.borrow_mut().take();
     }
 
     fn detached_signal(&mut self) {
@@ -925,11 +715,6 @@ impl BaseLedger for DatabaseImpl<V2> {
         if addr.length() > self.depth as usize {
             return None;
         }
-
-        // let root = match self.root.as_ref() {
-        //     Some(root) => root,
-        //     None => return None,
-        // };
 
         let children = addr.iter_children(self.depth as usize);
         let mut accounts = Vec::with_capacity(children.len());

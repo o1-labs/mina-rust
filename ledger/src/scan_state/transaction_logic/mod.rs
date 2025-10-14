@@ -1,3 +1,58 @@
+//! Transaction logic module
+//!
+//! This module implements the core logic for applying and validating all
+//! transaction types in the Mina protocol. It is a direct port of the OCaml
+//! implementation from `src/lib/transaction_logic/mina_transaction_logic.ml`
+//! and maintains identical business logic.
+//!
+//! # Transaction Types
+//!
+//! The module handles three main categories of transactions:
+//!
+//! ## User Commands
+//! - **Signed Commands**: Payments and stake delegations
+//! - **zkApp Commands**: Complex multi-account zero-knowledge operations
+//!
+//! ## Protocol Transactions
+//! - **Fee Transfers**: Distribution of transaction fees to block producers
+//! - **Coinbase**: Block rewards for successful block production
+//!
+//! # Two-Phase Application
+//!
+//! Transaction application follows a two-phase model to enable efficient proof
+//! generation:
+//!
+//! 1. **First Pass** ([`apply_transaction_first_pass`]): Validates
+//!    preconditions and begins application. For zkApp commands, applies the fee
+//!    payer and first phase of account updates.
+//!
+//! 2. **Second Pass** ([`apply_transaction_second_pass`]): Completes
+//!    application. For zkApp commands, applies the second phase of account
+//!    updates and finalizes state.
+//!
+//! # Key Types
+//!
+//! - [`Transaction`]: Top-level enum for all transaction types
+//! - [`UserCommand`]: User-initiated transactions (signed or zkApp)
+//! - [`TransactionStatus`]: Applied or failed with specific error codes
+//! - [`TransactionFailure`]: 50+ specific failure reasons
+//! - [`FeeTransfer`]: Fee distribution transaction
+//! - [`Coinbase`]: Block reward transaction
+//!
+//! # Module Organization
+//!
+//! - [`local_state`]: Local state management during zkApp application
+//! - [`protocol_state`]: Protocol state views for transaction application
+//! - [`signed_command`]: Payment and stake delegation logic
+//! - [`transaction_applied`]: Final transaction application results
+//! - [`transaction_partially_applied`]: Two-phase transaction application
+//! - [`transaction_union_payload`]: Unified transaction representation for SNARK circuits
+//! - [`transaction_witness`]: Witness generation for transaction proofs
+//! - [`valid`]: Valid (but not yet verified) user commands
+//! - [`verifiable`]: Verifiable user commands ready for proof verification
+//! - [`zkapp_command`]: zkApp command processing
+//! - [`zkapp_statement`]: zkApp statement types for proof generation
+
 use self::{
     local_state::{apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, LocalStateEnv},
     protocol_state::{GlobalState, ProtocolStateView},
@@ -243,12 +298,15 @@ impl<T> WithStatus<T> {
 
 pub trait GenericCommand {
     fn fee(&self) -> Fee;
+
     fn forget(&self) -> UserCommand;
 }
 
 pub trait GenericTransaction: Sized {
     fn is_fee_transfer(&self) -> bool;
+
     fn is_coinbase(&self) -> bool;
+
     fn is_command(&self) -> bool;
 }
 
