@@ -230,8 +230,8 @@ mina wallet send \
   expires)
 - `--fee-payer <PUBLIC_KEY>` - Optional fee payer public key (default: sender
   pays)
-- `--network <NETWORK>` - Network for signing: `mainnet` or `testnet` (default:
-  `testnet`)
+- `--network <NETWORK>` - Network for signing: `mainnet` or `devnet` (default:
+  `devnet`)
 - `--node <URL>` - Node GraphQL endpoint (default: `http://localhost:3000`)
 
 ### Environment variables
@@ -245,7 +245,7 @@ export MINA_NETWORK="mainnet"
 
 ### Examples
 
-#### Send payment on testnet
+#### Send payment on devnet
 
 ```bash
 mina wallet send \
@@ -253,7 +253,7 @@ mina wallet send \
   --to B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy \
   --amount 1000000000 \
   --fee 10000000 \
-  --network testnet
+  --network devnet
 ```
 
 #### Send payment on mainnet with memo
@@ -330,11 +330,11 @@ When you send a payment, the CLI:
 
 The `--network` flag controls which network the transaction is signed for:
 
-- `testnet` - For development and testing (default)
+- `devnet` - For development and testing (default)
 - `mainnet` - For production transactions
 
 **Important:** Make sure to use the correct network flag. A transaction signed
-for testnet will not be valid on mainnet and vice versa.
+for devnet will not be valid on mainnet and vice versa.
 
 ## Fee payer
 
