@@ -79,6 +79,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   are now built as part of the existing build workflows across all platforms,
   reusing build caches for efficiency
   ([#1539](https://github.com/o1-labs/mina-rust/pull/1539))
+- **Ledger**: document, clean and add tests for the crate `mina-tree`
+  ([#1531](https://github.com/o1-labs/mina-rust/pull/1531).
 
 ## v0.17.0
 
