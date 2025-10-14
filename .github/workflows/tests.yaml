@@ -17,6 +17,9 @@ env:
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
   RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
+  RUST_STABLE_VERSION: "1.84"
+  RUST_NIGHTLY_VERSION: "nightly"
+  OCAML_VERSION: "4.14.2"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -31,7 +34,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           enable-cache: false
       - name: Clean cargo cache
         run: cargo clean
@@ -39,9 +42,6 @@ jobs:
   ledger-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -52,12 +52,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
           cache-prefix: ledger-v0
 
       - name: Download circuits files
@@ -82,7 +82,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
           cache-prefix: p2p-messages-v0
 
       - name: Download circuits files
@@ -127,9 +127,6 @@ jobs:
   vrf-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -140,12 +137,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
           cache-prefix: vrf-v0
 
       - name: Build vrf tests
@@ -167,7 +164,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: p2p-v0
 
       - name: Test p2p crate
@@ -187,12 +184,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: build-v0
 
       - name: Release build
@@ -235,7 +232,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: build-v0
 
       - name: Run account tests
@@ -254,12 +251,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: build-tests-v0
 
       - name: Build tests
@@ -285,12 +282,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: build-tests-webrtc-v0
 
       - name: Build tests
@@ -316,7 +313,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
           cache-prefix: build-wasm-v0
 
       - name: Setup wasm tooling
