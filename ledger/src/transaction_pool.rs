@@ -1,15 +1,3 @@
-use backtrace::Backtrace;
-use serde::{Deserialize, Serialize};
-use std::{
-    borrow::{Borrow, Cow},
-    collections::{hash_map::Entry, BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
-};
-
-use itertools::Itertools;
-use mina_core::{bug_condition, consensus::ConsensusConstants};
-use mina_curves::pasta::Fp;
-use mina_p2p_messages::{bigint::BigInt, v2};
-
 use crate::{
     scan_state::{
         currency::{Amount, Balance, BlockTime, Fee, Magnitude, Nonce, Slot},
@@ -26,6 +14,16 @@ use crate::{
     },
     verifier::{Verifier, VerifierError},
     Account, AccountId, BaseLedger, Mask, TokenId, VerificationKey, VerificationKeyWire,
+};
+use backtrace::Backtrace;
+use itertools::Itertools;
+use mina_core::{bug_condition, consensus::ConsensusConstants};
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::{bigint::BigInt, v2};
+use serde::{Deserialize, Serialize};
+use std::{
+    borrow::{Borrow, Cow},
+    collections::{hash_map::Entry, BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
 };
 
 #[derive(Debug, thiserror::Error)]

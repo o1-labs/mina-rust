@@ -1,5 +1,3 @@
-use std::{collections::BTreeMap, fmt::Debug, sync::Mutex};
-
 use crate::{
     address::Address,
     base::AccountIndex,
@@ -7,6 +5,7 @@ use crate::{
 };
 use mina_curves::pasta::Fp;
 use once_cell::sync::Lazy;
+use std::{collections::BTreeMap, fmt::Debug, sync::Mutex};
 
 #[derive(Clone, Debug)]
 struct Leaf<T: TreeVersion> {
