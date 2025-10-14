@@ -1,3 +1,8 @@
+use clap::Parser;
+use cli::commands::Network;
+use mina_core::log::system_time;
+use node::stats::sync::{SyncSnarkedLedger, SyncStagedLedger, SyncStatsSnapshot};
+use redux::Timestamp;
 use std::{
     fs::File,
     io::{Read, Write},
@@ -6,11 +11,6 @@ use std::{
     thread,
     time::{Duration, Instant},
 };
-
-use clap::Parser;
-use mina_core::log::system_time;
-use node::stats::sync::{SyncSnarkedLedger, SyncStagedLedger, SyncStatsSnapshot};
-use redux::Timestamp;
 
 #[test]
 fn bootstrap() -> anyhow::Result<()> {
@@ -37,7 +37,7 @@ fn run_node() -> anyhow::Result<()> {
     if let Err(e) =
         cli::commands::MinaCli::parse_from([std::env::args().next().unwrap(), String::from("node")])
             .command
-            .run()
+            .run(Network::Devnet)
     {
         anyhow::bail!(format!("{e:#}"));
     }

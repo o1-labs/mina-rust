@@ -262,6 +262,8 @@ jobs:
         run: mv mina target/release/
 
       - name: Run wallet tests
+        env:
+          MINA_PRIVKEY_PASS: ${{ secrets.MINA_PRIVKEY_PASS }}
         run: make test-wallet
 
   build-tests:
