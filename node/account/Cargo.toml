@@ -3,6 +3,7 @@ name = "mina-node-account"
 version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
+description = "Account management for Mina nodes, including key generation, encryption, and address handling"
 
 [dependencies]
 anyhow = { workspace = true }

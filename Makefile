@@ -302,7 +302,12 @@ test-release: ## Run tests in release mode
 
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- \
+		-Z unstable-options --report-time
+
+.PHONY: test-account
+test-account: ## Run account tests
+	@cargo test -p mina-node-account
 
 .PHONY: test-p2p-messages
 test-p2p-messages:
