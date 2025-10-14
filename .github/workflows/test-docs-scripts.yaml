@@ -221,6 +221,29 @@ jobs:
           # We'll just check if it was installed via Homebrew
           docker --version || echo "Docker installed but not running (expected on macOS CI)"
 
+  test-benchmark-commands:
+    name: Verify Benchmark Commands
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Verify benchmark scripts and commands
+        run: |
+          # Check if scripts exist and are executable
+          test -x ./website/docs/developers/scripts/benchmarks/build-benchmarks.sh
+          test -x ./website/docs/developers/scripts/benchmarks/run-all-benchmarks.sh
+          test -x ./website/docs/developers/scripts/benchmarks/run-database-benchmark.sh
+
+          # Verify the make targets referenced in scripts exist in Makefile
+          grep -q "^build-benches:" Makefile
+          grep -q "^bench:" Makefile
+          grep -q "^bench-database:" Makefile
+
+          echo "SUCCESS: All benchmark commands verified"
+
   test-update-ocaml-node-script:
     name: Test Update OCaml Node Script
     runs-on: ${{ matrix.os }}

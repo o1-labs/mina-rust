@@ -135,6 +135,13 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Performance',
+      items: [
+        'developers/benchmarks',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Documentation',
       items: [
         'developers/referencing-code-in-documentation',
