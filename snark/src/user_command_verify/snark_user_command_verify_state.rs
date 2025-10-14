@@ -1,7 +1,6 @@
 use std::sync::Arc;
 
 use ledger::scan_state::transaction_logic::{valid, verifiable, WithStatus};
-use redux::Callback;
 use serde::{Deserialize, Serialize};
 
 use mina_core::{requests::PendingRequests, transaction::TransactionPoolMessageSource};
@@ -49,14 +48,14 @@ pub enum SnarkUserCommandVerifyStatus {
         commands: Vec<WithStatus<verifiable::UserCommand>>,
         from_source: TransactionPoolMessageSource,
         on_success: super::OnSuccess,
-        on_error: Callback<(SnarkUserCommandVerifyId, Vec<String>)>,
+        on_error: super::OnError,
     },
     Pending {
         time: redux::Timestamp,
         commands: Vec<WithStatus<verifiable::UserCommand>>,
         from_source: TransactionPoolMessageSource,
         on_success: super::OnSuccess,
-        on_error: Callback<(SnarkUserCommandVerifyId, Vec<String>)>,
+        on_error: super::OnError,
     },
     Error {
         time: redux::Timestamp,

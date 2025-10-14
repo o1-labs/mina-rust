@@ -137,9 +137,9 @@ impl TransactionPoolState {
                             ),
                             on_error: callback!(
                                 on_snark_user_command_verify_error(
-                                    (req_id: SnarkUserCommandVerifyId, errors: Vec<String>)
+                                    (req_id: SnarkUserCommandVerifyId, errors: Vec<String>, from_source: TransactionPoolMessageSource)
                                 ) -> crate::Action {
-                                    TransactionPoolAction::VerifyError { errors }
+                                    TransactionPoolAction::VerifyError { errors, from_source }
                                 }
                             )
                         });
@@ -149,6 +149,7 @@ impl TransactionPoolState {
                             let dispatcher = state.into_dispatcher();
                             dispatcher.push(TransactionPoolAction::VerifyError {
                                 errors: errors.clone(),
+                                from_source: *from_source,
                             });
 
                             match from_source {
@@ -203,8 +204,18 @@ impl TransactionPoolState {
                     from_source: *from_source,
                 });
             }
-            TransactionPoolAction::VerifyError { .. } => {
-                // just logging the errors
+            TransactionPoolAction::VerifyError {
+                errors,
+                from_source,
+            } => {
+                // Notify the RPC caller if this was from an RPC request
+                if let TransactionPoolMessageSource::Rpc { id } = from_source {
+                    let dispatcher = state.into_dispatcher();
+                    dispatcher.push(RpcAction::TransactionInjectFailure {
+                        rpc_id: *id,
+                        errors: errors.clone(),
+                    });
+                }
             }
             TransactionPoolAction::BestTipChanged { best_tip_hash } => {
                 let account_ids = substate.pool.get_accounts_to_revalidate_on_new_best_tip();

@@ -79,10 +79,20 @@ pub fn reducer<State, Action>(
                 bug_condition!("State for job not found in SnarkUserCommandVerifyAction::Error");
                 return;
             };
-            let SnarkUserCommandVerifyStatus::Pending { commands, .. } = req else {
+            let SnarkUserCommandVerifyStatus::Pending {
+                commands,
+                from_source,
+                on_error,
+                ..
+            } = req
+            else {
                 bug_condition!("Unexpected state in SnarkUserCommandVerifyAction::Error");
                 return;
             };
+
+            let from_source = std::mem::take(from_source);
+            let on_error = on_error.clone();
+            let error_messages = vec![error.to_string()];
 
             *req = SnarkUserCommandVerifyStatus::Error {
                 time: meta.time(),
@@ -92,7 +102,7 @@ pub fn reducer<State, Action>(
 
             // Dispatch
             let dispatcher = state.into_dispatcher();
-            // TODO: dispatch on error callback
+            dispatcher.push_callback(on_error, (*req_id, error_messages, from_source));
             dispatcher.push(SnarkUserCommandVerifyAction::Finish { req_id: *req_id });
         }
         SnarkUserCommandVerifyAction::Success { req_id, commands } => {

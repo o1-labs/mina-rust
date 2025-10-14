@@ -44,6 +44,7 @@ pub enum TransactionPoolAction {
     #[action_event(level = warn, fields(debug(errors)))]
     VerifyError {
         errors: Vec<String>,
+        from_source: TransactionPoolMessageSource,
     },
     BestTipChanged {
         best_tip_hash: v2::LedgerHash,

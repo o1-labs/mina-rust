@@ -32,21 +32,22 @@ impl TransactionPoolEffectfulAction {
                     .ledger_manager()
                     .get_accounts(&ledger_hash, account_ids.iter().cloned().collect())
                 {
-                    Ok(accounts) => accounts,
+                    Ok(accounts) => accounts
+                        .into_iter()
+                        .map(|account| (account.id(), account))
+                        .collect::<BTreeMap<_, _>>(),
                     Err(err) => {
                         mina_core::log::error!(
                                 mina_core::log::system_time();
                                 kind = "Error",
                                 summary = "failed to fetch accounts for tx pool",
                                 error = format!("ledger {:?}, error: {:?}", ledger_hash, err));
-                        return;
+
+                        // Call the callback with an empty accounts map
+                        // The verification will fail and the error will be handled by the reducer
+                        BTreeMap::new()
                     }
                 };
-
-                let accounts = accounts
-                    .into_iter()
-                    .map(|account| (account.id(), account))
-                    .collect::<BTreeMap<_, _>>();
 
                 store.dispatch_callback(on_result, (accounts, pending_id, from_source));
             }

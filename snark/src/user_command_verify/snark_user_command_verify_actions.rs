@@ -17,6 +17,12 @@ pub(super) type OnSuccess = Callback<(
     TransactionPoolMessageSource,
 )>;
 
+pub(super) type OnError = Callback<(
+    SnarkUserCommandVerifyId,
+    Vec<String>,
+    TransactionPoolMessageSource,
+)>;
+
 #[derive(Serialize, Deserialize, Debug, Clone, ActionEvent)]
 #[action_event(level = trace, fields(display(req_id), display(error)))]
 pub enum SnarkUserCommandVerifyAction {
@@ -26,7 +32,7 @@ pub enum SnarkUserCommandVerifyAction {
         commands: Vec<WithStatus<verifiable::UserCommand>>,
         from_source: TransactionPoolMessageSource,
         on_success: OnSuccess,
-        on_error: Callback<(SnarkUserCommandVerifyId, Vec<String>)>,
+        on_error: OnError,
     },
     Pending {
         req_id: SnarkUserCommandVerifyId,
