@@ -1,6 +1,9 @@
 pub mod address;
+pub mod balance;
 pub mod generate;
 pub mod send;
+
+use crate::exit_with_error;
 
 #[derive(Debug, clap::Args)]
 pub struct Wallet {
@@ -12,6 +15,8 @@ pub struct Wallet {
 pub enum WalletCommand {
     /// Get the address from an encrypted key file
     Address(address::Address),
+    /// Get account balance via GraphQL
+    Balance(balance::Balance),
     /// Generate a new encrypted key pair
     Generate(generate::Generate),
     /// Send a payment transaction
@@ -20,10 +25,18 @@ pub enum WalletCommand {
 
 impl Wallet {
     pub fn run(self) -> anyhow::Result<()> {
-        match self.command {
+        let result = match self.command {
             WalletCommand::Address(cmd) => cmd.run(),
+            WalletCommand::Balance(cmd) => cmd.run(),
             WalletCommand::Generate(cmd) => cmd.run(),
             WalletCommand::Send(cmd) => cmd.run(),
+        };
+
+        // Handle errors without backtraces for wallet commands
+        if let Err(err) = result {
+            exit_with_error(err);
         }
+
+        Ok(())
     }
 }

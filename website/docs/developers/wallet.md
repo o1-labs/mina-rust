@@ -17,6 +17,40 @@ Before using wallet commands, you need:
 - An encrypted private key file
 - The password to decrypt the key
 - A running Mina node (local or remote) - only required for sending transactions
+  and checking balances
+
+## Generate key pair
+
+Generate a new encrypted key pair for use with Mina.
+
+### Basic usage
+
+```bash
+mina wallet generate --output /path/to/key
+```
+
+### Arguments
+
+**Required:**
+
+- `--output <PATH>` - Path where the encrypted key file will be saved
+
+**Optional:**
+
+- `[PASSWORD]` - Password to encrypt the key. Can be provided as an argument or
+  via the `MINA_PRIVKEY_PASS` environment variable (recommended for security)
+
+### Example
+
+```bash
+# Generate new key with environment variable for password
+export MINA_PRIVKEY_PASS="my-secret-password"
+mina wallet generate --output ./keys/my-new-wallet
+```
+
+This command generates a new random keypair, encrypts the private key with the
+provided password, and saves it to the specified path. It also creates a `.pub`
+file containing the public key.
 
 ## Get address from key file
 
@@ -52,6 +86,115 @@ mina wallet address --from ./keys/my-wallet
 
 This command simply decrypts the key file and displays the associated public
 address. It does not require a connection to a node.
+
+## Check account balance
+
+Query the balance of an account using GraphQL.
+
+### Basic usage
+
+```bash
+# Check balance using key file
+mina wallet balance --from /path/to/encrypted/key
+
+# Check balance using public address
+mina wallet balance --address <PUBLIC_KEY>
+```
+
+### Arguments
+
+**Required (one of):**
+
+- `--from <PATH>` - Path to encrypted key file
+- `--address <PUBLIC_KEY>` - Public key to query directly
+
+**Optional:**
+
+- `[PASSWORD]` - Password to decrypt the key (only required when using
+  `--from`). Can be provided as an argument or via the `MINA_PRIVKEY_PASS`
+  environment variable (recommended for security)
+- `--endpoint <URL>` - GraphQL endpoint URL (default:
+  `http://localhost:3000/graphql`)
+- `--format <FORMAT>` - Output format: `text` (default) or `json`
+
+### Examples
+
+#### Check balance using key file
+
+```bash
+export MINA_PRIVKEY_PASS="my-secret-password"
+mina wallet balance --from ./keys/my-wallet
+```
+
+#### Check balance using public address
+
+```bash
+mina wallet balance \
+  --address B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy
+```
+
+#### Check balance on remote node
+
+```bash
+mina wallet balance \
+  --address B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy \
+  --endpoint https://node.example.com:3000/graphql
+```
+
+#### Get balance in JSON format
+
+```bash
+mina wallet balance \
+  --address B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy \
+  --format json
+```
+
+### Output
+
+The balance command displays:
+
+- **Total balance** - Total amount of MINA in the account (both nanomina and
+  MINA)
+- **Liquid balance** - Amount available for spending
+- **Locked balance** - Amount locked due to vesting schedule
+- **Nonce** - Current account nonce
+- **Delegate** - Public key of the delegate (if set)
+
+#### Text format (default)
+
+```
+Account: B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy
+
+Balance:
+  Total:  1000.000000000 MINA
+  Liquid: 800.000000000 MINA
+  Locked: 200.000000000 MINA
+
+Nonce: 5
+
+Delegate: B62qkfHpLpELqpMK6ZvUTJ5wRqKDRF3UHyJ4Kv3FU79Sgs4qpBnx5RG
+```
+
+#### JSON format
+
+```json
+{
+  "account": "B62qre3erTHfzQckNuibViWQGyyKwZseztqrjPZBv6SQF384Rg6ESAy",
+  "balance": {
+    "total": "1000000000000",
+    "total_mina": "1000.000000000",
+    "liquid": "800000000000",
+    "liquid_mina": "800.000000000",
+    "locked": "200000000000",
+    "locked_mina": "200.000000000"
+  },
+  "nonce": "5",
+  "delegate": "B62qkfHpLpELqpMK6ZvUTJ5wRqKDRF3UHyJ4Kv3FU79Sgs4qpBnx5RG"
+}
+```
+
+The JSON format includes both nanomina (raw values) and formatted MINA values
+for convenience.
 
 ## Send payment
 
