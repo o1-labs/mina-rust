@@ -222,6 +222,25 @@ jobs:
           path: target/release/mina
           retention-days: 7
 
+  account-tests:
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: 1.84
+          cache-prefix: build-v0
+
+      - name: Run account tests
+        run: make test-account
+
   build-tests:
     timeout-minutes: 60
     runs-on: ubuntu-22.04
