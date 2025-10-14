@@ -1,0 +1,186 @@
+---
+sidebar_position: 5
+title: Transactions
+description: Understanding transaction types in the Mina protocol implementation
+slug: /developers/transactions
+---
+
+# Transactions
+
+## Overview
+
+Transactions in Mina represent state changes to the ledger. The protocol
+supports both user-initiated transactions and protocol-generated transactions,
+each serving distinct purposes in the blockchain's operation.
+
+This document provides an entry point for developers to understand how
+transactions are structured and processed in the Rust codebase.
+
+## Transaction Types
+
+The top-level `Transaction` enum represents all possible transactions in the
+Mina protocol:
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic/mod.rs#L1093-L1100 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic/mod.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs#L1093-L1100
+```
+
+### User-Initiated Transactions
+
+**[User Commands](./transactions/user-commands)** are transactions submitted and
+signed by users:
+
+- **[Payment transactions](./transactions/payments)** - Transfer MINA tokens
+  between accounts
+- **[Stake delegation](./transactions/delegations)** - Delegate stake to block
+  producers
+- **[zkApp commands](./transactions/zkapps)** - Execute complex multi-account
+  zero-knowledge operations
+
+### Protocol Transactions
+
+**Protocol transactions** are generated automatically by the system:
+
+- **[Fee transfers](./transactions/fee-transfers)** - Distribute collected
+  transaction fees to block producers
+- **[Coinbase rewards](./transactions/coinbase)** - Issue block production
+  rewards
+
+## Transaction Application Model
+
+Transactions in Mina are applied in two phases:
+
+### First Pass (apply_transaction_first_pass)
+
+The first pass validates preconditions and begins transaction application:
+
+- Validates account existence and permissions
+- Checks nonces and balances
+- Applies fee payments
+- Performs initial state changes
+- Returns `TransactionPartiallyApplied` containing transaction state
+
+**Function:**
+`ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs`
+
+### Second Pass (apply_transaction_second_pass)
+
+The second pass completes the transaction after SNARK work:
+
+- Finalizes account updates
+- Applies protocol-specific logic
+- Updates receipt chain hashes
+- Returns final `TransactionApplied` status
+
+**Function:** `ledger/src/scan_state/transaction_logic/transaction_applied.rs`
+
+## Common Transaction Components
+
+### Fees
+
+All user-initiated transactions require fees:
+
+```rust
+pub struct Fee(Amount);
+```
+
+Fees are paid by the transaction sender (or fee payer in zkApp commands) and
+distributed to block producers through fee transfers.
+
+### Nonces
+
+User accounts maintain nonces to prevent replay attacks:
+
+```rust
+pub struct Nonce(u32);
+```
+
+Each user-initiated transaction must specify the correct nonce, which increments
+after successful application.
+
+### Memos
+
+Transactions can include optional 32-byte memos:
+
+```rust
+pub struct Memo {
+    data: [u8; MEMO_BYTES],
+}
+```
+
+Memos provide auxiliary information and are included in transaction commitments.
+
+### Slots
+
+Transactions include validity windows using slot numbers:
+
+```rust
+pub struct Slot(u32);
+```
+
+The `valid_until` field specifies when a transaction expires.
+
+## Account Creation
+
+Creating new accounts requires an account creation fee (1 MINA by default):
+
+```rust
+ConstraintConstants {
+    account_creation_fee: 1_000_000_000, // 1 MINA in nanomina
+    // ...
+}
+```
+
+The fee is deducted from the amount being transferred or received:
+
+- **Payments**: Sender pays `amount + fee + account_creation_fee`
+- **Fee transfers**: Receiver gets `fee_amount - account_creation_fee`
+- **Coinbase**: Receiver gets `coinbase_amount - account_creation_fee`
+
+## Transaction Status
+
+After application, transactions have a status:
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic/mod.rs#L240-L243 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic/mod.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs#L240-L243
+```
+
+Failed transactions may still consume fees in some cases (zkApp commands with
+fee payer failures).
+
+## Testing
+
+Comprehensive tests for each transaction type verify correct ledger updates:
+
+- `tests/test_transaction_logic_first_pass.rs` - Payment transactions
+- `tests/test_transaction_logic_first_pass_delegation.rs` - Stake delegations
+- `tests/test_transaction_logic_first_pass_fee_transfer.rs` - Fee transfers
+- `tests/test_transaction_logic_first_pass_coinbase.rs` - Coinbase rewards
+- `tests/test_transaction_logic_first_pass_zkapp.rs` - zkApp commands
+
+## Further Reading
+
+- [Payment Transactions](./transactions/payments) - Transferring tokens between
+  accounts
+- [Stake Delegation](./transactions/delegations) - Delegating stake to block
+  producers
+- [Fee Transfers](./transactions/fee-transfers) - Protocol fee distribution
+- [Coinbase Rewards](./transactions/coinbase) - Block production rewards
+- [zkApp Commands](./transactions/zkapps) - Zero-knowledge applications
+
+## Related Files
+
+- `ledger/src/scan_state/transaction_logic/mod.rs` - Transaction type
+  definitions
+- `ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs` -
+  First pass application
+- `ledger/src/scan_state/transaction_logic/transaction_applied.rs` - Second pass
+  application
+- `ledger/src/scan_state/transaction_logic/signed_command.rs` - Signed command
+  types
+- `ledger/src/scan_state/transaction_logic/zkapp_command/` - zkApp command
+  implementation
