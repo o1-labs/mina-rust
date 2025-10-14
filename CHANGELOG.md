@@ -40,6 +40,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
 - **CI/Documentation**: add a script to check the references to the OCaml code
   ([#1525](https://github.com/o1-labs/mina-rust/pull/1525)).
+- **mina-node-account**: move tests into `node/account/tests`, document the
+  library and run the tests in CI
+  ([#1540](https://github.com/o1-labs/mina-rust/pull/1540)).
 
 ### Changed
 
