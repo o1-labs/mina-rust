@@ -34,6 +34,7 @@ dialoguer = { workspace = true }
 mina-core = { path = "../core" }
 mina-node-account = { workspace = true }
 mina-node-native = { path = "../node/native" }
+mina-signer = { workspace = true }
 nix = { workspace = true, features = ["signal"] }
 node = { path = "../node", features = ["replay"] }
 serde_json = { workspace = true }

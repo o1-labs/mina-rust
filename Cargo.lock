@@ -1752,6 +1752,7 @@ dependencies = [
  "mina-node-account",
  "mina-node-native",
  "mina-p2p-messages",
+ "mina-signer",
  "mina-tree",
  "nix 0.27.1",
  "node",
