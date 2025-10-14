@@ -43,14 +43,14 @@ pub enum Command {
 }
 
 impl Command {
-    pub fn run(self) -> anyhow::Result<()> {
+    pub fn run(self, network: Network) -> anyhow::Result<()> {
         match self {
             Self::Snark(v) => v.run(),
             Self::Node(v) => v.run(),
             Self::Misc(v) => v.run(),
             Self::Replay(v) => v.run(),
             Self::BuildInfo(v) => v.run(),
-            Self::Wallet(v) => v.run(),
+            Self::Wallet(v) => v.run(network),
         }
     }
 }

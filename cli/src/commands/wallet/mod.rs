@@ -2,7 +2,9 @@ pub mod address;
 pub mod balance;
 pub mod generate;
 pub mod send;
+pub mod status;
 
+use super::Network;
 use crate::exit_with_error;
 
 #[derive(Debug, clap::Args)]
@@ -21,15 +23,18 @@ pub enum WalletCommand {
     Generate(generate::Generate),
     /// Send a payment transaction
     Send(send::Send),
+    /// Check transaction status
+    Status(status::Status),
 }
 
 impl Wallet {
-    pub fn run(self) -> anyhow::Result<()> {
+    pub fn run(self, network: Network) -> anyhow::Result<()> {
         let result = match self.command {
             WalletCommand::Address(cmd) => cmd.run(),
             WalletCommand::Balance(cmd) => cmd.run(),
             WalletCommand::Generate(cmd) => cmd.run(),
-            WalletCommand::Send(cmd) => cmd.run(),
+            WalletCommand::Send(cmd) => cmd.run(network),
+            WalletCommand::Status(cmd) => cmd.run(),
         };
 
         // Handle errors without backtraces for wallet commands

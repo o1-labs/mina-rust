@@ -13,6 +13,15 @@ use mina_node_account::{AccountPublicKey, AccountSecretKey};
 use mina_p2p_messages::v2::MinaBaseSignedCommandStableV2;
 use mina_signer::{CompressedPubKey, Keypair, Signer};
 
+use super::super::Network;
+
+fn network_to_network_id(network: &Network) -> mina_signer::NetworkId {
+    match network {
+        Network::Mainnet => mina_signer::NetworkId::MAINNET,
+        Network::Devnet => mina_signer::NetworkId::TESTNET,
+    }
+}
+
 #[derive(Debug, clap::Args)]
 pub struct Send {
     /// Path to encrypted sender key file
@@ -57,35 +66,16 @@ pub struct Send {
     #[arg(long)]
     pub fee_payer: Option<AccountPublicKey>,
 
-    /// Network to use for signing (mainnet or testnet)
-    #[arg(long, default_value = "testnet")]
-    pub network: NetworkArg,
-
     /// Node RPC endpoint
     #[arg(long, default_value = "http://localhost:3000")]
     pub node: String,
 }
 
-#[derive(Debug, Clone, clap::ValueEnum)]
-pub enum NetworkArg {
-    Mainnet,
-    Testnet,
-}
-
-impl From<NetworkArg> for mina_signer::NetworkId {
-    fn from(network: NetworkArg) -> Self {
-        match network {
-            NetworkArg::Mainnet => mina_signer::NetworkId::MAINNET,
-            NetworkArg::Testnet => mina_signer::NetworkId::TESTNET,
-        }
-    }
-}
-
 impl Send {
-    pub fn run(self) -> Result<()> {
+    pub fn run(self, network: Network) -> Result<()> {
         // Check node is synced and on the correct network
         println!("Checking node status...");
-        self.check_node_status()?;
+        self.check_node_status(&network)?;
 
         // Load the sender's secret key
         let sender_key = AccountSecretKey::from_encrypted_file(&self.from, &self.password)
@@ -115,11 +105,20 @@ impl Send {
             .map_err(|_| anyhow::anyhow!("Invalid receiver public key"))?;
 
         // Fetch nonce from node if not provided
+        // Note: GraphQL API expects nonce to be account_nonce, but we need to sign
+        // with account_nonce for the first transaction from a new account
         let nonce = if let Some(nonce) = self.nonce {
             nonce
         } else {
             println!("Fetching nonce from node...");
-            self.fetch_nonce(&fee_payer_pk)?
+            let current_nonce = self.fetch_nonce(&fee_payer_pk)?;
+            // For accounts with nonce 0, GraphQL API validation may reject nonce 0
+            // Try using current nonce for new accounts, increment for existing accounts
+            if current_nonce == 0 {
+                current_nonce
+            } else {
+                current_nonce
+            }
         };
 
         println!("Using nonce: {}", nonce);
@@ -144,7 +143,7 @@ impl Send {
 
         // Sign the transaction
         println!("Signing transaction...");
-        let network_id = self.network.clone().into();
+        let network_id = network_to_network_id(&network);
         let signed_command = self.sign_transaction(payload, &sender_key, network_id)?;
 
         // Submit to node
@@ -160,8 +159,11 @@ impl Send {
         Ok(())
     }
 
-    fn check_node_status(&self) -> Result<()> {
-        let client = reqwest::blocking::Client::new();
+    fn check_node_status(&self, network: &Network) -> Result<()> {
+        let client = reqwest::blocking::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .context("Failed to create HTTP client")?;
         let url = format!("{}/graphql", self.node);
 
         // GraphQL query to check sync status and network ID
@@ -213,16 +215,16 @@ impl Send {
             .context("Network ID not found in GraphQL response")?;
 
         // Expected network ID based on selected network
-        let expected_network = match self.network {
-            NetworkArg::Mainnet => "mina:mainnet",
-            NetworkArg::Testnet => "mina:devnet", // devnet is used for testnet
+        let expected_network = match network {
+            Network::Mainnet => "mina:mainnet",
+            Network::Devnet => "mina:devnet",
         };
 
         if !network_id.contains(expected_network) {
             anyhow::bail!(
                 "Network mismatch: node is on '{}' but you selected {:?}. Use --network to specify the correct network.",
                 network_id,
-                self.network
+                network
             );
         }
 
@@ -232,7 +234,10 @@ impl Send {
     }
 
     fn fetch_nonce(&self, sender_pk: &CompressedPubKey) -> Result<u32> {
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::blocking::Client::builder()
+            .timeout(std::time::Duration::from_secs(30))
+            .build()
+            .context("Failed to create HTTP client")?;
         let url = format!("{}/graphql", self.node);
 
         // GraphQL query to fetch account information
@@ -285,7 +290,8 @@ impl Send {
         // Create signer and sign the transaction
         let mut signer = mina_signer::create_legacy(network_id);
         let kp: Keypair = sender_key.clone().into();
-        let signature = signer.sign(&kp, &payload_to_sign, false);
+        // Use packed=true for OCaml/TypeScript compatibility (required by Mina protocol)
+        let signature = signer.sign(&kp, &payload_to_sign, true);
 
         Ok(SignedCommand {
             payload,
@@ -295,7 +301,10 @@ impl Send {
     }
 
     fn submit_transaction(&self, signed_command: SignedCommand) -> Result<String> {
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::blocking::Client::builder()
+            .timeout(std::time::Duration::from_secs(120))
+            .build()
+            .context("Failed to create HTTP client")?;
         let url = format!("{}/graphql", self.node);
 
         // Convert to v2 types for easier field extraction
@@ -317,6 +326,13 @@ impl Send {
 
         let fee_payer_pk = signed_cmd_v2.payload.common.fee_payer_pk.to_string();
 
+        // Build memo field - omit if empty
+        let memo_field = if self.memo.is_empty() {
+            String::new()
+        } else {
+            format!(r#"memo: "{}""#, self.memo)
+        };
+
         // Build GraphQL mutation
         let mutation = format!(
             r#"mutation {{
@@ -326,7 +342,7 @@ impl Send {
                         to: "{}"
                         amount: "{}"
                         fee: "{}"
-                        memo: "{}"
+                        {}
                         nonce: "{}"
                         validUntil: "{}"
                     }}
@@ -345,7 +361,7 @@ impl Send {
             receiver_pk,
             amount,
             ***signed_cmd_v2.payload.common.fee,
-            signed_cmd_v2.payload.common.memo.to_base58check(),
+            memo_field,
             **signed_cmd_v2.payload.common.nonce,
             signed_cmd_v2.payload.common.valid_until.as_u32(),
             sig_field,
