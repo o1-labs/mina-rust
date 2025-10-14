@@ -589,16 +589,6 @@ pub struct IndexedPoolConfig {
     slot_tx_end: Option<Slot>,
 }
 
-// module Config = struct
-//   type t =
-//     { constraint_constants : Genesis_constants.Constraint_constants.t
-//     ; consensus_constants : Consensus.Constants.t
-//     ; time_controller : Block_time.Controller.t
-//     ; slot_tx_end : Mina_numbers.Global_slot_since_hard_fork.t option
-//     }
-//   [@@deriving sexp_of, equal, compare]
-// end
-
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct IndexedPool {
     /// Transactions valid against the current ledger, indexed by fee per

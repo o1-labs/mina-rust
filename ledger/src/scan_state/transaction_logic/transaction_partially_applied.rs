@@ -678,33 +678,6 @@ fn update_timing_when_no_deduction(
     validate_timing(account, Amount::zero(), txn_global_slot)
 }
 
-// /// TODO: Move this to the ledger
-// /// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/mina_ledger/ledger.ml#L311>
-// fn get_or_create<L>(
-//     ledger: &mut L,
-//     account_id: &AccountId,
-// ) -> Result<(AccountState, Account, Address), String>
-// where
-//     L: LedgerIntf,
-// {
-//     let location = ledger
-//         .get_or_create_account(account_id.clone(), Account::initialize(account_id))
-//         .map_err(|e| format!("{:?}", e))?;
-
-//     let action = match location {
-//         GetOrCreated::Added(_) => AccountState::Added,
-//         GetOrCreated::Existed(_) => AccountState::Existed,
-//     };
-
-//     let addr = location.addr();
-
-//     let account = ledger
-//         .get(addr.clone())
-//         .expect("get_or_create: Account was not found in the ledger after creation");
-
-//     Ok((action, account, addr))
-// }
-
 fn get_new_accounts<T>(action: AccountState, data: T) -> Option<T> {
     match action {
         AccountState::Added => Some(data),
