@@ -1,5 +1,4 @@
-use std::{fmt, fs, io, path::Path, str::FromStr};
-
+use super::AccountPublicKey;
 use mina_core::{
     constants::GENESIS_PRODUCER_SK, EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError,
 };
@@ -7,8 +6,7 @@ use mina_p2p_messages::{bigint::BigInt, v2::SignatureLibPrivateKeyStableV1};
 use mina_signer::{keypair::KeypairError, seckey::SecKeyError, CompressedPubKey, Keypair};
 use rand::{rngs::StdRng, CryptoRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
-
-use super::AccountPublicKey;
+use std::{fmt, fs, io, path::Path, str::FromStr};
 
 #[derive(Clone)]
 pub struct AccountSecretKey(Keypair);
