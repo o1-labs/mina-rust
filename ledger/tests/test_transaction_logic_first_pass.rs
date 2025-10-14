@@ -154,7 +154,7 @@ fn test_apply_payment_success() {
         next_epoch_data: dummy_epoch_data(),
     };
     let result = apply_transaction_first_pass(
-        &constraint_constants,
+        constraint_constants,
         Slot::from_u32(0),
         &state_view,
         &mut ledger,
@@ -261,7 +261,7 @@ fn test_apply_payment_insufficient_balance() {
         next_epoch_data: dummy_epoch_data(),
     };
     let result = apply_transaction_first_pass(
-        &constraint_constants,
+        constraint_constants,
         Slot::from_u32(0),
         &state_view,
         &mut ledger,
@@ -351,7 +351,7 @@ fn test_apply_payment_invalid_nonce() {
         next_epoch_data: dummy_epoch_data(),
     };
     let result = apply_transaction_first_pass(
-        &constraint_constants,
+        constraint_constants,
         Slot::from_u32(0),
         &state_view,
         &mut ledger,
@@ -423,7 +423,7 @@ fn test_apply_payment_nonexistent_fee_payer() {
         next_epoch_data: dummy_epoch_data(),
     };
     let result = apply_transaction_first_pass(
-        &constraint_constants,
+        constraint_constants,
         Slot::from_u32(0),
         &state_view,
         &mut ledger,
