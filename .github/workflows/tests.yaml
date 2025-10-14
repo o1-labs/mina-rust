@@ -20,6 +20,7 @@ env:
   RUST_STABLE_VERSION: "1.84"
   RUST_NIGHTLY_VERSION: "nightly"
   OCAML_VERSION: "4.14.2"
+  CACHE_VERSION: "v0"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -58,7 +59,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: ledger-v0
+          cache-prefix: ledger-${{ env.CACHE_VERSION }}
 
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits
@@ -83,7 +84,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: p2p-messages-v0
+          cache-prefix: p2p-messages-${{ env.CACHE_VERSION }}
 
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits
@@ -143,7 +144,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: vrf-v0
+          cache-prefix: vrf-${{ env.CACHE_VERSION }}
 
       - name: Build vrf tests
         run: make build-vrf
@@ -165,7 +166,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: p2p-v0
+          cache-prefix: p2p-${{ env.CACHE_VERSION }}
 
       - name: Test p2p crate
         run: make test-p2p
@@ -190,7 +191,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: build-v0
+          cache-prefix: build-${{ env.CACHE_VERSION }}
 
       - name: Release build
         run: make build-release
@@ -233,7 +234,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: build-v0
+          cache-prefix: build-${{ env.CACHE_VERSION }}
 
       - name: Run account tests
         run: make test-account
@@ -257,7 +258,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: build-tests-v0
+          cache-prefix: build-tests-${{ env.CACHE_VERSION }}
 
       - name: Build tests
         run: make build-tests
@@ -288,7 +289,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: build-tests-webrtc-v0
+          cache-prefix: build-tests-webrtc-${{ env.CACHE_VERSION }}
 
       - name: Build tests
         run: make build-tests-webrtc
@@ -314,7 +315,7 @@ jobs:
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: build-wasm-v0
+          cache-prefix: build-wasm-${{ env.CACHE_VERSION }}
 
       - name: Setup wasm tooling
         run: make setup-wasm
