@@ -20,9 +20,9 @@ jobs:
           - node_name: Rust Node
             endpoint: http://mina-rust-plain-3.gcp.o1test.net/graphql
           - node_name: Caml Node
-            endpoint: http://devnet-plain-1.gcp.o1test.net/graphql
+            endpoint: https://devnet-plain-1.gcp.o1test.net/graphql
           - node_name: Mainnet Caml Node
-            endpoint: http://mainnet-plain-1.gcp.o1test.net/graphql
+            endpoint: https://mainnet-plain-1.gcp.o1test.net/graphql
     env:
       GRAPHQL_ENDPOINT: ${{ matrix.endpoint }}
 
