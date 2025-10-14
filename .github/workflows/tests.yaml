@@ -239,6 +239,31 @@ jobs:
       - name: Run account tests
         run: make test-account
 
+  wallet-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Download mina binary
+        uses: actions/download-artifact@v5
+        with:
+          name: bin-${{ github.sha }}
+
+      - name: Make binary executable
+        run: chmod +x mina
+
+      - name: Create target/release directory
+        run: mkdir -p target/release
+
+      - name: Move binary to expected location
+        run: mv mina target/release/
+
+      - name: Run wallet tests
+        run: make test-wallet
+
   build-tests:
     timeout-minutes: 60
     runs-on: ubuntu-22.04
