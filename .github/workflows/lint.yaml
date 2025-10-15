@@ -21,18 +21,22 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
           ocaml_version: ${{ env.OCAML_VERSION }}
+
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_STABLE_VERSION }}
           components: clippy, rustfmt
           cache-prefix: lint-${{ env.RUST_STABLE_VERSION }}-v0
+
       - name: Run make check
         run: make check
+
       - name: Run make lint
         run: make lint
 
@@ -51,16 +55,19 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
+
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
           ocaml_version: ${{ env.OCAML_VERSION }}
+
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
           components: clippy, rustfmt
           cache-prefix: lint-tx-fuzzing-${{ env.RUST_NIGHTLY_VERSION }}-v0
+
       - name: Run transaction Fuzzing check
         run: make check-tx-fuzzing
 
@@ -73,10 +80,12 @@ jobs:
         os: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v5
+
       - name: Install shellcheck
         run: |
           sudo apt update || true
           sudo apt install -y shellcheck || true
+
       - name: Run shellcheck
         run: make lint-bash
 
@@ -89,10 +98,12 @@ jobs:
         os: [ubuntu-24.04]
     steps:
       - uses: actions/checkout@v5
+
       - name: Install hadolint
         run: |
           wget -O /tmp/hadolint https://github.com/hadolint/hadolint/releases/latest/download/hadolint-Linux-x86_64
           chmod +x /tmp/hadolint
           sudo mv /tmp/hadolint /usr/local/bin/hadolint
+
       - name: Run hadolint
         run: make lint-dockerfiles
