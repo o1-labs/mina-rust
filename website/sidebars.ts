@@ -90,6 +90,7 @@ const sidebars: SidebarsConfig = {
       label: 'APIs and Data',
       items: [
         'developers/graphql-api',
+        'developers/wallet',
         'developers/archive-database-queries',
       ],
     },

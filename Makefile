@@ -309,6 +309,15 @@ test-vrf: ## Run VRF tests, requires nightly Rust
 test-account: ## Run account tests
 	@cargo test -p mina-node-account
 
+.PHONY: test-wallet
+test-wallet: ## Run wallet CLI end-to-end tests
+	@echo "Running wallet CLI tests..."
+	@for script in .github/scripts/wallet/*.sh; do \
+		echo "Running $$script..."; \
+		$$script || exit 1; \
+	done
+	@echo "All wallet tests passed!"
+
 .PHONY: test-p2p-messages
 test-p2p-messages:
 	cargo test -p mina-p2p-messages --tests --release

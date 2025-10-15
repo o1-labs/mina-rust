@@ -239,6 +239,35 @@ jobs:
       - name: Run account tests
         run: make test-account
 
+  wallet-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Download mina binary
+        uses: actions/download-artifact@v5
+        with:
+          name: bin-${{ github.sha }}
+
+      - name: Make binary executable
+        run: chmod +x mina
+
+      - name: Create target/release directory
+        run: mkdir -p target/release
+
+      - name: Move binary to expected location
+        run: mv mina target/release/
+
+      - name: Run wallet tests
+        env:
+          MINA_PRIVKEY_PASS: ${{ secrets.MINA_PRIVKEY_PASS }}
+          MINA_NODE_ENDPOINT: http://mina-rust-plain-1.gcp.o1test.net/graphql
+          MINA_E2E_TEST_MEMO: MINA_RUST PR#${{ github.event.pull_request.number }}
+        run: make test-wallet
+
   build-tests:
     timeout-minutes: 60
     runs-on: ubuntu-22.04

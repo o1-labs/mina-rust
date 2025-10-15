@@ -50,6 +50,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   should have on the ledger. Also, document the different types of transactions
   that can be used to modify the ledger
 ([#1541](https://github.com/o1-labs/mina-rust/pull/1541))
+- **CLI**: introduce a subcommand `wallet` to be able to send transactions, get
+  the public key and address from the secret key, get balance and generate
+  wallets from the CLI. End-to-end tests are added in the CI and a new target
+  `make test-wallet` has been added. This focuses on basic payments
+  ([#1543](https://github.com/o1-labs/mina-rust/pull/1543))
 
 ### Changed
 
