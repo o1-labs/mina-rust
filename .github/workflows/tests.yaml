@@ -265,6 +265,7 @@ jobs:
         env:
           MINA_PRIVKEY_PASS: ${{ secrets.MINA_PRIVKEY_PASS }}
           MINA_NODE_ENDPOINT: http://mina-rust-plain-1.gcp.o1test.net/graphql
+          MINA_E2E_TEST_MEMO: MINA_RUST PR#${{ github.event.pull_request.number }}
         run: make test-wallet
 
   build-tests:

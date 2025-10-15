@@ -35,26 +35,41 @@ AMOUNT="1"
 # 1000000 nanomina = 0.001 MINA (small but acceptable fee)
 FEE="1000000"
 
+# Optional memo from environment variable (empty by default)
+MEMO="${MINA_E2E_TEST_MEMO:-}"
+
 echo "Test: Send transaction to same account (e2e test)"
 echo "Key file: $KEY_FILE"
 echo "Receiver: $RECEIVER"
 echo "Amount: $AMOUNT nanomina"
 echo "Fee: $FEE nanomina"
 echo "Node endpoint: $NODE_ENDPOINT"
+if [ -n "$MEMO" ]; then
+    echo "Memo: $MEMO"
+fi
 echo ""
 
 # Export password for the CLI
 export MINA_PRIVKEY_PASS="$PASSWORD"
 
+# Build send command arguments
+SEND_ARGS=(
+  --from "$KEY_FILE"
+  --to "$RECEIVER"
+  --amount "$AMOUNT"
+  --fee "$FEE"
+  --node "$NODE_ENDPOINT"
+  --network devnet
+)
+
+# Add memo if running in CI
+if [ -n "$MEMO" ]; then
+    SEND_ARGS+=(--memo "$MEMO")
+fi
+
 # Run the wallet send command
 echo "Sending transaction..."
-SEND_OUTPUT=$(./target/release/mina wallet send \
-  --from "$KEY_FILE" \
-  --to "$RECEIVER" \
-  --amount "$AMOUNT" \
-  --fee "$FEE" \
-  --node "$NODE_ENDPOINT" \
-  --network devnet 2>&1 || true)
+SEND_OUTPUT=$(./target/release/mina wallet send "${SEND_ARGS[@]}" 2>&1 || true)
 
 echo "Send command output:"
 echo "$SEND_OUTPUT"
