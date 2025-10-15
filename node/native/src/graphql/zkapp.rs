@@ -1568,7 +1568,7 @@ mod test {
     }
 
     #[test]
-    fn test_parse_zkap() {
+    fn test_parse_zkapp_bug_1464_no_proof_nor_signature() {
         let input = create_input_graphql_zkapp_bug_1464();
         let _converted: MinaBaseUserCommandStableV2 = input
             .zkapp_command
