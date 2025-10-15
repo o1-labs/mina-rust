@@ -1630,7 +1630,7 @@ mod test {
         };
         let converted: MinaBaseControlStableV2 =
             proof.try_into().expect("Error parsing None given auth");
-        
+
         assert_eq!(converted, MinaBaseControlStableV2::NoneGiven);
     }
 

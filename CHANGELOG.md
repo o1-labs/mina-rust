@@ -101,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Ledger**: document, clean and add tests for the crate `mina-tree`
   ([#1531](https://github.com/o1-labs/mina-rust/pull/1531)).
 - **GRAPHQL**: fixed parsing when neither signature nor proof is given Issue [#1464](https://github.com/o1-labs/mina-rust/issues/1464)
-  ([#1546](https://github.com/o1-labs/mina-rust/pull/1546)) 
+  ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
 
 ## v0.17.0
 
