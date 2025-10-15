@@ -67,6 +67,9 @@ build: ## Build the project in debug mode
 build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
 	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
 
+build-node-native: ## Build the package mina-node-native with all features and tests
+	@cargo build -p mina-node-native --all-features --release --tests
+
 .PHONY: build-release
 build-release: ## Build the project in release mode
 	@cargo build --release --package=cli --bin mina
@@ -321,6 +324,10 @@ test-wallet: ## Run wallet CLI end-to-end tests
 .PHONY: test-p2p-messages
 test-p2p-messages:
 	cargo test -p mina-p2p-messages --tests --release
+
+.PHONY: test-node-native
+test-node-native: build-node-native ## Run the unit/integration tests of the package mina-node-native
+	cargo test -p mina-node-native --all-features --release --tests
 
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
