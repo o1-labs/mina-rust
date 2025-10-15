@@ -32,8 +32,8 @@ RECEIVER=$(cat "$PUBKEY_FILE")
 # Use minimal amounts to avoid draining the account
 # 1 nanomina = smallest unit
 AMOUNT="1"
-# 1000000 nanomina = 0.001 MINA (small but acceptable fee)
-FEE="1000000"
+# 1000000 nanomina = 0.1 MINA (small but acceptable fee)
+FEE="100000000"
 
 # Optional memo from environment variable (empty by default)
 MEMO="${MINA_E2E_TEST_MEMO:-}"
