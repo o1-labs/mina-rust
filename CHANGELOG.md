@@ -55,6 +55,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   wallets from the CLI. End-to-end tests are added in the CI and a new target
   `make test-wallet` has been added. This focuses on basic payments
   ([#1543](https://github.com/o1-labs/mina-rust/pull/1543))
+- **Makefile**: add targets to only build and run tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
+- **CI**: add a step in tests to run the unit/integration tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
 
 ### Changed
 

@@ -70,6 +70,25 @@ jobs:
       - name: Run ledger tests
         run: make test-ledger
 
+  mina-node-native-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: mina-node-native-${{ env.CACHE_VERSION }}
+
+      - name: Test mina-node-native crate
+        run: make test-node-native
+
   p2p-messages-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
