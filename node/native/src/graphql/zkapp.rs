@@ -324,6 +324,8 @@ impl TryFrom<InputGraphQLAuthorization> for MinaBaseControlStableV2 {
                 )?;
                 Ok(MinaBaseControlStableV2::Proof(Box::new(proof)))
             }
+            // Handle no auth case
+            (None, None) => Ok(MinaBaseControlStableV2::NoneGiven),
             _ => Err(ConversionError::Custom(
                 "Either signature or proof must be provided, but not both".into(),
             )),
