@@ -54,7 +54,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the public key and address from the secret key, get balance and generate
   wallets from the CLI. End-to-end tests are added in the CI and a new target
   `make test-wallet` has been added. This focuses on basic payments
-  ([#1543](https://github.com/o1-labs/mina-rust/pull/1543).
+  ([#1543](https://github.com/o1-labs/mina-rust/pull/1543)).
 
 ### Changed
 
