@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI**: add devnet and mainnet Caml nodes to remote GraphQL test suite to
+  ensure compatibility between Rust and OCaml implementations
+  ([#1542](https://github.com/o1-labs/mina-rust/pull/1542))
 - **CI**: add workflow to test GraphQL queries with the OCaml node
   ([#1465](https://github.com/o1-labs/mina-rust/pull/1465))
 - **Website**: add o1Labs infrastructure entry, describing the nodes managed by
