@@ -99,7 +99,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   reusing build caches for efficiency
   ([#1539](https://github.com/o1-labs/mina-rust/pull/1539))
 - **Ledger**: document, clean and add tests for the crate `mina-tree`
-  ([#1531](https://github.com/o1-labs/mina-rust/pull/1531).
+  ([#1531](https://github.com/o1-labs/mina-rust/pull/1531)).
+- **GraphQL**: fixed parsing when neither signature nor proof is given.
+  See issue [#1464](https://github.com/o1-labs/mina-rust/issues/1464).
+  Fixed in [#1546](https://github.com/o1-labs/mina-rust/pull/1546/)
+  ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
 
 ## v0.17.0
 
