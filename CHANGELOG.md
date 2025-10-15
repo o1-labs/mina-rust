@@ -46,6 +46,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **mina-node-account**: move tests into `node/account/tests`, document the
   library and run the tests in CI
   ([#1540](https://github.com/o1-labs/mina-rust/pull/1540)).
+- **Ledger**: add tests to verify some properties transaction application
+  should have on the ledger. Also, document the different types of transactions
+  that can be used to modify the ledger
+([#1541](https://github.com/o1-labs/mina-rust/pull/1541))
 
 ### Changed
 

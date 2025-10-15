@@ -1051,10 +1051,51 @@ impl GenericTransaction for Transaction {
     }
 }
 
+/// Top-level transaction type representing all possible transactions in the
+/// Mina protocol.
+///
+/// Transactions in Mina fall into two categories:
+///
+/// ## User-initiated transactions
+///
+/// - [`Command`](Transaction::Command): User-initiated transactions that can be
+///   either signed commands (payments and stake delegations) or zkApp commands
+///   (complex multi-account zero-knowledge operations). These transactions are
+///   submitted by users, require signatures, and pay fees to block producers.
+///
+/// ## Protocol transactions
+///
+/// - [`FeeTransfer`](Transaction::FeeTransfer): System-generated transaction
+///   that distributes collected transaction fees to block producers. Created
+///   automatically during block production and does not require user signatures.
+/// - [`Coinbase`](Transaction::Coinbase): System-generated transaction that
+///   rewards block producers for successfully producing a block. May include an
+///   optional fee transfer component to split rewards.
+///
+/// # Transaction processing
+///
+/// All transactions are processed through the two-phase application model
+/// ([`apply_transaction_first_pass`] and [`apply_transaction_second_pass`]) to
+/// enable efficient proof generation. Protocol transactions (fee transfers and
+/// coinbase) complete entirely in the first pass, while user commands may
+/// require both passes.
+///
+/// # Serialization
+///
+/// The type uses [`derive_more::From`] for automatic conversion from variant
+/// types and implements conversion to/from the p2p wire format
+/// [`MinaTransactionTransactionStableV2`].
+///
+/// OCaml reference: src/lib/transaction/transaction.ml L:8-11
+/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// Last verified: 2025-10-10
 #[derive(Clone, Debug, derive_more::From)]
 pub enum Transaction {
+    /// User-initiated transaction: signed command or zkApp command
     Command(UserCommand),
+    /// System-generated fee distribution to block producers
     FeeTransfer(FeeTransfer),
+    /// System-generated block reward for block producer
     Coinbase(Coinbase),
 }
 
