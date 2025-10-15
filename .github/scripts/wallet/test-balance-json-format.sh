@@ -1,8 +1,16 @@
 #!/bin/bash
 
-set -euo pipefail
-
 # Test the wallet balance command JSON format output structure
+
+# Check for required environment variables before enabling strict mode
+if [ -z "${MINA_NODE_ENDPOINT:-}" ]; then
+    echo "Error: MINA_NODE_ENDPOINT environment variable is not set"
+    echo "Please set it to a GraphQL endpoint URL, e.g.:"
+    echo "  export MINA_NODE_ENDPOINT=http://mina-rust-plain-1.gcp.o1test.net/graphql"
+    exit 1
+fi
+
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
@@ -18,7 +26,7 @@ fi
 echo "Test: Verify JSON format output structure"
 JSON_OUTPUT=$(./target/release/mina wallet balance \
     --address "B62qkiqPXFDayJV8JutYvjerERZ35EKrdmdcXh3j1rDUHRs1bJkFFcX" \
-    --endpoint "http://mina-rust-plain-1.gcp.o1test.net/graphql" \
+    --endpoint "$MINA_NODE_ENDPOINT" \
     --format json 2>&1 || true)
 
 echo "JSON format output:"

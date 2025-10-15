@@ -1,8 +1,16 @@
 #!/bin/bash
 
-set -euo pipefail
-
 # Test the wallet balance command with --from key file (text format)
+
+# Check for required environment variables before enabling strict mode
+if [ -z "${MINA_NODE_ENDPOINT:-}" ]; then
+    echo "Error: MINA_NODE_ENDPOINT environment variable is not set"
+    echo "Please set it to a GraphQL endpoint URL, e.g.:"
+    echo "  export MINA_NODE_ENDPOINT=http://mina-rust-plain-1.gcp.o1test.net/graphql"
+    exit 1
+fi
+
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
@@ -14,7 +22,7 @@ PASSWORD="test-password"
 
 echo "Test: Verify --from option works with key file (text format)"
 export MINA_PRIVKEY_PASS="$PASSWORD"
-BALANCE_OUTPUT=$(./target/release/mina wallet balance --from "$KEY_FILE" --endpoint "http://mina-rust-plain-1.gcp.o1test.net/graphql" --format text 2>&1 || true)
+BALANCE_OUTPUT=$(./target/release/mina wallet balance --from "$KEY_FILE" --endpoint "$MINA_NODE_ENDPOINT" --format text 2>&1 || true)
 
 echo "Balance command output:"
 echo "$BALANCE_OUTPUT"

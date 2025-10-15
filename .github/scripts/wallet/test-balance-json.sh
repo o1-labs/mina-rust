@@ -1,8 +1,16 @@
 #!/bin/bash
 
-set -euo pipefail
-
 # Test the wallet balance command with --address (JSON format)
+
+# Check for required environment variables before enabling strict mode
+if [ -z "${MINA_NODE_ENDPOINT:-}" ]; then
+    echo "Error: MINA_NODE_ENDPOINT environment variable is not set"
+    echo "Please set it to a GraphQL endpoint URL, e.g.:"
+    echo "  export MINA_NODE_ENDPOINT=http://mina-rust-plain-1.gcp.o1test.net/graphql"
+    exit 1
+fi
+
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
@@ -19,7 +27,7 @@ fi
 PUBLIC_KEY=$(cat "tests/files/accounts/test-block-producer.pub")
 
 echo "Test: Verify --address option works with public key (JSON format)"
-BALANCE_JSON=$(./target/release/mina wallet balance --address "$PUBLIC_KEY" --endpoint "http://mina-rust-plain-1.gcp.o1test.net/graphql" --format json 2>&1 || true)
+BALANCE_JSON=$(./target/release/mina wallet balance --address "$PUBLIC_KEY" --endpoint "$MINA_NODE_ENDPOINT" --format json 2>&1 || true)
 
 echo "Balance command output:"
 echo "$BALANCE_JSON"

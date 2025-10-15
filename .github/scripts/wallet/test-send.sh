@@ -1,9 +1,17 @@
 #!/bin/bash
 
-set -euo pipefail
-
 # Test the wallet send command by sending a transaction to the same account
 # Uses a very small fee to avoid draining the account on each PR
+
+# Check for required environment variables before enabling strict mode
+if [ -z "${MINA_NODE_ENDPOINT:-}" ]; then
+    echo "Error: MINA_NODE_ENDPOINT environment variable is not set"
+    echo "Please set it to a GraphQL endpoint URL, e.g.:"
+    echo "  export MINA_NODE_ENDPOINT=http://mina-rust-plain-1.gcp.o1test.net/graphql"
+    exit 1
+fi
+
+set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/../../.." && pwd)"
@@ -12,7 +20,7 @@ cd "$REPO_ROOT"
 # Define test parameters
 KEY_FILE="tests/files/accounts/test-wallet"
 PUBKEY_FILE="tests/files/accounts/test-wallet.pub"
-NODE_ENDPOINT="${MINA_NODE_ENDPOINT:-http://mina-rust-plain-1.gcp.o1test.net/graphql}"
+NODE_ENDPOINT="$MINA_NODE_ENDPOINT"
 
 # Password from environment variable (set in GitHub secrets)
 # Default to "test" for local testing
