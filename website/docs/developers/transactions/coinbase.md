@@ -49,7 +49,9 @@ https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transact
 
 ### First pass
 
-During the first pass (`apply_transaction_first_pass`), the coinbase:
+During the first pass
+([`apply_transaction_first_pass`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs#L190)),
+the coinbase:
 
 1. **Applies coinbase reward**
    - Adds coinbase amount to receiver's balance
@@ -62,7 +64,7 @@ During the first pass (`apply_transaction_first_pass`), the coinbase:
    - Creates fee transfer receiver account if needed
 
 **Implementation:**
-`ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs`
+[`ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs)
 
 ### No fee payment
 
@@ -286,7 +288,7 @@ and may change through protocol upgrades.
 ## Testing
 
 Comprehensive tests are available in
-`tests/test_transaction_logic_first_pass_coinbase.rs`:
+[`ledger/tests/test_transaction_logic_first_pass_coinbase.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs):
 
 - `test_apply_coinbase_without_fee_transfer` - Basic coinbase reward
 - `test_apply_coinbase_with_fee_transfer` - Coinbase with SNARK work payment
@@ -296,10 +298,12 @@ Comprehensive tests are available in
 
 ## Related files
 
-- `ledger/src/scan_state/transaction_logic/mod.rs` - Coinbase type definitions
-- `ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs` -
+- [`ledger/src/scan_state/transaction_logic/mod.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs) -
+  Coinbase type definitions
+- [`ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs) -
   Coinbase application logic
-- `tests/test_transaction_logic_first_pass_coinbase.rs` - Coinbase tests
+- [`ledger/tests/test_transaction_logic_first_pass_coinbase.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs) -
+  Coinbase tests
 
 ## See also
 
