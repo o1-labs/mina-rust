@@ -109,8 +109,19 @@ const sidebars: SidebarsConfig = {
       label: 'APIs and Data',
       items: [
         'developers/graphql-api',
-        'developers/wallet',
         'developers/archive-database-queries',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Wallet operations',
+      items: [
+        'developers/wallet/index',
+        'developers/wallet/address',
+        'developers/wallet/balance',
+        'developers/wallet/generate',
+        'developers/wallet/send',
+        'developers/wallet/status',
       ],
     },
     {
