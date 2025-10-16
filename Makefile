@@ -305,6 +305,10 @@ setup: setup-taplo setup-wasm ## Setup development environment
 test: ## Run tests
 	cargo test
 
+.PHONY: test-doc
+test-doc: ## Run documentation tests only
+	@cargo test --doc
+
 .PHONY: test-ledger
 test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly Rust
 	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
@@ -560,7 +564,7 @@ docs-serve-only: docs-install ## Serve the documentation website locally without
 	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-rust
-docs-rust: ## Generate Rust API documentation
+docs-rust: test-doc ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
