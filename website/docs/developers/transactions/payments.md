@@ -65,7 +65,7 @@ https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transact
 During the first pass (`apply_transaction_first_pass`), the payment transaction:
 
 1. **Validates the fee payer account**
-   - Checks account exists
+   - Checks account exists (transaction rejected if it doesn't)
    - Verifies sufficient balance for fee
    - Validates nonce matches
 
@@ -91,9 +91,23 @@ The second pass finalizes the transaction after SNARK proof verification.
 
 ## Account creation
 
+### Fee payer account must exist
+
+The fee payer (sender) account **must already exist** in the ledger. If it
+doesn't exist, the transaction is rejected with error "The fee-payer account
+does not exist".
+
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs#L1341-L1343 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs#L1341-L1343
+```
+
+### Receiver account creation
+
 If the receiver account doesn't exist, a new account is created automatically.
 The account creation fee (1 MINA by default) is deducted from the amount being
-transferred:
+transferred to the receiver:
 
 ```rust
 // Constraint constants
@@ -103,7 +117,7 @@ account_creation_fee: 1_000_000_000  // 1 MINA in nanomina
 **Example:**
 
 - Sender sends 10 MINA to a new account with 1 MINA fee
-- Sender pays: `10 MINA + 1 MINA (fee) + 1 MINA (account creation) = 12 MINA`
+- Sender pays: `10 MINA + 1 MINA (fee) = 11 MINA`
 - Receiver gets: `10 MINA - 1 MINA (account creation) = 9 MINA`
 
 ## Balance constraints
@@ -113,10 +127,19 @@ account_creation_fee: 1_000_000_000  // 1 MINA in nanomina
 The sender must have sufficient balance to cover:
 
 ```
-sender_balance >= amount + fee + (account_creation_fee if creating account)
+sender_balance >= amount + fee
 ```
 
-If insufficient, the transaction fails with error: `"insufficient funds"`
+Note: The account creation fee (if needed) is deducted from the amount being
+transferred to the receiver, not charged to the sender.
+
+If the sender has insufficient funds, the transaction fails. The exact error
+depends on whether the sender can pay the fee:
+
+- If sender cannot pay fee: Transaction rejected with "insufficient funds"
+  (ledger unchanged)
+- If sender can pay fee but not amount: Fee charged, then error
+  "Source_insufficient_balance" (payment not transferred)
 
 ### Receiver balance limits
 
@@ -208,13 +231,17 @@ assert_eq!(
 
 ## Fee calculation
 
-Users should calculate required funds as:
+Users should calculate required sender balance as:
 
 ```rust
-let required_balance = if receiver_exists {
-    amount + fee
+// Sender must have enough for amount + fee
+let required_sender_balance = amount + fee;
+
+// Receiver will get amount minus account creation fee (if account is new)
+let receiver_will_get = if receiver_exists {
+    amount
 } else {
-    amount + fee + account_creation_fee
+    amount - account_creation_fee
 };
 ```
 
@@ -233,11 +260,13 @@ Comprehensive tests are available in
 `tests/test_transaction_logic_first_pass.rs`:
 
 - `test_apply_payment_success` - Successful payment between existing accounts
-- `test_apply_payment_creates_account` - Payment creating a new account
-- `test_apply_payment_insufficient_balance` - Insufficient funds error
+- `test_apply_payment_creates_receiver_account` - Payment creating new receiver
+  account
+- `test_apply_payment_insufficient_balance` - Insufficient funds for payment
+  (fee charged)
 - `test_apply_payment_invalid_nonce` - Nonce mismatch error
-- `test_apply_payment_nonexistent_source` - Nonexistent sender error
-- `test_apply_payment_receiver_overflow` - Receiver balance overflow error
+- `test_apply_payment_nonexistent_fee_payer` - Nonexistent sender error
+  (transaction rejected)
 
 ## Related files
 
