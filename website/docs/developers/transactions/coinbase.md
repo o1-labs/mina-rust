@@ -161,14 +161,16 @@ transfer must be sufficient to cover the account creation fee.
 Comprehensive tests are available in
 [`ledger/tests/test_transaction_logic_first_pass_coinbase.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs):
 
-- `test_apply_coinbase_without_fee_transfer` - Basic coinbase reward
-- `test_apply_coinbase_with_fee_transfer` - Coinbase with SNARK work payment to
-  existing account
-- `test_apply_coinbase_with_fee_transfer_creates_account` - Fee transfer
-  creating new account
-- `test_apply_coinbase_with_fee_transfer_to_same_account` - Same receiver
-  optimization
-- `test_apply_coinbase_creates_account` - Coinbase creating new account
+- [`test_apply_coinbase_without_fee_transfer`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs#L76) -
+  Basic coinbase reward
+- [`test_apply_coinbase_with_fee_transfer`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs#L135) -
+  Coinbase with SNARK work payment to existing account
+- [`test_apply_coinbase_with_fee_transfer_creates_account`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs#L242) -
+  Fee transfer creating new account
+- [`test_apply_coinbase_with_fee_transfer_to_same_account`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs#L353) -
+  Same receiver optimization
+- [`test_apply_coinbase_creates_account`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs#L428) -
+  Coinbase creating new account
 
 ## Related files
 
@@ -178,8 +180,3 @@ Comprehensive tests are available in
   Coinbase application logic
 - [`ledger/tests/test_transaction_logic_first_pass_coinbase.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs) -
   Coinbase tests
-
-## See also
-
-- [Transactions overview](../transactions)
-- [Fee transfers](./fee-transfers)
