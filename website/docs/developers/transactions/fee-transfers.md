@@ -81,207 +81,84 @@ Fee transfers do not pay fees themselves - they are protocol transactions:
 ## Account creation
 
 If a receiver account doesn't exist, it is created automatically. The account
-creation fee (1 MINA by default) is deducted from the fee being transferred:
-
-```rust
-// Constraint constants
-account_creation_fee: 1_000_000_000  // 1 MINA in nanomina
-```
-
-**Example:**
-
-- Fee transfer of 2 MINA to a new account
-- Receiver gets: `2 MINA - 1 MINA (account creation) = 1 MINA`
+creation fee (1 MINA by default) is deducted from the fee being transferred.
 
 ## Single vs. double transfers
 
 ### Single transfer
 
-Distributes fees to one block producer:
+Distributes fees to one block producer. See
+[test_apply_single_fee_transfer_success](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L94-L95)
+for an example:
 
-```rust
-let single = SingleFeeTransfer::create(receiver_pk, fee, TokenId::default());
-let fee_transfer = FeeTransfer::of_singles(OneOrTwo::One(single))?;
+<!-- CODE_REFERENCE: ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L94-L95 -->
+
+```rust reference title="ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L94-L95
 ```
 
 ### Double transfer
 
 Distributes fees to two block producers (e.g., coinbase producer and snark work
-producer):
+producer). See
+[test_apply_double_fee_transfer_success](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L169-L174)
+for an example:
 
-```rust
-let transfer1 = SingleFeeTransfer::create(receiver1_pk, fee1, TokenId::default());
-let transfer2 = SingleFeeTransfer::create(receiver2_pk, fee2, TokenId::default());
-let fee_transfer = FeeTransfer::of_singles(OneOrTwo::Two((transfer1, transfer2)))?;
+<!-- CODE_REFERENCE: ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L169-L174 -->
+
+```rust reference title="ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L169-L174
 ```
 
 ## Token constraints
 
-Fee transfers must use the default token:
+Fee transfers must use the default token. For double transfers, both tokens must
+match. The validation is implemented in
+[FeeTransfer::of_singles](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs#L400):
 
-```rust
-if !fee_transfer.fee_tokens().all(TokenId::is_default) {
-    return Err("Cannot pay fees in non-default tokens.");
-}
+<!-- CODE_REFERENCE: ledger/src/scan_state/transaction_logic/mod.rs#L400-L408 -->
+
+```rust reference title="ledger/src/scan_state/transaction_logic/mod.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs#L400-L408
 ```
 
-For double transfers, both tokens must match:
+See
+[test_apply_fee_transfer_incompatible_tokens](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L333-L337)
+for an example creating fee transfers with incompatible tokens:
 
-```rust
-if transfer1.fee_token != transfer2.fee_token {
-    return Err("Cannot combine single fee transfers with incompatible tokens");
-}
+<!-- CODE_REFERENCE: ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L333-L337 -->
+
+```rust reference title="ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L333-L337
 ```
 
-## Examples
+The validation fails with an error:
 
-### Single fee transfer
+<!-- CODE_REFERENCE: ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L344-L346 -->
 
-From the test suite
-(`tests/test_transaction_logic_first_pass_fee_transfer.rs:76`):
-
-```rust
-// Transfer 0.01 MINA to Alice
-let fee = Fee::from_u64(10_000_000);
-let single_transfer = SingleFeeTransfer::create(
-    alice_pk.clone(),
-    fee,
-    TokenId::default()
-);
-let fee_transfer = FeeTransfer::of_singles(OneOrTwo::One(single_transfer)).unwrap();
-
-let result = apply_transaction_first_pass(
-    constraint_constants,
-    Slot::from_u32(0),
-    &state_view,
-    &mut ledger,
-    &Transaction::FeeTransfer(fee_transfer),
-);
-
-assert!(result.is_ok());
-
-// Verify state changes:
-// - Alice's balance increased by 0.01 MINA
-// - Alice's nonce unchanged (fee transfers don't affect nonces)
+```rust reference title="ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs"
+https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L344-L346
 ```
-
-### Double fee transfer
-
-From the test suite
-(`tests/test_transaction_logic_first_pass_fee_transfer.rs:139`):
-
-```rust
-// Transfer 0.005 MINA to Alice and 0.007 MINA to Bob
-let alice_fee = Fee::from_u64(5_000_000);
-let bob_fee = Fee::from_u64(7_000_000);
-let transfer1 = SingleFeeTransfer::create(alice_pk.clone(), alice_fee, TokenId::default());
-let transfer2 = SingleFeeTransfer::create(bob_pk.clone(), bob_fee, TokenId::default());
-let fee_transfer = FeeTransfer::of_singles(OneOrTwo::Two((transfer1, transfer2))).unwrap();
-
-let result = apply_transaction_first_pass(/* ... */);
-
-assert!(result.is_ok());
-
-// Verify state changes:
-// - Alice's balance increased by 0.005 MINA
-// - Bob's balance increased by 0.007 MINA
-// - Both nonces unchanged
-```
-
-### Fee transfer creating account
-
-From the test suite
-(`tests/test_transaction_logic_first_pass_fee_transfer.rs:237`):
-
-```rust
-// Transfer 2 MINA to Bob (who doesn't exist yet)
-// Must be >= 1 MINA to cover account creation fee
-let fee = Fee::from_u64(2_000_000_000);
-let single_transfer = SingleFeeTransfer::create(bob_pk.clone(), fee, TokenId::default());
-let fee_transfer = FeeTransfer::of_singles(OneOrTwo::One(single_transfer)).unwrap();
-
-let result = apply_transaction_first_pass(/* ... */);
-
-assert!(result.is_ok());
-
-// Bob's account created with: 2 - 1 (account creation fee) = 1 MINA
-```
-
-### Incompatible tokens error
-
-From the test suite
-(`tests/test_transaction_logic_first_pass_fee_transfer.rs:310`):
-
-```rust
-// Create transfers with different tokens
-let transfer1 = SingleFeeTransfer::create(alice_pk, alice_fee, TokenId::default());
-let transfer2 = SingleFeeTransfer::create(bob_pk, bob_fee, TokenId::from(999999u64));
-
-// Attempt to create fee transfer with incompatible tokens
-let result = FeeTransfer::of_singles(OneOrTwo::Two((transfer1, transfer2)));
-
-assert!(result.is_err());
-assert!(result
-    .unwrap_err()
-    .contains("Cannot combine single fee transfers with incompatible tokens"));
-```
-
-## Block production workflow
-
-### Fee collection
-
-During block production:
-
-1. Block producer collects fees from all transactions in the block
-2. Fees are aggregated by recipient (block producer, snark workers)
-3. Fee transfers are created to distribute the collected fees
-
-### Coinbase interaction
-
-Fee transfers often occur alongside coinbase transactions:
-
-- Coinbase reward goes to block producer
-- Fee transfers distribute transaction fees
-- Both are applied in the same block
-
-## Balance constraints
-
-### Minimum for account creation
-
-When creating accounts, fee amount must cover account creation fee:
-
-```rust
-if fee_amount < account_creation_fee {
-    // Fee transfer may fail or burn the difference
-}
-```
-
-### Receiver balance limits
-
-The receiver's balance cannot overflow the maximum amount (2^64 nanomina).
 
 ## Testing
 
 Comprehensive tests are available in
-`tests/test_transaction_logic_first_pass_fee_transfer.rs`:
+[`ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs):
 
-- `test_apply_single_fee_transfer_success` - Single fee transfer to existing
-  account
-- `test_apply_double_fee_transfer_success` - Double fee transfer to two
-  receivers
-- `test_apply_fee_transfer_creates_account` - Fee transfer creating new account
-- `test_apply_fee_transfer_incompatible_tokens` - Token compatibility validation
+- [`test_apply_single_fee_transfer_success`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L75) -
+  Single fee transfer to existing account
+- [`test_apply_double_fee_transfer_success`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L137) -
+  Double fee transfer to two receivers
+- [`test_apply_fee_transfer_creates_account`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L237) -
+  Fee transfer creating new account
+- [`test_apply_fee_transfer_incompatible_tokens`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs#L316) -
+  Token compatibility validation
 
 ## Related files
 
-- `ledger/src/scan_state/transaction_logic/mod.rs` - Fee transfer type
-  definitions
-- `ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs` -
+- [`ledger/src/scan_state/transaction_logic/mod.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/mod.rs) -
+  Fee transfer type definitions
+- [`ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transaction_logic/transaction_partially_applied.rs) -
   Fee transfer application logic
-- `tests/test_transaction_logic_first_pass_fee_transfer.rs` - Fee transfer tests
-
-## See also
-
-- [Transactions overview](../transactions)
-- [Coinbase rewards](./coinbase)
-- [Payment transactions](./payments)
+- [`ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs) -
+  Fee transfer tests
