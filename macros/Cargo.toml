@@ -15,6 +15,7 @@ syn = { workspace = true }
 
 [dev-dependencies]
 mina-core = { workspace = true }
+redux = { workspace = true }
 tracing = { workspace = true }
 rust-format = { workspace = true, features = ["token_stream"] }
 anyhow = { workspace = true }

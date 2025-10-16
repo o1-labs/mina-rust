@@ -80,11 +80,16 @@ use crate::PeerId;
 /// # Example
 ///
 /// ```
+/// # use p2p::webrtc::SignalingMethod;
+/// # use p2p::PeerId;
+/// # fn example(peer_id: PeerId) -> Result<(), Box<dyn std::error::Error>> {
 /// // Direct HTTPS signaling
 /// let method = "/https/signal.example.com/443".parse::<SignalingMethod>()?;
 ///
 /// // P2P relay through an existing peer
 /// let method = SignalingMethod::P2p { relay_peer_id: peer_id };
+/// # Ok(())
+/// # }
 /// ```
 #[derive(BinProtWrite, BinProtRead, Eq, PartialEq, Ord, PartialOrd, Debug, Clone)]
 pub enum SignalingMethod {
@@ -158,8 +163,15 @@ impl SignalingMethod {
     /// # Example
     ///
     /// ```
+    /// # use p2p::webrtc::{SignalingMethod, HttpSignalingInfo, Host};
+    /// # fn example() {
+    /// # let info = HttpSignalingInfo {
+    /// #     host: Host::Domain("signal.example.com".into()),
+    /// #     port: 443,
+    /// # };
     /// let method = SignalingMethod::Https(info);
     /// let url = method.http_url(); // Some("https://signal.example.com:443/mina/webrtc/signal")
+    /// # }
     /// ```
     pub fn http_url(&self) -> Option<String> {
         let (http, info) = match self {
@@ -305,8 +317,8 @@ impl FromStr for SignalingMethod {
     /// # Examples
     ///
     /// ```
-    /// use mina::signaling_method::SignalingMethod;
-    ///
+    /// # use p2p::webrtc::SignalingMethod;
+    /// # fn example() -> Result<(), Box<dyn std::error::Error>> {
     /// // HTTP signaling
     /// let method: SignalingMethod = "/http/localhost/8080".parse()?;
     ///
@@ -315,6 +327,8 @@ impl FromStr for SignalingMethod {
     ///
     /// // HTTPS proxy with cluster ID
     /// let method: SignalingMethod = "/https_proxy/123/proxy.example.com/443".parse()?;
+    /// # Ok(())
+    /// # }
     /// ```
     ///
     /// # Errors

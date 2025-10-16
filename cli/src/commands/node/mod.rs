@@ -116,17 +116,17 @@ pub struct Node {
     /// Multiaddresses follow the format: `/protocol/address/protocol/port/protocol/peer_id`
     ///
     /// **IPv4 Example:**
-    /// ```
+    /// ```text
     /// /ip4/192.168.1.100/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
     /// ```
     ///
     /// **IPv6 Example:**
-    /// ```
+    /// ```text
     /// /ip6/2001:db8::1/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
     /// ```
     ///
     /// **DNS Example:**
-    /// ```
+    /// ```text
     /// /dns4/node.example.com/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
     /// ```
     ///
@@ -143,7 +143,7 @@ pub struct Node {
     /// Each line should contain a peer's multiaddr following the format described above.
     ///
     /// **Example file content:**
-    /// ```
+    /// ```text
     /// /ip4/192.168.1.100/tcp/8302/p2p/12D3KooWABCDEF1234567890abcdef...
     /// /ip4/10.0.0.50/tcp/8302/p2p/12D3KooWXYZ9876543210fedcba...
     /// /dns4/bootstrap.example.com/tcp/8302/p2p/12D3KooW123ABC...
@@ -160,7 +160,7 @@ pub struct Node {
     /// Useful for dynamic peer discovery from a central bootstrap service.
     ///
     /// **Example URL response:**
-    /// ```
+    /// ```text
     /// /ip4/bootstrap1.example.com/tcp/8302/p2p/12D3KooW...
     /// /ip4/bootstrap2.example.com/tcp/8302/p2p/12D3KooX...
     /// ```

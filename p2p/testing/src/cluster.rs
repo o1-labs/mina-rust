@@ -229,19 +229,6 @@ impl Default for Ports {
 }
 
 /// Declares a shared storage for ports.
-///
-/// ```
-/// ports_store!(GLOBAL_PORTS);
-///
-/// #[tokio::test]
-/// fn test1() {
-///     let cluster = ClusterBuilder::default()
-///         .ports(GLOBAL_PORTS.take(20).await.expect("enough ports"))
-///         .start()
-///         .await;
-/// }
-///
-/// ```
 #[macro_export]
 macro_rules! ports_store {
     ($name:ident, $range:expr) => {
