@@ -398,7 +398,9 @@ pub struct FailureCollection {
     inner: Vec<Vec<TransactionFailure>>,
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/bfd1009abdbee78979ff0343cc73a3480e862f58/src/lib/transaction_logic/mina_transaction_logic.ml#L2197C1-L2210C53>
+/// OCaml reference: src/lib/transaction_logic/mina_transaction_logic.ml L:2197-2210
+/// Commit: bfd1009abdbee78979ff0343cc73a3480e862f58
+/// Last verified: 2025-10-16
 impl FailureCollection {
     fn empty() -> Self {
         Self {
@@ -649,7 +651,9 @@ where
     })
 }
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L607>
+/// OCaml reference: src/lib/transaction_logic/mina_transaction_logic.ml L:607
+/// Commit: 2ee6e004ba8c6a0541056076aab22ea162f7eb3a
+/// Last verified: 2025-10-16
 fn sub_account_creation_fee(
     constraint_constants: &ConstraintConstants,
     action: AccountState,
@@ -862,7 +866,9 @@ pub enum AccountState {
 #[derive(Debug)]
 struct HasPermissionToReceive(bool);
 
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L1852>
+/// OCaml reference: src/lib/transaction_logic/mina_transaction_logic.ml L:1852
+/// Commit: 2ee6e004ba8c6a0541056076aab22ea162f7eb3a
+/// Last verified: 2025-10-16
 fn has_permission_to_receive<L>(
     ledger: &mut L,
     receiver_account_id: &AccountId,
@@ -1151,7 +1157,9 @@ where
         }),
         Err(failure) => {
             // This case occurs when an exception is throwned in OCaml
-            // <https://github.com/MinaProtocol/mina/blob/3753a8593cc1577bcf4da16620daf9946d88e8e5/src/lib/transaction_logic/mina_transaction_logic.ml#L964>
+            // OCaml reference: src/lib/transaction_logic/mina_transaction_logic.ml L:964
+            // Commit: 3753a8593cc1577bcf4da16620daf9946d88e8e5
+            // Last verified: 2025-10-16
             assert!(reject_command);
             Err(failure.to_string())
         }
