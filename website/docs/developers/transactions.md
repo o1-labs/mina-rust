@@ -41,7 +41,8 @@ signed by users:
 
 ### Protocol Transactions
 
-**Protocol transactions** are generated automatically by the system:
+**Protocol transactions** (also called **system transactions**) are generated
+automatically by the system:
 
 - **[Fee transfers](./transactions/fee-transfers)** - Distribute collected
   transaction fees to block producers
@@ -135,11 +136,14 @@ ConstraintConstants {
 }
 ```
 
-The fee is deducted from the amount being transferred or received:
+The fee is deducted from the amount being transferred to the new account:
 
-- **Payments**: Sender pays `amount + fee + account_creation_fee`
-- **Fee transfers**: Receiver gets `fee_amount - account_creation_fee`
-- **Coinbase**: Receiver gets `coinbase_amount - account_creation_fee`
+- **Payments**: Sender pays `amount + fee`, receiver gets
+  `amount - account_creation_fee` (if creating account)
+- **Fee transfers**: Receiver gets `fee_amount - account_creation_fee` (if
+  creating account)
+- **Coinbase**: Receiver gets `coinbase_amount - account_creation_fee` (if
+  creating account)
 
 ## Transaction Status
 
@@ -153,21 +157,6 @@ https://github.com/o1-labs/mina-rust/blob/develop/ledger/src/scan_state/transact
 
 Failed transactions may still consume fees in some cases (zkApp commands with
 fee payer failures).
-
-## Testing
-
-Comprehensive tests for each transaction type verify correct ledger updates:
-
-- [`ledger/tests/test_transaction_logic_first_pass.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass.rs) -
-  Payment transactions
-- [`ledger/tests/test_transaction_logic_first_pass_delegation.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_delegation.rs) -
-  Stake delegations
-- [`ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_fee_transfer.rs) -
-  Fee transfers
-- [`ledger/tests/test_transaction_logic_first_pass_coinbase.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_coinbase.rs) -
-  Coinbase rewards
-- [`ledger/tests/test_transaction_logic_first_pass_zkapp.rs`](https://github.com/o1-labs/mina-rust/blob/develop/ledger/tests/test_transaction_logic_first_pass_zkapp.rs) -
-  zkApp commands
 
 ## Further Reading
 
