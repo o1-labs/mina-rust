@@ -442,17 +442,63 @@ impl FailureCollection {
     }
 }
 
-/// Structure of the failure status:
-///  I. No fee transfer and coinbase transfer fails: `[[failure]]`
-///  II. With fee transfer-
-///   Both fee transfer and coinbase fails:
-///     `[[failure-of-fee-transfer]; [failure-of-coinbase]]`
-///   Fee transfer succeeds and coinbase fails:
-///     `[[];[failure-of-coinbase]]`
-///   Fee transfer fails and coinbase succeeds:
-///     `[[failure-of-fee-transfer];[]]`
+/// Applies a coinbase transaction to the ledger.
 ///
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L2022>
+/// Processes the coinbase by first applying the optional fee transfer (if present),
+/// then applying the coinbase reward to the receiver. Updates account balances and
+/// timing, creates accounts if needed, and handles permission checks.
+///
+/// # Implementation Notes
+///
+/// - When `coinbase.fee_transfer` is `Some`, processes fee transfer first, then
+///   coinbase receiver gets `coinbase.amount - fee_transfer.fee`
+/// - When `coinbase.fee_transfer` is `None`, coinbase receiver gets full
+///   `coinbase.amount`
+/// - Calls `has_permission_to_receive` for each recipient
+/// - Calls `sub_account_creation_fee` when creating new accounts
+/// - Calls `update_timing_when_no_deduction` for timing validation
+/// - Only updates coinbase receiver timing when `fee_transfer` is `None`
+/// - Uses `FailureCollection` to track which operations succeeded/failed
+///
+/// # Parameters
+///
+/// - `constraint_constants`: Protocol constants including account creation fees
+/// - `txn_global_slot`: Current global slot for timing validation
+/// - `ledger`: Mutable ledger to update
+/// - `coinbase`: Coinbase transaction containing receiver, amount, and optional
+///   fee transfer
+///
+/// # Returns
+///
+/// Returns [`CoinbaseApplied`] containing:
+/// - `coinbase`: The input coinbase with transaction status
+/// - `new_accounts`: Vector of newly created account IDs
+/// - `burned_tokens`: Amount of tokens burned from failed transfers
+///
+/// # Errors
+///
+/// Returns `Err` if:
+/// - `fee_transfer.fee` exceeds `coinbase.amount` (checked subtraction fails)
+/// - Burned tokens overflow when summing across transfers
+///
+/// For protocol-level documentation and behavioral specification, see:
+/// <https://o1-labs.github.io/mina-rust/docs/developers/transactions/coinbase>
+///
+/// # Tests
+///
+/// Test coverage (in `ledger/tests/test_transaction_logic_first_pass_coinbase.rs`):
+///
+/// - `test_apply_coinbase_without_fee_transfer`
+/// - `test_apply_coinbase_with_fee_transfer`
+/// - `test_apply_coinbase_with_fee_transfer_creates_account`
+/// - `test_apply_coinbase_with_fee_transfer_to_same_account`
+/// - `test_apply_coinbase_creates_account`
+///
+/// # OCaml Reference
+///
+/// OCaml reference: src/lib/transaction_logic/mina_transaction_logic.ml L:2074-2178
+/// Commit: 0063f0196d046d9d2fc8af0cea76ff30f51b49b7
+/// Last verified: 2025-10-16
 pub fn apply_coinbase<L>(
     constraint_constants: &ConstraintConstants,
     txn_global_slot: &Slot,
