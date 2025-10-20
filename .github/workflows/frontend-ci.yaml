@@ -1,0 +1,45 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'OS to build on. If empty, builds on all supported OSes.'
+        required: false
+        default: ''
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Frontend build
+        uses: ./.github/actions/frontend-build
+        with:
+          test-build-commands: 'true'
+
+  lint-and-test:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Frontend build and test
+        uses: ./.github/actions/frontend-build
+        with:
+          run-prettier-check: 'true'
+          run-tests: 'true'
+          test-build-commands: 'false'

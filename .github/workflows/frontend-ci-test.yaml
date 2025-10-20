@@ -1,0 +1,17 @@
+name: Frontend CI Test
+
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'OS to build on.'
+        required: false
+        default: 'ubuntu-24.04'
+        type: string
+
+jobs:
+  test:
+    runs-on: ${{ github.event.inputs.os }}
+    steps:
+      - name: Echo
+        run: echo "Hello, world!"
