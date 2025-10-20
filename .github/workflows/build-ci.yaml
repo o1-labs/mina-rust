@@ -1,32 +1,19 @@
-name: Reusable Build Workflow
+name: Build CI
 
 on:
-  workflow_call:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
     inputs:
       os:
-        required: true
-        type: string
-        description: "Operating system to build on"
-      ocaml_version:
+        description: 'OS to build on. If empty, builds on all supported OSes.'
         required: false
+        default: ''
         type: string
-        default: "4.14.2"
-        description: "OCaml version to use"
-      cache-prefix:
-        required: false
-        type: string
-        default: ""
-        description: "Cache prefix for the build"
-      build-wasm:
-        required: false
-        type: boolean
-        default: false
-        description: "Whether to build WASM targets"
-      rustflags:
-        required: false
-        type: string
-        default: ""
-        description: "Additional RUSTFLAGS to append (e.g., macOS-specific linker flags)"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 env:
   CARGO_TERM_COLOR: always
@@ -37,10 +24,12 @@ env:
 
 jobs:
   build:
-    timeout-minutes: 60
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
     env:
-      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ startsWith(matrix.os, 'macos') && '-C link-args=-Wl,-undefined,dynamic_lookup' || '' }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -51,13 +40,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ inputs.ocaml_version }}
+          ocaml_version: '4.14.2'
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-${{ matrix.os }}-${{ matrix.os }}-v0
 
       - name: Release build
         run: make build-release
@@ -80,10 +69,12 @@ jobs:
           echo "Build info verification passed!"
 
   build-tests:
-    timeout-minutes: 60
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
     env:
-      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ startsWith(matrix.os, 'macos') && '-C link-args=-Wl,-undefined,dynamic_lookup' || '' }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -94,22 +85,24 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ inputs.ocaml_version }}
+          ocaml_version: '4.14.2'
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-tests-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-tests-${{ matrix.os }}-${{ matrix.os }}-v0
 
       - name: Build tests
         run: make build-tests
 
   build-tests-webrtc:
-    timeout-minutes: 60
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
     env:
-      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ startsWith(matrix.os, 'macos') && '-C link-args=-Wl,-undefined,dynamic_lookup' || '' }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -120,23 +113,25 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ inputs.ocaml_version }}
+          ocaml_version: '4.14.2'
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-tests-webrtc-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-tests-webrtc-${{ matrix.os }}-${{ matrix.os }}-v0
 
       - name: Build tests
         run: make build-tests-webrtc
 
   build-benches:
     needs: [build]
-    timeout-minutes: 60
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
     env:
-      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ startsWith(matrix.os, 'macos') && '-C link-args=-Wl,-undefined,dynamic_lookup' || '' }}"
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -147,21 +142,22 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ inputs.ocaml_version }}
+          ocaml_version: '4.14.2'
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
           toolchain: 1.84
-          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: build-${{ matrix.os }}-${{ matrix.os }}-v0
 
       - name: Build benchmarks
         run: make build-benches
 
   build-wasm:
-    if: ${{ inputs.build-wasm }}
-    timeout-minutes: 60
-    runs-on: ${{ inputs.os }}
+    strategy:
+      matrix:
+        os: ${{ github.event.inputs.os && fromJSON(format('["{0}"]', github.event.inputs.os)) || fromJSON('["ubuntu-22.04", "ubuntu-24.04", "ubuntu-24.04-arm", "macos-13", "macos-14", "macos-15", "macos-latest"]') }}
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -172,12 +168,12 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ inputs.ocaml_version }}
+          ocaml_version: '4.14.2'
 
       - name: Setup WebAssembly environment
         uses: ./.github/actions/setup-wasm
         with:
-          cache-prefix: wasm-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+          cache-prefix: wasm-${{ matrix.os }}-${{ matrix.os }}-v0
 
       - name: Release build
         run: make build-wasm
