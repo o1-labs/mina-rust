@@ -67,6 +67,9 @@ build: ## Build the project in debug mode
 build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
 	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
 
+build-node-native: ## Build the package mina-node-native with all features and tests
+	@cargo build -p mina-node-native --all-features --release --tests
+
 .PHONY: build-release
 build-release: ## Build the project in release mode
 	@cargo build --release --package=cli --bin mina
@@ -122,6 +125,22 @@ build-wasm: ## Build WebAssembly node
 	@wasm-bindgen --keep-debug --web \
 		--out-dir pkg \
 		target/wasm32-unknown-unknown/release/mina_node_web.wasm
+
+.PHONY: build-benches
+build-benches: ## Build all benchmarks without running them
+	@cargo bench --no-run
+
+.PHONY: build-bench-database
+build-bench-database: ## Build ledger database benchmark
+	@cargo bench --bench database --no-run
+
+.PHONY: bench
+bench: ## Run all benchmarks
+	@cargo bench
+
+.PHONY: bench-database
+bench-database: ## Run ledger database benchmark
+	@cargo bench --bench database
 
 .PHONY: check
 check: ## Check code for compilation errors
@@ -195,9 +214,9 @@ clean: ## Clean build artifacts
 .PHONY: download-circuits
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git; \
+	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git -b dw/add-berkeley-687bf44e97328e1cc0e85291663009410f64bd99; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
-	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
+	  ln -s "$$PWD"/circuit-blobs/berkeley-devnet ledger/; \
 	else \
 	  echo "circuit-blobs already exists, skipping download."; \
 	fi
@@ -286,11 +305,29 @@ test-release: ## Run tests in release mode
 
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- \
+		-Z unstable-options --report-time
+
+.PHONY: test-account
+test-account: ## Run account tests
+	@cargo test -p mina-node-account
+
+.PHONY: test-wallet
+test-wallet: ## Run wallet CLI end-to-end tests
+	@echo "Running wallet CLI tests..."
+	@for script in .github/scripts/wallet/*.sh; do \
+		echo "Running $$script..."; \
+		$$script || exit 1; \
+	done
+	@echo "All wallet tests passed!"
 
 .PHONY: test-p2p-messages
 test-p2p-messages:
 	cargo test -p mina-p2p-messages --tests --release
+
+.PHONY: test-node-native
+test-node-native: build-node-native ## Run the unit/integration tests of the package mina-node-native
+	cargo test -p mina-node-native --all-features --release --tests
 
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
@@ -520,7 +557,11 @@ docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	@DATABASE_URL="sqlite::memory:" \
+		RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" \
+		cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps \
+		--document-private-items --workspace \
+		--exclude heartbeats-processor --lib
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 

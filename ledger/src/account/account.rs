@@ -1264,24 +1264,98 @@ pub struct PermsConst {
     pub or_const: bool,
 }
 
-// <https://github.com/MinaProtocol/mina/blob/1765ba6bdfd7c454e5ae836c49979fa076de1bea/src/lib/mina_base/account.ml#L368>
+/// Represents a Mina account stored in the ledger.
+///
+/// An account is the fundamental unit of state in the Mina ledger. Each
+/// account is uniquely identified by a public key and token ID pair, and
+/// contains the account's balance, transaction nonce, and various protocol
+/// metadata.
+///
+/// Accounts can be regular user accounts holding the native Mina token, or
+/// more complex entities such as custom token accounts or zkApp accounts with
+/// programmable smart contract functionality.
+///
+/// The account structure is designed to support:
+/// - Token transfers and balance tracking
+/// - Stake delegation for consensus participation
+/// - Time-locked vesting schedules
+/// - Flexible permission policies for different operations
+/// - Zero-knowledge application state and verification
+///
+/// OCaml reference: src/lib/mina_base/account.ml L:201-224
+/// Commit: fc6be4c58091c761f827c858229c2edf9519e941
+/// Last verified: 2025-10-13
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(into = "v2::MinaBaseAccountBinableArgStableV2")]
 #[serde(try_from = "v2::MinaBaseAccountBinableArgStableV2")]
 pub struct Account {
-    pub public_key: CompressedPubKey, // Public_key.Compressed.t
-    pub token_id: TokenId,            // Token_id.t
-    /// the `token_symbol` describes a token id owned by the account id
-    /// from this account, not the token id used by this account
-    pub token_symbol: TokenSymbol, // Token_symbol.t
-    pub balance: Balance,             // Balance.t
-    pub nonce: Nonce,                 // Nonce.t
-    pub receipt_chain_hash: ReceiptChainHash, // Receipt.Chain_hash.t
-    pub delegate: Option<CompressedPubKey>, // Public_key.Compressed.t option
-    pub voting_for: VotingFor,        // State_hash.t
-    pub timing: Timing,               // Timing.t
-    pub permissions: Permissions<AuthRequired>, // Permissions.t
-    pub zkapp: Option<Box<ZkAppAccount>>, // Zkapp_account.t
+    /// The public key that controls this account. This is the address used
+    /// to identify the account and authorize transactions.
+    pub public_key: CompressedPubKey,
+
+    /// The token type this account holds. The default token (value 1)
+    /// represents the native Mina token. Custom tokens have different
+    /// values derived from their creator's account.
+    pub token_id: TokenId,
+
+    /// The symbol for a custom token that this account can create or manage.
+    /// Note: this describes a token ID owned by this account (i.e., a token
+    /// this account can create), not the token type used by this account's
+    /// balance.
+    pub token_symbol: TokenSymbol,
+
+    /// The current balance of the account in the smallest unit (nanomina for
+    /// the default token, or the smallest unit for custom tokens).
+    pub balance: Balance,
+
+    /// The sequence number for transactions from this account. Incremented by
+    /// [`pay_fee_impl`](crate::scan_state::transaction_logic::transaction_partially_applied::pay_fee_impl)
+    /// for signed commands and by the zkApp application logic in
+    /// [`apply`](crate::zkapps::zkapp_logic::apply) when processing account
+    /// updates.
+    pub nonce: Nonce,
+
+    /// A hash chain of all transaction receipts involving this account,
+    /// providing a tamper-evident history. Updated by
+    /// [`cons_signed_command_payload`](crate::scan_state::transaction_logic::transaction_union_payload::cons_signed_command_payload)
+    /// for signed commands and
+    /// [`cons_zkapp_command_commitment`](crate::scan_state::transaction_logic::transaction_union_payload::cons_zkapp_command_commitment)
+    /// for zkApp commands.
+    pub receipt_chain_hash: ReceiptChainHash,
+
+    /// The public key of the account to which this account delegates its
+    /// stake for consensus. If `None`, the account delegates to itself (or
+    /// cannot delegate if using a custom token). Delegation allows accounts
+    /// to participate in consensus without running a block producer.
+    pub delegate: Option<CompressedPubKey>,
+
+    /// The state hash this account is voting for in the consensus protocol.
+    /// Updated through zkApp account updates in
+    /// [`apply`](crate::zkapps::zkapp_logic::apply).
+    pub voting_for: VotingFor,
+
+    /// The vesting schedule for this account's funds. Either `Untimed`
+    /// (fully liquid) or `Timed` with parameters defining when and how
+    /// tokens unlock over time. Updated by
+    /// [`pay_fee_impl`](crate::scan_state::transaction_logic::transaction_partially_applied::pay_fee_impl)
+    /// for signed commands and through zkApp account updates in
+    /// [`apply`](crate::zkapps::zkapp_logic::apply).
+    pub timing: Timing,
+
+    /// The permissions controlling what operations can be performed on this
+    /// account and what authorization is required (none, signature, proof,
+    /// or both). Updated through zkApp account updates in
+    /// [`apply`](crate::zkapps::zkapp_logic::apply).
+    pub permissions: Permissions<AuthRequired>,
+
+    /// zkApp-specific account data. If `Some`, this account is a zkApp
+    /// (zero-knowledge application) with additional state including app
+    /// state fields, a verification key, action state, and other zkApp
+    /// metadata. Regular accounts have `None`. Managed through
+    /// [`AccountInterface::make_zkapp`](crate::zkapps::interfaces::AccountInterface::make_zkapp)
+    /// and
+    /// [`AccountInterface::unmake_zkapp`](crate::zkapps::interfaces::AccountInterface::unmake_zkapp).
+    pub zkapp: Option<Box<ZkAppAccount>>,
 }
 
 impl Account {

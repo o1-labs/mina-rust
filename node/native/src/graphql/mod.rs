@@ -199,64 +199,6 @@ enum SyncStatus {
     CATCHUP,
 }
 
-#[derive(Clone, Debug)]
-struct ProtocolState {
-    consensus_state: ConsensusState,
-    blockchain_state: BlockchainState,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ProtocolState {
-    fn consensus_state(&self) -> &ConsensusState {
-        &self.consensus_state
-    }
-
-    fn blockchain_state(&self) -> &BlockchainState {
-        &self.blockchain_state
-    }
-}
-
-#[derive(Clone, Debug)]
-struct ConsensusState {
-    block_height: i32,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ConsensusState {
-    fn block_height(&self) -> i32 {
-        self.block_height
-    }
-}
-
-#[derive(Clone, Debug)]
-struct BlockchainState {
-    snarked_ledger_hash: String,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl BlockchainState {
-    fn snarked_ledger_hash(&self) -> &str {
-        &self.snarked_ledger_hash
-    }
-}
-
-#[derive(Clone, Debug)]
-struct BestChain {
-    state_hash: String,
-    protocol_state: ProtocolState,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl BestChain {
-    fn state_hash(&self) -> &str {
-        &self.state_hash
-    }
-
-    fn protocol_state(&self) -> &ProtocolState {
-        &self.protocol_state
-    }
-}
-
 #[derive(Clone, Copy, Debug)]
 pub struct Query;
 

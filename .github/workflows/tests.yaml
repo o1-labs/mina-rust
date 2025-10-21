@@ -16,7 +16,11 @@ env:
   RUST_BACKTRACE: full
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
-  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off -C link-args=-Wl,-undefined,dynamic_lookup"
+  RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
+  RUST_STABLE_VERSION: "1.84"
+  RUST_NIGHTLY_VERSION: "nightly"
+  OCAML_VERSION: "4.14.2"
+  CACHE_VERSION: "v0"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -31,7 +35,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           enable-cache: false
       - name: Clean cargo cache
         run: cargo clean
@@ -39,9 +43,6 @@ jobs:
   ledger-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -52,13 +53,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
-          cache-prefix: ledger-v0
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+          cache-prefix: ledger-${{ env.CACHE_VERSION }}
 
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits
@@ -68,6 +69,25 @@ jobs:
 
       - name: Run ledger tests
         run: make test-ledger
+
+  mina-node-native-tests:
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: mina-node-native-${{ env.CACHE_VERSION }}
+
+      - name: Test mina-node-native crate
+        run: make test-node-native
 
   p2p-messages-tests:
     timeout-minutes: 20
@@ -82,8 +102,8 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
-          cache-prefix: p2p-messages-v0
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+          cache-prefix: p2p-messages-${{ env.CACHE_VERSION }}
 
       - name: Download circuits files
         uses: ./.github/actions/setup-circuits
@@ -127,9 +147,6 @@ jobs:
   vrf-tests:
     timeout-minutes: 20
     runs-on: ubuntu-24.04
-    strategy:
-      matrix:
-        ocaml_version: [4.14.2]
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -140,13 +157,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: ${{ matrix.ocaml_version }}
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: nightly
-          cache-prefix: vrf-v0
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+          cache-prefix: vrf-${{ env.CACHE_VERSION }}
 
       - name: Build vrf tests
         run: make build-vrf
@@ -167,8 +184,8 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
-          cache-prefix: p2p-v0
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: p2p-${{ env.CACHE_VERSION }}
 
       - name: Test p2p crate
         run: make test-p2p
@@ -187,13 +204,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
-          cache-prefix: build-v0
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: build-${{ env.CACHE_VERSION }}
 
       - name: Release build
         run: make build-release
@@ -222,6 +239,54 @@ jobs:
           path: target/release/mina
           retention-days: 7
 
+  account-tests:
+    timeout-minutes: 20
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: build-${{ env.CACHE_VERSION }}
+
+      - name: Run account tests
+        run: make test-account
+
+  wallet-tests:
+    needs: [build]
+    timeout-minutes: 10
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Download mina binary
+        uses: actions/download-artifact@v5
+        with:
+          name: bin-${{ github.sha }}
+
+      - name: Make binary executable
+        run: chmod +x mina
+
+      - name: Create target/release directory
+        run: mkdir -p target/release
+
+      - name: Move binary to expected location
+        run: mv mina target/release/
+
+      - name: Run wallet tests
+        env:
+          MINA_PRIVKEY_PASS: ${{ secrets.MINA_PRIVKEY_PASS }}
+          MINA_NODE_ENDPOINT: http://mina-rust-plain-1.gcp.o1test.net/graphql
+          MINA_E2E_TEST_MEMO: MINA_RUST PR#${{ github.event.pull_request.number }}
+        run: make test-wallet
+
   build-tests:
     timeout-minutes: 60
     runs-on: ubuntu-22.04
@@ -235,13 +300,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
-          cache-prefix: build-tests-v0
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: build-tests-${{ env.CACHE_VERSION }}
 
       - name: Build tests
         run: make build-tests
@@ -266,13 +331,13 @@ jobs:
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
-          ocaml_version: 4.14.2
+          ocaml_version: ${{ env.OCAML_VERSION }}
 
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
-          cache-prefix: build-tests-webrtc-v0
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: build-tests-webrtc-${{ env.CACHE_VERSION }}
 
       - name: Build tests
         run: make build-tests-webrtc
@@ -284,6 +349,27 @@ jobs:
           path: target/release/tests
           retention-days: 7
 
+  build-wasm:
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
+          cache-prefix: build-wasm-${{ env.CACHE_VERSION }}
+
+      - name: Setup wasm tooling
+        run: make setup-wasm
+
+      - name: Build WebAssembly node
+        run: make build-wasm
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]

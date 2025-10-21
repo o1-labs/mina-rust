@@ -29,6 +29,13 @@ const config: Config = {
   onBrokenMarkdownLinks: 'throw',
   onBrokenAnchors: 'warn',
 
+  // Markdown configuration
+  markdown: {
+    hooks: {
+      onBrokenMarkdownLinks: 'throw',
+    },
+  },
+
   // Static directories for assets
   staticDirectories: ['static'],
 
@@ -65,6 +72,8 @@ const config: Config = {
     ],
   ],
 
+  themes: ['docusaurus-theme-github-codeblock'],
+
 
   themeConfig: {
     // Replace with your project's social card
@@ -92,6 +101,19 @@ const config: Config = {
       {property: 'twitter:description', content: 'The Mina Rust Node is a Rust implementation of the Mina Protocol (originally written in OCaml) - a lightweight blockchain using zero knowledge proofs.'},
       {property: 'twitter:image', content: 'https://o1-labs.github.io/mina-rust/img/rust-node-social-card.svg'},
     ],
+
+    // Algolia search configuration
+    // Note: These credentials are safe to commit publicly.
+    // The apiKey is search-only with read permissions.
+    algolia: {
+      appId: '5PSH5CKRTB',
+      apiKey: '7da6823405ea3b6e55b9d6d8fef3526a',
+      indexName: 'mina-rust',
+      contextualSearch: true,
+      searchParameters: {},
+      searchPagePath: 'search',
+    },
+
     navbar: {
       title: '',
       logo: {

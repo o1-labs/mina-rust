@@ -3,20 +3,21 @@ name = "mina-node-account"
 version = "0.17.0"
 edition = "2021"
 license = "Apache-2.0"
+description = "Account management for Mina nodes, including key generation, encryption, and address handling"
 
 [dependencies]
-anyhow = "1.0.70"
-bs58 = "0.4.0"
-hex = "0.4.3"
-lazy_static = "1.4.0"
+anyhow = { workspace = true }
+bs58 = { workspace = true }
+hex = { workspace = true }
+lazy_static = { workspace = true }
 mina-core = { path = "../../core" }
 mina-hasher = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
-rand = "0.8"
-serde = "1.0.147"
-serde_json = { version = "1.0.82", features = [
+rand = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true, features = [
   "unbounded_depth",
   "arbitrary_precision",
 ] }
-thiserror = "1.0.37"
+thiserror = { workspace = true }

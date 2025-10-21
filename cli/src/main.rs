@@ -136,5 +136,5 @@ fn main() -> anyhow::Result<()> {
 
     network_init_result.expect("Failed to initialize network configuration");
 
-    app.command.run()
+    app.command.run(app.network)
 }

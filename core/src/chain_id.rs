@@ -56,6 +56,7 @@
 //! ```rust
 //! use mina_core::ChainId;
 //!
+//! # fn main() -> Result<(), Box<dyn std::error::Error>> {
 //! // Use predefined network
 //! let mainnet_id = mina_core::MAINNET_CHAIN_ID;
 //! println!("Mainnet ID: {}", mainnet_id);
@@ -65,6 +66,8 @@
 //!
 //! // Generate preshared key for private networking
 //! let psk = chain_id.preshared_key();
+//! # Ok(())
+//! # }
 //! ```
 
 use mina_p2p_messages::v2::{
@@ -135,6 +138,7 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 /// ```rust
 /// use mina_core::{ChainId, MAINNET_CHAIN_ID};
 ///
+/// # fn main() -> Result<(), Box<dyn std::error::Error>> {
 /// // Use predefined mainnet ID
 /// let mainnet = MAINNET_CHAIN_ID;
 /// println!("Mainnet: {}", mainnet.to_hex());
@@ -144,6 +148,8 @@ use serde::{Deserialize, Deserializer, Serialize, Serializer};
 ///
 /// // Generate private network key
 /// let psk = mainnet.preshared_key();
+/// # Ok(())
+/// # }
 /// ```
 #[derive(Clone, PartialEq, Eq)]
 pub struct ChainId([u8; 32]);
@@ -221,6 +227,11 @@ impl ChainId {
     /// use mina_core::ChainId;
     /// use mina_p2p_messages::v2::UnsignedExtendedUInt32StableV1;
     ///
+    /// # // Use actual devnet values for the example
+    /// # let constraint_digests = mina_core::network::devnet::CONSTRAINT_SYSTEM_DIGESTS;
+    /// # let genesis_hash: mina_p2p_messages::v2::StateHash =
+    /// #     "3NL93SipJfAMNDBRfQ8Uo8LPovC74mnJZfZYB5SK7mTtkL72dsPx".parse().unwrap();
+    /// # let protocol_constants = mina_core::constants::PROTOCOL_CONSTANTS.clone();
     /// let chain_id = ChainId::compute(
     ///     &constraint_digests,
     ///     &genesis_hash,
@@ -349,9 +360,12 @@ impl ChainId {
     /// ```rust
     /// use mina_core::ChainId;
     ///
+    /// # fn main() -> Result<(), Box<dyn std::error::Error>> {
     /// let chain_id = ChainId::from_hex(
     ///     "a7351abc7ddf2ea92d1b38cc8e636c271c1dfd2c081c637f62ebc2af34eb7cc1"
     /// )?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub fn from_hex(s: &str) -> Result<ChainId, hex::FromHexError> {
         let h = hex::decode(s)?;

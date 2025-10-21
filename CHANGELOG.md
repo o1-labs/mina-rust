@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI**: add devnet and mainnet Caml nodes to remote GraphQL test suite to
+  ensure compatibility between Rust and OCaml implementations
+  ([#1542](https://github.com/o1-labs/mina-rust/pull/1542))
 - **CI**: add workflow to test GraphQL queries with the OCaml node
   ([#1465](https://github.com/o1-labs/mina-rust/pull/1465))
 - **Website**: add o1Labs infrastructure entry, describing the nodes managed by
@@ -32,6 +35,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website**: add "Join devnet" page with instructions for community members to
   join the devnet program and test the Rust node implementation
   ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
+- **Website**: add documentation guidelines
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1493))
+- **Website**: add search bar with Algolia
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
+- **Ledger/ZkAppCommand**: show how to build a ZkAppCommand from scratch, with
+  dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
+- **CI/Documentation**: add a script to check the references to the OCaml code
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525)).
+- **mina-node-account**: move tests into `node/account/tests`, document the
+  library and run the tests in CI
+  ([#1540](https://github.com/o1-labs/mina-rust/pull/1540)).
+- **Ledger**: add tests to verify some properties transaction application
+  should have on the ledger. Also, document the different types of transactions
+  that can be used to modify the ledger
+([#1541](https://github.com/o1-labs/mina-rust/pull/1541))
+- **CLI**: introduce a subcommand `wallet` to be able to send transactions, get
+  the public key and address from the secret key, get balance and generate
+  wallets from the CLI. End-to-end tests are added in the CI and a new target
+  `make test-wallet` has been added. This focuses on basic payments
+  ([#1543](https://github.com/o1-labs/mina-rust/pull/1543))
+- **Makefile**: add targets to only build and run tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
+- **CI**: add a step in tests to run the unit/integration tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
 
 ### Changed
 
@@ -48,6 +75,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1421](https://github.com/o1-labs/mina-rust/pull/1421)).
 - **Frontend**: rename all occurences of openmina.scss to mina-rust.scss
   ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
+- **Website**: bump up to docusaurus 3.9.1
+  ([#1500](https://github.com/o1-labs/mina-rust/pull/1500))
+- **Dependencies**: move all dependencies to the workspace Cargo.toml
+  ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
+- **scan_state**: refactorize `transaction_logic.rs` in smaller modules
+  ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
+- **CI/tests**: run the step `build-wasm` for each push and PR to `develop`
+  ([#1497](https://github.com/o1-labs/mina-rust/pull/1497))
+- **ledger/scan_state/transaction_logic**: update OCaml references in `mod.rs`
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525))
+- **ledger/scan_state/transaction_logic**: move submodule `for_tests` into a
+  new file `zkapp_command/for_tests.rs`
+  ([#1527](https://github.com/o1-labs/mina-rust/pull/1527)).
+- **Ledger/scan-state/transaction-logic**: split
+  `ledger::scan_state::transaction_logic::zkapp_command` into submodules in a
+  new directory `zkapp_command`
+  ([#1528](https://github.com/o1-labs/mina-rust/pull/1528/))
+- **Codebase**: remove unused `ledger/src/poseidon/fp.rs` file
+  ([#1538](https://github.com/o1-labs/mina-rust/pull/1538))
+- **Ledger**: convert unused binary to proper criterion benchmarks. Benchmarks
+  are now built as part of the existing build workflows across all platforms,
+  reusing build caches for efficiency
+  ([#1539](https://github.com/o1-labs/mina-rust/pull/1539))
+- **Ledger**: document, clean and add tests for the crate `mina-tree`
+  ([#1531](https://github.com/o1-labs/mina-rust/pull/1531)).
+- **GraphQL**: fixed parsing when neither signature nor proof is given.
+  See issue [#1464](https://github.com/o1-labs/mina-rust/issues/1464).
+  Fixed in [#1546](https://github.com/o1-labs/mina-rust/pull/1546/)
+  ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
 
 ## v0.17.0
 

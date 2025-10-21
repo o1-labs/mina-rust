@@ -8,14 +8,23 @@ on:
     # Run daily at 00:00 UTC
     - cron: '0 0 * * *'
 
-env:
-  GRAPHQL_ENDPOINT: http://mina-rust-plain-3.gcp.o1test.net/graphql
-
 jobs:
   remote-graphql-tests:
-    name: Test Remote GraphQL Endpoint
+    name: Test ${{ matrix.node_name }} GraphQL Endpoint
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - node_name: Rust Node
+            endpoint: http://mina-rust-plain-3.gcp.o1test.net/graphql
+          - node_name: Caml Node
+            endpoint: https://devnet-plain-1.gcp.o1test.net/graphql
+          - node_name: Mainnet Caml Node
+            endpoint: https://mainnet-plain-1.gcp.o1test.net/graphql
+    env:
+      GRAPHQL_ENDPOINT: ${{ matrix.endpoint }}
 
     steps:
       - name: Checkout repository

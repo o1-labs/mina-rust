@@ -90,6 +90,7 @@ const sidebars: SidebarsConfig = {
       label: 'APIs and Data',
       items: [
         'developers/graphql-api',
+        'developers/wallet',
         'developers/archive-database-queries',
       ],
     },
@@ -131,6 +132,21 @@ const sidebars: SidebarsConfig = {
         'developers/testing/p2p-tests',
         'developers/testing/network-connectivity',
         'developers/testing/ocaml-node-tests',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Performance',
+      items: [
+        'developers/benchmarks',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Documentation',
+      items: [
+        'developers/referencing-code-in-documentation',
+        'developers/ocaml-reference-tracking',
       ],
     },
     {

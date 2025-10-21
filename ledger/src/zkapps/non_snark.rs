@@ -37,7 +37,7 @@ use crate::{
 
 use super::{
     checks::NonSnarkOps,
-    intefaces::{
+    interfaces::{
         AccountIdInterface, AccountInterface, AccountUpdateInterface, ActionsInterface,
         AmountInterface, BalanceInterface, BoolInterface, BranchEvaluation, BranchInterface,
         BranchParam, CallForestInterface, CallStackInterface, ControllerInterface,
