@@ -21,18 +21,22 @@ export default {
     {
       name: 'staging-devnet-bp-0',
       url: 'https://staging-devnet-openmina-bp-0.minaprotocol.network',
+      type: 'rust',
     },
     {
       name: 'staging-devnet-bp-1',
       url: 'https://staging-devnet-openmina-bp-1.minaprotocol.network',
+      type: 'rust',
     },
     {
       name: 'staging-devnet-bp-2',
       url: 'https://staging-devnet-openmina-bp-2.minaprotocol.network',
+      type: 'rust',
     },
     {
       name: 'staging-devnet-bp-3',
       url: 'https://staging-devnet-openmina-bp-3.minaprotocol.network',
+      type: 'rust',
     },
   ],
 };

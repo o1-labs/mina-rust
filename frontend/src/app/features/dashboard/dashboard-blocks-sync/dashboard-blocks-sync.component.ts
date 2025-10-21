@@ -8,7 +8,7 @@ import { DashboardPeer } from '@shared/types/dashboard/dashboard.peer';
 import { SentryService } from '@core/services/sentry.service';
 import { AppActions } from '@app/app.actions';
 import { WebNodeService } from '@core/services/web-node.service';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 const PENDING = 'Pending';
 const SYNCED = 'Synced';
@@ -22,8 +22,7 @@ const SYNCED = 'Synced';
 })
 export class DashboardBlocksSyncComponent
   extends StoreDispatcher
-  implements OnInit
-{
+  implements OnInit {
   fetched: number;
   fetchedPercentage: string = '-';
   applied: number;
@@ -43,7 +42,7 @@ export class DashboardBlocksSyncComponent
   constructor(
     private sentryService: SentryService,
     private webNodeService: WebNodeService,
-    private rustService: RustService,
+    private rustService: ApiService,
   ) {
     super();
   }

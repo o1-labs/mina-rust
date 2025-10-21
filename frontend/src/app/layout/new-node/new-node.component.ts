@@ -17,7 +17,7 @@ import {
 import {
   FeaturesConfig,
   FeatureType,
-  MinaNode,
+  MinaNode, MinaNodeType,
 } from '@shared/types/core/environment/mina-env.type';
 import { AppActions } from '@app/app.actions';
 import { NgForOf, NgIf } from '@angular/common';
@@ -165,6 +165,7 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
 
   private initForm(): void {
     this.formGroup = this.formBuilder.group({
+      language: ['rust'],
       name: ['', Validators.required],
       url: ['', Validators.required],
       memProfiler: [''],
@@ -214,6 +215,7 @@ export class NewNodeComponent extends StoreDispatcher implements OnInit {
       debugger: this.formGroup.get('debugger').value,
       features: featuresConfig,
       isCustom: true,
+      type: this.formGroup.get('language').value as MinaNodeType,
     };
 
     this.dispatch2(AppActions.addNode({ node }));

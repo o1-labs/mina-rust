@@ -12,7 +12,7 @@ import {
   NodesOverviewNodeBlockStatus,
 } from '@shared/types/nodes/dashboard/nodes-overview-block.type';
 import { ONE_MILLION, toReadableDate } from '@openmina/shared';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +20,7 @@ import { RustService } from '@core/services/rust.service';
 export class NodesLiveService {
   constructor(
     private nodesOverviewService: NodesOverviewService,
-    private rust: RustService,
+    private rust: ApiService,
   ) {}
 
   getLiveNodeTips(): Observable<NodesLiveNode[]> {

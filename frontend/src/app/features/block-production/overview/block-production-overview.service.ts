@@ -4,7 +4,7 @@ import { delay, forkJoin, map, Observable } from 'rxjs';
 import { BlockProductionOverviewEpoch } from '@shared/types/block-production/overview/block-production-overview-epoch.type';
 import { BlockProductionOverviewEpochDetails } from '@shared/types/block-production/overview/block-production-overview-epoch-details.type';
 import { hasValue, ONE_BILLION } from '@openmina/shared';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { BlockProductionOverviewSlot } from '@shared/types/block-production/overview/block-production-overview-slot.type';
 import { BlockProductionOverviewAllStats } from '@shared/types/block-production/overview/block-production-overview-all-stats.type';
 
@@ -12,7 +12,7 @@ import { BlockProductionOverviewAllStats } from '@shared/types/block-production/
   providedIn: BlockProductionModule,
 })
 export class BlockProductionOverviewService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getEpochDetails(
     epochNumber?: number,

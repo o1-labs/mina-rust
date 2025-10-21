@@ -11,7 +11,7 @@ import {
 import { WorkPoolSpecs } from '@shared/types/snarks/work-pool/work-pool-specs.type';
 import { WorkPoolDetail } from '@shared/types/snarks/work-pool/work-pool-detail.type';
 import { WorkPoolCommitment } from '@shared/types/snarks/work-pool/work-pool-commitment.type';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +21,7 @@ export class SnarksWorkPoolService {
 
   constructor(
     private http: HttpClient,
-    private rust: RustService,
+    private rust: ApiService,
   ) {}
 
   getWorkPool(): Observable<WorkPool[]> {

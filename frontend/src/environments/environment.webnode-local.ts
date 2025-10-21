@@ -1,4 +1,4 @@
-import { MinaEnv } from '@shared/types/core/environment/mina-env.type';
+import { MinaEnv, MinaNodeType } from '@shared/types/core/environment/mina-env.type';
 
 export const environment: Readonly<MinaEnv> = {
   production: true,
@@ -31,6 +31,7 @@ export const environment: Readonly<MinaEnv> = {
     {
       name: 'Web Node',
       isWebNode: true,
+      type: MinaNodeType.RUST,
     },
   ],
 };

@@ -9,13 +9,13 @@ import {
   toReadableDate,
 } from '@openmina/shared';
 import { StateActionsStats } from '@shared/types/state/actions/state-actions-stats.type';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StateActionsService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getEarliestSlot(): Observable<number> {
     return this.rust

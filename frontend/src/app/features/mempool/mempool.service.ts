@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import {
   MempoolTransaction,
   MempoolTransactionKind,
@@ -17,7 +17,7 @@ import { getLocalStorage, ONE_BILLION } from '@openmina/shared';
   providedIn: 'root',
 })
 export class MempoolService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getTransactionPool(
     limit?: number,

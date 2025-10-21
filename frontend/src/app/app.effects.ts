@@ -16,7 +16,7 @@ import {
 } from '@shared/types/core/environment/mina-env.type';
 import { AppService } from '@app/app.service';
 import { getFirstFeature, isFeatureEnabled } from '@shared/constants/config';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { BaseEffect } from '@shared/base-classes/mina-rust-base.effect';
 import { WebNodeService } from '@core/services/web-node.service';
 import { catchErrorAndRepeat2 } from '@shared/constants/store-functions';
@@ -36,7 +36,7 @@ export class AppEffects extends BaseEffect {
   constructor(
     private actions$: Actions,
     private appService: AppService,
-    private rustNode: RustService,
+    private rustNode: ApiService,
     private router: Router,
     private webNodeService: WebNodeService,
     store: Store<MinaState>,

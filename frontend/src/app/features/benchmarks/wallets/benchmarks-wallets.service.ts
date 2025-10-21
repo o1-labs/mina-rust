@@ -3,7 +3,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { BenchmarksWallet } from '@shared/types/benchmarks/wallets/benchmarks-wallet.type';
 import { BenchmarksWalletTransaction } from '@shared/types/benchmarks/wallets/benchmarks-wallet-transaction.type';
 import Client from 'mina-signer';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import {
   MempoolTransaction,
   MempoolTransactionKind,
@@ -4031,7 +4031,7 @@ export const WALLETS: { privateKey: string; publicKey: string }[] = [
 export class BenchmarksWalletsService {
   private client: Client = new Client({ network: 'testnet' });
 
-  constructor(private rust: RustService) {
+  constructor(private rust: ApiService) {
     if (!getLocalStorage()?.getItem('browserId')) {
       getLocalStorage()?.setItem(
         'browserId',
@@ -4040,13 +4040,8 @@ export class BenchmarksWalletsService {
     }
   }
 
-  getAccounts(): Observable<
-    Pick<
-      BenchmarksWallet,
-      'publicKey' | 'privateKey' | 'minaTokens' | 'nonce'
-    >[]
-  > {
-    return this.rust.get<AccountsResponse[]>('/accounts').pipe(
+  getAccounts(): Observable<Pick<BenchmarksWallet, 'publicKey' | 'privateKey' | 'minaTokens' | 'nonce'>[]> {
+    return this.rust.get<AccountsResponse[]>('/accounts', { accounts: WALLETS }).pipe(
       map(wallets =>
         wallets.map(wallet => {
           return {
@@ -4099,11 +4094,12 @@ export class BenchmarksWalletsService {
       nonce: Number(transactions[i].nonce),
       memo: transactions[i].memo,
     }));
-    return this.rust.post<void>('/send-payment', signedTxs).pipe(
-      map(() => ({
-        transactions: transactions.map(tx => ({
+    return this.rust.post<any[]>('/send-payment', signedTxs).pipe(
+      map((response: any[]) => ({
+        transactions: transactions.map((tx: BenchmarksWalletTransaction, i: number) => ({
           ...tx,
           dateTime: getTimeFromMemo(tx.memo),
+          error: typeof response[i][1] === 'string' ? response[i][1] : undefined,
         })),
       })),
       catchError(err => {
@@ -4112,7 +4108,7 @@ export class BenchmarksWalletsService {
           ...tx,
           dateTime: getTimeFromMemo(tx.memo),
         }));
-        return of({ error, transactions: [] });
+        return of({ error, transactions });
       }),
     );
   }
@@ -4133,7 +4129,7 @@ export class BenchmarksWalletsService {
     return response.map(
       ([kind, command]: [
         MempoolTransactionResponseKind,
-        SignedCommand | ZkappCommand,
+          SignedCommand | ZkappCommand,
       ]) => {
         switch (kind) {
           case MempoolTransactionResponseKind.SignedCommand:

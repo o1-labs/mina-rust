@@ -73,6 +73,9 @@ export interface MinaNode {
   /** Display name for this node (e.g., "Local rust node", "Producer-0") */
   name: string;
 
+  /** Type of Mina node implementation (rust or ocaml) */
+  type: MinaNodeType;
+
   /** Base URL for the node's API endpoint (e.g., "http://127.0.0.1:3000") */
   url?: string;
 
@@ -90,6 +93,11 @@ export interface MinaNode {
 
   /** Whether this node runs in the browser as a WebNode */
   isWebNode?: boolean;
+}
+
+export enum MinaNodeType {
+  RUST = 'rust',
+  OCAML = 'ocaml',
 }
 
 /**

@@ -213,7 +213,7 @@ export function reducer(
             lastTxCount: lastItem(transactionsFromThisWallet).memo.split(
               ',',
             )[1],
-            lastTxStatus: action.payload.error
+            lastTxStatus: transactionsFromThisWallet.some(tx => tx.error)
               ? BenchmarksWalletTransactionStatus.ERROR
               : BenchmarksWalletTransactionStatus.GENERATED,
             lastTxTime: lastItem(transactionsFromThisWallet).dateTime,
@@ -223,20 +223,20 @@ export function reducer(
             ),
             successTx:
               w.successTx +
-              (!action.payload.error ? transactionsFromThisWallet.length : 0),
+              (!action.payload.error ? (transactionsFromThisWallet.filter(tx => !tx.error).length) : 0),
             failedTx:
               w.failedTx +
-              (action.payload.error ? transactionsFromThisWallet.length : 0),
-            errorReason: action.payload.error?.message,
+              (action.payload.error ? transactionsFromThisWallet.length : (transactionsFromThisWallet.filter(tx => tx.error).length)),
+            errorReason: action.payload.error?.message || transactionsFromThisWallet.find(tx => tx.error)?.error,
           };
         }),
         sentTransactions: {
           success:
             state.sentTransactions.success +
-            (!action.payload.error ? action.payload.transactions.length : 0),
+            (!action.payload.error ? (action.payload.transactions.filter(tx => !tx.error).length) : 0),
           fail:
             state.sentTransactions.fail +
-            (action.payload.error ? action.payload.transactions.length : 0),
+            (action.payload.error ? action.payload.transactions.length : (action.payload.transactions.filter(tx => tx.error).length)),
         },
       };
     }

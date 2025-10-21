@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import {
   NetworkBootstrapPeerType,
   NetworkBootstrapStatsRequest,
@@ -11,7 +11,7 @@ import { ONE_BILLION } from '@openmina/shared';
   providedIn: 'root',
 })
 export class NetworkBootstrapStatsService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getDhtBootstrapStats(): Observable<NetworkBootstrapStatsRequest[]> {
     return this.rust

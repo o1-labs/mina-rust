@@ -11,6 +11,65 @@
   border-radius: 6px;
 }
 
+.radio-wrapper {
+  .radio-option {
+    display: flex;
+    align-items: center;
+    margin-right: 24px;
+    cursor: pointer;
+  }
+
+  /* Hide native radio */
+  .radio-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  /* Custom radio button */
+  .radio-custom {
+    width: 20px;
+    height: 20px;
+    border: 4px solid mina-rust.$base-tertiary;
+    border-radius: 50%;
+    margin-right: 8px;
+    position: relative;
+    transition: all 0.2s ease;
+  }
+
+  /* Checked state */
+  .radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: mina-rust.$selected-primary;
+  }
+
+  /* Inner dot when checked */
+  .radio-option input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: mina-rust.$selected-container;
+  }
+
+  /* Hover state */
+  .radio-option:hover .radio-custom {
+    border-color: mina-rust.$selected-secondary;
+  }
+
+  /* Focus state for accessibility */
+  .radio-option input[type="radio"]:focus + .radio-custom {
+    box-shadow: 0 0 0 3px rgba(mina-rust.$selected-secondary, 0.2);
+  }
+
+  .radio-label {
+    user-select: none;
+  }
+}
+
 .feature {
   color: mina-rust.$base-tertiary;
 
@@ -23,9 +82,8 @@
 
   .mina-icon {
     display: none;
-    font-variation-settings:
-      'FILL' 0,
-      'wght' 400 !important;
+    font-variation-settings: 'FILL' 0,
+    'wght' 400 !important;
   }
 
   &.checked {

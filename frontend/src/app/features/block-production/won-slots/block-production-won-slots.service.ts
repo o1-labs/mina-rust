@@ -13,14 +13,14 @@ import {
   ONE_MILLION,
 } from '@openmina/shared';
 import { getTimeDiff } from '@shared/helpers/date.helper';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { BlockProductionWonSlotsEpoch } from '@shared/types/block-production/won-slots/block-production-won-slots-epoch.type';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BlockProductionWonSlotsService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getSlots(): Observable<{
     slots: BlockProductionWonSlotsSlot[];

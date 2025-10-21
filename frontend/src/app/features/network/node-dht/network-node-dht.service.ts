@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { map, Observable } from 'rxjs';
 import {
   NetworkNodeDhtPeer,
@@ -11,7 +11,7 @@ import { NetworkNodeDhtBucket } from '@shared/types/network/node-dht/network-nod
   providedIn: 'root',
 })
 export class NetworkNodeDhtService {
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getDhtPeers(): Observable<{
     peers: NetworkNodeDhtPeer[];

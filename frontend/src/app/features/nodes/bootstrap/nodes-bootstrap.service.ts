@@ -8,7 +8,7 @@ import {
 import { NodesBootstrapNode } from '@shared/types/nodes/bootstrap/nodes-bootstrap-node.type';
 import { NodesOverviewNodeBlockStatus } from '@shared/types/nodes/dashboard/nodes-overview-block.type';
 import { hasValue } from '@openmina/shared';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,7 @@ import { RustService } from '@core/services/rust.service';
 export class NodesBootstrapService {
   constructor(
     private nodesOverviewService: NodesOverviewService,
-    private rust: RustService,
+    private rust: ApiService,
   ) {}
 
   getBootstrapNodeTips(): Observable<NodesBootstrapNode[]> {

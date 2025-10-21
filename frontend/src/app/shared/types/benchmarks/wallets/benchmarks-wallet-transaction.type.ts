@@ -8,6 +8,7 @@ export interface BenchmarksWalletTransaction {
   nonce: string;
   privateKey: string;
   dateTime?: string;
+  error?: string;
 }
 
 /*

@@ -9,6 +9,27 @@
   #fg
   class="flex-column flex-1 overflow-y-auto transparent-scrollbar-track"
 >
+  <div class="radio-wrapper flex-row align-start mb-16 mt-16">
+    <label class="radio-option pointer">
+      <input
+        type="radio"
+        formControlName="language"
+        value="rust"
+      />
+      <span class="radio-custom"></span>
+      <span class="radio-label f-600">Rust</span>
+    </label>
+    <label class="radio-option pointer">
+      <input
+        type="radio"
+        formControlName="language"
+        value="ocaml"
+      />
+      <span class="radio-custom"></span>
+      <span class="radio-label f-600">OCaml</span>
+    </label>
+  </div>
+
   <div class="mt-16 mb-10 tertiary">Give it a name</div>
   <div>
     <input

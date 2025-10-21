@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
-import { MinaNode } from '@shared/types/core/environment/mina-env.type';
+import { MinaNode, MinaNodeType } from '@shared/types/core/environment/mina-env.type';
 import { HttpClient } from '@angular/common/http';
 import { EMPTY, map, Observable, of } from 'rxjs';
 import { WebNodeService } from '@core/services/web-node.service';
+import { GraphQLService } from '@core/services/graph-ql.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class RustService {
+export class ApiService {
   private node: MinaNode;
 
-  constructor(
-    private http: HttpClient,
-    private webNodeService: WebNodeService,
-  ) {}
+  constructor(private http: HttpClient,
+              private graphQlService: GraphQLService,
+              private webNodeService: WebNodeService) {}
 
   changeRustNode(node: MinaNode): void {
     this.node = node;
+    this.graphQlService.changeGraphQlProvider(node);
   }
 
   get activeNodeIsWebNode(): boolean {
@@ -31,28 +32,28 @@ export class RustService {
     return this.node.name;
   }
 
-  get<T>(path: string): Observable<T> {
+  get<T>(path: string, data?: any): Observable<T> {
     if (this.node.isWebNode) {
-      return this.getFromWebNode(path).pipe(
-        map((response: any) => {
-          // console.log(path, response);
-          return response;
-        }),
-      );
+      return this.getFromWebNode(path);
+    } else if (this.node.type === MinaNodeType.RUST) {
+      return this.http.get<T>(this.URL + path);
+    } else if (this.node.type === MinaNodeType.OCAML) {
+      return this.graphQlService.get<T>(path, data);
+    } else {
+      throw new Error(`Unknown node type: ${this.node.type}`);
     }
-    return this.http.get<T>(this.URL + path);
   }
 
   post<T, B = string | object>(path: string, body: B): Observable<T> {
     if (this.node.isWebNode) {
-      return this.postToWebNode(path, body).pipe(
-        map((response: any) => {
-          // console.log(path, response);
-          return response;
-        }),
-      );
+      return this.postToWebNode(path, body);
+    } else if (this.node.type === MinaNodeType.RUST) {
+      return this.http.post<T>(this.URL + path, body);
+    } else if (this.node.type === MinaNodeType.OCAML) {
+      return this.graphQlService.post<T>(path, body);
+    } else {
+      throw new Error(`Unknown node type: ${this.node.type}`);
     }
-    return this.http.post<T>(this.URL + path, body);
   }
 
   getMemProfiler<T>(path: string): Observable<T> {

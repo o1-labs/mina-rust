@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable, of, tap } from 'rxjs';
 import { MinaNode } from '@shared/types/core/environment/mina-env.type';
 import { CONFIG } from '@shared/constants/config';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import {
   AppNodeDetails,
   AppNodeStatus,
@@ -21,7 +21,7 @@ export class AppService {
   private previousProducedBlock: BlockProductionAttempt;
 
   constructor(
-    private rust: RustService,
+    private rust: ApiService,
     private sentryService: SentryService,
     private webnodeService: WebNodeService,
   ) {}
@@ -68,11 +68,11 @@ export class AppService {
             network: getNetwork(data.chain_id),
             producingBlockAt: nanOrElse(
               data.current_block_production_attempt?.won_slot.slot_time /
-                ONE_MILLION,
+              ONE_MILLION,
               null,
             ),
             producingBlockGlobalSlot:
-              data.current_block_production_attempt?.won_slot.global_slot,
+            data.current_block_production_attempt?.won_slot.global_slot,
             producingBlockStatus: data.current_block_production_attempt?.status,
           }) as AppNodeDetails,
       ),
@@ -95,7 +95,7 @@ export class AppService {
       this.previousProducedBlock &&
       data.previous_block_production_attempt &&
       isInProduction(this.previousProducedBlock.status) !==
-        isInProduction(data.previous_block_production_attempt.status)
+      isInProduction(data.previous_block_production_attempt.status)
     ) {
       this.sentryService.updateProducedBlock(
         data.previous_block_production_attempt,
@@ -182,6 +182,7 @@ interface Peer {
   best_tip_global_slot: number;
   best_tip_timestamp: number;
   connection_status: string;
+  connecting_details: string; // JSON
   address: string;
   time: number;
 }

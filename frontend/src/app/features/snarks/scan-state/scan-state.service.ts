@@ -1,24 +1,13 @@
 import { Injectable } from '@angular/core';
-import { RustService } from '@core/services/rust.service';
-import {
-  catchError,
-  forkJoin,
-  map,
-  Observable,
-  of,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { ApiService } from '@core/services/api.service';
+import { catchError, forkJoin, map, Observable, of, switchMap, tap } from 'rxjs';
 import { ScanStateBlock } from '@shared/types/snarks/scan-state/scan-state-block.type';
 import { HttpClient } from '@angular/common/http';
-import {
-  ScanStateLeaf,
-  ScanStateLeafStatus,
-} from '@shared/types/snarks/scan-state/scan-state-leaf.type';
+import { ScanStateLeaf, ScanStateLeafStatus } from '@shared/types/snarks/scan-state/scan-state-leaf.type';
 import { ScanStateTree } from '@shared/types/snarks/scan-state/scan-state-tree.type';
 import { ScanStateWorkingSnarker } from '@shared/types/snarks/scan-state/scan-state-working-snarker.type';
 import { CONFIG } from '@shared/constants/config';
-import { MinaNode } from '@shared/types/core/environment/mina-env.type';
+import { MinaNode, MinaNodeType } from '@shared/types/core/environment/mina-env.type';
 
 @Injectable({
   providedIn: 'root',
@@ -27,7 +16,7 @@ export class ScanStateService {
   private snarkers: ScanStateWorkingSnarker[];
 
   constructor(
-    private rust: RustService,
+    private rust: ApiService,
     private http: HttpClient,
   ) {}
 
@@ -40,47 +29,43 @@ export class ScanStateService {
           return of(response);
         }
         return forkJoin(
-          CONFIG.configs.map((node: MinaNode) =>
-            this.http
-              .get<{ public_key: string }>(node.url + '/snarker/config')
-              .pipe(
-                map(r => {
-                  const nodeIsNotASnarker = !r;
-                  if (nodeIsNotASnarker) {
-                    return null;
-                  }
-                  return {
-                    hash: r.public_key,
-                    name: node.name,
-                    url: node.url,
-                    local: node.url === this.rust.URL,
-                    leafs: [],
-                  } as ScanStateWorkingSnarker;
-                }),
-                catchError(err => {
-                  let message = err.message;
-                  if (
-                    !message.includes('Http failure') &&
-                    err.statusCode < 400
-                  ) {
-                    message = 'Frontend parsing error';
-                  }
-                  return of({
-                    hash: '',
-                    name: node.name,
-                    local: node.url === this.rust.URL,
-                    url: node.url,
-                    leafs: [],
-                    error: message,
-                  });
-                }),
-              ),
-          ),
+          CONFIG.configs
+            .filter(node => node.type === MinaNodeType.RUST)
+            .map((node: MinaNode) =>
+              this.http
+                .get<{ public_key: string }>(node.url + '/snarker/config')
+                .pipe(
+                  map(r => {
+                    const nodeIsNotASnarker = !r;
+                    if (nodeIsNotASnarker) {
+                      return null;
+                    }
+                    return {
+                      hash: r.public_key,
+                      name: node.name,
+                      url: node.url,
+                      local: node.url === this.rust.URL,
+                      leafs: [],
+                    } as ScanStateWorkingSnarker;
+                  }),
+                  catchError(err => {
+                    let message = err.message;
+                    if (!message.includes('Http failure') && err.statusCode < 400) {
+                      message = 'Frontend parsing error';
+                    }
+                    return of({
+                      hash: '',
+                      name: node.name,
+                      local: node.url === this.rust.URL,
+                      url: node.url,
+                      leafs: [],
+                      error: message,
+                    });
+                  }),
+                ),
+            ),
         ).pipe(
-          tap(
-            (snarkers: ScanStateWorkingSnarker[]) =>
-              (this.snarkers = snarkers.filter(Boolean)),
-          ),
+          tap((snarkers: ScanStateWorkingSnarker[]) => (this.snarkers = snarkers.filter(Boolean))),
           map(() => response),
         );
       }),

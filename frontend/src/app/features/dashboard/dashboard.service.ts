@@ -4,7 +4,7 @@ import {
   DashboardPeer,
   DashboardPeerStatus,
 } from '@shared/types/dashboard/dashboard.peer';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { ONE_MILLION, toReadableDate } from '@openmina/shared';
 import {
   DashboardPeerRpcResponses,
@@ -16,7 +16,7 @@ import { NodesOverviewService } from '@nodes/overview/nodes-overview.service';
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
   constructor(
-    private rust: RustService,
+    private rust: ApiService,
     private nodesOverviewService: NodesOverviewService,
   ) {}
 
@@ -45,13 +45,7 @@ export class DashboardService {
     );
   }
 
-  getTips({
-    url,
-    name,
-  }: {
-    url: string;
-    name: string;
-  }): Observable<NodesOverviewNode[]> {
+  getTips({ url, name }: { url: string; name: string; }): Observable<NodesOverviewNode[]> {
     return this.rust.get<NodesOverviewNode[]>('/stats/sync?limit=1').pipe(
       map((response: NodesOverviewNode[]) =>
         this.nodesOverviewService.mapNodeTipsResponse([response, undefined], {

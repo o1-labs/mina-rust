@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { MemoryResourceName } from '@shared/types/resources/memory/memory-resources-name.type';
 import { MemoryResource } from '@shared/types/resources/memory/memory-resource.type';
 import { map, Observable } from 'rxjs';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 
 @Injectable()
 export class MemoryResourcesService {
   private id: number = 0;
 
-  constructor(private rust: RustService) {}
+  constructor(private rust: ApiService) {}
 
   getStorageResources(
     threshold: number,

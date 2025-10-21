@@ -23,11 +23,11 @@ export const CONFIG: Readonly<MinaEnv> = {
   configs: !isBrowser()
     ? []
     : environment.configs.map(config => ({
-        ...config,
-        url: getURL(config.url),
-        memoryProfiler: getURL(config.memoryProfiler),
-        debugger: getURL(config.debugger),
-      })),
+      ...config,
+      url: getURL(config.url),
+      memoryProfiler: getURL(config.memoryProfiler),
+      debugger: getURL(config.debugger),
+    })),
 };
 
 safelyExecuteInBrowser(() => {

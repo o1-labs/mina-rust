@@ -1,5 +1,5 @@
 {
-  "printWidth": 80,
+  "printWidth": 180,
   "tabWidth": 2,
   "useTabs": false,
   "semi": true,
@@ -18,7 +18,7 @@
       "files": "**/*.html",
       "options": {
         "parser": "angular",
-        "printWidth": 80,
+        "printWidth": 180,
         "bracketSameLine": false,
         "htmlWhitespaceSensitivity": "ignore",
         "singleAttributePerLine": false

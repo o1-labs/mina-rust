@@ -35,6 +35,7 @@ export default {
     {
       name: 'Web Node',
       isWebNode: true,
+      type: 'rust',
     },
   ],
 };

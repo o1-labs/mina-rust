@@ -58,8 +58,7 @@ interface TransactionForm {
 })
 export class BenchmarksWalletsToolbarComponent
   extends ManualDetection
-  implements OnInit
-{
+  implements OnInit {
   formGroup: FormGroup<TransactionForm>;
   streamSending: boolean;
   successSentTransactions: number;
@@ -101,7 +100,11 @@ export class BenchmarksWalletsToolbarComponent
       .select(selectBenchmarksWallets)
       .pipe(untilDestroyed(this))
       .subscribe(wallets => {
-        this.wallets = wallets;
+        this.wallets = [...wallets].sort((a, b) => {
+          const aTokens = Number(a.minaTokens) || 0;
+          const bTokens = Number(b.minaTokens) || 0;
+          return bTokens - aTokens;
+        });
         this.walletsLength = wallets.length;
         this.detect();
       });
@@ -183,10 +186,10 @@ export class BenchmarksWalletsToolbarComponent
     this.formGroup
       .get('batch')
       .valueChanges.pipe(
-        distinctUntilChanged(),
-        filter(v => v !== null),
-        untilDestroyed(this),
-      )
+      distinctUntilChanged(),
+      filter(v => v !== null),
+      untilDestroyed(this),
+    )
       .subscribe((value: number) => {
         let payload = Math.ceil(value || 1);
         if (payload > this.walletsLength) {
@@ -205,10 +208,10 @@ export class BenchmarksWalletsToolbarComponent
     this.formGroup
       .get('amount')
       .valueChanges.pipe(
-        distinctUntilChanged(),
-        filter(v => v !== null),
-        untilDestroyed(this),
-      )
+      distinctUntilChanged(),
+      filter(v => v !== null),
+      untilDestroyed(this),
+    )
       .subscribe((value: number) => {
         this.store.dispatch<BenchmarksWalletsChangeAmount>({
           type: BENCHMARKS_WALLETS_CHANGE_AMOUNT,
@@ -218,10 +221,10 @@ export class BenchmarksWalletsToolbarComponent
     this.formGroup
       .get('fee')
       .valueChanges.pipe(
-        distinctUntilChanged(),
-        filter(v => v !== null),
-        untilDestroyed(this),
-      )
+      distinctUntilChanged(),
+      filter(v => v !== null),
+      untilDestroyed(this),
+    )
       .subscribe((value: number) => {
         this.store.dispatch<BenchmarksWalletsChangeFee>({
           type: BENCHMARKS_WALLETS_CHANGE_FEE,

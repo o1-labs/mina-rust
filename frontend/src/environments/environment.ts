@@ -1,4 +1,4 @@
-import { MinaEnv } from '@shared/types/core/environment/mina-env.type';
+import { MinaEnv, MinaNodeType } from '@shared/types/core/environment/mina-env.type';
 
 export const environment: Readonly<MinaEnv> = {
   production: false,
@@ -88,8 +88,52 @@ export const environment: Readonly<MinaEnv> = {
     //   url: 'http://localhost:3000',
     // },
     {
+      name: 'OCaml Devnet Node',
+      url: 'https://devnet-plain-1.gcp.o1test.net',
+      type: MinaNodeType.OCAML,
+      features: {
+        benchmarks: ['wallets'],
+        mempool: [],
+      },
+    },
+    {
+      name: 'OCaml Mainnet Node',
+      url: 'https://mainnet-plain-1.gcp.o1test.net',
+      type: MinaNodeType.OCAML,
+      features: {
+        benchmarks: ['wallets'],
+        mempool: [],
+      },
+    },
+    {
       name: 'Mina Rust Seed 1 GCP',
       url: 'https://mina-rust-seed-1.gcp.o1test.net',
+      type: MinaNodeType.RUST,
+    },
+    {
+      name: 'Mina Rust Seed 2 GCP',
+      url: 'https://mina-rust-seed-2.gcp.o1test.net',
+      type: MinaNodeType.RUST,
+    },
+    {
+      name: 'Mina Rust Seed 3 GCP',
+      url: 'https://mina-rust-seed-3.gcp.o1test.net',
+      type: MinaNodeType.RUST,
+    },
+    {
+      name: 'o1Labs Plain Node 1',
+      url: 'https://mina-rust-plain-1.gcp.o1test.net',
+      type: MinaNodeType.RUST,
+    },
+    {
+      name: 'o1Labs Plain Node 2',
+      url: 'https://mina-rust-plain-2.gcp.o1test.net',
+      type: MinaNodeType.RUST,
+    },
+    {
+      name: 'o1Labs Plain Node 3',
+      url: 'https://mina-rust-plain-3.gcp.o1test.net',
+      type: MinaNodeType.RUST,
     },
     // {
     //   name: 'feat/frontend-api-peers',

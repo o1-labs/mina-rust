@@ -6,7 +6,7 @@ import {
 } from '@snarks/work-pool/snarks-work-pool.state';
 import { WorkPoolSpecs } from '@shared/types/snarks/work-pool/work-pool-specs.type';
 import { downloadJsonFromURL } from '@openmina/shared';
-import { RustService } from '@core/services/rust.service';
+import { ApiService } from '@core/services/api.service';
 import { WorkPoolDetail } from '@shared/types/snarks/work-pool/work-pool-detail.type';
 
 @Component({
@@ -18,13 +18,12 @@ import { WorkPoolDetail } from '@shared/types/snarks/work-pool/work-pool-detail.
 })
 export class SnarksWorkPoolDetailsSpecsComponent
   extends StoreDispatcher
-  implements OnInit
-{
+  implements OnInit {
   activeWorkPool: WorkPoolSpecs;
 
   private jobId: string;
 
-  constructor(private rust: RustService) {
+  constructor(private rust: ApiService) {
     super();
   }
 

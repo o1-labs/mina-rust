@@ -21,6 +21,7 @@ export default {
     {
       name: 'Compose rust node',
       url: '/openmina-node',
+      type: 'rust',
     },
   ],
 };

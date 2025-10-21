@@ -1,4 +1,4 @@
-import { MinaEnv } from '@shared/types/core/environment/mina-env.type';
+import { MinaEnv, MinaNodeType } from '@shared/types/core/environment/mina-env.type';
 
 // This environment provides build-time configuration for production
 // The actual runtime configuration gets loaded from /environments/env.js
@@ -26,14 +26,17 @@ export const environment: Readonly<MinaEnv> = {
     {
       name: 'o1Labs Plain Node 1',
       url: 'https://mina-rust-plain-1.gcp.o1test.net/',
+      type: MinaNodeType.RUST,
     },
     {
       name: 'o1Labs Plain Node 2',
       url: 'https://mina-rust-plain-2.gcp.o1test.net/',
+      type: MinaNodeType.RUST,
     },
     {
       name: 'o1Labs Plain Node 3',
       url: 'https://mina-rust-plain-3.gcp.o1test.net/',
+      type: MinaNodeType.RUST,
     },
   ],
   sentry: undefined,
