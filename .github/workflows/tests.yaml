@@ -232,6 +232,17 @@ jobs:
 
           echo "Build info verification passed!"
 
+      - name: Test mina internal graphql commands (Rust node)
+        run: ./.github/scripts/test-cli-graphql-commands.sh
+
+      - name: Test mina internal graphql commands (OCaml node)
+        env:
+          GRAPHQL_NODE: https://devnet-plain-1.gcp.o1test.net/graphql
+        run: ./.github/scripts/test-cli-graphql-commands.sh
+
+      - name: Test OCaml-specific GraphQL endpoints
+        run: ./.github/scripts/test-ocaml-specific-endpoints.sh
+
       - name: Upload binaries
         uses: actions/upload-artifact@v4
         with:

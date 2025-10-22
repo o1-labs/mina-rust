@@ -89,7 +89,20 @@ MutationSendPayment from
 MutationSendDelegation from
 "!!raw-loader!./scripts/graphql-api/mutations/curl/send-delegation.sh"; import
 MutationSendZkapp from
-"!!raw-loader!./scripts/graphql-api/mutations/curl/send-zkapp.sh";
+"!!raw-loader!./scripts/graphql-api/mutations/curl/send-zkapp.sh"; import
+GraphqlList from "!!raw-loader!./scripts/cli/graphql-list.sh"; import
+GraphqlInspect from "!!raw-loader!./scripts/cli/graphql-inspect.sh"; import
+GraphqlInspectRemote from
+"!!raw-loader!./scripts/cli/graphql-inspect-remote.sh"; import GraphqlRunSimple
+from "!!raw-loader!./scripts/cli/graphql-run-simple.sh"; import GraphqlRunStdin
+from "!!raw-loader!./scripts/cli/graphql-run-stdin.sh"; import GraphqlRunFile
+from "!!raw-loader!./scripts/cli/graphql-run-file.sh"; import
+GraphqlRunVariables from "!!raw-loader!./scripts/cli/graphql-run-variables.sh";
+import GraphqlRunRemote from "!!raw-loader!./scripts/cli/graphql-run-remote.sh";
+import GraphqlInspectOcamlProtocolState from
+"!!raw-loader!./scripts/cli/graphql-inspect-ocaml-protocolstate.sh"; import
+GraphqlRunOcamlProtocolState from
+"!!raw-loader!./scripts/cli/graphql-run-ocaml-protocolstate.sh";
 
 # GraphQL API Reference
 
@@ -720,6 +733,160 @@ title="website/docs/developers/scripts/graphql-api/queries/curl/account-balance.
 </Tabs>
 
 ## Development and Testing
+
+### CLI Introspection Tools
+
+The Mina CLI provides built-in commands to explore and inspect the GraphQL API.
+These tools work with both Rust and OCaml Mina nodes, allowing you to discover
+and inspect endpoints regardless of the node implementation.
+
+#### List All Endpoints
+
+Discover all available GraphQL query and mutation endpoints by querying the
+server's introspection API:
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-list.sh">
+  {GraphqlList}
+</CodeBlock>
+
+This command dynamically queries the GraphQL server and displays:
+
+- All query endpoints (alphabetically sorted)
+- All mutation endpoints (alphabetically sorted)
+- Endpoint descriptions from the schema
+- Argument names and types for each endpoint
+- Usage hints for the inspect command
+
+To query a remote node, use the `--node` flag:
+
+```bash
+mina internal graphql list --node http://remote-node:3000/graphql
+```
+
+#### Inspect Endpoint Schema
+
+Get detailed schema information for a specific endpoint:
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-inspect.sh">
+  {GraphqlInspect}
+</CodeBlock>
+
+This displays:
+
+- Endpoint description
+- Required and optional arguments with types
+- Return type and structure
+- Example GraphQL query
+- Curl command for testing
+- Live example response from your node (if running)
+
+To inspect an endpoint on a remote node:
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-inspect-remote.sh">
+  {GraphqlInspectRemote}
+</CodeBlock>
+
+#### Run GraphQL Queries
+
+Execute arbitrary GraphQL queries directly from the CLI:
+
+##### Simple query
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-simple.sh">
+  {GraphqlRunSimple}
+</CodeBlock>
+
+This executes the query and returns the formatted JSON response.
+
+##### Query from stdin
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-stdin.sh">
+  {GraphqlRunStdin}
+</CodeBlock>
+
+Useful for piping queries from other commands or scripts.
+
+##### Query from file
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-file.sh">
+  {GraphqlRunFile}
+</CodeBlock>
+
+Convenient for complex queries stored in `.graphql` files.
+
+##### Query with variables
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-variables.sh">
+  {GraphqlRunVariables}
+</CodeBlock>
+
+Variables must be provided as a JSON object. This allows parameterized queries
+for dynamic values.
+
+##### Query remote node
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-remote.sh">
+  {GraphqlRunRemote}
+</CodeBlock>
+
+The `run` command supports three input methods:
+
+- **Command line argument**: Pass the query directly as an argument
+- **Standard input**: Pipe or redirect queries from stdin
+- **File input**: Use `-f` flag to read from a `.graphql` file
+
+You can combine any input method with:
+
+- `-v` or `--variables`: Pass variables as JSON string
+- `--node`: Specify a custom GraphQL endpoint URL
+
+These tools are particularly useful for:
+
+- Learning available endpoints without reading documentation
+- Generating curl commands for API testing
+- Verifying endpoint signatures and return types
+- Quickly prototyping GraphQL queries
+
+#### Using with OCaml Nodes
+
+The CLI introspection tools work seamlessly with OCaml Mina nodes. You can use
+o1Labs' devnet OCaml nodes to explore the GraphQL API:
+
+```bash
+# List all endpoints on an OCaml node
+mina internal graphql list --node https://devnet-plain-1.gcp.o1test.net/graphql
+
+# Inspect a specific endpoint
+mina internal graphql inspect daemonStatus --node https://devnet-plain-1.gcp.o1test.net/graphql
+
+# Run a query against an OCaml node
+mina internal graphql run 'query { syncStatus }' --node https://devnet-plain-1.gcp.o1test.net/graphql
+```
+
+This is useful for:
+
+- Comparing GraphQL schemas between Rust and OCaml implementations
+- Testing cross-compatibility of queries
+- Validating that your queries work with both node types
+- Exploring OCaml-specific endpoints or differences in implementations
+
+##### OCaml-specific endpoints
+
+Some endpoints are only available in OCaml nodes. For example, the
+`protocolState` endpoint provides detailed protocol state information:
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-inspect-ocaml-protocolstate.sh">
+  {GraphqlInspectOcamlProtocolState}
+</CodeBlock>
+
+You can query this endpoint directly:
+
+<CodeBlock language="bash" title="website/docs/developers/scripts/cli/graphql-run-ocaml-protocolstate.sh">
+  {GraphqlRunOcamlProtocolState}
+</CodeBlock>
+
+These OCaml-specific endpoints are useful for understanding implementation
+differences and ensuring compatibility when migrating from OCaml to Rust nodes.
 
 ## Schema Introspection
 
