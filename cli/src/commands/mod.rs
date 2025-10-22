@@ -1,4 +1,5 @@
 pub mod build_info;
+pub mod internal;
 pub mod misc;
 pub mod node;
 pub mod replay;
@@ -40,6 +41,8 @@ pub enum Command {
     BuildInfo(build_info::Command),
     /// Wallet operations for managing accounts and sending transactions.
     Wallet(wallet::Wallet),
+    /// Internal utilities for debugging and introspection.
+    Internal(internal::Internal),
 }
 
 impl Command {
@@ -51,6 +54,7 @@ impl Command {
             Self::Replay(v) => v.run(),
             Self::BuildInfo(v) => v.run(),
             Self::Wallet(v) => v.run(network),
+            Self::Internal(v) => v.run(),
         }
     }
 }

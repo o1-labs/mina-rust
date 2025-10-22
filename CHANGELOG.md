@@ -14,6 +14,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CLI**: add GraphQL introspection and execution commands under `mina
+  internal graphql`. Three new commands enable dynamic endpoint discovery
+  (`list`), detailed schema inspection (`inspect <endpoint>`), and arbitrary
+  query execution (`run [query]`) with support for multiple input methods
+  (command line, stdin, file) and variables. All commands use GraphQL
+  introspection API for dynamic discovery without hardcoded endpoints. CI tests
+  validate commands against o1Labs infrastructure
+  ([#1565](https://github.com/o1-labs/mina-rust/pull/1565))
 - **CI**: add devnet and mainnet Caml nodes to remote GraphQL test suite to
   ensure compatibility between Rust and OCaml implementations
   ([#1542](https://github.com/o1-labs/mina-rust/pull/1542))
