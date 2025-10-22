@@ -173,7 +173,10 @@ fn p2p_request_transactions_if_needed<S: Service>(store: &mut Store<S>) {
         .ready_peers_iter()
         .filter(|(_, p)| p.channels.transaction.can_send_request())
         .map(|(peer_id, _)| {
-            let pending_txs = state.snark_pool.candidates.peer_work_count(peer_id);
+            let pending_txs = state
+                .transaction_pool
+                .candidates
+                .peer_transaction_count(peer_id);
             (peer_id, MAX_PEER_PENDING_TXS.saturating_sub(pending_txs))
         })
         .filter(|(_, limit)| *limit > 0)
