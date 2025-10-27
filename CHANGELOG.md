@@ -112,6 +112,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   See issue [#1464](https://github.com/o1-labs/mina-rust/issues/1464).
   Fixed in [#1546](https://github.com/o1-labs/mina-rust/pull/1546/)
   ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
+- **transactions**: fixed a typo in `p2p_request_transactions_if_needed` where snark count was used instead of transaction count
+  ([#1563](https://github.com/o1-labs/mina-rust/pull/1563)).
 
 ## v0.17.0
 
