@@ -6,9 +6,8 @@ sidebar_position: 5
 
 import CodeBlock from "@theme/CodeBlock";
 import BlockProducerNodesList from "!!raw-loader!../../developers/scripts/infrastructure/block-producer-nodes.txt";
-import QueryDaemonStatus from "!!raw-loader!../../developers/scripts/infrastructure/query-daemon-status.sh";
-import QueryBlockHeight from "!!raw-loader!../../developers/scripts/infrastructure/query-block-height.sh";
-import QueryPeers from "!!raw-loader!../../developers/scripts/infrastructure/query-peers.sh";
+import QueryBestChainBlock from "!!raw-loader!../../developers/scripts/infrastructure/query-best-chain-block.sh";
+import QueryBestChainTransactions from "!!raw-loader!../../developers/scripts/infrastructure/query-best-chain-transactions.sh";
 import TestGraphQLEndpoint from "!!raw-loader!../../developers/scripts/infrastructure/test-graphql-endpoint.sh";
 
 # Block Producers
@@ -37,33 +36,27 @@ The following block producer nodes are officially maintained by o1Labs:
 
 ## Using Block Producer Nodes
 
-### GraphQL API Access
+### Latest canonical block information
 
-Block producer nodes provide GraphQL API endpoints for querying network state:
+Query the latest canonical block to get block height, state hash, and block
+creator:
 
 <CodeBlock
   language="bash"
-  title="website/docs/developers/scripts/infrastructure/query-daemon-status.sh"
+  title="website/docs/developers/scripts/infrastructure/query-best-chain-block.sh"
 >
-  {QueryDaemonStatus}
+  {QueryBestChainBlock}
 </CodeBlock>
 
-### Network Information
+### Transaction information
 
-You can query various network information:
-
-<CodeBlock
-  language="bash"
-  title="website/docs/developers/scripts/infrastructure/query-block-height.sh"
->
-  {QueryBlockHeight}
-</CodeBlock>
+Check transactions in the latest block:
 
 <CodeBlock
   language="bash"
-  title="website/docs/developers/scripts/infrastructure/query-peers.sh"
+  title="website/docs/developers/scripts/infrastructure/query-best-chain-transactions.sh"
 >
-  {QueryPeers}
+  {QueryBestChainTransactions}
 </CodeBlock>
 
 ## API Capabilities
