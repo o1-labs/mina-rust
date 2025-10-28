@@ -129,8 +129,8 @@ mod wasm {
 #[macro_use]
 mod cache;
 
-// #[cfg(all(not(target_family = "wasm"), feature = "ocaml-interop"))]
-// mod ffi;
+#[cfg(all(not(target_family = "wasm"), feature = "ocaml-interop"))]
+mod ffi;
 
 #[cfg(any(test, feature = "fuzzing"))]
 pub mod generators;
