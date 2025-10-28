@@ -291,7 +291,7 @@ jobs:
               --exclude mina-macros
               --exclude mina-p2p-messages
               --exclude poseidon
-              # --exclude mina-tree
+              --exclude mina-tree
               --exclude snark
               --exclude p2p
               --exclude salsa-simple
