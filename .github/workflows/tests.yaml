@@ -244,7 +244,7 @@ jobs:
         run: ./.github/scripts/test-ocaml-specific-endpoints.sh
 
       - name: Upload binaries
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bin-${{ github.sha }}
           path: target/release/mina
@@ -323,7 +323,7 @@ jobs:
         run: make build-tests
 
       - name: Upload tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: tests-${{ github.sha }}
           path: target/release/tests
@@ -354,7 +354,7 @@ jobs:
         run: make build-tests-webrtc
 
       - name: Upload tests
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: tests-webrtc-${{ github.sha }}
           path: target/release/tests
@@ -444,7 +444,7 @@ jobs:
           ./${{ matrix.test }} --test-threads=1
 
       - name: Archive network debugger database
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: network-debugger-${{ matrix.test }}-${{ github.sha }}
           path: /tmp/db
@@ -531,7 +531,7 @@ jobs:
           ./${{ matrix.test }} --test-threads=1
 
       - name: Archive network debugger database
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: network-debugger-${{ matrix.test }}-${{ github.sha }}
           path: /tmp/db
@@ -633,7 +633,7 @@ jobs:
           }
 
       - name: Upload logs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bootstrap-logs-${{ github.sha }}
           path: ${{ env.MINA_HOME }}/logs/*
@@ -641,7 +641,7 @@ jobs:
         if: ${{ failure() }}
 
       - name: Upload record
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bootstrap-record-${{ github.sha }}
           path: ${{ env.MINA_HOME }}/recorder/*
@@ -649,7 +649,7 @@ jobs:
         if: ${{ failure() }}
 
       - name: Archive network debugger database
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: network-debugger-test-bootstrap-${{ github.sha }}
           path: /tmp/db
