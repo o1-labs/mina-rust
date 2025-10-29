@@ -177,7 +177,7 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sh -c 'echo "Processing: $$1"; sed -i"" -e "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
+		-exec sh -c 'echo "Processing: $$1"; sed -i"" "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
@@ -287,6 +287,42 @@ setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		cargo install wasm-bindgen-cli --version ${WASM_BINDGEN_CLI_VERSION}
 
+.PHONY: setup-taplo
+setup-taplo: ## Install taplo TOML formatter if not present
+	@if ! command -v taplo &> /dev/null; then \
+		echo "Installing taplo..."; \
+		if command -v cargo-binstall &> /dev/null; then \
+			cargo binstall -y taplo-cli; \
+		else \
+			TAPLO_VERSION="0.9.3"; \
+			OS=$$(uname -s | tr '[:upper:]' '[:lower:]'); \
+			ARCH=$$(uname -m); \
+			case "$$OS" in \
+				darwin) OS="darwin" ;; \
+				linux) OS="linux" ;; \
+				*) echo "Unsupported OS: $$OS"; exit 1 ;; \
+			esac; \
+			case "$$ARCH" in \
+				x86_64) ARCH="x86_64" ;; \
+				arm64|aarch64) ARCH="aarch64" ;; \
+				*) echo "Unsupported architecture: $$ARCH"; exit 1 ;; \
+			esac; \
+			TAPLO_URL="https://github.com/tamasfe/taplo/releases/download/$${TAPLO_VERSION}/taplo-full-$${OS}-$${ARCH}.gz"; \
+			echo "Downloading taplo from $${TAPLO_URL}..."; \
+			curl -L "$${TAPLO_URL}" | gunzip > /tmp/taplo; \
+			chmod +x /tmp/taplo; \
+			if [ -d "$$HOME/.cargo/bin" ]; then \
+				mv /tmp/taplo "$$HOME/.cargo/bin/taplo"; \
+				echo "Installed taplo to ~/.cargo/bin/taplo"; \
+			else \
+				echo "Warning: ~/.cargo/bin not found, taplo installed to /tmp/taplo"; \
+				echo "Please add ~/.cargo/bin to PATH or move /tmp/taplo manually"; \
+			fi; \
+		fi; \
+	else \
+		echo "taplo is already installed"; \
+	fi
+
 .PHONY: test
 test: ## Run tests
 	cargo test
@@ -390,6 +426,11 @@ docker-build-fuzzing: ## Build fuzzing Docker image
 docker-build-heartbeats-processor: ## Build heartbeats processor Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-heartbeats-processor:$(GIT_COMMIT) \
 		tools/heartbeats-processor/
+
+.PHONY: heartbeats-db-init
+heartbeats-db-init: ## Initialize the heartbeats database with schema
+	@sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
+	@echo "Database initialized at /tmp/heartbeats.db"
 
 .PHONY: docker-build-light
 docker-build-light: ## Build light Docker image
