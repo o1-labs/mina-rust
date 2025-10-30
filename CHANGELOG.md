@@ -121,6 +121,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
 - **transactions**: fixed a typo in `p2p_request_transactions_if_needed` where snark count was used instead of transaction count
   ([#1563](https://github.com/o1-labs/mina-rust/pull/1563)).
+- **tools**: remove heartbeat-processors
+  ([#1577](https://github.com/o1-labs/mina-rust/pull/1577))
 
 ## v0.17.0
 
