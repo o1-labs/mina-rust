@@ -353,7 +353,7 @@ nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
 
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
-	docker-build-frontend docker-build-fuzzing docker-build-heartbeats-processor \
+	docker-build-frontend docker-build-fuzzing \
 	docker-build-light docker-build-light-focal docker-build-mina \
 	docker-build-mina-testing docker-build-producer-dashboard \
 	docker-build-test ## Build all Docker images
@@ -385,11 +385,6 @@ docker-build-frontend: ## Build frontend Docker image
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-fuzzing:$(GIT_COMMIT) tools/fuzzing/
-
-.PHONY: docker-build-heartbeats-processor
-docker-build-heartbeats-processor: ## Build heartbeats processor Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust-heartbeats-processor:$(GIT_COMMIT) \
-		tools/heartbeats-processor/
 
 .PHONY: docker-build-light
 docker-build-light: ## Build light Docker image
@@ -557,11 +552,10 @@ docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" \
-		RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" \
+	RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" \
 		cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps \
 		--document-private-items --workspace \
-		--exclude heartbeats-processor --lib
+		--lib
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 
