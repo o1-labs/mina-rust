@@ -154,6 +154,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **CI**: build benches for each PR with the workflow `tests`, and fix the step
   in the workflow `build` by adding the missing SQLx/SQLite setup
   ([#1548](https://github.com/o1-labs/mina-rust/pull/1548))
+- **frontend**: remove leaderboard from the frontend
+  ([#1579](https://github.com/o1-labs/mina-rust/pull/1579)
 
 ### Fixed
 
