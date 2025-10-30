@@ -91,6 +91,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Development Tools**: Update taplo configuration to exclude `node_modules` and
   `target` directories from TOML formatting checks
   ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
+- **Build System**: Move salsa-simple from tools/ to vendor/ and alphabetize
+  workspace members. salsa-simple is a vendored XSalsa20 implementation with
+  serde support, not a command-line tool
+  ([#1580](https://github.com/o1-labs/mina-rust/pull/1580))
 - **CI**: Speed up CI by decoupling test runs from full build completion.
   Created dedicated single-platform build jobs that run only on ubuntu-22.04
   to produce artifacts needed for testing, allowing tests to start as soon as
