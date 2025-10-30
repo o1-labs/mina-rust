@@ -14,6 +14,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **CI**: Add validation workflows for block producer nodes infrastructure,
+  including connectivity and API capability testing similar to plain nodes
+  ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
+- **Website**: Add block producer nodes documentation page with GraphQL query
+  examples for latest canonical block and transaction information. Include note
+  that block production functionality is under development
+  ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
 - **CLI**: add GraphQL introspection and execution commands under `mina
   internal graphql`. Three new commands enable dynamic endpoint discovery
   (`list`), detailed schema inspection (`inspect <endpoint>`), and arbitrary
