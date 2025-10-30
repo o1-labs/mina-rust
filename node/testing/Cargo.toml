@@ -17,6 +17,9 @@ anyhow = { workspace = true }
 axum = { workspace = true }
 base64 = { workspace = true }
 bs58 = { workspace = true }
+clap = { workspace = true, features = ["derive", "env"] }
+console = { workspace = true }
+ctrlc = { workspace = true }
 derive_more = { workspace = true }
 documented = { workspace = true, optional = true }
 hex = { workspace = true }
@@ -35,14 +38,20 @@ libp2p = { workspace = true, features = [
   "identify",
   "kad",
 ] }
+mina-core = { workspace = true }
+mina-node-invariants = { workspace = true }
+mina-node-native = { workspace = true }
 mina-p2p-messages = { workspace = true }
 multiaddr = { workspace = true }
 multihash = { workspace = true }
+nix = { workspace = true }
+node = { workspace = true }
 num_cpus = { workspace = true }
 postcard = { workspace = true }
 rand = { workspace = true }
 rayon = { workspace = true }
 redux = { workspace = true }
+reqwest = { workspace = true, features = ["blocking", "json"] }
 serde = { workspace = true }
 serde_json = { workspace = true, features = [
   "unbounded_depth",
@@ -50,6 +59,7 @@ serde_json = { workspace = true, features = [
 ] }
 strum = { workspace = true }
 strum_macros = { workspace = true }
+temp-dir = { workspace = true }
 thiserror = { workspace = true }
 time = { workspace = true, features = ["formatting"] }
 tokio = { workspace = true }
@@ -57,18 +67,6 @@ tower-http = { workspace = true }
 tracing = { workspace = true }
 tracing-log = { workspace = true }
 vrf = { workspace = true }
-
-clap = { workspace = true, features = ["derive", "env"] }
-console = { workspace = true }
-ctrlc = { workspace = true }
-nix = { workspace = true }
-reqwest = { workspace = true, features = ["blocking", "json"] }
-temp-dir = { workspace = true }
-
-mina-core = { path = "../../core" }
-mina-node-invariants = { path = "../../node/invariants" }
-mina-node-native = { path = "../../node/native" }
-node = { path = "../../node" }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }

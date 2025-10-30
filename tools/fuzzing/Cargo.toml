@@ -3,7 +3,6 @@ name = "transaction_fuzzer"
 version = "0.17.0"
 edition = "2021"
 
-
 [dependencies]
 ark-ec = { workspace = true }
 ark-ff = { workspace = true }
