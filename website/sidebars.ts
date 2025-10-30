@@ -87,6 +87,25 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Transactions',
+      items: [
+        'developers/transactions',
+        {
+          type: 'category',
+          label: 'Transaction types',
+          items: [
+            'developers/transactions/coinbase',
+            'developers/transactions/fee-transfers',
+            'developers/transactions/payments',
+            'developers/transactions/user-commands',
+            'developers/transactions/delegations',
+            'developers/transactions/zkapps',
+          ],
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'APIs and Data',
       items: [
         'developers/graphql-api',
