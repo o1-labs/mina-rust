@@ -32,8 +32,6 @@ members = [
   "tools/archive-breadcrumb-compare",
   "tools/webrtc-sniffer",
 
-  "producer-dashboard",
-
   "fuzzer",
 ]
 
@@ -151,7 +149,6 @@ mina-node-native = { path = "node/native" }
 mina-node-testing = { path = "node/testing" }
 mina-p2p-messages = { path = "mina-p2p-messages" }
 mina-poseidon = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
-mina-producer-dashboard = { path = "producer-dashboard" }
 mina-signer = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 mina-transport = { path = "tools/transport" }
 mio = { version = "1.0.4", features = ["os-poll", "net"] }

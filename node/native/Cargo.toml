@@ -40,9 +40,6 @@ tracing-subscriber = { workspace = true }
 vrf = { workspace = true }
 warp = { workspace = true }
 
-[dev-dependencies]
-mina-producer-dashboard = { workspace = true }
-
 [features]
 default = ["p2p-libp2p"]
 p2p-webrtc = ["mina-node-common/p2p-webrtc"]
