@@ -111,7 +111,6 @@ const sidebars: SidebarsConfig = {
       items: [
         'developers/frontend/index',
         'developers/frontend/node-dashboard',
-        'developers/frontend/leaderboard',
         'developers/frontend/webnode',
         'developers/frontend/environment-configuration',
       ],

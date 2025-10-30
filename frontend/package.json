@@ -12,7 +12,6 @@
     "check-prettify": "make check-prettify",
     "copy-env": "make copy-env",
     "deploy": "make deploy",
-    "deploy:leaderboard": "make deploy-leaderboard",
     "install:deps": "make install-deps",
     "prebuild": "make prebuild",
     "prettify": "make prettify",

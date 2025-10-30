@@ -9,7 +9,6 @@ export const environment: Readonly<MinaEnv> = {
   hideNodeStats: false,
   hideToolbar: false,
   showWebNodeLandingPage: false,
-  showLeaderboard: false,
   hidePeersPill: false,
   hideTxPill: false,
   globalConfig: {

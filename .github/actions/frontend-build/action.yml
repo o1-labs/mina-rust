@@ -67,15 +67,6 @@ runs:
       working-directory: frontend
       shell: bash
 
-    - name: Test make build-leaderboard
-      if: inputs.test-build-commands == 'true'
-      run: |
-        rm -rf dist
-        make build-leaderboard
-        [ -d "dist/frontend" ] || { echo "Error: make build-leaderboard failed"; exit 1; }
-      working-directory: frontend
-      shell: bash
-
     - name: Test make build-local
       if: inputs.test-build-commands == 'true'
       run: |
