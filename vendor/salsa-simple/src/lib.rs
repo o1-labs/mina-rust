@@ -1,3 +1,29 @@
+//! Vendored XSalsa20 stream cipher implementation with serde support.
+//!
+//! This is a custom implementation of the XSalsa20 stream cipher algorithm
+//! that provides serialization support via serde, which is required for
+//! persisting P2P network connection state in the Redux state machine.
+//!
+//! # Why vendored?
+//!
+//! The external [`salsa20`](https://crates.io/crates/salsa20) crate (v0.10.2)
+//! does not provide serde support for serializing/deserializing cipher state.
+//! This is needed for:
+//! - Persisting P2P pnet encryption state across restarts
+//! - State snapshots in the Redux architecture
+//! - Debugging and inspection capabilities
+//!
+//! # Implementation
+//!
+//! This implementation manually implements the XSalsa20 algorithm and adds
+//! `Serialize` and `Deserialize` derives. It is tested against the external
+//! `salsa20` crate (used as a dev-dependency) to ensure correctness.
+//!
+//! # Usage
+//!
+//! Used in `p2p/src/network/pnet/` for P2P private network encryption,
+//! providing encrypted communication between peers with serializable state.
+
 #[cfg(test)]
 mod tests;
 
