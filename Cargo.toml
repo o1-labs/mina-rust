@@ -1,38 +1,34 @@
 [workspace]
 members = [
+  "cli",
+  "cli/replay_dynamic_effects",
   "core",
-  "macros",
+  "fuzzer",
   "ledger",
-  "snark",
-  "p2p",
-  "p2p/testing",
-  "p2p/libp2p-rpc-behaviour",
+  "macros",
+  "mina-p2p-messages",
   "node",
   "node/account",
   "node/common",
-  "node/native",
-  "node/web",
   "node/invariants",
+  "node/native",
   "node/testing",
-  "cli",
-  "cli/replay_dynamic_effects",
-  "vrf",
-
-  "mina-p2p-messages",
-  "ledger",
+  "node/web",
+  "p2p",
+  "p2p/libp2p-rpc-behaviour",
+  "p2p/testing",
   "poseidon",
-
-  "tools/transport",
+  "snark",
+  "tools/archive-breadcrumb-compare",
   "tools/bootstrap-sandbox",
+  "tools/fuzzing",
   "tools/gossipsub-sandbox",
   "tools/hash-tool",
   "tools/ledger-tool",
-  "tools/salsa-simple",
-  "tools/fuzzing",
-  "tools/archive-breadcrumb-compare",
+  "tools/transport",
   "tools/webrtc-sniffer",
-
-  "fuzzer",
+  "vendor/salsa-simple",
+  "vrf",
 ]
 
 resolver = "2"
@@ -195,7 +191,7 @@ rsexp = "0.2.3"
 rsexp-derive = "0.2.3"
 rsprocmaps = "0.3.2"
 rust-format = "0.3"
-salsa-simple = { path = "tools/salsa-simple" }
+salsa-simple = { path = "vendor/salsa-simple" }
 salsa20 = "0.10.2"
 serde = { version = "1.0.190", features = ["derive", "rc"] }
 serde_bytes = "0.11"

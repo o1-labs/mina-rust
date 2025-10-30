@@ -74,6 +74,7 @@ COPY p2p ./p2p
 COPY poseidon ./poseidon
 COPY snark ./snark
 COPY tools ./tools
+COPY vendor ./vendor
 COPY vrf ./vrf
 
 # Build WebAssembly using Makefile (source VERGEN variables from .env.docker)
