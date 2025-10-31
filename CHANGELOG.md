@@ -14,6 +14,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Website**: Update Docusaurus to version 3.9.2 from 3.9.1 for latest
+  features and bug fixes
+  ([#1583](https://github.com/o1-labs/mina-rust/pull/1583))
+- **Website**: Migrate deprecated `onBrokenMarkdownLinks` configuration option
+  to the new `markdown.hooks.onBrokenMarkdownLinks` format for Docusaurus v4
+  compatibility ([#1583](https://github.com/o1-labs/mina-rust/pull/1583))
 - **Development Tools**: Add `setup-taplo` and `setup` Makefile targets to
   simplify development environment setup. Update `release-validate` script to
   test only packages that are tested in CI, avoiding untested packages with
