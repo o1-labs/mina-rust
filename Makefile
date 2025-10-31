@@ -177,7 +177,7 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sh -c 'echo "Processing: $$1"; sed -i"" -e "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
+		-exec sh -c 'echo "Processing: $$1"; sed -i"" "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
@@ -286,6 +286,13 @@ setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
 		cargo install wasm-bindgen-cli --version ${WASM_BINDGEN_CLI_VERSION}
+
+.PHONY: setup-taplo
+setup-taplo: ## Install taplo TOML formatter
+	cargo install taplo-cli
+
+.PHONY: setup
+setup: setup-taplo setup-wasm ## Setup development environment
 
 .PHONY: test
 test: ## Run tests

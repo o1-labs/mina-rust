@@ -14,6 +14,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Development Tools**: Add `setup-taplo` and `setup` Makefile targets to
+  simplify development environment setup. Update `release-validate` script to
+  test only packages that are tested in CI, avoiding untested packages with
+  failing tests
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
 - **CI**: Add validation workflows for block producer nodes infrastructure,
   including connectivity and API capability testing similar to plain nodes
   ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
@@ -83,6 +88,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Development Tools**: Update taplo configuration to exclude `node_modules` and
+  `target` directories from TOML formatting checks
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
 - **CI**: Speed up CI by decoupling test runs from full build completion.
   Created dedicated single-platform build jobs that run only on ubuntu-22.04
   to produce artifacts needed for testing, allowing tests to start as soon as
@@ -131,6 +139,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1577](https://github.com/o1-labs/mina-rust/pull/1577))
 - **tools**: remove producer-dashboard
   ([#1578](https://github.com/o1-labs/mina-rust/pull/1578))
+
+### Fixed
+
+- **Development Tools**: Fix `fix-trailing-whitespace` Makefile target to work
+  correctly on macOS by removing conflicting `-e` flag in sed command
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
 
 ## v0.17.0
 
