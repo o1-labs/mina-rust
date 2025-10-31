@@ -22,7 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Website**: add coinbase transaction documentation covering transaction
   structure, application logic, reward distribution, fee transfers, account
   creation, and comprehensive testing
-  ([#1553](https://github.com/o1-labs/mina-rust/pull/1553))
+  ([#1582](https://github.com/o1-labs/mina-rust/pull/1582))
 - **CI**: Add validation workflows for block producer nodes infrastructure,
   including connectivity and API capability testing similar to plain nodes
   ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
