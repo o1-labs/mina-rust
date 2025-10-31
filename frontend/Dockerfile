@@ -72,7 +72,6 @@ COPY mina-p2p-messages ./mina-p2p-messages
 COPY node ./node
 COPY p2p ./p2p
 COPY poseidon ./poseidon
-COPY producer-dashboard ./producer-dashboard
 COPY snark ./snark
 COPY tools ./tools
 COPY vrf ./vrf

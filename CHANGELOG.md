@@ -125,6 +125,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   ([#1563](https://github.com/o1-labs/mina-rust/pull/1563)).
 - **tools**: remove heartbeat-processors
   ([#1577](https://github.com/o1-labs/mina-rust/pull/1577))
+- **tools**: remove producer-dashboard
+  ([#1578](https://github.com/o1-labs/mina-rust/pull/1578))
 
 ## v0.17.0
 
