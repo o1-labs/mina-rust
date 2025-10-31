@@ -74,6 +74,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
 - **CI**: add a step in tests to run the unit/integration tests of the package
   `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
+- **Tests**: add account creation test cases for payment and coinbase
+  transactions, verifying correct handling of account creation fees during
+  the first pass of transaction application
+  ([#1581](https://github.com/o1-labs/mina-rust/pull/1581))
 - **tools**: remove stack allocation from tools
   ([#1576](https://github.com/o1-labs/mina-rust/pull/1576))
 
