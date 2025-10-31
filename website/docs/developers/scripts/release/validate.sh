@@ -9,12 +9,6 @@ make setup-taplo
 echo "Cleaning build artifacts to avoid version conflicts..."
 cargo clean
 
-echo "Initializing heartbeats database..."
-make heartbeats-db-init
-
-echo "Exporting DATABASE_URL for SQLx..."
-export DATABASE_URL="sqlite:///tmp/heartbeats.db"
-
 echo "=== Testing stable Rust packages ==="
 
 echo "Testing mina-node-native..."

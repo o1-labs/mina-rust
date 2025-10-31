@@ -393,11 +393,6 @@ docker-build-frontend: ## Build frontend Docker image
 docker-build-fuzzing: ## Build fuzzing Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-fuzzing:$(GIT_COMMIT) tools/fuzzing/
 
-.PHONY: heartbeats-db-init
-heartbeats-db-init: ## Initialize the heartbeats database with schema
-	@sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
-	@echo "Database initialized at /tmp/heartbeats.db"
-
 .PHONY: docker-build-light
 docker-build-light: ## Build light Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-light:$(GIT_COMMIT) \

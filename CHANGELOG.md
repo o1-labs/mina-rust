@@ -15,9 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Development Tools**: Add `setup-taplo` and `setup` Makefile targets to
-  simplify development environment setup. Add `heartbeats-db-init` target to
-  initialize heartbeats database. Update `release-validate` script to test only
-  packages that are tested in CI, avoiding untested packages with failing tests
+  simplify development environment setup. Update `release-validate` script to
+  test only packages that are tested in CI, avoiding untested packages with
+  failing tests
   ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
 - **CI**: Add validation workflows for block producer nodes infrastructure,
   including connectivity and API capability testing similar to plain nodes
