@@ -95,6 +95,7 @@ const sidebars: SidebarsConfig = {
           label: 'Transaction types',
           items: [
             'developers/transactions/coinbase',
+            'developers/transactions/fee-transfers',
           ],
         },
       ],
