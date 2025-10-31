@@ -19,15 +19,10 @@ jobs:
       - uses: actions/checkout@v5
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
-        with:
-          include-sqlite: true
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
         with:
           ocaml_version: ${{ matrix.ocaml_version }}
-      - name: Setup SQLite database for SQLx
-        run: |
-          sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
@@ -36,12 +31,8 @@ jobs:
           cache-prefix: lint-${{ matrix.toolchain }}-v0
       - name: Run make check
         run: make check
-        env:
-          DATABASE_URL: "sqlite:///tmp/heartbeats.db"
       - name: Run make lint
         run: make lint
-        env:
-          DATABASE_URL: "sqlite:///tmp/heartbeats.db"
 
   lint-tx-fuzzing:
     timeout-minutes: 10
