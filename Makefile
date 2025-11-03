@@ -11,6 +11,9 @@ NIGHTLY_RUST_VERSION = "nightly"
 # WebAssembly
 WASM_BINDGEN_CLI_VERSION = "0.2.99"
 
+# TOML formatter
+TAPLO_CLI_VERSION = "0.9.3"
+
 # Docker
 DOCKER_ORG ?= o1labs
 
@@ -289,7 +292,11 @@ setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 
 .PHONY: setup-taplo
 setup-taplo: ## Install taplo TOML formatter
-	cargo install taplo-cli
+	@if taplo --version 2>/dev/null | grep -q ${TAPLO_CLI_VERSION}; then \
+		echo "taplo ${TAPLO_CLI_VERSION} already installed"; \
+	else \
+		cargo install taplo-cli --version ${TAPLO_CLI_VERSION} --force; \
+	fi
 
 .PHONY: setup
 setup: setup-taplo setup-wasm ## Setup development environment
