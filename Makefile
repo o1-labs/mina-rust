@@ -66,13 +66,6 @@ help: ## Ask for help!
 build: ## Build the project in debug mode
 	cargo build
 
-.PHONY: build-ledger
-build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
-	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
-
-build-node-native: ## Build the package mina-node-native with all features and tests
-	@cargo build -p mina-node-native --all-features --release --tests
-
 .PHONY: build-release
 build-release: ## Build the project in release mode
 	@cargo build --release --package=cli --bin mina
@@ -115,10 +108,6 @@ build-tests-webrtc: ## Build tests for WebRTC
 	@while read NAME FILE; do \
 		cp -a $$FILE target/release/tests/webrtc_$$NAME; \
 	done < tests.tsv
-
-.PHONY: build-vrf
-build-vrf: ## Build the VRF package
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
 
 .PHONY: build-wasm
 build-wasm: ## Build WebAssembly node
@@ -305,26 +294,23 @@ setup: setup-taplo setup-wasm ## Setup development environment
 test: ## Run tests
 	cargo test
 
-.PHONY: test-ledger
-test-ledger: build-ledger ## Run ledger tests in release mode, requires nightly Rust
-	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
-
-.PHONY: test-p2p
-test-p2p: ## Run P2P tests
-	cargo test -p p2p --tests --release
+.PHONY: test-package
+test-package: ## Test a specific package in release mode (use PACKAGE=name, optionally ALL_FEATURES=true)
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "Error: PACKAGE is required. Usage: make test-package PACKAGE=mina-core [ALL_FEATURES=true]"; \
+		exit 1; \
+	fi
+	@if [ "$(ALL_FEATURES)" = "true" ]; then \
+		echo "Testing package $(PACKAGE) with --all-features in release mode..."; \
+		cargo test -p $(PACKAGE) --all-features --release; \
+	else \
+		echo "Testing package $(PACKAGE) in release mode..."; \
+		cargo test -p $(PACKAGE) --release; \
+	fi
 
 .PHONY: test-release
 test-release: ## Run tests in release mode
 	cargo test --release
-
-.PHONY: test-vrf
-test-vrf: ## Run VRF tests, requires nightly Rust
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- \
-		-Z unstable-options --report-time
-
-.PHONY: test-account
-test-account: ## Run account tests
-	@cargo test -p mina-node-account
 
 .PHONY: test-wallet
 test-wallet: ## Run wallet CLI end-to-end tests
@@ -335,33 +321,19 @@ test-wallet: ## Run wallet CLI end-to-end tests
 	done
 	@echo "All wallet tests passed!"
 
-.PHONY: test-p2p-messages
-test-p2p-messages:
-	cargo test -p mina-p2p-messages --tests --release
-
-.PHONY: test-node-native
-test-node-native: build-node-native ## Run the unit/integration tests of the package mina-node-native
-	cargo test -p mina-node-native --all-features --release --tests
-
-.PHONY: nextest
-nextest: ## Run tests with cargo-nextest for faster execution
-	@cargo nextest run
-
-.PHONY: nextest-release
-nextest-release: ## Run tests in release mode with cargo-nextest
-	@cargo nextest run --release
-
-.PHONY: nextest-p2p
-nextest-p2p: ## Run P2P tests with cargo-nextest
-	@cargo nextest run -p p2p --tests
-
-.PHONY: nextest-ledger
-nextest-ledger: build-ledger ## Run ledger tests with cargo-nextest, requires nightly Rust
-	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) nextest run --release
-
-.PHONY: nextest-vrf
-nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) nextest run --release
+.PHONY: nextest-package
+nextest-package: ## Test a specific package with nextest in release mode (use PACKAGE=name, optionally ALL_FEATURES=true)
+	@if [ -z "$(PACKAGE)" ]; then \
+		echo "Error: PACKAGE is required. Usage: make nextest-package PACKAGE=mina-core [ALL_FEATURES=true]"; \
+		exit 1; \
+	fi
+	@if [ "$(ALL_FEATURES)" = "true" ]; then \
+		echo "Testing package $(PACKAGE) with --all-features using nextest in release mode..."; \
+		cargo nextest run -p $(PACKAGE) --all-features --release; \
+	else \
+		echo "Testing package $(PACKAGE) using nextest in release mode..."; \
+		cargo nextest run -p $(PACKAGE) --release; \
+	fi
 
 # Docker build targets
 

@@ -40,156 +40,6 @@ jobs:
       - name: Clean cargo cache
         run: cargo clean
 
-  ledger-tests:
-    timeout-minutes: 20
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
-
-      - name: Use shared OCaml setting up steps
-        uses: ./.github/actions/setup-ocaml
-        with:
-          ocaml_version: ${{ env.OCAML_VERSION }}
-
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: ledger-${{ env.CACHE_VERSION }}
-
-      - name: Download circuits files
-        uses: ./.github/actions/setup-circuits
-
-      - name: Build ledger tests
-        run: make build-ledger
-
-      - name: Run ledger tests
-        run: make test-ledger
-
-  mina-node-native-tests:
-    timeout-minutes: 30
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
-
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: mina-node-native-${{ env.CACHE_VERSION }}
-
-      - name: Test mina-node-native crate
-        run: make test-node-native
-
-  p2p-messages-tests:
-    timeout-minutes: 20
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
-
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: p2p-messages-${{ env.CACHE_VERSION }}
-
-      - name: Download circuits files
-        uses: ./.github/actions/setup-circuits
-
-      - name: Run mina-p2p-messages
-        run: make test-p2p-messages
-
-  # TODO: add back when reimplemented
-  # ledger-32x9-tests:
-  #   runs-on: ubuntu-24.04
-  #   steps:
-  #     - name: Git checkout
-  #       uses: actions/checkout@v5
-
-  #     - name: Setup build dependencies
-  #       uses: ./.github/actions/setup-build-deps
-
-  #     - name: Setup Rust
-  #       uses: ./.github/actions/setup-rust
-  #       with:
-  #         toolchain: nightly
-  #         cache-prefix: ledger-32x9-v0
-
-  #     - name: Download circuits files
-  #       uses: ./.github/actions/setup-circuits
-
-  #     - name: Enable 32x9 fields implementation
-  #       run: |
-  #         cargo install sd
-  #         sd '^mina-curves.*$' '' ./Cargo.toml
-  #         sd '^ark-ff = \{ version .*$' '' ./Cargo.toml
-  #         sd -F '# UNCOMMENTED_IN_CI ' '' ./Cargo.toml
-  #         cat ./Cargo.toml
-
-  #     - name: Build ledger tests
-  #       run: make build-ledger
-
-  #     - name: Run ledger tests
-  #       run: make test-ledger
-
-  vrf-tests:
-    timeout-minutes: 20
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
-
-      - name: Use shared OCaml setting up steps
-        uses: ./.github/actions/setup-ocaml
-        with:
-          ocaml_version: ${{ env.OCAML_VERSION }}
-
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ env.RUST_NIGHTLY_VERSION }}
-          cache-prefix: vrf-${{ env.CACHE_VERSION }}
-
-      - name: Build vrf tests
-        run: make build-vrf
-
-      - name: Run vrf tests
-        run: make test-vrf
-
-  p2p-tests:
-    timeout-minutes: 15
-    runs-on: ubuntu-24.04
-    steps:
-      - name: Git checkout
-        uses: actions/checkout@v5
-
-      - name: Setup build dependencies
-        uses: ./.github/actions/setup-build-deps
-
-      - name: Setup Rust
-        uses: ./.github/actions/setup-rust
-        with:
-          toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: p2p-${{ env.CACHE_VERSION }}
-
-      - name: Test p2p crate
-        run: make test-p2p
-
   # Fast builds specifically for test artifacts - no cross-platform matrix
   build:
     timeout-minutes: 60
@@ -250,9 +100,32 @@ jobs:
           path: target/release/mina
           retention-days: 7
 
-  account-tests:
-    timeout-minutes: 20
+  # Generate matrix of all packages to test
+  generate-test-matrix:
     runs-on: ubuntu-24.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Generate test matrix
+        id: set-matrix
+        run: |
+          MATRIX=$(./.github/scripts/list-test-packages.sh)
+          echo "matrix=$MATRIX" >> $GITHUB_OUTPUT
+          echo "Generated matrix:"
+          echo "$MATRIX" | jq .
+
+  # Test all packages in parallel
+  package-tests:
+    needs: generate-test-matrix
+    timeout-minutes: 30
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.generate-test-matrix.outputs.matrix) }}
+    name: unit-integration-tests-${{ matrix.package }}
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
@@ -260,14 +133,23 @@ jobs:
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
+      - name: Setup OCaml (if needed)
+        if: matrix.package == 'mina-tree' || matrix.package == 'vrf'
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ env.OCAML_VERSION }}
+
+      - name: Setup circuits
+        uses: ./.github/actions/setup-circuits
+
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: ${{ env.RUST_STABLE_VERSION }}
-          cache-prefix: build-${{ env.CACHE_VERSION }}
+          toolchain: ${{ matrix.toolchain == 'nightly' && env.RUST_NIGHTLY_VERSION || env.RUST_STABLE_VERSION }}
+          cache-prefix: test-${{ matrix.package }}-${{ env.CACHE_VERSION }}
 
-      - name: Run account tests
-        run: make test-account
+      - name: Test package
+        run: make test-package PACKAGE=${{ matrix.package }} ALL_FEATURES=${{ matrix.all_features }}
 
   wallet-tests:
     needs: [build]
