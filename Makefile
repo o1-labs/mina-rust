@@ -384,6 +384,8 @@ docker-build-debugger: ## Build debugger Docker image
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
+	@echo "Generating .env.docker file..."
+	@bash ./frontend/docker/generate-docker-env.sh
 	@ARCH=$$(uname -m); \
 	case $$ARCH in \
 		x86_64) PLATFORM="linux/amd64" ;; \
@@ -394,7 +396,8 @@ docker-build-frontend: ## Build frontend Docker image
 	docker buildx build \
 		--platform $$PLATFORM \
 		--tag $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) \
-		frontend/
+		--file ./frontend/Dockerfile \
+		./
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.18.0] - 2025-11-03
+
 ### OCaml node
 
 - Update the CI and code to compare with the latest release 3.3.0-alpha1-6929a7e
@@ -156,7 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   correctly on macOS by removing conflicting `-e` flag in sed command
   ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
 
-## v0.17.0
+## [0.17.0] - 2025-04-08
 
 ### OCaml node
 
@@ -675,7 +677,9 @@ First public release.
 - Alpha version of the node which can connect and syncup to the berkeleynet network, and keep applying new blocks to maintain consensus state and ledger up to date.
 - Web-based frontend for the node.
 
-[Unreleased]: https://github.com/openmina/openmina/compare/v0.16.0...develop
+[Unreleased]: https://github.com/openmina/openmina/compare/v0.18.0...develop
+[0.18.0]: https://github.com/openmina/openmina/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/openmina/openmina/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/openmina/openmina/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/openmina/openmina/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/openmina/openmina/compare/v0.13.0...v0.14.0
