@@ -245,7 +245,7 @@ jobs:
           docker pull ${{ env.REGISTRY_FRONTEND_IMAGE }}:${{ env.DOCKER_TAG }}
 
           # Run the test script
-          ./.github/scripts/docker/test-frontend-docker.sh test-frontend:${{ matrix.environment }} ${{ matrix.environment }}
+          ./.github/scripts/docker/test-frontend-docker.sh test-frontend:${{ env.DOCKER_TAG }} ${{ matrix.environment }}
 
   # Test Docker image build-info
   test-docker-build-info:
