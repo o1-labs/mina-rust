@@ -215,12 +215,20 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
-      - name: Download frontend digest artifacts
-        uses: actions/download-artifact@v6
-        with:
-          path: /tmp/digests
-          pattern: frontend-digests-*
-          merge-multiple: true
+      - name: Set up environment variables
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            echo "DOCKER_TAG=develop" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DOCKER_TAG=latest" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            TAG="${GITHUB_REF#refs/tags/}"
+            echo "DOCKER_TAG=${TAG}" >> $GITHUB_ENV
+          elif [[ "${{ github.ref }}" == refs/heads/release/* ]]; then
+            BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+            VERSION="${BRANCH_NAME#release/}"
+            echo "DOCKER_TAG=${VERSION}" >> $GITHUB_ENV
+          fi
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -231,20 +239,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Get image digest
-        id: digest
-        run: |
-          # Get the first digest from artifacts (we'll test with amd64)
-          DIGEST=$(ls /tmp/digests | head -1)
-          echo "digest=sha256:${DIGEST}" >> $GITHUB_OUTPUT
-
       - name: Test frontend image with ${{ matrix.environment }} environment
         run: |
-          # Pull the image by digest
-          docker pull ${{ env.REGISTRY_FRONTEND_IMAGE }}@${{ steps.digest.outputs.digest }}
-
-          # Tag it for easier reference
-          docker tag ${{ env.REGISTRY_FRONTEND_IMAGE }}@${{ steps.digest.outputs.digest }} test-frontend:${{ matrix.environment }}
+          # Pull the image by tag
+          docker pull ${{ env.REGISTRY_FRONTEND_IMAGE }}:${{ env.DOCKER_TAG }}
 
           # Run the test script
           ./.github/scripts/docker/test-frontend-docker.sh test-frontend:${{ matrix.environment }} ${{ matrix.environment }}
