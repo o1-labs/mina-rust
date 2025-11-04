@@ -96,18 +96,29 @@ RUN apt-get update && \
         ca-certificates \
         gnupg \
         make \
+        xz-utils \
         && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy documentation scripts for Node.js setup
-COPY ./website/docs/developers/scripts/frontend/install-nodejs-linux.sh ./scripts/install-nodejs-linux.sh
-COPY ./website/docs/developers/scripts/frontend/install-angular-cli.sh ./scripts/install-angular-cli.sh
+# Install Node.js from build argument
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ARG NODE_VERSION
+ARG TARGETARCH
+RUN case ${TARGETARCH} in \
+        "amd64") \
+            ARCH='x64' \
+            ;; \
+        "arm64") \
+            ARCH='arm64' \
+            ;; \
+    esac && \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" | tar -xJ -C /usr/local --strip-components=1
 
-# Install Node.js and Angular CLI using documentation scripts
-RUN chmod +x ./scripts/*.sh && \
-    bash ./scripts/install-nodejs-linux.sh && \
-    bash -c 'source "$HOME/.nvm/nvm.sh" && bash ./scripts/install-angular-cli.sh'
+# Install Angular CLI
+COPY ./website/docs/developers/scripts/frontend/install-angular-cli.sh ./scripts/install-angular-cli.sh
+RUN chmod +x ./scripts/install-angular-cli.sh && \
+    ./scripts/install-angular-cli.sh
 
 # Copy entire frontend source code and Makefile
 COPY frontend/ ./frontend/
@@ -130,7 +141,7 @@ RUN chmod +x /usr/local/bin/startup.sh && \
 
 # Install frontend dependencies using Makefile
 WORKDIR /app/frontend
-RUN bash -c 'source "$HOME/.nvm/nvm.sh" && make install-deps'
+RUN make install-deps
 
 WORKDIR /app
 

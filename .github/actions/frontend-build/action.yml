@@ -15,8 +15,7 @@ inputs:
     default: 'false'
   node-version:
     description: 'Node.js version to use'
-    required: false
-    default: '23'
+    required: true
 
 runs:
   using: 'composite'
