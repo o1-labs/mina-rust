@@ -292,37 +292,37 @@ jobs:
         uses: taiki-e/install-action@nextest
 
       - name: Run unit tests
-        run: >
-          cargo nextest run --workspace --lib
-              --exclude mina-core
-              --exclude mina-fuzzer
-              --exclude mina-macros
-              --exclude mina-p2p-messages
-              --exclude poseidon
-              # --exclude mina-tree
-              --exclude snark
-              --exclude p2p
-              --exclude salsa-simple
-              --exclude p2p-testing
-              --exclude libp2p-rpc-behaviour
-              --exclude node
-              --exclude mina-node-account
-              --exclude vrf
-              --exclude mina-node-common
-              --exclude mina-node-native
-              --exclude mina-node-web
-              --exclude mina-node-invariants
-              --exclude mina-node-testing
-              --exclude cli
-              --exclude replay_dynamic_effects
-              --exclude mina-transport
-              --exclude mina-bootstrap-sandbox
-              --exclude mina-gossipsub-sandbox
-              --exclude hash-tool
-              --exclude ledger-tool
-              --exclude transaction_fuzzer
-              --exclude mina-archive-breadcrumb-compare
+        run: |
+          cargo nextest run --workspace --lib \
+              --exclude mina-core \
+              --exclude mina-fuzzer \
+              --exclude mina-macros \
+              --exclude mina-p2p-messages \
+              --exclude poseidon \
+              --exclude snark \
+              --exclude p2p \
+              --exclude salsa-simple \
+              --exclude p2p-testing \
+              --exclude libp2p-rpc-behaviour \
+              --exclude node \
+              --exclude mina-node-account \
+              --exclude vrf \
+              --exclude mina-node-common \
+              --exclude mina-node-native \
+              --exclude mina-node-web \
+              --exclude mina-node-invariants \
+              --exclude mina-node-testing \
+              --exclude cli \
+              --exclude replay_dynamic_effects \
+              --exclude mina-transport \
+              --exclude mina-bootstrap-sandbox \
+              --exclude mina-gossipsub-sandbox \
+              --exclude hash-tool \
+              --exclude ledger-tool \
+              --exclude transaction_fuzzer \
+              --exclude mina-archive-breadcrumb-compare \
               --exclude webrtc-sniffer
+              # --exclude mina-tree
 
   account-tests:
     timeout-minutes: 20
