@@ -421,8 +421,6 @@ jobs:
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
-        with:
-          include-sqlite: true
 
       - name: Use shared OCaml setting up steps
         uses: ./.github/actions/setup-ocaml
@@ -435,14 +433,8 @@ jobs:
           toolchain: 1.84
           cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
 
-      - name: Setup SQLite database for SQLx
-        run: |
-          sqlite3 /tmp/heartbeats.db < tools/heartbeats-processor/schema.sql
-
       - name: Build benchmarks
         run: make build-benches
-        env:
-          DATABASE_URL: "sqlite:///tmp/heartbeats.db"
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]
