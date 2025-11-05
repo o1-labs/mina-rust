@@ -419,6 +419,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -430,7 +433,7 @@ jobs:
       - name: Setup Rust
         uses: ./.github/actions/setup-rust
         with:
-          toolchain: 1.84
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
           cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
 
       - name: Build benchmarks
