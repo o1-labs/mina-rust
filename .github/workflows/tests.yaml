@@ -17,9 +17,6 @@ env:
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
   RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
-  RUST_STABLE_VERSION: "1.84"
-  RUST_NIGHTLY_VERSION: "nightly"
-  OCAML_VERSION: "4.14.2"
   CACHE_VERSION: "v0"
 
 concurrency:
@@ -46,6 +43,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -77,6 +77,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -95,6 +98,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -151,6 +157,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -178,6 +187,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -197,6 +209,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -257,6 +272,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -305,6 +323,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -336,6 +357,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -366,6 +390,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
