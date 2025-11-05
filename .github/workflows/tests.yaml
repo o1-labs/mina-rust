@@ -17,9 +17,6 @@ env:
   MINA_PANIC_ON_BUG: true
   CARGO_INCREMENTAL: 1
   RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off"
-  RUST_STABLE_VERSION: "1.84"
-  RUST_NIGHTLY_VERSION: "nightly"
-  OCAML_VERSION: "4.14.2"
   CACHE_VERSION: "v0"
 
 concurrency:
@@ -46,6 +43,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -77,6 +77,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -95,6 +98,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -151,6 +157,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -178,6 +187,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -197,6 +209,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -257,6 +272,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -305,6 +323,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -335,6 +356,9 @@ jobs:
     steps:
       - name: Git checkout
         uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
 
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
@@ -367,6 +391,9 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup build dependencies
         uses: ./.github/actions/setup-build-deps
 
@@ -381,6 +408,36 @@ jobs:
 
       - name: Build WebAssembly node
         run: make build-wasm
+
+  build-benches:
+    needs: [build]
+    timeout-minutes: 60
+    runs-on: ubuntu-22.04
+    env:
+      RUSTFLAGS: "-C overflow-checks=off -C debug-assertions=off ${{ inputs.rustflags }}"
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Load versions
+        uses: ./.github/actions/load-versions
+
+      - name: Setup build dependencies
+        uses: ./.github/actions/setup-build-deps
+
+      - name: Use shared OCaml setting up steps
+        uses: ./.github/actions/setup-ocaml
+        with:
+          ocaml_version: ${{ env.OCAML_VERSION }}
+
+      - name: Setup Rust
+        uses: ./.github/actions/setup-rust
+        with:
+          toolchain: ${{ env.RUST_STABLE_VERSION }}
+          cache-prefix: build-${{ inputs.os }}-${{ inputs.cache-prefix }}v0
+
+      - name: Build benchmarks
+        run: make build-benches
 
   p2p-scenario-tests:
     needs: [build-tests, build-tests-webrtc]

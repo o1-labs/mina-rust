@@ -13,13 +13,13 @@ runs:
       shell: bash
       run: |
         sudo apt update || true
-        sudo apt install -y protobuf-compiler || true
+        sudo apt install -y protobuf-compiler libpcap-dev || true
 
     - name: Setup build dependencies (macOS)
       if: runner.os == 'macOS'
       shell: bash
       run: |
-        brew install protobuf ocaml opam
+        brew install protobuf ocaml opam libpcap
 
     - name: Install cargo-nextest
       if: inputs.install-nextest == 'true'
