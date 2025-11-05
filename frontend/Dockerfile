@@ -88,6 +88,10 @@ COPY --from=build_wasm /workspace/pkg ./
 # Final stage - Apache with source code and build capability
 FROM httpd:2.4 AS final
 
+# Set environment variables for Node.js version
+ARG NODE_VERSION
+ENV NODE_VERSION=${NODE_VERSION}
+
 # Install system dependencies required for Node.js and build tools
 # hadolint ignore=DL3008
 RUN apt-get update && \
@@ -101,19 +105,18 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# Install Node.js from build argument
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-ARG NODE_VERSION
-ARG TARGETARCH
-RUN case ${TARGETARCH} in \
-        "amd64") \
-            ARCH='x64' \
-            ;; \
-        "arm64") \
-            ARCH='arm64' \
-            ;; \
-    esac && \
-    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" | tar -xJ -C /usr/local --strip-components=1
+# Add NodeSource GPG key and repository and install Node.js
+RUN bash -c " \
+    export NODE_MAJOR=$(echo ${NODE_VERSION} | cut -d. -f1); \
+    mkdir -p /etc/apt/keyrings; \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg; \
+    echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$${NODE_MAJOR}.x nodistro main\" | tee /etc/apt/sources.list.d/nodesource.list; \
+    apt-get update; \
+    apt-get install -y nodejs; \
+    "
+
+# Add Node.js to PATH
+ENV PATH="/usr/local/bin:${PATH}"
 
 # Install Angular CLI
 COPY ./website/docs/developers/scripts/frontend/install-angular-cli.sh ./scripts/install-angular-cli.sh
