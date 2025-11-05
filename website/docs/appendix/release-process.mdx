@@ -142,7 +142,39 @@ _Updates will be posted in this thread_
 
 ## Release Steps
 
-### 1. Create Release Branch (for major/minor releases)
+### 1. Update Version Numbers
+
+```bash
+# Update all Cargo.toml version fields
+make release-update-version VERSION=1.5.0
+```
+
+<!-- prettier-ignore-start -->
+
+<details>
+<summary>Script contents (click to expand)</summary>
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/release/update-version.sh"
+>
+  {UpdateVersionScript}
+</CodeBlock>
+
+</details>
+<!-- prettier-ignore-stop -->
+
+This automatically updates version references in:
+
+- All `Cargo.toml` files in the workspace
+- Excludes target directory files
+
+You may also need to manually update:
+
+- Documentation examples
+- Any hardcoded version references in other files
+
+### 2. Create Release Branch (for major/minor releases)
 
 <!-- prettier-ignore-start -->
 
@@ -207,38 +239,6 @@ docker run -p 8302:8302 o1labs/mina-rust:v1.5.0
 :::
 
 <!-- prettier-ignore-stop -->
-
-### 2. Update Version Numbers
-
-```bash
-# Update all Cargo.toml version fields
-make release-update-version VERSION=1.5.0
-```
-
-<!-- prettier-ignore-start -->
-
-<details>
-<summary>Script contents (click to expand)</summary>
-
-<CodeBlock
-  language="bash"
-  title="website/docs/developers/scripts/release/update-version.sh"
->
-  {UpdateVersionScript}
-</CodeBlock>
-
-</details>
-<!-- prettier-ignore-stop -->
-
-This automatically updates version references in:
-
-- All `Cargo.toml` files in the workspace
-- Excludes target directory files
-
-You may also need to manually update:
-
-- Documentation examples
-- Any hardcoded version references in other files
 
 ### 3. Create Release PR
 
