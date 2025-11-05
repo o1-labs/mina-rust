@@ -61,10 +61,6 @@ copy-env: ## Copy webnode.js to env.js
 	cp dist/frontend/browser/assets/environments/webnode.js \
 		dist/frontend/browser/assets/environments/env.js
 
-.PHONY: deploy
-deploy: prebuild build-production-sentry copy-env ## Deploy the application
-	firebase deploy
-
 .PHONY: install-deps
 install-deps: ## Install npm dependencies (alias)
 	npm install

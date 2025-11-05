@@ -28,7 +28,6 @@ export const environment: Readonly<MinaEnv> = {
       benchmarks: ['wallets'],
       fuzzing: [],
     },
-    heartbeats: false,
     // graphQL: 'https://api.minascan.io/node/devnet/v1/graphql',
     // graphQL: 'http://65.109.105.40:5000/graphql',
   },

@@ -11,7 +11,6 @@
     "build:webnode": "make build-webnode",
     "check-prettify": "make check-prettify",
     "copy-env": "make copy-env",
-    "deploy": "make deploy",
     "install:deps": "make install-deps",
     "prebuild": "make prebuild",
     "prettify": "make prettify",
