@@ -9,15 +9,17 @@ import { MempoolActions } from '@app/features/mempool/mempool.actions';
 import { MempoolSelectors } from '@app/features/mempool/mempool.state';
 
 @Component({
-    selector: 'mina-mempool-table',
-    templateUrl: './mempool-table.component.html',
-    styleUrls: ['./mempool-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column w-100 h-100' },
-    standalone: false
+  selector: 'mina-mempool-table',
+  templateUrl: './mempool-table.component.html',
+  styleUrls: ['./mempool-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column w-100 h-100' },
+  standalone: false,
 })
-export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransaction> implements OnInit {
-
+export class MempoolTableComponent
+  extends MinaTableRustWrapper<MempoolTransaction>
+  implements OnInit
+{
   protected readonly tableHeads: TableColumnList<MempoolTransaction> = [
     { name: 'kind' },
     { name: 'tx hash' },
@@ -35,7 +37,9 @@ export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransacti
 
   private fromRoute: string;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   override async ngOnInit(): Promise<void> {
     await super.ngOnInit();
@@ -53,11 +57,15 @@ export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransacti
   }
 
   private listenToRouteChange(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['id'] && this.table.rows.length === 0) {
-        this.fromRoute = route.params['id'];
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['id'] && this.table.rows.length === 0) {
+          this.fromRoute = route.params['id'];
+        }
+      },
+      take(1),
+    );
   }
 
   private listenToEmptyInDatabase(): void {
@@ -83,14 +91,18 @@ export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransacti
   }
 
   private listenToActiveTxChange(): void {
-    this.select(MempoolSelectors.activeTx, (tx: MempoolTransaction) => {
-      if (!this.table.activeRow) {
-        this.fromRoute = tx?.txHash;
-      }
-      this.table.activeRow = tx;
-      this.table.detect();
-      this.detect();
-    }, skip(1));
+    this.select(
+      MempoolSelectors.activeTx,
+      (tx: MempoolTransaction) => {
+        if (!this.table.activeRow) {
+          this.fromRoute = tx?.txHash;
+        }
+        this.table.activeRow = tx;
+        this.table.detect();
+        this.detect();
+      },
+      skip(1),
+    );
   }
 
   private scrollToElement(): void {
@@ -107,18 +119,22 @@ export class MempoolTableComponent extends MinaTableRustWrapper<MempoolTransacti
     }
     if (this.table.activeRow?.txHash !== tx?.txHash) {
       this.dispatch2(MempoolActions.setActiveTx({ tx }));
-      this.router.navigate([Routes.MEMPOOL, tx.txHash], { queryParamsHandling: 'merge' });
+      this.router.navigate([Routes.MEMPOOL, tx.txHash], {
+        queryParamsHandling: 'merge',
+      });
     }
   }
 
   clearFilters(): void {
-    this.dispatch2(MempoolActions.changeFilters({
-      filters: {
-        search: '',
-        zkApp: true,
-        payment: true,
-        delegation: true,
-      },
-    }));
+    this.dispatch2(
+      MempoolActions.changeFilters({
+        filters: {
+          search: '',
+          zkApp: true,
+          payment: true,
+          delegation: true,
+        },
+      }),
+    );
   }
 }

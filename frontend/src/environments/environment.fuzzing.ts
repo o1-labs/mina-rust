@@ -14,4 +14,3 @@ export const environment: Readonly<MinaEnv> = {
   },
   configs: [],
 };
-

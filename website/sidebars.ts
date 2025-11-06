@@ -20,6 +20,7 @@ const sidebars: SidebarsConfig = {
       label: 'Getting Started',
       items: [
         'node-operators/getting-started',
+        'node-operators/join-devnet',
       ],
     },
     {
@@ -37,13 +38,26 @@ const sidebars: SidebarsConfig = {
         'node-operators/block-producer',
         'node-operators/archive-node',
         'node-operators/network-configuration',
+        'node-operators/node-management',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'o1Labs Infrastructure',
+      items: [
+        'node-operators/infrastructure/seed-nodes',
+        'node-operators/infrastructure/plain-nodes',
+        'node-operators/infrastructure/archive-nodes',
+        'node-operators/infrastructure/block-producers',
+        'node-operators/infrastructure/memory-profiler',
+        'node-operators/infrastructure/network-debugger',
+        'node-operators/infrastructure/frontend',
       ],
     },
     {
       type: 'category',
       label: 'Advanced Topics',
       items: [
-        'node-operators/local-demo',
         'node-operators/alpha-testing',
         'node-operators/webnode/local-webnode',
         'node-operators/testing/overview',
@@ -73,6 +87,37 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'APIs and Data',
+      items: [
+        'developers/graphql-api',
+        'developers/archive-database-queries',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Wallet operations',
+      items: [
+        'developers/wallet/index',
+        'developers/wallet/address',
+        'developers/wallet/balance',
+        'developers/wallet/generate',
+        'developers/wallet/send',
+        'developers/wallet/status',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Frontend',
+      items: [
+        'developers/frontend/index',
+        'developers/frontend/node-dashboard',
+        'developers/frontend/leaderboard',
+        'developers/frontend/webnode',
+        'developers/frontend/environment-configuration',
+      ],
+    },
+    {
+      type: 'category',
       label: 'Docker',
       items: [
         'developers/docker-images',
@@ -98,6 +143,21 @@ const sidebars: SidebarsConfig = {
         'developers/testing/p2p-tests',
         'developers/testing/network-connectivity',
         'developers/testing/ocaml-node-tests',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Performance',
+      items: [
+        'developers/benchmarks',
+      ],
+    },
+    {
+      type: 'category',
+      label: 'Documentation',
+      items: [
+        'developers/referencing-code-in-documentation',
+        'developers/ocaml-reference-tracking',
       ],
     },
     {

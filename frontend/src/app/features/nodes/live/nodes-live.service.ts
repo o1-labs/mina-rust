@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
 import { NodesOverviewService } from '@nodes/overview/nodes-overview.service';
 import { map, Observable } from 'rxjs';
-import { NodesOverviewNode, NodesOverviewNodeKindType } from '@shared/types/nodes/dashboard/nodes-overview-node.type';
+import {
+  NodesOverviewNode,
+  NodesOverviewNodeKindType,
+} from '@shared/types/nodes/dashboard/nodes-overview-node.type';
 import { NodesLiveNode } from '@shared/types/nodes/live/nodes-live-node.type';
 import { NodesLiveBlockEvent } from '@shared/types/nodes/live/nodes-live-block-event.type';
 import {
   NodesOverviewBlock,
-  NodesOverviewNodeBlockStatus
+  NodesOverviewNodeBlockStatus,
 } from '@shared/types/nodes/dashboard/nodes-overview-block.type';
 import { ONE_MILLION, toReadableDate } from '@openmina/shared';
 import { RustService } from '@core/services/rust.service';
@@ -15,23 +18,28 @@ import { RustService } from '@core/services/rust.service';
   providedIn: 'root',
 })
 export class NodesLiveService {
-
-  constructor(private nodesOverviewService: NodesOverviewService,
-              private rust: RustService) { }
+  constructor(
+    private nodesOverviewService: NodesOverviewService,
+    private rust: RustService,
+  ) {}
 
   getLiveNodeTips(): Observable<NodesLiveNode[]> {
-    return this.nodesOverviewService.getNodeTips({ url: this.rust.URL, name: this.rust.name }).pipe(
-      map((nodes: NodesOverviewNode[]) => nodes
-        .filter(n => n.kind !== NodesOverviewNodeKindType.OFFLINE)
-        .reverse()
-        .map((node: NodesOverviewNode, index: number) => {
-          return ({
-            ...node,
-            index,
-            events: this.getEvents(node),
-          } as NodesLiveNode);
-        })),
-    );
+    return this.nodesOverviewService
+      .getNodeTips({ url: this.rust.URL, name: this.rust.name })
+      .pipe(
+        map((nodes: NodesOverviewNode[]) =>
+          nodes
+            .filter(n => n.kind !== NodesOverviewNodeKindType.OFFLINE)
+            .reverse()
+            .map((node: NodesOverviewNode, index: number) => {
+              return {
+                ...node,
+                index,
+                events: this.getEvents(node),
+              } as NodesLiveNode;
+            }),
+        ),
+      );
   }
 
   private getEvents(node: NodesOverviewNode): NodesLiveBlockEvent[] {

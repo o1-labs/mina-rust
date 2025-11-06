@@ -162,6 +162,40 @@ The website is available at http://localhost:3000 when running locally.
 The website supports versioning and will be automatically deployed when commits
 are made to `develop` or when tags are created.
 
+### OCaml Reference Tracking
+
+The Rust codebase maintains references to the corresponding OCaml implementation
+to track correspondence and detect when updates are needed.
+
+**Comment format:**
+
+```rust
+/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-113
+/// Commit: 55582d249cdb225f722dbbb3b1420ce7570d501f
+/// Last verified: 2025-10-08
+pub enum TransactionFailure {
+    // ...
+}
+```
+
+**Validation:**
+
+```bash
+# Check all OCaml references
+./.github/scripts/check-ocaml-refs.sh
+
+# Update stale commit hashes
+./.github/scripts/check-ocaml-refs.sh --update
+
+# Check against specific branch
+./.github/scripts/check-ocaml-refs.sh --branch develop
+```
+
+The validation script verifies that referenced OCaml files exist, line ranges
+are valid, code at the referenced commit matches the current branch, and tracks
+commit staleness. A GitHub Actions workflow runs weekly to automatically update
+references and create PRs.
+
 ## Additional Resources
 
 - `docs/handover/` - Comprehensive architecture documentation
@@ -244,6 +278,21 @@ files.
   "**State inspection**")
 - Maintain proper capitalization for proper nouns and technical terms
 - Apply this style consistently across all documentation files
+
+**Docusaurus admonitions (:::note, :::caution, :::info, etc.):**
+
+- Always wrap Docusaurus admonitions with `<!-- prettier-ignore-start -->` and
+  `<!-- prettier-ignore-stop -->` comments
+- This prevents prettier from reformatting the admonition blocks
+- Example:
+
+  ```mdx
+  <!-- prettier-ignore-start -->
+
+  :::note Content of the note here :::
+
+  <!-- prettier-ignore-stop -->
+  ```
 
 ### Documentation Script Testing
 
@@ -330,6 +379,45 @@ Example entry:
   Ubuntu 24.04, Ubuntu 24.04 ARM, macOS latest) and updated test execution to
   ubuntu-latest ([#1249](https://github.com/o1-labs/openmina/pull/1249))
 ```
+
+### CI Optimization Guidelines
+
+When modifying CI workflows, especially for performance improvements:
+
+#### Build Job Dependencies
+
+- **Separate "builds for tests" from "builds for verification"**: Create
+  dedicated single-platform build jobs that produce only the artifacts needed
+  for testing. This allows tests to start as soon as required artifacts are
+  available, not waiting for all cross-platform builds to complete.
+
+- **Use selective dependencies**: Instead of depending on matrix build jobs
+  (which include all platforms), create specific build jobs that tests can
+  depend on. For example:
+
+  ```yaml
+  # Before: Tests wait for all platforms
+  needs: [build, build-tests]  # Matrix across 7 platforms
+
+  # After: Tests wait for specific artifact-producing builds
+  needs: [build-for-tests, build-tests-for-tests]  # Single platform
+  ```
+
+- **Maintain cross-platform coverage**: Keep matrix builds for platform
+  verification but don't let them block test execution. They should run in
+  parallel for verification purposes.
+
+- **Artifact consistency**: Ensure dedicated build jobs produce the same
+  artifact names that test jobs expect. Use patterns like
+  `bin-${{ github.sha }}` and `tests-${{ github.sha }}` consistently.
+
+#### Performance Considerations
+
+- Tests typically only need artifacts from ubuntu-22.04 builds (for container
+  compatibility)
+- macOS builds often take longest and shouldn't block Linux-based test execution
+- Use ubuntu-22.04 for artifact production to ensure GLIBC compatibility with
+  Debian-based test containers
 
 ### Critical Pre-Commit Requirements
 

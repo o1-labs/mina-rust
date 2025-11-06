@@ -1,11 +1,11 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host {
   height: 100px;
 }
 
 .epoch {
-  border-left: 1px dashed openmina.$base-tertiary;
+  border-left: 1px dashed mina-rust.$base-tertiary;
   padding-left: 5px;
   padding-right: 4px;
   height: 100px;
@@ -17,19 +17,19 @@
 
     div {
       width: calc((100% - 15px) / 15);
-      background-color: openmina.$success-tertiary;
+      background-color: mina-rust.$success-tertiary;
       margin-right: 1px;
       transition: height 200ms ease-in;
 
       &:hover {
-        background-color: openmina.$success-primary;
+        background-color: mina-rust.$success-primary;
       }
 
       &.future {
-        background-color: openmina.$base-tertiary;
+        background-color: mina-rust.$base-tertiary;
 
         &:hover {
-          background-color: openmina.$base-primary;
+          background-color: mina-rust.$base-primary;
         }
       }
     }
@@ -47,19 +47,19 @@
         transition: height 200ms ease-in;
 
         &:first-child {
-          background-color: openmina.$special-selected-alt-1-tertiary;
+          background-color: mina-rust.$special-selected-alt-1-tertiary;
 
           &:hover {
-            background-color: openmina.$special-selected-alt-1-primary;
+            background-color: mina-rust.$special-selected-alt-1-primary;
           }
         }
 
         &:last-child {
           margin-top: 1px;
-          background-color: openmina.$warn-tertiary;
+          background-color: mina-rust.$warn-tertiary;
 
           &:hover {
-            background-color: openmina.$warn-primary;
+            background-color: mina-rust.$warn-primary;
           }
         }
       }
@@ -70,32 +70,32 @@
     top: 0;
     left: 0;
     z-index: -1;
-    border-right: 2px solid openmina.$base-primary;
+    border-right: 2px solid mina-rust.$base-primary;
   }
 
   &:hover .overlay:not(.bg-selected-container) {
-    background-color: openmina.$base-container;
+    background-color: mina-rust.$base-container;
   }
 
   &.active-epoch {
     .title {
-      color: openmina.$selected-primary !important;
+      color: mina-rust.$selected-primary !important;
     }
 
     .positive div:not(.future) {
-      background-color: openmina.$success-primary;
+      background-color: mina-rust.$success-primary;
     }
 
     .negative .bar div:first-child {
-      background-color: openmina.$special-selected-alt-1-primary;
+      background-color: mina-rust.$special-selected-alt-1-primary;
     }
 
     .negative .bar div:last-child {
-      background-color: openmina.$warn-primary;
+      background-color: mina-rust.$warn-primary;
     }
 
     .overlay {
-      border-right: 2px solid openmina.$selected-primary;
+      border-right: 2px solid mina-rust.$selected-primary;
     }
   }
 }

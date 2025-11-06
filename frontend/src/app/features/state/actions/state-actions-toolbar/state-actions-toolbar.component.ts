@@ -1,8 +1,17 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { getMergedRoute, MergedRoute, SortDirection, TableSort } from '@openmina/shared';
+import {
+  getMergedRoute,
+  MergedRoute,
+  SortDirection,
+  TableSort,
+} from '@openmina/shared';
 import { StateActionGroup } from '@shared/types/state/actions/state-action-group.type';
-import { StateActionsGetActions, StateActionsSearch, StateActionsSort } from '@state/actions/state-actions.actions';
+import {
+  StateActionsGetActions,
+  StateActionsSearch,
+  StateActionsSort,
+} from '@state/actions/state-actions.actions';
 import { selectStateActionsToolbarValues } from '@state/actions/state-actions.state';
 import { debounceTime, distinctUntilChanged, filter, take } from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
@@ -11,22 +20,28 @@ import { Router } from '@angular/router';
 import { Routes } from '@shared/enums/routes.enum';
 
 @Component({
-    selector: 'mina-state-actions-toolbar',
-    templateUrl: './state-actions-toolbar.component.html',
-    styleUrls: ['./state-actions-toolbar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-row h-xl border-bottom' },
-    standalone: false
+  selector: 'mina-state-actions-toolbar',
+  templateUrl: './state-actions-toolbar.component.html',
+  styleUrls: ['./state-actions-toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-row h-xl border-bottom' },
+  standalone: false,
 })
-export class StateActionsToolbarComponent extends StoreDispatcher implements OnInit {
-
+export class StateActionsToolbarComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   activeSlot: number;
   earliestSlot: number;
   currentSort: TableSort<StateActionGroup>;
   formGroup: FormGroup;
 
-  constructor(private fb: FormBuilder,
-              private router: Router) { super(); }
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.initForm();
@@ -35,22 +50,31 @@ export class StateActionsToolbarComponent extends StoreDispatcher implements OnI
   }
 
   private listenToRouteChanges(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      if (route.params['id']) {
-        this.getSlot(Number(route.params['id']));
-      }
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        if (route.params['id']) {
+          this.getSlot(Number(route.params['id']));
+        }
+      },
+      take(1),
+    );
   }
 
   getSlot(slot: number): void {
     this.dispatch(StateActionsGetActions, { slot });
-    this.router.navigate([Routes.STATE, Routes.ACTIONS, slot], { queryParamsHandling: 'merge' });
+    this.router.navigate([Routes.STATE, Routes.ACTIONS, slot], {
+      queryParamsHandling: 'merge',
+    });
   }
 
   sort(sortBy: string): void {
-    const sortDirection = sortBy !== this.currentSort.sortBy
-      ? this.currentSort.sortDirection
-      : this.currentSort.sortDirection === SortDirection.ASC ? SortDirection.DSC : SortDirection.ASC;
+    const sortDirection =
+      sortBy !== this.currentSort.sortBy
+        ? this.currentSort.sortDirection
+        : this.currentSort.sortDirection === SortDirection.ASC
+          ? SortDirection.DSC
+          : SortDirection.ASC;
     this.dispatch(StateActionsSort, {
       sortBy: sortBy as keyof StateActionGroup,
       sortDirection,
@@ -62,24 +86,27 @@ export class StateActionsToolbarComponent extends StoreDispatcher implements OnI
       search: [''],
     });
 
-    this.formGroup.get('search').valueChanges.pipe(
-      untilDestroyed(this),
-      distinctUntilChanged(),
-      debounceTime(200),
-      filter((value: string) => {
-        if (value.length <= 2) {
-          this.dispatch(StateActionsSearch, null);
-          return false;
-        }
-        return true;
-      }),
-    ).subscribe((value: string) => {
-      this.dispatch(StateActionsSearch, value.trim().toLowerCase());
-    });
+    this.formGroup
+      .get('search')
+      .valueChanges.pipe(
+        untilDestroyed(this),
+        distinctUntilChanged(),
+        debounceTime(200),
+        filter((value: string) => {
+          if (value.length <= 2) {
+            this.dispatch(StateActionsSearch, null);
+            return false;
+          }
+          return true;
+        }),
+      )
+      .subscribe((value: string) => {
+        this.dispatch(StateActionsSearch, value.trim().toLowerCase());
+      });
   }
 
   private listenToToolbarValuesChanges(): void {
-    this.select(selectStateActionsToolbarValues, (data) => {
+    this.select(selectStateActionsToolbarValues, data => {
       this.activeSlot = data.activeSlot;
       this.earliestSlot = data.earliestSlot;
       this.currentSort = data.currentSort;

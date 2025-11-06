@@ -1,5 +1,4 @@
-use std::{fmt, fs, io, path::Path, str::FromStr};
-
+use super::AccountPublicKey;
 use mina_core::{
     constants::GENESIS_PRODUCER_SK, EncryptedSecretKey, EncryptedSecretKeyFile, EncryptionError,
 };
@@ -7,8 +6,7 @@ use mina_p2p_messages::{bigint::BigInt, v2::SignatureLibPrivateKeyStableV1};
 use mina_signer::{keypair::KeypairError, seckey::SecKeyError, CompressedPubKey, Keypair};
 use rand::{rngs::StdRng, CryptoRng, Rng, SeedableRng};
 use serde::{Deserialize, Serialize};
-
-use super::AccountPublicKey;
+use std::{fmt, fs, io, path::Path, str::FromStr};
 
 #[derive(Clone)]
 pub struct AccountSecretKey(Keypair);
@@ -191,72 +189,5 @@ impl<'de> serde::Deserialize<'de> for AccountSecretKey {
     {
         let b58: String = Deserialize::deserialize(deserializer)?;
         b58.parse().map_err(serde::de::Error::custom)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use std::env;
-
-    use super::*;
-
-    #[test]
-    fn test_account_secret_key_bs58check_decode() {
-        let parsed: AccountSecretKey = "EKFWgzXsoMYcP1Hnj7dBhsefxNucZ6wyz676Qg5uMFNzytXAi2Ww"
-            .parse()
-            .unwrap();
-        assert_eq!(
-            parsed.0.get_address(),
-            "B62qjVQLxt9nYMWGn45mkgwYfcz8e8jvjNCBo11VKJb7vxDNwv5QLPS"
-        );
-    }
-
-    #[test]
-    fn test_account_secret_key_display() {
-        let parsed: AccountSecretKey = "EKFWgzXsoMYcP1Hnj7dBhsefxNucZ6wyz676Qg5uMFNzytXAi2Ww"
-            .parse()
-            .unwrap();
-        assert_eq!(
-            &parsed.to_string(),
-            "EKFWgzXsoMYcP1Hnj7dBhsefxNucZ6wyz676Qg5uMFNzytXAi2Ww"
-        );
-    }
-
-    #[test]
-    fn test_encrypt_decrypt() {
-        let password = "not-very-secure-pass";
-
-        let new_key = AccountSecretKey::rand();
-        let tmp_dir = env::temp_dir();
-        let tmp_path = format!("{}/{}-key", tmp_dir.display(), new_key.public_key());
-
-        // dump encrypted file
-        new_key
-            .to_encrypted_file(&tmp_path, password)
-            .expect("Failed to encrypt secret key");
-
-        // load and decrypt
-        let decrypted = AccountSecretKey::from_encrypted_file(&tmp_path, password)
-            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", tmp_path));
-
-        assert_eq!(
-            new_key.public_key(),
-            decrypted.public_key(),
-            "Encrypted and decrypted public keys do not match"
-        );
-    }
-
-    #[test]
-    fn test_ocaml_key_decrypt() {
-        let password = "not-very-secure-pass";
-        let key_path = "../tests/files/accounts/test-key-1";
-        let expected_public_key = "B62qmg7n4XqU3SFwx9KD9B7gxsKwxJP5GmxtBpHp1uxyN3grujii9a1";
-        let decrypted = AccountSecretKey::from_encrypted_file(key_path, password)
-            .unwrap_or_else(|_| panic!("Failed to decrypt secret key file: {}", key_path));
-
-        assert_eq!(
-            expected_public_key.to_string(),
-            decrypted.public_key().to_string()
-        )
     }
 }

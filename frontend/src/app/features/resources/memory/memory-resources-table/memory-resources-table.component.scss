@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host ::ng-deep mina-table {
   .row {
@@ -9,7 +9,7 @@
       pointer-events: all !important;
 
       &:hover:not(.has) {
-        color: openmina.$base-tertiary !important;
+        color: mina-rust.$base-tertiary !important;
       }
     }
   }
@@ -29,10 +29,10 @@ span:not(.has):not(.mina-icon) {
   }
 
   &.has {
-    color: openmina.$base-primary;
+    color: mina-rust.$base-primary;
 
     span {
-      color: openmina.$base-secondary;
+      color: mina-rust.$base-secondary;
     }
   }
 
@@ -46,30 +46,30 @@ span {
     width: 35px;
 
     &.yellow {
-      color: openmina.$aware-primary;
+      color: mina-rust.$aware-primary;
     }
 
     &.red {
-      color: openmina.$warn-primary;
+      color: mina-rust.$warn-primary;
     }
   }
 
   .progress-background {
     height: 2px;
     border-radius: 3px;
-    background-color: openmina.$base-container;
+    background-color: mina-rust.$base-container;
     width: 110px;
 
     .progress-background {
       min-width: 4px;
-      background-color: openmina.$base-tertiary;
+      background-color: mina-rust.$base-tertiary;
 
       &.yellow {
-        background-color: openmina.$aware-primary;
+        background-color: mina-rust.$aware-primary;
       }
 
       &.red {
-        background-color: openmina.$warn-primary;
+        background-color: mina-rust.$warn-primary;
       }
     }
   }

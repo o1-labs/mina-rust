@@ -1,6 +1,6 @@
 [package]
 name = "mina-macros"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 license = "Apache-2.0"
 authors = ["Alexander Koptelov <alexandre.koptelov@gmail.com>"]
@@ -9,12 +9,12 @@ authors = ["Alexander Koptelov <alexandre.koptelov@gmail.com>"]
 proc-macro = true
 
 [dependencies]
-proc-macro2 = "1.0.95"
-quote = "1.0.35"
-syn = "2.0.53"
+proc-macro2 = { workspace = true }
+quote = { workspace = true }
+syn = { workspace = true }
 
 [dev-dependencies]
-mina-core = { path = "../core" }
-tracing = "0.1.40"
-rust-format = { version = "0.3", features = ["token_stream"] }
-anyhow = "1.0.81"
+mina-core = { workspace = true }
+tracing = { workspace = true }
+rust-format = { workspace = true, features = ["token_stream"] }
+anyhow = { workspace = true }

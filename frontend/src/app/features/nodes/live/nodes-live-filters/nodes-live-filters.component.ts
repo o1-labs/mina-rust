@@ -5,15 +5,17 @@ import { NodesLiveToggleFilter } from '@nodes/live/nodes-live.actions';
 import { NodesOverviewNodeBlockStatus } from '@shared/types/nodes/dashboard/nodes-overview-block.type';
 
 @Component({
-    selector: 'mina-nodes-live-filters',
-    templateUrl: './nodes-live-filters.component.html',
-    styleUrls: ['./nodes-live-filters.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-lg fx-row-vert-cent pl-12 border-bottom' },
-    standalone: false
+  selector: 'mina-nodes-live-filters',
+  templateUrl: './nodes-live-filters.component.html',
+  styleUrls: ['./nodes-live-filters.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-lg fx-row-vert-cent pl-12 border-bottom' },
+  standalone: false,
 })
-export class NodesLiveFiltersComponent extends StoreDispatcher implements OnInit {
-
+export class NodesLiveFiltersComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   readonly allFilters: string[] = [
     'best tip',
     NodesOverviewNodeBlockStatus.FETCHING,

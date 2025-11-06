@@ -1,10 +1,12 @@
 <div class="flex-row w-100 h-100" #parent>
-  <mina-horizontal-resizable-container [leftTemplate]="left"
-                                       [rightTemplate]="right"
-                                       [show]="show"
-                                       [minWidth]="420"
-                                       [maxWidthElement]="parent"
-                                       localStorageKey="network-topology-spw"></mina-horizontal-resizable-container>
+  <mina-horizontal-resizable-container
+    [leftTemplate]="left"
+    [rightTemplate]="right"
+    [show]="show"
+    [minWidth]="420"
+    [maxWidthElement]="parent"
+    localStorageKey="network-topology-spw"
+  ></mina-horizontal-resizable-container>
 </div>
 
 <ng-template #left>

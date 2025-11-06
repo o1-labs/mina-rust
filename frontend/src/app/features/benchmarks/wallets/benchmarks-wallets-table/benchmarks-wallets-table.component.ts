@@ -6,15 +6,17 @@ import { TableColumnList } from '@openmina/shared';
 import { MinaTableRustWrapper } from '@shared/base-classes/mina-table-rust-wrapper.class';
 
 @Component({
-    selector: 'mina-benchmarks-wallets-table',
-    templateUrl: './benchmarks-wallets-table.component.html',
-    styleUrls: ['./benchmarks-wallets-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column h-100' },
-    standalone: false
+  selector: 'mina-benchmarks-wallets-table',
+  templateUrl: './benchmarks-wallets-table.component.html',
+  styleUrls: ['./benchmarks-wallets-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column h-100' },
+  standalone: false,
 })
-export class BenchmarksWalletsTableComponent extends MinaTableRustWrapper<BenchmarksWallet> implements OnInit {
-
+export class BenchmarksWalletsTableComponent
+  extends MinaTableRustWrapper<BenchmarksWallet>
+  implements OnInit
+{
   protected readonly tableHeads: TableColumnList<BenchmarksWallet> = [
     { name: 'public key' },
     { name: 'balance' },
@@ -35,10 +37,13 @@ export class BenchmarksWalletsTableComponent extends MinaTableRustWrapper<Benchm
   }
 
   private listenToWalletChanges(): void {
-    this.select(selectBenchmarksWallets, (wallets: BenchmarksWallet[]) => {
-      this.table.rows = wallets;
-      this.table.detect();
-    }, filter(wallets => wallets.length > 0));
+    this.select(
+      selectBenchmarksWallets,
+      (wallets: BenchmarksWallet[]) => {
+        this.table.rows = wallets;
+        this.table.detect();
+      },
+      filter(wallets => wallets.length > 0),
+    );
   }
 }
-

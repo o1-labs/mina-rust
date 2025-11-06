@@ -1,33 +1,72 @@
-target/
+# MISC
+.gitignore
+ARCHITECTURE.md
+CHANGELOG.md
+CLAUDE.md
+README.md
+status.md
+
+# Docker related
 Dockerfile
-Dockerfile_FE
 docker-compose.yml
+docker-compose.block-producer.yml
+docker-compose.archive.devnet.compare.yml
+docker-compose.archive.devnet.yml
+docker-compose.archive.local.producers.yml
+docker/
+run-debugger-ocaml-node.yaml
+run.yaml
+
 .dockerignore
+
 cli/bin
 cli/tests
 !cli/bin/snark-worker
 
-# Heartbeats processor
-tools/heartbeats-processor/.env
-tools/heartbeats-processor/data/
-tools/heartbeats-processor/credentials/
-tools/heartbeats-processor/*.db
-# Ensure .sqlx files are included
-!tools/heartbeats-processor/.sqlx/
-
-# Will be copied on demand in the Docker image, if necessary
-circuit-blobs
-
 # GH workflows
+.claude
 .github
 .idea
-
-# Infrastructure
-helm
 
 # Output of build-wasm
 pkg
 
-# Outputs of build-tests-webrtc
+
+# We do not use Nix to build the Docker images, therefore we can ignore the Nix
+# related files
+flake.lock
+flake.nix
+
+# Environment files
+.env
+.env.example
+
+# Rust related files
+target/
+.rustfmt.toml
+clippy.toml
+taplo.toml
+
+## Outputs of build-tests-webrtc
 cargo-build-test.json
 tests.tsv
+
+
+# The website must not be included
+website
+## Ignore some scripts that can be used in the Docker images.
+## These scripts are used to be consistent with what is on the website and what
+## is actually used.
+!./website/docs/developers/scripts/frontend/install-nodejs-linux.sh
+!./website/docs/developers/scripts/frontend/install-angular-cli.sh
+
+# NPM related
+node_modules
+
+# Frontend
+frontend/.editorconfig
+frontend/.gitignore
+frontend/.vscode
+frontend/dist/frontend
+frontend/Dockerfile
+frontend/node_modules

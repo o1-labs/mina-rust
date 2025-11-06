@@ -6,7 +6,13 @@
 # - ./github/workflows/docs.yaml
 # - ./github/workflows/fmt.yaml
 # - ./github/workflows/lint.yaml
-NIGHTLY_RUST_VERSION = "nightly-2025-08-18"
+NIGHTLY_RUST_VERSION = "nightly"
+
+# WebAssembly
+WASM_BINDGEN_CLI_VERSION = "0.2.99"
+
+# TOML formatter
+TAPLO_CLI_VERSION = "0.9.3"
 
 # Docker
 DOCKER_ORG ?= o1labs
@@ -30,6 +36,9 @@ NETWORK ?= devnet
 VERBOSITY ?= info
 GIT_COMMIT := $(shell git rev-parse --short=8 HEAD)
 
+# Documentation server port
+DOCS_PORT ?= 3000
+
 OPAM_PATH := $(shell command -v opam 2>/dev/null)
 
 ifdef OPAM_PATH
@@ -41,6 +50,16 @@ endif
 
 .PHONY: help
 help: ## Ask for help!
+	@echo "Mina Rust Makefile - Common Variables:"
+	@echo "  DOCS_PORT=<port>     Set documentation server port (default: 3000)"
+	@echo "  NETWORK=<network>    Set network (default: devnet)"
+	@echo "  VERBOSITY=<level>    Set logging verbosity (default: info)"
+	@echo ""
+	@echo "Examples:"
+	@echo "  make docs-serve DOCS_PORT=8080    # Start docs server on port 8080"
+	@echo "  make run-node NETWORK=mainnet     # Run node on mainnet"
+	@echo ""
+	@echo "Available targets:"
 	@grep -E '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: build
@@ -50,6 +69,9 @@ build: ## Build the project in debug mode
 .PHONY: build-ledger
 build-ledger: download-circuits ## Build the ledger binary and library, requires nightly Rust
 	@cd ledger && cargo +$(NIGHTLY_RUST_VERSION) build --release --tests
+
+build-node-native: ## Build the package mina-node-native with all features and tests
+	@cargo build -p mina-node-native --all-features --release --tests
 
 .PHONY: build-release
 build-release: ## Build the project in release mode
@@ -107,6 +129,22 @@ build-wasm: ## Build WebAssembly node
 		--out-dir pkg \
 		target/wasm32-unknown-unknown/release/mina_node_web.wasm
 
+.PHONY: build-benches
+build-benches: ## Build all benchmarks without running them
+	@cargo bench --no-run
+
+.PHONY: build-bench-database
+build-bench-database: ## Build ledger database benchmark
+	@cargo bench --bench database --no-run
+
+.PHONY: bench
+bench: ## Run all benchmarks
+	@cargo bench
+
+.PHONY: bench-database
+bench-database: ## Run ledger database benchmark
+	@cargo bench --bench database
+
 .PHONY: check
 check: ## Check code for compilation errors
 	cargo check --all-targets
@@ -131,16 +169,18 @@ fix-trailing-whitespace: ## Remove trailing whitespaces from all files
 	@echo "Removing trailing whitespaces from all files..."
 	@find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
 		-not -path "./website/.docusaurus/*" \
 		-not -path "./.git/*" \
-		-exec sed -i'' -e "s/[[:space:]]*$$//" {} + && \
+		-exec sh -c 'echo "Processing: $$1"; sed -i"" "s/[[:space:]]*$$//" "$$1"' _ {} \; && \
 		echo "Trailing whitespaces removed."
 
 .PHONY: check-trailing-whitespace
@@ -148,10 +188,12 @@ check-trailing-whitespace: ## Check for trailing whitespaces in source files
 	@echo "Checking for trailing whitespaces..."
 	@files_with_trailing_ws=$$(find . -type f \( \
 		-name "*.rs" -o -name "*.toml" -o -name "*.md" -o -name "*.yaml" \
-		-o -name "*.yml" -o -name "*.json" -o -name "*.ts" -o -name "*.tsx" \
+		-o -name "*.yml" -o -name "*.ts" -o -name "*.tsx" \
 		-o -name "*.js" -o -name "*.jsx" -o -name "*.sh" \) \
 		-not -path "./target/*" \
 		-not -path "./node_modules/*" \
+		-not -path "./frontend/node_modules/*" \
+		-not -path "./frontend/dist/*" \
 		-not -path "./website/node_modules/*" \
 		-not -path "./website/build/*" \
 		-not -path "./website/static/api-docs/*" \
@@ -175,11 +217,9 @@ clean: ## Clean build artifacts
 .PHONY: download-circuits
 download-circuits: ## Download the circuits used by Mina from GitHub
 	@if [ ! -d "circuit-blobs" ]; then \
-	  git clone --depth 1 https://github.com/openmina/circuit-blobs.git; \
-	  ln -s "$$PWD"/circuit-blobs/3.0.0devnet ledger/; \
+	  git clone --depth 1 https://github.com/o1-labs/circuit-blobs.git -b dw/add-berkeley-687bf44e97328e1cc0e85291663009410f64bd99; \
 	  ln -s "$$PWD"/circuit-blobs/3.0.0mainnet ledger/; \
-	  ln -s "$$PWD"/circuit-blobs/3.0.1devnet ledger/; \
-	  ln -s "$$PWD"/circuit-blobs/berkeley_rc1 ledger/; \
+	  ln -s "$$PWD"/circuit-blobs/berkeley-devnet ledger/; \
 	else \
 	  echo "circuit-blobs already exists, skipping download."; \
 	fi
@@ -206,27 +246,28 @@ lint-bash: ## Check all shell scripts using shellcheck
 		-not -path "*/target/*" \
 		-not -path "*/node_modules/*" \
 		-not -path "*/website/docs/developers/scripts/setup/*" \
+		-not -path "*/website/docs/developers/scripts/frontend/*" \
 		-print0 | xargs -0 shellcheck
 	@echo "Shellcheck completed successfully!"
 
 .PHONY: lint-dockerfiles
 lint-dockerfiles: ## Check all Dockerfiles using hadolint
 	@if [ "$$GITHUB_ACTIONS" = "true" ]; then \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec hadolint {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec hadolint {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	else \
-		OUTPUT=$$(find . -name "Dockerfile*" -type f -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
+		OUTPUT=$$(find . -name "Dockerfile*" -type f -not -path "*/node_modules/*" -exec sh -c 'docker run --rm -i hadolint/hadolint < "$$1"' _ {} \;); \
 		if [ -n "$$OUTPUT" ]; then \
 			echo "$$OUTPUT"; \
 			exit 1; \
 		fi; \
 	fi
 
-.PHONY: setup-wasm-toolchain
-setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
+.PHONY: setup-wasm
+setup-wasm: ## Setup the WebAssembly toolchain, using nightly
 		@ARCH=$$(uname -m); \
 		OS=$$(uname -s | tr A-Z a-z); \
 		case $$OS in \
@@ -241,8 +282,24 @@ setup-wasm-toolchain: ## Setup the WebAssembly toolchain, using nightly
 			*) echo "Unsupported architecture: $$ARCH" && exit 1 ;; \
 		esac; \
 		TARGET="$$ARCH_PART-$$OS_PART"; \
-		echo "Installing rust-src and rustfmt for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
-		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET
+		echo "Installing nightly toolchain: ${NIGHTLY_RUST_VERSION}-$$TARGET"; \
+		rustup toolchain install ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		echo "Installing components for ${NIGHTLY_RUST_VERSION}-$$TARGET with wasm32 target"; \
+		rustup component add rust-src --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup component add rustfmt --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		rustup target add wasm32-unknown-unknown --toolchain ${NIGHTLY_RUST_VERSION}-$$TARGET; \
+		cargo install wasm-bindgen-cli --version ${WASM_BINDGEN_CLI_VERSION}
+
+.PHONY: setup-taplo
+setup-taplo: ## Install taplo TOML formatter
+	@if taplo --version 2>/dev/null | grep -q ${TAPLO_CLI_VERSION}; then \
+		echo "taplo ${TAPLO_CLI_VERSION} already installed"; \
+	else \
+		cargo install taplo-cli --version ${TAPLO_CLI_VERSION} --force; \
+	fi
+
+.PHONY: setup
+setup: setup-taplo setup-wasm ## Setup development environment
 
 .PHONY: test
 test: ## Run tests
@@ -262,11 +319,29 @@ test-release: ## Run tests in release mode
 
 .PHONY: test-vrf
 test-vrf: ## Run VRF tests, requires nightly Rust
-	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- -Z unstable-options --report-time
+	@cd vrf && cargo +$(NIGHTLY_RUST_VERSION) test --release -- \
+		-Z unstable-options --report-time
+
+.PHONY: test-account
+test-account: ## Run account tests
+	@cargo test -p mina-node-account
+
+.PHONY: test-wallet
+test-wallet: ## Run wallet CLI end-to-end tests
+	@echo "Running wallet CLI tests..."
+	@for script in .github/scripts/wallet/*.sh; do \
+		echo "Running $$script..."; \
+		$$script || exit 1; \
+	done
+	@echo "All wallet tests passed!"
 
 .PHONY: test-p2p-messages
 test-p2p-messages:
 	cargo test -p mina-p2p-messages --tests --release
+
+.PHONY: test-node-native
+test-node-native: build-node-native ## Run the unit/integration tests of the package mina-node-native
+	cargo test -p mina-node-native --all-features --release --tests
 
 .PHONY: nextest
 nextest: ## Run tests with cargo-nextest for faster execution
@@ -292,9 +367,9 @@ nextest-vrf: ## Run VRF tests with cargo-nextest, requires nightly Rust
 
 .PHONY: docker-build-all
 docker-build-all: docker-build-bootstrap-sandbox docker-build-debugger \
-	docker-build-frontend docker-build-fuzzing docker-build-heartbeats-processor \
+	docker-build-frontend docker-build-fuzzing \
 	docker-build-light docker-build-light-focal docker-build-mina \
-	docker-build-mina-testing docker-build-producer-dashboard \
+	docker-build-mina-testing \
 	docker-build-test ## Build all Docker images
 
 .PHONY: docker-build-bootstrap-sandbox
@@ -309,6 +384,8 @@ docker-build-debugger: ## Build debugger Docker image
 
 .PHONY: docker-build-frontend
 docker-build-frontend: ## Build frontend Docker image
+	@echo "Generating .env.docker file..."
+	@bash ./frontend/docker/generate-docker-env.sh
 	@ARCH=$$(uname -m); \
 	case $$ARCH in \
 		x86_64) PLATFORM="linux/amd64" ;; \
@@ -319,16 +396,12 @@ docker-build-frontend: ## Build frontend Docker image
 	docker buildx build \
 		--platform $$PLATFORM \
 		--tag $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) \
-		frontend/
+		--file ./frontend/Dockerfile \
+		./
 
 .PHONY: docker-build-fuzzing
 docker-build-fuzzing: ## Build fuzzing Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-fuzzing:$(GIT_COMMIT) tools/fuzzing/
-
-.PHONY: docker-build-heartbeats-processor
-docker-build-heartbeats-processor: ## Build heartbeats processor Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust-heartbeats-processor:$(GIT_COMMIT) \
-		tools/heartbeats-processor/
 
 .PHONY: docker-build-light
 docker-build-light: ## Build light Docker image
@@ -358,11 +431,6 @@ docker-build-mina: ## Build main Mina Docker image
 docker-build-mina-testing: ## Build Mina testing Docker image
 	docker build -t $(DOCKER_ORG)/mina-rust-testing:$(GIT_COMMIT) \
 		-f node/testing/docker/Dockerfile.mina node/testing/docker/
-
-.PHONY: docker-build-producer-dashboard
-docker-build-producer-dashboard: ## Build producer dashboard Docker image
-	docker build -t $(DOCKER_ORG)/mina-rust-producer-dashboard:$(GIT_COMMIT) \
-		-f docker/producer-dashboard/Dockerfile .
 
 .PHONY: docker-build-test
 docker-build-test: ## Build test Docker image
@@ -470,13 +538,13 @@ docs-build: docs-integrate-rust docs-install ## Build the documentation website 
 .PHONY: docs-serve
 docs-serve: docs-integrate-rust docs-install ## Serve the documentation website locally with Rust API docs
 	@echo "Starting documentation server with Rust API documentation..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-serve
 docs-build-serve: docs-build ## Build and serve the documentation website locally with Rust API docs
-	@echo "Serving built documentation with Rust API documentation at: http://localhost:3000"
-	@cd website && npm run serve
+	@echo "Serving built documentation with Rust API documentation at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm run serve -- --port $(DOCS_PORT)
 
 .PHONY: docs-build-only
 docs-build-only: docs-install ## Build the documentation website without Rust API docs
@@ -488,15 +556,18 @@ docs-build-only: docs-install ## Build the documentation website without Rust AP
 .PHONY: docs-serve-only
 docs-serve-only: docs-install ## Serve the documentation website locally without Rust API docs
 	@echo "Starting documentation server (without Rust API docs)..."
-	@echo "Documentation will be available at: http://localhost:3000"
-	@cd website && npm start
+	@echo "Documentation will be available at: http://localhost:$(DOCS_PORT)"
+	@cd website && npm start -- --port $(DOCS_PORT)
 
 .PHONY: docs-rust
 docs-rust: ## Generate Rust API documentation
 	@echo "Generating Rust API documentation..."
 	# Using nightly with --enable-index-page to generate workspace index
 	# See: https://github.com/rust-lang/cargo/issues/8229
-	@DATABASE_URL="sqlite::memory:" RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps --document-private-items --workspace --exclude heartbeats-processor --lib --bins
+	RUSTDOCFLAGS="--enable-index-page -Zunstable-options -D warnings" \
+		cargo +$(NIGHTLY_RUST_VERSION) doc --no-deps \
+		--document-private-items --workspace \
+		--lib
 	@echo "Rust documentation generated in target/doc/"
 	@echo "Entry point: target/doc/index.html"
 

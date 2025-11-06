@@ -1,7 +1,18 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { BlockProductionOverviewActions } from '@block-production/overview/block-production-overview.actions';
-import { getMergedRoute, isDesktop, MergedRoute, safelyExecuteInBrowser } from '@openmina/shared';
+import {
+  getMergedRoute,
+  isDesktop,
+  MergedRoute,
+  safelyExecuteInBrowser,
+} from '@openmina/shared';
 import { debounceTime, filter, fromEvent, take } from 'rxjs';
 import { isNaN } from 'mathjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
@@ -11,21 +22,25 @@ import { BlockProductionOverviewEpoch } from '@shared/types/block-production/ove
 import { AppSelectors } from '@app/app.state';
 
 @Component({
-    selector: 'mina-block-production-overview',
-    templateUrl: './block-production-overview.component.html',
-    styleUrls: ['./block-production-overview.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-block-production-overview',
+  templateUrl: './block-production-overview.component.html',
+  styleUrls: ['./block-production-overview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class BlockProductionOverviewComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class BlockProductionOverviewComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   readonly SLOTS_PER_EPOCH = SLOTS_PER_EPOCH;
   showSidePanel: boolean = isDesktop();
   isLoading: boolean = true;
   isCalculatingVRF: boolean = false;
   epoch: BlockProductionOverviewEpoch;
 
-  constructor(protected el: ElementRef) { super(); }
+  constructor(protected el: ElementRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToLoading();
@@ -41,24 +56,38 @@ export class BlockProductionOverviewComponent extends StoreDispatcher implements
   }
 
   private listenToLoading(): void {
-    this.select(BlockProductionOverviewSelectors.loading, ({ isLoading, isCalculatingVRF }) => {
-      this.isLoading = isLoading;
-      this.isCalculatingVRF = isCalculatingVRF;
-      this.detect();
-    });
-    this.select(BlockProductionOverviewSelectors.activeEpoch, (activeEpoch: BlockProductionOverviewEpoch) => {
-      this.epoch = activeEpoch;
-      this.detect();
-    });
+    this.select(
+      BlockProductionOverviewSelectors.loading,
+      ({ isLoading, isCalculatingVRF }) => {
+        this.isLoading = isLoading;
+        this.isCalculatingVRF = isCalculatingVRF;
+        this.detect();
+      },
+    );
+    this.select(
+      BlockProductionOverviewSelectors.activeEpoch,
+      (activeEpoch: BlockProductionOverviewEpoch) => {
+        this.epoch = activeEpoch;
+        this.detect();
+      },
+    );
   }
 
   private listenToRoute(): void {
-    this.select(getMergedRoute, (route: MergedRoute) => {
-      const epoch = Number(route.params['epoch']);
-      const slot = Number(route.params['slot']);
-      this.dispatch2(BlockProductionOverviewActions.setActiveSlot({ slot }));
-      this.dispatch2(BlockProductionOverviewActions.getEpochDetails({ epochNumber: isNaN(epoch) ? undefined : epoch }));
-    }, take(1));
+    this.select(
+      getMergedRoute,
+      (route: MergedRoute) => {
+        const epoch = Number(route.params['epoch']);
+        const slot = Number(route.params['slot']);
+        this.dispatch2(BlockProductionOverviewActions.setActiveSlot({ slot }));
+        this.dispatch2(
+          BlockProductionOverviewActions.getEpochDetails({
+            epochNumber: isNaN(epoch) ? undefined : epoch,
+          }),
+        );
+      },
+      take(1),
+    );
   }
 
   private listenToResize(): void {

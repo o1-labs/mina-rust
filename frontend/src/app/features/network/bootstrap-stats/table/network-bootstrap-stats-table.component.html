@@ -2,26 +2,38 @@
 
 <ng-template #rowTemplate let-row="row">
   <span>{{ row.finish | readableDate }}</span>
-  <span class="fx-row-vert-cent f-600"
-        [ngClass]="{
-          'warn-primary': row.type === 'Failed',
-          'tertiary': row.type === 'Ongoing',
-          'success-primary': row.type === 'Successful'
-        }">
-    <ng-container *ngTemplateOutlet="icon; context: { type: row.type }"></ng-container>
-    <span class="ml-5">{{ row.type }}{{ row.error ? (' - ' + row.error | truncateMid: 20: 0) : '' }}</span>
+  <span
+    class="fx-row-vert-cent f-600"
+    [ngClass]="{
+      'warn-primary': row.type === 'Failed',
+      tertiary: row.type === 'Ongoing',
+      'success-primary': row.type === 'Successful',
+    }"
+  >
+    <ng-container
+      *ngTemplateOutlet="icon; context: { type: row.type }"
+    ></ng-container>
+    <span class="ml-5">
+      {{ row.type
+      }}{{ row.error ? (' - ' + row.error | truncateMid: 20 : 0) : '' }}
+    </span>
   </span>
   <span class="secondary">{{ row.durationInSecs | secDuration: config }}</span>
   <span>
-    <mina-copy [value]="row.peerId" [display]="row.peerId | truncateMid"></mina-copy>
+    <mina-copy
+      [value]="row.peerId"
+      [display]="row.peerId | truncateMid"
+    ></mina-copy>
   </span>
   <span [tooltip]="row.address" [maxWidth]="1000">
-    <mina-copy [value]="row.address" [display]="row.address | truncateMid: 25"></mina-copy>
+    <mina-copy
+      [value]="row.address"
+      [display]="row.address | truncateMid: 25"
+    ></mina-copy>
   </span>
   <span [class.secondary]="row.existingPeers > 0">{{ row.existingPeers }}</span>
   <span [class.secondary]="row.newPeers > 0">{{ row.newPeers }}</span>
 </ng-template>
-
 
 <ng-template #icon let-type="type">
   <ng-container [ngSwitch]="type">

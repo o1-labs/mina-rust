@@ -56,7 +56,7 @@ services:
       psql postgres://postgres:${POSTGRES_PASSWORD}@postgres-mina-rust:${PG_PORT}/${PG_DB} -f /sql/archive_schema.sql;
       '
     volumes:
-      - ./producer-dashboard/src/archive/sql:/sql
+      - ./sql/archive:/sql
     depends_on:
       postgres-ocaml:
         condition: service_healthy
@@ -100,7 +100,7 @@ services:
         condition: service_healthy
 
   node-ocaml:
-    image: gcr.io/o1labs-192920/mina-daemon:3.2.0-beta2-939b08d-noble-devnet
+    image: gcr.io/o1labs-192920/mina-daemon:3.3.0-alpha1-6929a7e-noble-devnet
     container_name: node-ocaml
     environment:
       MINA_CLIENT_TRUSTLIST: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16

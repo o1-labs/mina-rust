@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 $green: #59bfb5;
 $light-peach: #0d0d0d;
@@ -36,7 +36,9 @@ $white: #000000;
     }
 
     .mina-icon.circle-check {
-      font-variation-settings: 'FILL' 1, 'wght' 300 !important;
+      font-variation-settings:
+        'FILL' 1,
+        'wght' 300 !important;
     }
 
     .mina-icon.aware-primary {
@@ -59,8 +61,8 @@ $white: #000000;
   button {
     width: 158px;
     height: 48px !important;
-    background-color: openmina.$base-background;
-    color: openmina.$base-primary;
+    background-color: mina-rust.$base-background;
+    color: mina-rust.$base-primary;
     filter: invert(1);
 
     &.disabled {

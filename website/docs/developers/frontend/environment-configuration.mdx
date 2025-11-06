@@ -1,0 +1,660 @@
+---
+title: Environment Configuration
+description: Complete reference for frontend environment configuration files
+sidebar_position: 5
+---
+
+# Environment Configuration
+
+The Mina frontend uses JavaScript configuration files to customize behavior for
+different deployment environments. Each environment file defines specific
+settings, features, and endpoint configurations.
+
+## Configuration File Structure
+
+Environment configuration files are located in
+`frontend/src/assets/environments/` and follow this general structure:
+
+<!-- prettier-ignore-start -->
+
+:::info Complete Type Definitions
+
+For the complete, authoritative set of all configuration parameters, see the
+TypeScript interface definitions at:
+[`frontend/src/app/shared/types/core/environment/mina-env.type.ts`](https://github.com/o1-labs/mina-rust/blob/develop/frontend/src/app/shared/types/core/environment/mina-env.type.ts)
+
+This file contains the `MinaEnv`, `MinaNode`, and `FeaturesConfig` interfaces
+with full JSDoc documentation.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+```javascript
+export default {
+  // Core settings
+  production: boolean,
+  canAddNodes: boolean,
+  hideNodeStats: boolean,
+  showWebNodeLandingPage: boolean,
+  showLeaderboard: boolean,
+  hidePeersPill: boolean,
+  hideTxPill: boolean,
+
+  // Global configuration
+  globalConfig: {
+    features: {
+      dashboard: string[],
+      'block-production': string[],
+      mempool: string[],
+      state: string[],
+    },
+    firebase: {
+      projectId: string,
+      appId: string,
+      apiKey: string,
+      authDomain: string,
+      storageBucket: string,
+      messagingSenderId: string,
+      measurementId: string,
+    },
+    heartbeats: boolean,
+  },
+
+  // Error tracking
+  sentry: {
+    dsn: string,
+    tracingOrigins: string[],
+  },
+
+  // Node configurations
+  configs: Array<{
+    name: string,
+    url?: string,
+    isWebNode?: boolean,
+  }>,
+};
+```
+
+## Configuration Fields Reference
+
+### Core Settings
+
+#### `production: boolean`
+
+- **Purpose**: Determines if the application runs in production mode
+- **Default**: `false` for development environments, `true` for production
+- **Effects**:
+  - Enables/disables debugging features
+  - Controls console logging verbosity
+  - Affects bundle optimization
+
+#### `canAddNodes: boolean`
+
+- **Purpose**: Controls whether users can dynamically add new node connections
+- **Default**: `true` for development, `false` for production
+- **Effects**: Shows/hides "Add Node" functionality in the UI
+
+#### `hideNodeStats: boolean`
+
+- **Purpose**: Controls visibility of detailed node statistics
+- **Default**: `false`
+- **Effects**: Hides performance metrics and detailed node information when
+  `true`
+
+#### `showWebNodeLandingPage: boolean`
+
+- **Purpose**: Controls whether to display the WebNode-specific landing page
+- **Default**: `false`
+- **Effects**: Shows WebNode introduction and setup instructions
+
+#### `showLeaderboard: boolean`
+
+- **Purpose**: Enables leaderboard functionality for community participation
+  tracking
+- **Default**: `false`
+- **Effects**: Shows participant rankings and testnet metrics
+
+#### `hidePeersPill: boolean`
+
+- **Purpose**: Controls visibility of the peers status indicator
+- **Default**: `false`
+- **Effects**: Hides the peers connection pill in the UI
+
+#### `hideTxPill: boolean`
+
+- **Purpose**: Controls visibility of the transaction pool indicator
+- **Default**: `false`
+- **Effects**: Hides the transaction pool status pill in the UI
+
+### Global Configuration
+
+#### `globalConfig.features`
+
+Controls which features and sub-features are enabled for each module:
+
+**`dashboard: string[]`**
+
+- Available features: `[]` (empty array enables all dashboard features)
+- Controls main dashboard functionality
+
+**`'block-production': string[]`**
+
+- Available features: `['overview', 'won-slots']`
+- `overview`: Block production statistics and metrics
+- `won-slots`: Detailed view of won slot information
+
+**`mempool: string[]`**
+
+- Available features: `[]` (empty array enables all mempool features)
+- Controls transaction pool monitoring
+
+**`state: string[]`**
+
+- Available features: `['actions']`
+- `actions`: State transition action monitoring
+
+#### `globalConfig.firebase`
+
+Firebase integration settings for analytics and real-time features:
+
+- **`projectId`**: Firebase project identifier
+- **`appId`**: Firebase application ID
+- **`apiKey`**: Firebase API key for client authentication
+- **`authDomain`**: Firebase authentication domain
+- **`storageBucket`**: Firebase storage bucket name
+- **`messagingSenderId`**: Firebase Cloud Messaging sender ID
+- **`measurementId`**: Google Analytics measurement ID
+
+#### `globalConfig.heartbeats: boolean`
+
+- **Purpose**: Enables periodic heartbeat signals for monitoring
+- **Default**: `false`
+- **Effects**: Sends regular status updates to monitoring systems
+
+### Error Tracking
+
+#### `sentry`
+
+Sentry error tracking and performance monitoring configuration:
+
+**`dsn: string`**
+
+- **Purpose**: Sentry Data Source Name for error reporting
+- **Format**: `https://[key]@[host]/[project-id]`
+
+**`tracingOrigins: string[]`**
+
+- **Purpose**: List of origins to include in performance tracing
+- **Example**: `['https://www.openmina.com', 'localhost:4200']`
+
+### Node Configurations
+
+#### `configs: Array<Config>`
+
+Array of node connection configurations:
+
+**Config Object Structure:**
+
+```javascript
+{
+  name: string,        // Display name for the node
+  url?: string,        // GraphQL endpoint URL (optional for WebNodes)
+  isWebNode?: boolean, // True for browser-based WebAssembly nodes
+}
+```
+
+**Examples:**
+
+```javascript
+// Regular node connection
+{
+  name: 'Production Node',
+  url: 'https://api.openmina.com/graphql'
+}
+
+// WebNode (browser-based)
+{
+  name: 'Web Node',
+  isWebNode: true
+}
+```
+
+## Available Environments
+
+### `local.js`
+
+Development environment for local node connections:
+
+```javascript
+export default {
+  production: false,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      "block-production": ["overview", "won-slots"],
+    },
+  },
+  configs: [
+    {
+      name: "Local Node",
+      url: "http://localhost:3085",
+    },
+  ],
+};
+```
+
+### `production.js`
+
+Optimized production environment:
+
+```javascript
+export default {
+  production: true,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      "block-production": ["overview", "won-slots"],
+    },
+  },
+  sentry: {
+    dsn: "https://production-dsn@sentry.io/project-id",
+    tracingOrigins: ["https://www.openmina.com"],
+  },
+  configs: [
+    {
+      name: "Production Node",
+      url: "https://production-node.openmina.com",
+    },
+  ],
+};
+```
+
+### `webnode.js`
+
+WebNode browser-based configuration:
+
+```javascript
+export default {
+  production: true,
+  canAddNodes: false,
+  showWebNodeLandingPage: true,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      "block-production": ["won-slots"],
+    },
+    firebase: {
+      /* Firebase config */
+    },
+  },
+  sentry: {
+    /* Sentry config */
+  },
+  configs: [
+    {
+      name: "Web Node",
+      isWebNode: true,
+    },
+  ],
+};
+```
+
+### `producer.js`
+
+Block producer dashboard configuration:
+
+```javascript
+export default {
+  production: true,
+  hideNodeStats: true,
+  globalConfig: {
+    features: {
+      "block-production": ["overview"],
+    },
+  },
+  configs: [
+    {
+      name: "Producer-0",
+      url: "https://producer-0.example.com",
+    },
+    // Additional producer nodes...
+  ],
+};
+```
+
+### `leaderboard.js`
+
+Community participation tracking:
+
+```javascript
+export default {
+  production: true,
+  canAddNodes: false,
+  showWebNodeLandingPage: true,
+  showLeaderboard: true,
+  hidePeersPill: true,
+  hideTxPill: true,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      "block-production": ["won-slots"],
+      mempool: [],
+      state: ["actions"],
+    },
+    firebase: {
+      /* Firebase config */
+    },
+    heartbeats: true,
+  },
+  sentry: {
+    /* Sentry config */
+  },
+  configs: [
+    {
+      name: "Web Node",
+      isWebNode: true,
+    },
+  ],
+};
+```
+
+### `fuzzing.js`
+
+Fuzzing test environment:
+
+```javascript
+export default {
+  production: false,
+  globalConfig: {
+    features: {
+      dashboard: [],
+      "block-production": ["overview", "won-slots"],
+    },
+  },
+  configs: [
+    {
+      name: "Fuzzing Node",
+      url: "http://localhost:3085",
+    },
+  ],
+};
+```
+
+## Creating Custom Environments
+
+To create a new environment configuration:
+
+1. **Create the configuration file** in `frontend/src/assets/environments/`:
+
+   ```bash
+   cp frontend/src/assets/environments/local.js frontend/src/assets/environments/custom.js
+   ```
+
+2. **Modify the configuration** to suit your needs:
+
+   ```javascript
+   export default {
+     production: true,
+     canAddNodes: true,
+     globalConfig: {
+       features: {
+         dashboard: [],
+         "block-production": ["overview"],
+       },
+     },
+     configs: [
+       {
+         name: "Custom Node",
+         url: "https://your-node.example.com",
+       },
+     ],
+   };
+   ```
+
+3. **Add a Makefile target** (optional):
+
+   ```makefile
+   .PHONY: build-custom
+   build-custom: ## Build the frontend with custom configuration
+     npx ng build --configuration production
+     cp dist/frontend/browser/assets/environments/custom.js \
+       dist/frontend/browser/assets/environments/env.js
+   ```
+
+4. **Update Docker support** (if needed) by adding the environment to
+   `frontend/docker/startup.sh`.
+
+## Usage and Integration
+
+<!-- prettier-ignore-start -->
+
+:::note Documentation Maintenance
+
+This section contains code examples copied directly from the source files. If
+you modify any of the following files, please update the corresponding
+documentation:
+
+- `frontend/src/index.html` - Runtime loading logic
+- `frontend/src/app/shared/constants/config.ts` - Angular integration
+- `frontend/src/app/core/services/config.service.ts` - Service integration
+- Environment files in `frontend/src/assets/environments/` - Configuration
+  examples
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+### Loading Process
+
+The environment configuration loading happens in multiple stages:
+
+#### 1. Runtime Loading (index.html)
+
+The environment configuration is loaded dynamically at runtime via JavaScript in
+`frontend/src/index.html`:
+
+```javascript
+async function loadEnvironment() {
+  const possiblePaths = [
+    "/environments/env.js", // Production/CI path
+    "../public/environments/env.js", // Development path
+  ];
+
+  for (const path of possiblePaths) {
+    try {
+      const env = await import(/* @vite-ignore */ path);
+      if (typeof window !== "undefined") {
+        window["env"] = window.env || env.default || env;
+      }
+      return;
+    } catch (error) {
+      continue;
+    }
+  }
+
+  console.error("Failed to load environment configuration");
+}
+```
+
+This script:
+
+- Attempts to load the `env.js` file from multiple possible paths
+- Sets the configuration as `window.env` for global access
+- Handles both production and development paths gracefully
+
+#### 2. Angular Integration (config.ts)
+
+The loaded configuration is integrated into Angular via
+`frontend/src/app/shared/constants/config.ts`:
+
+```typescript
+import { environment } from "@environment/environment";
+
+export const CONFIG: Readonly<MinaEnv> = {
+  ...environment, // Angular build-time environment
+  globalConfig: {
+    ...environment.globalConfig,
+    graphQL: getURL(environment.globalConfig?.graphQL),
+  },
+  configs: !isBrowser()
+    ? []
+    : environment.configs.map(config => ({
+        ...config,
+        url: getURL(config.url),
+        memoryProfiler: getURL(config.memoryProfiler),
+        debugger: getURL(config.debugger),
+      })),
+};
+
+// Make config globally available
+safelyExecuteInBrowser(() => {
+  (window as any).config = CONFIG;
+});
+```
+
+This creates the final merged configuration by:
+
+- Merging Angular build-time environment with runtime JavaScript config
+- Processing and normalizing URLs for different endpoints
+- Making the config available globally as `window.config`
+
+#### 3. Service Integration
+
+The configuration is consumed throughout the application via Angular services:
+
+**ConfigService** (`frontend/src/app/core/services/config.service.ts`):
+
+```typescript
+@Injectable({
+  providedIn: "root",
+})
+export class ConfigService {
+  private node: MinaNode;
+
+  constructor(private store: Store<MinaState>) {
+    this.listenToNodeChanging();
+  }
+
+  get DEBUGGER(): string {
+    return this.node.debugger;
+  }
+}
+```
+
+**Feature Detection Functions**:
+
+```typescript
+export function isFeatureEnabled(
+  config: MinaNode,
+  feature: FeatureType,
+): boolean {
+  return hasValue(getFeaturesConfig(config)[feature]);
+}
+
+export function isSubFeatureEnabled(
+  config: MinaNode,
+  feature: FeatureType,
+  subFeature: string,
+): boolean {
+  const features = getFeaturesConfig(config);
+  return hasValue(features[feature]) && features[feature].includes(subFeature);
+}
+```
+
+### Where Configuration is Used
+
+#### 1. Feature Flags
+
+```typescript
+// Check if a feature is enabled
+if (isFeatureEnabled(config, "block-production")) {
+  // Enable block production features
+}
+
+// Check if a sub-feature is enabled
+if (isSubFeatureEnabled(config, "block-production", "won-slots")) {
+  // Show won slots information
+}
+```
+
+#### 2. Node Connections
+
+```typescript
+// Access configured nodes
+CONFIG.configs.forEach(node => {
+  if (node.isWebNode) {
+    // Handle WebNode configuration
+  } else {
+    // Handle regular node connection to node.url
+  }
+});
+```
+
+#### 3. UI Behavior Control
+
+```typescript
+// Control UI elements based on configuration
+if (CONFIG.canAddNodes) {
+  // Show "Add Node" button
+}
+
+if (CONFIG.showLeaderboard) {
+  // Display leaderboard features
+}
+
+if (CONFIG.hidePeersPill) {
+  // Hide peers status indicator
+}
+```
+
+#### 4. Firebase Integration
+
+```typescript
+// Initialize Firebase with environment-specific config
+if (CONFIG.globalConfig.firebase) {
+  initializeApp(CONFIG.globalConfig.firebase);
+}
+```
+
+#### 5. Error Tracking
+
+```typescript
+// Configure Sentry with environment-specific DSN
+if (CONFIG.sentry) {
+  Sentry.init({
+    dsn: CONFIG.sentry.dsn,
+    tracingOrigins: CONFIG.sentry.tracingOrigins,
+  });
+}
+```
+
+### Build-Time vs Runtime Configuration
+
+The system uses a dual-layer configuration approach:
+
+#### Build-Time Configuration (Angular Environments)
+
+- Located in `frontend/src/environments/environment.*.ts`
+- Processed during Angular build process
+- Optimizes bundles and enables/disables features at compile time
+- Used for development tooling and build optimization
+
+#### Runtime Configuration (JavaScript Files)
+
+- Located in `frontend/src/assets/environments/*.js`
+- Loaded dynamically when the application starts
+- Allows the same built application to work in different environments
+- Used for endpoint URLs, feature flags, and service configurations
+
+This dual approach provides:
+
+- **Build optimization** through Angular environments
+- **Deployment flexibility** through runtime JavaScript configuration
+- **Single binary, multiple deployments** capability
+
+### Environment Variables Integration
+
+Environment configurations work alongside build-time Angular environments. The
+JavaScript configuration files provide runtime flexibility, while Angular
+environments control build-time optimizations.

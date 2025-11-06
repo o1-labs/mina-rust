@@ -11,10 +11,10 @@ export default {
   hideTxPill: true,
   globalConfig: {
     features: {
-      'dashboard': [],
+      dashboard: [],
       'block-production': ['won-slots'],
-      'mempool': [],
-      'state': ['actions'],
+      mempool: [],
+      state: ['actions'],
     },
     firebase: {
       apiKey: 'AIzaSyBZzFsHjIbQVbBP0N-KkUsEvHRVU_wwd7g',
@@ -29,7 +29,12 @@ export default {
   },
   sentry: {
     dsn: 'https://4f225bda3dec1b73074b07923ecc1d1a@o4508216158584832.ingest.de.sentry.io/4508817332109392',
-    tracingOrigins: ['https://www.openmina.com', 'webnode-gtm-test.firebaseapp.com', 'webnode-gtm-test.firebasestorage.app', 'webnode.minaprotocol.com'],
+    tracingOrigins: [
+      'https://www.openmina.com',
+      'webnode-gtm-test.firebaseapp.com',
+      'webnode-gtm-test.firebasestorage.app',
+      'webnode.minaprotocol.com',
+    ],
   },
   configs: [
     {

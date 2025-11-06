@@ -1,10 +1,34 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnChanges,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import * as d3 from 'd3';
 import { ScanStateTree } from '@shared/types/snarks/scan-state/scan-state-tree.type';
-import { ScanStateLeaf, ScanStateLeafStatus } from '@shared/types/snarks/scan-state/scan-state-leaf.type';
-import { debounceTime, delay, distinctUntilChanged, filter, fromEvent, skip, tap } from 'rxjs';
+import {
+  ScanStateLeaf,
+  ScanStateLeafStatus,
+} from '@shared/types/snarks/scan-state/scan-state-leaf.type';
+import {
+  debounceTime,
+  delay,
+  distinctUntilChanged,
+  filter,
+  fromEvent,
+  skip,
+  tap,
+} from 'rxjs';
 import { untilDestroyed } from '@ngneat/until-destroy';
-import { any, hasValue, isMobile, safelyExecuteInBrowser } from '@openmina/shared';
+import {
+  any,
+  hasValue,
+  isMobile,
+  safelyExecuteInBrowser,
+} from '@openmina/shared';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { ScanStateSetActiveLeaf } from '@snarks/scan-state/scan-state.actions';
 import { Router } from '@angular/router';
@@ -17,7 +41,6 @@ import {
 } from '@snarks/scan-state/scan-state.state';
 import { AppSelectors } from '@app/app.state';
 
-
 interface SSTree {
   leaf: ScanStateLeaf;
   size?: number;
@@ -25,23 +48,32 @@ interface SSTree {
 }
 
 @Component({
-    selector: 'mina-scan-state-tree-chart',
-    templateUrl: './scan-state-tree-chart.component.html',
-    styleUrls: ['./scan-state-tree-chart.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'fx-col-full-cent w-100' },
-    standalone: false
+  selector: 'mina-scan-state-tree-chart',
+  templateUrl: './scan-state-tree-chart.component.html',
+  styleUrls: ['./scan-state-tree-chart.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'fx-col-full-cent w-100' },
+  standalone: false,
 })
-export class ScanStateTreeChartComponent extends StoreDispatcher implements OnInit, OnChanges {
-
+export class ScanStateTreeChartComponent
+  extends StoreDispatcher
+  implements OnInit, OnChanges
+{
   @Input({ required: true }) tree: ScanStateTree;
   @Input() activeLeaf: ScanStateLeaf;
   @Input() blockHeight: number;
 
-  @ViewChild('chart', { static: true }) private chartContainer: ElementRef<HTMLDivElement>;
-  @ViewChild('tooltip', { static: true }) private tooltipRef: ElementRef<HTMLDivElement>;
+  @ViewChild('chart', { static: true })
+  private chartContainer: ElementRef<HTMLDivElement>;
+  @ViewChild('tooltip', { static: true })
+  private tooltipRef: ElementRef<HTMLDivElement>;
 
-  private tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, undefined>;
+  private tooltip: d3.Selection<
+    HTMLDivElement,
+    unknown,
+    HTMLElement,
+    undefined
+  >;
 
   private width: number;
   private height: number;
@@ -61,7 +93,9 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
   private treeView: boolean;
   private highlightSnarks: boolean;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
     this.width = this.chartContainer.nativeElement.offsetWidth;
@@ -75,11 +109,9 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
       .attr('height', this.height)
       .attr('viewBox', [0, 0, this.width, this.height]);
 
-    this.leafsHolder = this.svg
-      .append('g');
+    this.leafsHolder = this.svg.append('g');
 
-    this.linesHolder = this.svg
-      .append('g');
+    this.linesHolder = this.svg.append('g');
 
     this.jobsHolder = this.svg
       .append('g')
@@ -116,9 +148,20 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
         .pipe(untilDestroyed(this), debounceTime(200))
         .subscribe(() => this.redrawChart());
     });
-    this.select(selectScanStateSideBarResized, () => this.redrawChart(), filter(Boolean));
-    this.select(selectScanStateOpenSidePanel, () => this.redrawChart(), delay(400), skip(1));
-    this.select(AppSelectors.menu, () => this.redrawChart(),
+    this.select(
+      selectScanStateSideBarResized,
+      () => this.redrawChart(),
+      filter(Boolean),
+    );
+    this.select(
+      selectScanStateOpenSidePanel,
+      () => this.redrawChart(),
+      delay(400),
+      skip(1),
+    );
+    this.select(
+      AppSelectors.menu,
+      () => this.redrawChart(),
       delay(400),
       distinctUntilChanged(),
       skip(1),
@@ -146,10 +189,11 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
     const tree = buildTree(this.tree.leafs);
     this.root = d3.hierarchy<any>(tree);
     this.root.sum((d: SSTree) => d.size);
-    d3.partition()
-      .size([this.width, this.height - 10])(this.root);
+    d3.partition().size([this.width, this.height - 10])(this.root);
 
-    const seventhRowItem = this.root.descendants().filter((node: any) => node.depth === this.numOfRows - 2)[0];
+    const seventhRowItem = this.root
+      .descendants()
+      .filter((node: any) => node.depth === this.numOfRows - 2)[0];
     this.leafWidth = any(seventhRowItem).x1 - any(seventhRowItem).x0;
 
     this.updateLeafs(redraw);
@@ -164,19 +208,26 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
     }
     this.highlightRect = this.getHighlightRect();
     const overlayIndex = this.activeLeaf?.jobIndex;
-    if (hasValue(overlayIndex) && overlayIndex < this.root.descendants().length) {
+    if (
+      hasValue(overlayIndex) &&
+      overlayIndex < this.root.descendants().length
+    ) {
       const overlayCell: any = this.root.descendants()[overlayIndex];
-      const width = (this.treeView && overlayCell.depth < this.numOfRows - 1) ? this.leafWidth : (overlayCell.x1 - overlayCell.x0 - this.padding);
+      const width =
+        this.treeView && overlayCell.depth < this.numOfRows - 1
+          ? this.leafWidth
+          : overlayCell.x1 - overlayCell.x0 - this.padding;
       this.highlightRect
         .attr('width', width)
         .attr('height', overlayCell.y1 - overlayCell.y0 - this.padding)
-        .attr('transform', `translate(${this.treeView ? overlayCell.transform?.x : overlayCell.x0},${this.treeView ? overlayCell.transform?.y : overlayCell.y0})`)
+        .attr(
+          'transform',
+          `translate(${this.treeView ? overlayCell.transform?.x : overlayCell.x0},${this.treeView ? overlayCell.transform?.y : overlayCell.y0})`,
+        )
         .style('pointer-events', 'none')
         .style('display', 'block');
-
     } else {
-      this.highlightRect
-        .style('display', 'none');
+      this.highlightRect.style('display', 'none');
     }
   }
 
@@ -202,9 +253,7 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
     const leafCount = jobs.length;
     const lineWidth = this.width / leafCount;
 
-    this.baseJobs = this.jobsHolder
-      .selectAll('path')
-      .data(jobs);
+    this.baseJobs = this.jobsHolder.selectAll('path').data(jobs);
 
     const enteringCells = this.baseJobs
       .enter()
@@ -250,9 +299,7 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
         return 'var(--base-tertiary)';
       });
     this.baseJobs = this.baseJobs.merge(enteringCells);
-    this.baseJobs
-      .exit()
-      .remove();
+    this.baseJobs.exit().remove();
   }
 
   private updateLeafs(redraw?: boolean): void {
@@ -271,35 +318,54 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
         if (!this.treeView) {
           return `translate(${d.x0},${d.y0})`;
         }
-        const rowWidth = (d.depth < this.numOfRows - 2) ? (this.leafWidth / (2 ** (this.numOfRows - d.depth))) : (d.x1 - d.x0);
-        const x0 = (d.depth < this.numOfRows - 2) ? ((d.x0 + d.x1) / 2 - rowWidth / 2 - (this.leafWidth / 2)) : d.x0;
+        const rowWidth =
+          d.depth < this.numOfRows - 2
+            ? this.leafWidth / 2 ** (this.numOfRows - d.depth)
+            : d.x1 - d.x0;
+        const x0 =
+          d.depth < this.numOfRows - 2
+            ? (d.x0 + d.x1) / 2 - rowWidth / 2 - this.leafWidth / 2
+            : d.x0;
         const y0 = d.y0;
         d.transform = { x: x0, y: y0 };
         return `translate(${x0},${y0})`;
       })
-      .attr('width', (d: any) => (this.treeView && d.depth < this.numOfRows - 1) ? this.leafWidth : (d.x1 - d.x0))
+      .attr('width', (d: any) =>
+        this.treeView && d.depth < this.numOfRows - 1
+          ? this.leafWidth
+          : d.x1 - d.x0,
+      )
       .attr('height', (d: any) => d.y1 - d.y0)
       .style('stroke', 'var(--base-background)')
       .style('stroke-width', '1px')
       .style('fill', (d: any) => rectsFill(d, this.highlightSnarks))
-      .on('mouseover', (event: MouseEvent & { target: HTMLElement }, d: any) => this.mouseOverHandle(event, d))
-      .on('mouseout', (event: MouseEvent & { target: HTMLElement }, d: any) => this.mouseOutHandler(event, d))
+      .on('mouseover', (event: MouseEvent & { target: HTMLElement }, d: any) =>
+        this.mouseOverHandle(event, d),
+      )
+      .on('mouseout', (event: MouseEvent & { target: HTMLElement }, d: any) =>
+        this.mouseOutHandler(event, d),
+      )
       .on('click', (_event: MouseEvent & { target: HTMLElement }, d: any) => {
         this.dispatch(ScanStateSetActiveLeaf, d.data.leaf);
-        this.router.navigate([Routes.SNARKS, Routes.SCAN_STATE, this.blockHeight], {
-          queryParamsHandling: 'merge',
-          queryParams: { jobId: d.data.leaf.bundle_job_id },
-        });
+        this.router.navigate(
+          [Routes.SNARKS, Routes.SCAN_STATE, this.blockHeight],
+          {
+            queryParamsHandling: 'merge',
+            queryParams: { jobId: d.data.leaf.bundle_job_id },
+          },
+        );
       })
       .classed('pulse-effect', (d: any) => this.hasPulseEffect(d));
     this.cellsData = this.cellsData.merge(enteringCells);
-    this.cellsData
-      .exit()
-      .remove();
+    this.cellsData.exit().remove();
   }
 
   private hasPulseEffect(d: any): boolean {
-    return this.highlightSnarks && d?.data.leaf.status === ScanStateLeafStatus.Pending && !d.data.leaf.snark;
+    return (
+      this.highlightSnarks &&
+      d?.data.leaf.status === ScanStateLeafStatus.Pending &&
+      !d.data.leaf.snark
+    );
   }
 
   private updateLines(): void {
@@ -307,30 +373,46 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
       this.linesHolder.selectAll('line').remove();
       return;
     }
-    const linksData = this.root.links().filter((link: any) => link.source.depth <= this.numOfRows - 3 && link.target.depth <= this.numOfRows - 3);
+    const linksData = this.root
+      .links()
+      .filter(
+        (link: any) =>
+          link.source.depth <= this.numOfRows - 3 &&
+          link.target.depth <= this.numOfRows - 3,
+      );
 
-    this.lines = this.linesHolder
-      .selectAll('line')
-      .data(linksData);
+    this.lines = this.linesHolder.selectAll('line').data(linksData);
 
-    this.lines.enter() // Update existing lines and enter new lines
+    this.lines
+      .enter() // Update existing lines and enter new lines
       .append('line')
       .merge(this.lines)
       .attr('x1', (d: any) => {
-        const offset = this.leafWidth / 2 * ((d.source.x0 + d.source.transform.x > d.target.x0 + d.target.transform.x) ? -1 : 1);
+        const offset =
+          (this.leafWidth / 2) *
+          (d.source.x0 + d.source.transform.x >
+          d.target.x0 + d.target.transform.x
+            ? -1
+            : 1);
         return (d.source.x0 + d.source.x1) / 2 + offset;
       })
       .attr('x2', (d: any) => (d.target.x0 + d.target.x1) / 2)
       .attr('y1', (d: any) => (d.source.y0 + d.source.y1) / 2)
       .attr('y2', (d: any) => d.target.y0 + 0.5)
       .style('stroke', (d: any) => {
-        if (d.source.data.leaf.status === 'Empty' || d.target.data.leaf.status === 'Empty') {
+        if (
+          d.source.data.leaf.status === 'Empty' ||
+          d.target.data.leaf.status === 'Empty'
+        ) {
           return 'var(--base-divider)';
         }
         return 'var(--base-tertiary)';
       })
       .style('stroke-width', (d: any) => {
-        if (d.source.data.leaf.status === 'Empty' || d.target.data.leaf.status === 'Empty') {
+        if (
+          d.source.data.leaf.status === 'Empty' ||
+          d.target.data.leaf.status === 'Empty'
+        ) {
           return '1px';
         }
         return '0.7px';
@@ -339,10 +421,19 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
     this.lines.exit().remove(); // Remove any lines that are no longer needed
   }
 
-  private mouseOverHandle(event: MouseEvent & { target: HTMLElement }, d: any): void {
-    const status = d.data.leaf.status === ScanStateLeafStatus.Pending && d.data.leaf.commitment && !d.data.leaf.snark
-      ? 'Ongoing' : d.data.leaf.status;
-    const selection = this.tooltip.html(`
+  private mouseOverHandle(
+    event: MouseEvent & { target: HTMLElement },
+    d: any,
+  ): void {
+    const status =
+      d.data.leaf.status === ScanStateLeafStatus.Pending &&
+      d.data.leaf.commitment &&
+      !d.data.leaf.snark
+        ? 'Ongoing'
+        : d.data.leaf.status;
+    const selection = this.tooltip
+      .html(
+        `
       <div class="fx-row-vert-cent flex-between h-sm">
          <div>Status</div>
          <div style="color:${ScanStateTreeChartComponent.getColorByStatus(d.data.leaf.status, this.highlightSnarks)}"
@@ -364,16 +455,26 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
         <div>Snark</div>
         <div class="${d.data.leaf.snark ? 'primary' : ''}">${!!d.data.leaf.snark}</div>
       </div>
-    `)
+    `,
+      )
       .style('display', 'block');
 
-    d3.select(event.target).style('fill', (d: any) => ScanStateTreeChartComponent.getColorByStatus(d.data.leaf.status, this.highlightSnarks));
+    d3.select(event.target).style('fill', (d: any) =>
+      ScanStateTreeChartComponent.getColorByStatus(
+        d.data.leaf.status,
+        this.highlightSnarks,
+      ),
+    );
 
     const nodeRect = event.target.getBoundingClientRect();
     const tooltipWidth = selection.node().getBoundingClientRect().width;
 
-    const chartLeft = this.chartContainer.nativeElement.getBoundingClientRect().left;
-    let desiredLeft = Math.min(nodeRect.left + nodeRect.width / 2 - tooltipWidth / 2, chartLeft + this.width - tooltipWidth);
+    const chartLeft =
+      this.chartContainer.nativeElement.getBoundingClientRect().left;
+    let desiredLeft = Math.min(
+      nodeRect.left + nodeRect.width / 2 - tooltipWidth / 2,
+      chartLeft + this.width - tooltipWidth,
+    );
     desiredLeft = Math.max(desiredLeft, chartLeft);
     safelyExecuteInBrowser(() => {
       selection
@@ -382,13 +483,21 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
     });
   }
 
-  private mouseOutHandler(event: MouseEvent & { target: HTMLElement }, d: any): void {
+  private mouseOutHandler(
+    event: MouseEvent & { target: HTMLElement },
+    d: any,
+  ): void {
     this.tooltip.style('display', 'none');
 
-    d3.select(event.target).style('fill', (d: any) => rectsFill(d, this.highlightSnarks));
+    d3.select(event.target).style('fill', (d: any) =>
+      rectsFill(d, this.highlightSnarks),
+    );
   }
 
-  private static getColorByStatus(status: ScanStateLeafStatus, highlight: boolean): string {
+  private static getColorByStatus(
+    status: ScanStateLeafStatus,
+    highlight: boolean,
+  ): string {
     if (status === ScanStateLeafStatus.Done) {
       return 'var(--special-selected-alt-2-primary)';
     } else if (status === ScanStateLeafStatus.Todo) {
@@ -416,9 +525,7 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
   }
 
   private static getStarPath(): string {
-    return d3.symbol()
-      .type(d3.symbolStar)
-      .size(17)();
+    return d3.symbol().type(d3.symbolStar).size(17)();
   }
 
   private static getCirclePath(i: number, lineWidth: number): string {
@@ -462,11 +569,17 @@ export class ScanStateTreeChartComponent extends StoreDispatcher implements OnIn
   }
 
   private listenToHighlightSnarkPoolChange(): void {
-    this.select(selectScanStateHighlightSnarkPool, (highlight: boolean) => {
-      this.leafsHolder.selectAll('rect')
-        .style('fill', (d: any) => rectsFill(d, highlight))
-        .classed('pulse-effect', (d: any) => this.hasPulseEffect(d));
-    }, tap(h => this.highlightSnarks = h), skip(1));
+    this.select(
+      selectScanStateHighlightSnarkPool,
+      (highlight: boolean) => {
+        this.leafsHolder
+          .selectAll('rect')
+          .style('fill', (d: any) => rectsFill(d, highlight))
+          .classed('pulse-effect', (d: any) => this.hasPulseEffect(d));
+      },
+      tap(h => (this.highlightSnarks = h)),
+      skip(1),
+    );
   }
 }
 

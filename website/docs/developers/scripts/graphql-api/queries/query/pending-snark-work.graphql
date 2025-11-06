@@ -1,0 +1,11 @@
+query PendingSnarkWork {
+  pendingSnarkWork {
+    workBundle {
+      sourceFirstPassLedgerHash
+      targetFirstPassLedgerHash
+      sourceSecondPassLedgerHash
+      targetSecondPassLedgerHash
+      workId
+    }
+  }
+}

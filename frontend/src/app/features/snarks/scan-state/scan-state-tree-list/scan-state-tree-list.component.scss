@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .overflow-y-auto {
   padding-bottom: 120px;
@@ -6,7 +6,7 @@
 
 :host {
   .title {
-    border: 1px solid openmina.$base-divider;
+    border: 1px solid mina-rust.$base-divider;
     border-bottom: none;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
@@ -15,20 +15,22 @@
     padding-bottom: 2px;
 
     .mina-icon {
-      font-variation-settings: 'FILL' 1, 'wght' 200;
+      font-variation-settings:
+        'FILL' 1,
+        'wght' 200;
     }
   }
 
   div.selected {
-    background-color: openmina.$selected-container;
+    background-color: mina-rust.$selected-container;
 
     .tree {
-      color: openmina.$selected-primary;
+      color: mina-rust.$selected-primary;
     }
 
     ::ng-deep mina-horizontal-menu .control div {
-      background-color: openmina.$selected-container !important;
-      color: openmina.$selected-primary !important;
+      background-color: mina-rust.$selected-container !important;
+      color: mina-rust.$selected-primary !important;
     }
   }
 }

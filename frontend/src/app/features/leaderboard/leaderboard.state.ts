@@ -1,4 +1,8 @@
-import { createFeatureSelector, createSelector, MemoizedSelector } from '@ngrx/store';
+import {
+  createFeatureSelector,
+  createSelector,
+  MemoizedSelector,
+} from '@ngrx/store';
 import { MinaState } from '@app/app.setup';
 import { HeartbeatSummary } from '@shared/types/leaderboard/heartbeat-summary.type';
 import { LEADERBOARD_KEY } from '@leaderboard/leaderboard.actions';
@@ -12,11 +16,16 @@ export interface LeaderboardState {
   isLoading: boolean;
 }
 
-const select = <T>(selector: (state: LeaderboardState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  createFeatureSelector<LeaderboardState>(LEADERBOARD_KEY),
-  selector,
+const select = <T>(
+  selector: (state: LeaderboardState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(
+    createFeatureSelector<LeaderboardState>(LEADERBOARD_KEY),
+    selector,
+  );
+const filteredHeartbeatSummaries = select(
+  state => state.filteredHeartbeatSummaries,
 );
-const filteredHeartbeatSummaries = select(state => state.filteredHeartbeatSummaries);
 const filters = select(state => state.filters);
 const sortBy = select(state => state.sortBy);
 const isLoading = select(state => state.isLoading);

@@ -1,33 +1,33 @@
 [package]
 name = "vrf"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-anyhow = "1.0.70"
-ark-ec.workspace = true
+anyhow = { workspace = true }
+ark-ec = { workspace = true }
 ark-ff = { workspace = true }
-ark-serialize.workspace = true
-hex = "0.4.3"
+ark-serialize = { workspace = true }
+hex = { workspace = true }
 ledger = { workspace = true }
 mina-curves = { workspace = true }
 mina-hasher = { workspace = true }
 mina-node-account = { workspace = true }
 mina-p2p-messages = { workspace = true }
 mina-signer = { workspace = true }
-num = { version = "0.4", features = ["std"] }
+num = { workspace = true }
 o1-utils = { workspace = true }
 poseidon = { workspace = true }
 redux = { workspace = true }
 serde = { workspace = true }
-serde_json = { version = "1.0.82", features = [
+serde_json = { workspace = true, features = [
   "unbounded_depth",
   "arbitrary_precision",
 ] }
-thiserror = "1.0.37"
+thiserror = { workspace = true }
 # num = "0.4"
-bs58 = "0.4.0"
-itertools = "0.12"
-rand = "0.8"
-sha2 = "0.10"
+bs58 = { workspace = true }
+itertools = { workspace = true }
+rand = { workspace = true }
+sha2 = { workspace = true }

@@ -10,7 +10,10 @@ const routes: Routes = [
     children: [
       {
         path: 'wallets',
-        loadChildren: () => import('@benchmarks/wallets/benchmarks-wallets.module').then(m => m.BenchmarksWalletsModule),
+        loadChildren: () =>
+          import('@benchmarks/wallets/benchmarks-wallets.module').then(
+            m => m.BenchmarksWalletsModule,
+          ),
         title: BENCHMARKS_TITLE,
       },
       {

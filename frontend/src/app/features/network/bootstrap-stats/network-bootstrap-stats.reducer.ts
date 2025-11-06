@@ -7,9 +7,7 @@ import {
   NetworkBootstrapStatsActions,
 } from '@network/bootstrap-stats/network-bootstrap-stats.actions';
 import { sort, SortDirection, TableSort } from '@openmina/shared';
-import {
-  NetworkBootstrapStatsRequest,
-} from '@shared/types/network/bootstrap-stats/network-bootstrap-stats-request.type';
+import { NetworkBootstrapStatsRequest } from '@shared/types/network/bootstrap-stats/network-bootstrap-stats-request.type';
 
 const initialState: NetworkBootstrapStatsState = {
   boostrapStats: [],
@@ -20,7 +18,10 @@ const initialState: NetworkBootstrapStatsState = {
   },
 };
 
-export function networkBootstrapStatsReducer(state: NetworkBootstrapStatsState = initialState, action: NetworkBootstrapStatsActions): NetworkBootstrapStatsState {
+export function networkBootstrapStatsReducer(
+  state: NetworkBootstrapStatsState = initialState,
+  action: NetworkBootstrapStatsActions,
+): NetworkBootstrapStatsState {
   switch (action.type) {
     case NETWORK_BOOTSTRAP_STATS_GET_BOOTSTRAP_STATS_SUCCESS: {
       return {
@@ -52,6 +53,13 @@ export function networkBootstrapStatsReducer(state: NetworkBootstrapStatsState =
   }
 }
 
-function sortRequests(requests: NetworkBootstrapStatsRequest[], tableSort: TableSort<NetworkBootstrapStatsRequest>): NetworkBootstrapStatsRequest[] {
-  return sort<NetworkBootstrapStatsRequest>(requests, tableSort, ['typeErr', 'address', 'peerId']);
+function sortRequests(
+  requests: NetworkBootstrapStatsRequest[],
+  tableSort: TableSort<NetworkBootstrapStatsRequest>,
+): NetworkBootstrapStatsRequest[] {
+  return sort<NetworkBootstrapStatsRequest>(requests, tableSort, [
+    'typeErr',
+    'address',
+    'peerId',
+  ]);
 }

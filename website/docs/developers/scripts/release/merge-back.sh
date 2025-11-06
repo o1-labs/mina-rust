@@ -12,9 +12,12 @@ if [ "$confirm" != "y" ] && [ "$confirm" != "Y" ]; then
 fi
 
 echo "Merging main back to develop..."
+BRANCH_NAME=tmp-merge-branch-"$(date +%s)"
 git checkout develop
 git pull origin develop
+git checkout -b "${BRANCH_NAME}"
 git merge main --no-edit
-git push origin develop
+git push origin "${BRANCH_NAME}"
+gh pr create --title "Merge main back to develop" --body "Automated merge of main into develop." --base develop --head "${BRANCH_NAME}"
 
 echo "Successfully merged main back to develop"

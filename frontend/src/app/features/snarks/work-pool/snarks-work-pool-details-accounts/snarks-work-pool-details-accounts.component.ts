@@ -1,22 +1,31 @@
-import { ChangeDetectionStrategy, Component, Input, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Input,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { getMergedRoute, MergedRoute, toggleItem } from '@openmina/shared';
 import { Router } from '@angular/router';
 
 @Component({
-    selector: 'mina-snarks-work-pool-details-accounts',
-    templateUrl: './snarks-work-pool-details-accounts.component.html',
-    styleUrls: ['./snarks-work-pool-details-accounts.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-snarks-work-pool-details-accounts',
+  templateUrl: './snarks-work-pool-details-accounts.component.html',
+  styleUrls: ['./snarks-work-pool-details-accounts.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class SnarksWorkPoolDetailsAccountsComponent extends StoreDispatcher implements OnInit {
-
-  @Input() accounts: { job: number, first: boolean, data: any }[];
+export class SnarksWorkPoolDetailsAccountsComponent
+  extends StoreDispatcher
+  implements OnInit
+{
+  @Input() accounts: { job: number; first: boolean; data: any }[];
 
   opened: number[] = [];
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToTabFromRoute();

@@ -1,4 +1,11 @@
-import { isMobile, noMillisFormat, sort, SortDirection, TableSort, toReadableDate } from '@openmina/shared';
+import {
+  isMobile,
+  noMillisFormat,
+  sort,
+  SortDirection,
+  TableSort,
+  toReadableDate,
+} from '@openmina/shared';
 import { DashboardSplitsState } from '@network/splits/dashboard-splits.state';
 import {
   DASHBOARD_SPLITS_CLOSE,
@@ -32,9 +39,11 @@ const initialState: DashboardSplitsState = {
   openSidePanel: !isMobile(),
 };
 
-export function topologyReducer(state: DashboardSplitsState = initialState, action: DashboardSplitsActions): DashboardSplitsState {
+export function topologyReducer(
+  state: DashboardSplitsState = initialState,
+  action: DashboardSplitsActions,
+): DashboardSplitsState {
   switch (action.type) {
-
     case DASHBOARD_SPLITS_GET_SPLITS: {
       return {
         ...state,
@@ -44,19 +53,28 @@ export function topologyReducer(state: DashboardSplitsState = initialState, acti
     }
 
     case DASHBOARD_SPLITS_GET_SPLITS_SUCCESS: {
-      const peers = action.payload.peers.map((p) => ({
+      const peers = action.payload.peers.map(p => ({
         ...p,
         radius: getRadius(p, action.payload.links),
-        outgoingConnections: action.payload.links.filter(l => l.source === p.address).length,
-        incomingConnections: action.payload.links.filter(l => l.target === p.address).length,
+        outgoingConnections: action.payload.links.filter(
+          l => l.source === p.address,
+        ).length,
+        incomingConnections: action.payload.links.filter(
+          l => l.target === p.address,
+        ).length,
       }));
       const sets = splitThePeers(peers, action.payload.links);
       return {
         ...state,
         peers,
-        sets: sets.map(set => ({ ...set, peers: sortPeers(set.peers, state.sort) })),
+        sets: sets.map(set => ({
+          ...set,
+          peers: sortPeers(set.peers, state.sort),
+        })),
         links: action.payload.links,
-        nodeStats: getNodeCount(peers.map(p => ({ url: !p.node ? 'node' : p.node.toLowerCase() }))),
+        nodeStats: getNodeCount(
+          peers.map(p => ({ url: !p.node ? 'node' : p.node.toLowerCase() })),
+        ),
         fetching: false,
       };
     }
@@ -73,7 +91,8 @@ export function topologyReducer(state: DashboardSplitsState = initialState, acti
       return {
         ...state,
         fetching: true,
-        networkSplitsDetails: 'Last split: ' + toReadableDate(Date.now(), noMillisFormat),
+        networkSplitsDetails:
+          'Last split: ' + toReadableDate(Date.now(), noMillisFormat),
       };
     }
 
@@ -81,7 +100,8 @@ export function topologyReducer(state: DashboardSplitsState = initialState, acti
       return {
         ...state,
         fetching: true,
-        networkMergeDetails: 'Last merge: ' + toReadableDate(Date.now(), noMillisFormat),
+        networkMergeDetails:
+          'Last merge: ' + toReadableDate(Date.now(), noMillisFormat),
       };
     }
 
@@ -111,12 +131,16 @@ export function topologyReducer(state: DashboardSplitsState = initialState, acti
   }
 }
 
-
-function getRadius(peer: DashboardSplitsPeer, links: DashboardSplitsLink[]): number {
+function getRadius(
+  peer: DashboardSplitsPeer,
+  links: DashboardSplitsLink[],
+): number {
   if (peer.node === 'Webnode') {
     return 14;
   }
-  const occurrence = links.filter(link => link.source === peer.address || link.target === peer.address).length;
+  const occurrence = links.filter(
+    link => link.source === peer.address || link.target === peer.address,
+  ).length;
   if (occurrence < 6) {
     return 4;
   } else if (occurrence < 8) {
@@ -132,17 +156,28 @@ function getRadius(peer: DashboardSplitsPeer, links: DashboardSplitsLink[]): num
   }
 }
 
-function getNodeCount<T extends { url: string }>(nodes: T[]): DashboardNodeCount {
+function getNodeCount<T extends { url: string }>(
+  nodes: T[],
+): DashboardNodeCount {
   return {
-    nodes: (nodes.filter(node => node.url.includes('node')).map(n => n.url)).length,
-    producers: (nodes.filter(node => node.url.includes('prod')).map(n => n.url)).length,
-    snarkers: (nodes.filter(node => node.url.includes('snarker')).map(n => n.url)).length,
-    seeders: (nodes.filter(node => node.url.includes('seed')).map(n => n.url)).length,
-    transactionGenerators: (nodes.filter(node => node.url.includes('transaction-generator')).map(n => n.url)).length,
+    nodes: nodes.filter(node => node.url.includes('node')).map(n => n.url)
+      .length,
+    producers: nodes.filter(node => node.url.includes('prod')).map(n => n.url)
+      .length,
+    snarkers: nodes.filter(node => node.url.includes('snarker')).map(n => n.url)
+      .length,
+    seeders: nodes.filter(node => node.url.includes('seed')).map(n => n.url)
+      .length,
+    transactionGenerators: nodes
+      .filter(node => node.url.includes('transaction-generator'))
+      .map(n => n.url).length,
   };
 }
 
-function splitThePeers(peers: DashboardSplitsPeer[], links: DashboardSplitsLink[]): DashboardSplitsSet[] {
+function splitThePeers(
+  peers: DashboardSplitsPeer[],
+  links: DashboardSplitsLink[],
+): DashboardSplitsSet[] {
   const sets: DashboardSplitsSet[] = [];
   const visited = new Set<string>();
 
@@ -159,9 +194,15 @@ function splitThePeers(peers: DashboardSplitsPeer[], links: DashboardSplitsLink[
           visited.add(currentPeer.address);
 
           for (const link of links) {
-            if (link.source === currentPeer.address && !visited.has(link.target)) {
+            if (
+              link.source === currentPeer.address &&
+              !visited.has(link.target)
+            ) {
               queue.push(peers.find(p => p.address === link.target));
-            } else if (link.target === currentPeer.address && !visited.has(link.source)) {
+            } else if (
+              link.target === currentPeer.address &&
+              !visited.has(link.source)
+            ) {
               queue.push(peers.find(p => p.address === link.source));
             }
           }
@@ -180,6 +221,14 @@ function splitThePeers(peers: DashboardSplitsPeer[], links: DashboardSplitsLink[
   return sets;
 }
 
-function sortPeers(messages: DashboardSplitsPeer[], tableSort: TableSort<DashboardSplitsPeer>): DashboardSplitsPeer[] {
-  return sort<DashboardSplitsPeer>(messages, tableSort, ['address', 'node'], true);
+function sortPeers(
+  messages: DashboardSplitsPeer[],
+  tableSort: TableSort<DashboardSplitsPeer>,
+): DashboardSplitsPeer[] {
+  return sort<DashboardSplitsPeer>(
+    messages,
+    tableSort,
+    ['address', 'node'],
+    true,
+  );
 }

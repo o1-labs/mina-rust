@@ -1,0 +1,295 @@
+name: Remote GraphQL Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # Run daily at 00:00 UTC
+    - cron: '0 0 * * *'
+
+jobs:
+  remote-graphql-tests:
+    name: Test ${{ matrix.node_name }} GraphQL Endpoint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - node_name: Rust Node
+            endpoint: http://mina-rust-plain-3.gcp.o1test.net/graphql
+          - node_name: Caml Node
+            endpoint: https://devnet-plain-1.gcp.o1test.net/graphql
+          - node_name: Mainnet Caml Node
+            endpoint: https://mainnet-plain-1.gcp.o1test.net/graphql
+    env:
+      GRAPHQL_ENDPOINT: ${{ matrix.endpoint }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Check GraphQL endpoint availability
+        run: |
+          echo "Testing GraphQL endpoint availability..."
+
+          if curl -s --max-time 10 -X POST $GRAPHQL_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ networkID }"}' > /dev/null; then
+            echo "✓ GraphQL endpoint is accessible"
+          else
+            echo "✗ GraphQL endpoint is not accessible"
+            exit 1
+          fi
+
+      - name: Test sync_status query
+        run: |
+          echo "Testing syncStatus query..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/sync_status.sh)
+          echo "Response: $response"
+
+          status=$(echo "$response" | jq -r '.data.syncStatus // empty')
+          if [ -n "$status" ]; then
+            echo "✓ Sync Status: $status"
+
+            case "$status" in
+              "SYNCED"|"CATCHUP"|"BOOTSTRAP"|"CONNECTING"|"LISTENING")
+                echo "✓ Valid sync status received"
+                ;;
+              *)
+                echo "? Unknown sync status: $status"
+                ;;
+            esac
+          else
+            echo "✗ Failed to get sync status"
+            exit 1
+          fi
+
+      - name: Test best_chain query
+        run: |
+          echo "Testing bestChain query..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/best_chain.sh)
+          echo "Response: $response"
+
+          state_hash=$(echo "$response" | jq -r '.data.bestChain[0].stateHash // empty')
+          if [ -n "$state_hash" ]; then
+            echo "✓ Best chain query successful"
+
+            # Extract block height if available
+            height=$(echo "$response" | jq -r '.data.bestChain[0].protocolState.consensusState.blockHeight // empty')
+            if [ -n "$height" ]; then
+              echo "  Latest block height: $height"
+            fi
+          else
+            echo "✗ Failed to get best chain"
+            exit 1
+          fi
+
+      - name: Test block query by height
+        run: |
+          echo "Testing block query by height..."
+
+          # Get current height from best chain first
+          best_chain_response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/best_chain.sh)
+
+          current_height=$(echo "$best_chain_response" | jq -r '.data.bestChain[0].protocolState.consensusState.blockHeight // empty')
+          if [ -n "$current_height" ]; then
+            echo "Current height: $current_height"
+
+            # Test with current height
+            response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/block_by_height.sh $current_height)
+            echo "Block query response: $response"
+
+            block_state_hash=$(echo "$response" | jq -r '.data.block.stateHash // empty')
+            if [ -n "$block_state_hash" ]; then
+              echo "✓ Block query by height successful"
+            else
+              echo "✗ Failed to get block by height"
+              exit 1
+            fi
+          else
+            echo "? Could not determine current height, skipping block query test"
+          fi
+
+      - name: Test genesis_block query
+        run: |
+          echo "Testing genesisBlock query..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/genesis_block.sh)
+          echo "Response: $response"
+
+          genesis_state_hash=$(echo "$response" | jq -r '.data.genesisBlock.stateHash // empty')
+          if [ -n "$genesis_state_hash" ]; then
+            echo "✓ Genesis block query successful"
+
+            # Extract genesis block height
+            genesis_height=$(echo "$response" | jq -r '.data.genesisBlock.protocolState.consensusState.blockHeight // empty')
+            if [ -n "$genesis_height" ]; then
+              echo "Genesis block height: $genesis_height"
+            fi
+          else
+            echo "✗ Failed to get genesis block"
+            exit 1
+          fi
+
+      - name: Test genesis_constants query
+        run: |
+          echo "Testing genesisConstants query..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/genesis_constants.sh)
+          echo "Response: $response"
+
+          account_creation_fee=$(echo "$response" | jq -r '.data.genesisConstants.accountCreationFee // empty')
+          if [ -n "$account_creation_fee" ]; then
+            echo "✓ Genesis constants query successful"
+
+            # Extract and display some key constants
+            coinbase=$(echo "$response" | jq -r '.data.genesisConstants.coinbase // empty')
+            if [ -n "$coinbase" ]; then
+              echo "  Coinbase reward: $coinbase"
+            fi
+
+            fee=$(echo "$response" | jq -r '.data.genesisConstants.accountCreationFee // empty')
+            if [ -n "$fee" ]; then
+              echo "  Account creation fee: $fee"
+            fi
+          else
+            echo "✗ Failed to get genesis constants"
+            exit 1
+          fi
+
+      - name: Test daemon_status query
+        run: |
+          echo "Testing daemonStatus query..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/daemon_status.sh)
+          echo "Response: $response"
+
+          chain_id_check=$(echo "$response" | jq -r '.data.daemonStatus.chainId // empty')
+          if [ -n "$chain_id_check" ]; then
+            echo "✓ Daemon status query successful"
+
+            # Extract chain ID
+            chain_id=$(echo "$response" | jq -r '.data.daemonStatus.chainId // empty')
+            if [ -n "$chain_id" ]; then
+              echo "  Chain ID: $chain_id"
+            fi
+
+            # Extract commit ID if available
+            commit_id=$(echo "$response" | jq -r '.data.daemonStatus.commitId // empty')
+            if [ -n "$commit_id" ]; then
+              echo "  Commit ID: $commit_id"
+            fi
+          else
+            echo "✗ Failed to get daemon status"
+            exit 1
+          fi
+
+      - name: Test network information queries
+        run: |
+          echo "Testing network information queries..."
+
+          response=$(GRAPHQL_ENDPOINT=$GRAPHQL_ENDPOINT ./website/docs/developers/scripts/graphql-queries/network_info.sh)
+          echo "Response: $response"
+
+          network_id=$(echo "$response" | jq -r '.data.networkID // empty')
+          if [ -n "$network_id" ]; then
+            echo "✓ Network ID: $network_id"
+          else
+            echo "✗ Failed to get network ID"
+            exit 1
+          fi
+
+          version=$(echo "$response" | jq -r '.data.version // empty')
+          if [ -n "$version" ]; then
+            echo "✓ Node version: $version"
+          else
+            echo "? Version query failed (might not be available)"
+          fi
+
+      - name: Test complex nested query
+        run: |
+          echo "Testing complex nested query..."
+
+          query='{ bestChain(maxLength: 2) { stateHash protocolState { consensusState { blockHeight epoch slot } blockchainState { snarkedLedgerHash } } } syncStatus networkID }'
+
+          response=$(curl -s --max-time 15 -X POST $GRAPHQL_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -d "{\"query\":\"$query\"}")
+
+          echo "Complex query response: $response"
+
+          # Check if all expected fields are present
+          state_hash_complex=$(echo "$response" | jq -r '.data.bestChain[0].stateHash // empty')
+          sync_status_complex=$(echo "$response" | jq -r '.data.syncStatus // empty')
+          network_id_complex=$(echo "$response" | jq -r '.data.networkID // empty')
+
+          if [ -n "$state_hash_complex" ] && [ -n "$sync_status_complex" ] && [ -n "$network_id_complex" ]; then
+            echo "✓ Complex nested query successful"
+          else
+            echo "✗ Complex nested query failed"
+            exit 1
+          fi
+
+      - name: Test error handling
+        run: |
+          echo "Testing GraphQL error handling..."
+
+          # Test invalid query
+          echo "Testing invalid query syntax..."
+          error_response=$(curl -s --max-time 10 -X POST $GRAPHQL_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ invalidField }"}')
+
+          errors=$(echo "$error_response" | jq -r '.errors // empty')
+          if [ -n "$errors" ]; then
+            echo "✓ Invalid query properly returns errors"
+          else
+            echo "? Invalid query handling unclear"
+          fi
+
+          # Test malformed JSON
+          echo "Testing malformed request..."
+          malformed_response=$(curl -s --max-time 10 -X POST $GRAPHQL_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -d '{"query":"}' || echo "request_failed")
+
+          if echo "$malformed_response" | jq -e '.errors' > /dev/null 2>&1 || echo "$malformed_response" | grep -q "request_failed"; then
+            echo "✓ Malformed requests are handled"
+          else
+            echo "? Malformed request handling unclear"
+          fi
+
+      - name: Performance check
+        run: |
+          echo "Testing GraphQL performance..."
+
+          start_time=$(date +%s%N)
+
+          response=$(curl -s --max-time 10 -X POST $GRAPHQL_ENDPOINT \
+            -H "Content-Type: application/json" \
+            -d '{"query":"{ syncStatus networkID }"}')
+
+          end_time=$(date +%s%N)
+          duration_ms=$(( (end_time - start_time) / 1000000 ))
+
+          echo "Simple query took: ${duration_ms}ms"
+
+          if [ $duration_ms -lt 5000 ]; then
+            echo "✓ Query performance is good (< 5s)"
+          elif [ $duration_ms -lt 10000 ]; then
+            echo "⚠ Query performance is acceptable (< 10s)"
+          else
+            echo "? Query performance might be slow (> 10s)"
+          fi
+
+          perf_sync_status=$(echo "$response" | jq -r '.data.syncStatus // empty')
+          if [ -n "$perf_sync_status" ]; then
+            echo "✓ Performance test query successful"
+          else
+            echo "✗ Performance test query failed"
+            exit 1
+          fi

@@ -13,93 +13,147 @@ import {
   BlockProductionOverviewActions,
 } from '@block-production/overview/block-production-overview.actions';
 import { BlockProductionOverviewService } from '@block-production/overview/block-production-overview.service';
-import {
-  BlockProductionOverviewEpoch,
-} from '@shared/types/block-production/overview/block-production-overview-epoch.type';
-import {
-  BlockProductionOverviewEpochDetails,
-} from '@shared/types/block-production/overview/block-production-overview-epoch-details.type';
+import { BlockProductionOverviewEpoch } from '@shared/types/block-production/overview/block-production-overview-epoch.type';
+import { BlockProductionOverviewEpochDetails } from '@shared/types/block-production/overview/block-production-overview-epoch-details.type';
 import { Routes } from '@shared/enums/routes.enum';
-import {
-  BlockProductionOverviewSlot,
-} from '@shared/types/block-production/overview/block-production-overview-slot.type';
+import { BlockProductionOverviewSlot } from '@shared/types/block-production/overview/block-production-overview-slot.type';
 import { BlockProductionModule } from '@block-production/block-production.module';
 
 @Injectable({
   providedIn: BlockProductionModule,
 })
 export class BlockProductionOverviewEffects extends BaseEffect {
-
   readonly getActiveEpochDetails$: Effect;
   readonly getEpochs$: Effect;
   readonly getActiveEpochSlots$: Effect;
   readonly getRewardsStats$: Effect;
 
-  constructor(private router: Router,
-              private actions$: Actions,
-              private bpOverviewService: BlockProductionOverviewService,
-              store: Store<MinaState>) {
+  constructor(
+    private router: Router,
+    private actions$: Actions,
+    private bpOverviewService: BlockProductionOverviewService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getActiveEpochDetails$ = createEffect(() => this.actions$.pipe(
-      ofType(BlockProductionOverviewActions.getEpochDetails, BlockProductionOverviewActions.close),
-      this.latestActionState(),
-      switchMap(({ action, state }) =>
-        action.type === BlockProductionOverviewActions.close.type
-          ? EMPTY
-          : this.bpOverviewService.getEpochDetails(action.epochNumber).pipe(
-            tap(response => {
-              let routes = [Routes.BLOCK_PRODUCTION, Routes.OVERVIEW, response.epochNumber];
-              if (state.blockProduction[BLOCK_PRODUCTION_OVERVIEW_KEY].activeSlotRoute) {
-                routes = [...routes, state.blockProduction[BLOCK_PRODUCTION_OVERVIEW_KEY].activeSlotRoute];
-              }
-              return this.router.navigate(routes, { queryParamsHandling: 'merge' });
-            }),
-          ),
+    this.getActiveEpochDetails$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(
+          BlockProductionOverviewActions.getEpochDetails,
+          BlockProductionOverviewActions.close,
+        ),
+        this.latestActionState(),
+        switchMap(({ action, state }) =>
+          action.type === BlockProductionOverviewActions.close.type
+            ? EMPTY
+            : this.bpOverviewService.getEpochDetails(action.epochNumber).pipe(
+                tap(response => {
+                  let routes = [
+                    Routes.BLOCK_PRODUCTION,
+                    Routes.OVERVIEW,
+                    response.epochNumber,
+                  ];
+                  if (
+                    state.blockProduction[BLOCK_PRODUCTION_OVERVIEW_KEY]
+                      .activeSlotRoute
+                  ) {
+                    routes = [
+                      ...routes,
+                      state.blockProduction[BLOCK_PRODUCTION_OVERVIEW_KEY]
+                        .activeSlotRoute,
+                    ];
+                  }
+                  return this.router.navigate(routes, {
+                    queryParamsHandling: 'merge',
+                  });
+                }),
+              ),
+        ),
+        switchMap((payload: BlockProductionOverviewEpochDetails) => [
+          BlockProductionOverviewActions.getEpochDetailsSuccess({
+            details: payload,
+          }),
+          BlockProductionOverviewActions.getEpochs({
+            epochNumber: payload.epochNumber,
+          }),
+          BlockProductionOverviewActions.getSlots({
+            epochNumber: payload.epochNumber,
+          }),
+        ]),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          BlockProductionOverviewActions.getEpochDetailsSuccess(undefined),
+        ),
       ),
-      switchMap((payload: BlockProductionOverviewEpochDetails) => [
-        BlockProductionOverviewActions.getEpochDetailsSuccess({ details: payload }),
-        BlockProductionOverviewActions.getEpochs({ epochNumber: payload.epochNumber }),
-        BlockProductionOverviewActions.getSlots({ epochNumber: payload.epochNumber }),
-      ]),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, BlockProductionOverviewActions.getEpochDetailsSuccess(undefined)),
-    ));
+    );
 
-    this.getEpochs$ = createEffect(() => this.actions$.pipe(
-      ofType(BlockProductionOverviewActions.getEpochs, BlockProductionOverviewActions.close),
-      this.latestActionState(),
-      switchMap(({ action }) =>
-        action.type === BlockProductionOverviewActions.close.type
-          ? EMPTY
-          : this.bpOverviewService.getEpochs(action.epochNumber),
+    this.getEpochs$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(
+          BlockProductionOverviewActions.getEpochs,
+          BlockProductionOverviewActions.close,
+        ),
+        this.latestActionState(),
+        switchMap(({ action }) =>
+          action.type === BlockProductionOverviewActions.close.type
+            ? EMPTY
+            : this.bpOverviewService.getEpochs(action.epochNumber),
+        ),
+        map((epochs: BlockProductionOverviewEpoch[]) =>
+          BlockProductionOverviewActions.getEpochsSuccess({ epochs }),
+        ),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          BlockProductionOverviewActions.getEpochsSuccess({ epochs: [] }),
+        ),
       ),
-      map((epochs: BlockProductionOverviewEpoch[]) => BlockProductionOverviewActions.getEpochsSuccess({ epochs })),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, BlockProductionOverviewActions.getEpochsSuccess({ epochs: [] })),
-    ));
+    );
 
-    this.getActiveEpochSlots$ = createEffect(() => this.actions$.pipe(
-      ofType(BlockProductionOverviewActions.getSlots, BlockProductionOverviewActions.close),
-      this.latestActionState(),
-      switchMap(({ state, action }) =>
-        action.type === BlockProductionOverviewActions.close.type
-          ? EMPTY
-          : this.bpOverviewService.getSlots(state.blockProduction.overview.activeEpochNumber).pipe(
-            map((slots: BlockProductionOverviewSlot[]) => BlockProductionOverviewActions.getSlotsSuccess({ slots })),
-          ),
+    this.getActiveEpochSlots$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(
+          BlockProductionOverviewActions.getSlots,
+          BlockProductionOverviewActions.close,
+        ),
+        this.latestActionState(),
+        switchMap(({ state, action }) =>
+          action.type === BlockProductionOverviewActions.close.type
+            ? EMPTY
+            : this.bpOverviewService
+                .getSlots(state.blockProduction.overview.activeEpochNumber)
+                .pipe(
+                  map((slots: BlockProductionOverviewSlot[]) =>
+                    BlockProductionOverviewActions.getSlotsSuccess({ slots }),
+                  ),
+                ),
+        ),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          BlockProductionOverviewActions.getSlotsSuccess({ slots: [] }),
+        ),
       ),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, BlockProductionOverviewActions.getSlotsSuccess({ slots: [] })),
-    ));
+    );
 
-    this.getRewardsStats$ = createEffect(() => this.actions$.pipe(
-      ofType(BlockProductionOverviewActions.getRewardsStats, BlockProductionOverviewActions.close),
-      this.latestActionState(),
-      switchMap(({ action }) =>
-        action.type === BlockProductionOverviewActions.close.type
-          ? EMPTY
-          : this.bpOverviewService.getRewardsAllTimeStats(),
+    this.getRewardsStats$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(
+          BlockProductionOverviewActions.getRewardsStats,
+          BlockProductionOverviewActions.close,
+        ),
+        this.latestActionState(),
+        switchMap(({ action }) =>
+          action.type === BlockProductionOverviewActions.close.type
+            ? EMPTY
+            : this.bpOverviewService.getRewardsAllTimeStats(),
+        ),
+        map(stats =>
+          BlockProductionOverviewActions.getRewardsStatsSuccess({ stats }),
+        ),
+        catchErrorAndRepeat2(
+          MinaErrorType.GENERIC,
+          BlockProductionOverviewActions.getRewardsStatsSuccess(undefined),
+        ),
       ),
-      map(stats => BlockProductionOverviewActions.getRewardsStatsSuccess({ stats })),
-      catchErrorAndRepeat2(MinaErrorType.GENERIC, BlockProductionOverviewActions.getRewardsStatsSuccess(undefined)),
-    ));
+    );
   }
 }

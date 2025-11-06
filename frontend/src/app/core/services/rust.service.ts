@@ -8,11 +8,12 @@ import { WebNodeService } from '@core/services/web-node.service';
   providedIn: 'root',
 })
 export class RustService {
-
   private node: MinaNode;
 
-  constructor(private http: HttpClient,
-              private webNodeService: WebNodeService) {}
+  constructor(
+    private http: HttpClient,
+    private webNodeService: WebNodeService,
+  ) {}
 
   changeRustNode(node: MinaNode): void {
     this.node = node;
@@ -32,20 +33,24 @@ export class RustService {
 
   get<T>(path: string): Observable<T> {
     if (this.node.isWebNode) {
-      return this.getFromWebNode(path).pipe(map((response: any) => {
-        // console.log(path, response);
-        return response;
-      }));
+      return this.getFromWebNode(path).pipe(
+        map((response: any) => {
+          // console.log(path, response);
+          return response;
+        }),
+      );
     }
     return this.http.get<T>(this.URL + path);
   }
 
   post<T, B = string | object>(path: string, body: B): Observable<T> {
     if (this.node.isWebNode) {
-      return this.postToWebNode(path, body).pipe(map((response: any) => {
-        // console.log(path, response);
-        return response;
-      }));
+      return this.postToWebNode(path, body).pipe(
+        map((response: any) => {
+          // console.log(path, response);
+          return response;
+        }),
+      );
     }
     return this.http.post<T>(this.URL + path, body);
   }

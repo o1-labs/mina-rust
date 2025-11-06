@@ -13,8 +13,10 @@ use crate::{
         conv::to_ledger_hash,
         currency::{Amount, Signed, Slot},
         transaction_logic::{
-            apply_zkapp_command_first_pass_aux, apply_zkapp_command_second_pass_aux,
-            local_state::LocalStateEnv,
+            local_state::{
+                apply_zkapp_command_first_pass_aux, apply_zkapp_command_second_pass_aux,
+                LocalStateEnv,
+            },
             protocol_state::{GlobalState, ProtocolStateView},
             transaction_applied::ZkappCommandApplied,
             transaction_partially_applied::ZkappCommandPartiallyApplied,

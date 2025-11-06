@@ -46,10 +46,22 @@ Ensure you have **Docker** installed:
 
 4. **Access the Dashboard**: Open `http://localhost:8070` in your browser.
 
-   The dashboard will show the syncing process in real time.
-   <img width="1417" alt="image" src="https://github.com/user-attachments/assets/d9a5f5b3-522f-479b-9829-37402c63bb98" />
+   <!-- prettier-ignore-start -->
 
-   > **1. Connecting to Peers:** The node connects to peers. You’ll see the
+   :::caution Frontend Status
+
+   The dashboard is currently being updated and may not display correctly in
+   v0.17.0. Use the logs to monitor syncing:
+
+   ```bash
+   docker compose logs -f
+   ```
+
+   :::
+
+   <!-- prettier-ignore-stop -->
+
+   > **1. Connecting to Peers:** The node connects to peers. You'll see the
    > number of connected, connecting, and disconnected peers grow.
    >
    > **2. Fetching Ledgers:** The node downloads key data: Staking ledger, Next

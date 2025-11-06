@@ -1,8 +1,11 @@
 import {
-  GetAddressResponse, GetAppNameResponse, GetAppVersionResponse,
+  GetAddressResponse,
+  GetAppNameResponse,
+  GetAppVersionResponse,
   SignTransactionArgs,
   SignTransactionResponse,
-  Transport, TxType,
+  Transport,
+  TxType,
 } from '@shared/types/ledger/ledger.type';
 import { Buffer } from 'buffer';
 import { any, safelyExecuteInBrowser } from '@openmina/shared';
@@ -122,17 +125,17 @@ export class MinaLedgerJS {
   }
 
   protected createTXApdu({
-                           txType,
-                           senderAccount,
-                           senderAddress,
-                           receiverAddress,
-                           amount,
-                           fee,
-                           nonce,
-                           validUntil = 4294967295,
-                           memo = '',
-                           networkId,
-                         }: SignTransactionArgs) {
+    txType,
+    senderAccount,
+    senderAddress,
+    receiverAddress,
+    amount,
+    fee,
+    nonce,
+    validUntil = 4294967295,
+    memo = '',
+    networkId,
+  }: SignTransactionArgs) {
     const senderBip44AccountHex = this.pad(senderAccount.toString(16), 8);
     const senderAddressHex = this.asciiToHex(senderAddress);
     const receiverHex = this.asciiToHex(receiverAddress);
@@ -258,17 +261,17 @@ export class MinaLedgerJS {
   //  };
   //  */
   async signTransaction({
-                          txType,
-                          senderAccount,
-                          senderAddress,
-                          receiverAddress,
-                          amount,
-                          fee,
-                          nonce,
-                          validUntil = 4294967295,
-                          memo = '',
-                          networkId,
-                        }: SignTransactionArgs): Promise<SignTransactionResponse> {
+    txType,
+    senderAccount,
+    senderAddress,
+    receiverAddress,
+    amount,
+    fee,
+    nonce,
+    validUntil = 4294967295,
+    memo = '',
+    networkId,
+  }: SignTransactionArgs): Promise<SignTransactionResponse> {
     if (
       isNaN(txType) ||
       isNaN(senderAccount) ||
@@ -415,10 +418,14 @@ export class MinaLedgerJS {
         p2,
       );
 
-      const returnCode = response.slice(response.length - 2, response.length).toString('hex');
+      const returnCode = response
+        .slice(response.length - 2, response.length)
+        .toString('hex');
       const separatorPosition = response.indexOf(0x05);
       const name = response.slice(2, separatorPosition).toString('ascii');
-      const version = response.slice(separatorPosition + 1, response.length - 4).toString('utf-8');
+      const version = response
+        .slice(separatorPosition + 1, response.length - 4)
+        .toString('utf-8');
 
       return {
         name, // Mina

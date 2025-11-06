@@ -1,0 +1,63 @@
+---
+title: Frontend
+description: o1Labs frontend infrastructure for web-based network interaction
+sidebar_position: 4
+---
+
+# Frontend
+
+The o1Labs frontend infrastructure provides web-based interfaces for interacting
+with the Mina network. This infrastructure is divided into two main components.
+
+## Node Dashboard
+
+The Node Dashboard provides real-time monitoring and visualization of Mina
+network nodes. o1Labs operates a production instance that connects to the devnet
+infrastructure.
+
+### Production Instance
+
+- **URL**: https://mina-rust-node-dashboard.minaprotocol.com
+- **Environment**: Production
+- **Network**: Mina Devnet
+- **Infrastructure**: o1Labs plain nodes
+
+For development and technical information about the Node Dashboard, refer to the
+[node dashboard developer documentation](../../developers/frontend/node-dashboard.mdx).
+
+### Deployment (o1Labs employees only)
+
+<!-- prettier-ignore-start -->
+
+:::caution o1Labs Employees Only
+
+This section is for o1Labs employees only. If you do not have access to the
+required repositories, contact the platform lead.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+o1Labs uses [ArgoCD](https://argo-cd.readthedocs.io/) to maintain the
+infrastructure through GitOps.
+
+To update the Node Dashboard deployment:
+
+1. Access the private repository:
+   `https://github.com/o1-labs/gitops-infrastructure`
+2. Create a new branch for your changes
+3. Edit: `applications/auto-deployed/mina-rust-standard-dashboard.yaml`
+4. Update the `MINA_RUST_TAG` variable to the desired commit or release tag
+   (must be available as a Docker image on
+   [DockerHub](https://hub.docker.com/r/o1labs/mina-rust-frontend))
+5. Create a pull request with your changes
+6. Ask the platform lead or rust node team lead to review and merge the PR
+7. Once merged, ArgoCD will automatically deploy the update
+
+## WebNode
+
+This section is still a work in progress. For information about the WebNode,
+refer to the developers documentation of the
+[web node](../../developers/frontend/webnode.mdx).
+
+Track progress: [Issue #1474](https://github.com/o1-labs/mina-rust/issues/1474)

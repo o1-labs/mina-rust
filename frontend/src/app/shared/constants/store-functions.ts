@@ -1,4 +1,11 @@
-import { catchError, map, Observable, of, OperatorFunction, repeat } from 'rxjs';
+import {
+  catchError,
+  map,
+  Observable,
+  of,
+  OperatorFunction,
+  repeat,
+} from 'rxjs';
 import { ADD_ERROR, ErrorAdd } from '@error-preview/error-preview.actions';
 import { HttpErrorResponse } from '@angular/common/http';
 import { any, FeatureAction, toReadableDate } from '@openmina/shared';
@@ -8,7 +15,11 @@ import { MinaState } from '@app/app.setup';
 import { concatLatestFrom } from '@ngrx/operators';
 import * as Sentry from '@sentry/angular';
 
-export const catchErrorAndRepeat = <T>(errType: MinaErrorType, type: string, payload?: any): OperatorFunction<T, ErrorAdd | T | FeatureAction<any>> => {
+export const catchErrorAndRepeat = <T>(
+  errType: MinaErrorType,
+  type: string,
+  payload?: any,
+): OperatorFunction<T, ErrorAdd | T | FeatureAction<any>> => {
   return (source: Observable<T>) =>
     source.pipe(
       catchError((error: Error) => [
@@ -19,7 +30,10 @@ export const catchErrorAndRepeat = <T>(errType: MinaErrorType, type: string, pay
     );
 };
 
-export const addError = (error: HttpErrorResponse | Error, type: MinaErrorType): ErrorAdd => {
+export const addError = (
+  error: HttpErrorResponse | Error,
+  type: MinaErrorType,
+): ErrorAdd => {
   console.error(error);
   Sentry.captureException(error, { tags: { type } });
   return {
@@ -27,51 +41,72 @@ export const addError = (error: HttpErrorResponse | Error, type: MinaErrorType):
     payload: {
       type,
       message: error.message,
-      status: any(error).status ? `${any(error).status} ${any(error).statusText}` : undefined,
+      status: any(error).status
+        ? `${any(error).status} ${any(error).statusText}`
+        : undefined,
       timestamp: toReadableDate(Number(Date.now()), 'HH:mm:ss'),
       seen: false,
     },
   } as ErrorAdd;
 };
 
-export const addErrorObservable = (error: HttpErrorResponse | Error | any, type: MinaErrorType): Observable<ErrorAdd> => of(addError(error, type));
+export const addErrorObservable = (
+  error: HttpErrorResponse | Error | any,
+  type: MinaErrorType,
+): Observable<ErrorAdd> => of(addError(error, type));
 
-export function createType<T extends string>(module: string, submodule: string | null, actionName: T): T {
-  return `[${module}${submodule ? (' ' + submodule) : ''}] ${actionName}` as T;
+export function createType<T extends string>(
+  module: string,
+  submodule: string | null,
+  actionName: T,
+): T {
+  return `[${module}${submodule ? ' ' + submodule : ''}] ${actionName}` as T;
 }
 
-export const selectActionAndState = <A>(store: Store<MinaState>, selector: Selector<MinaState, any>): OperatorFunction<A, {
-  action: A;
-  state: MinaState
-}> => (
-  source$: Observable<A>,
-): Observable<{ action: A; state: MinaState }> =>
-  source$.pipe(
-    concatLatestFrom(() => store.select(selector)),
-    map(([action, state]: [A, MinaState]) => ({ action, state })),
-  );
+export const selectActionAndState =
+  <A>(
+    store: Store<MinaState>,
+    selector: Selector<MinaState, any>,
+  ): OperatorFunction<
+    A,
+    {
+      action: A;
+      state: MinaState;
+    }
+  > =>
+  (source$: Observable<A>): Observable<{ action: A; state: MinaState }> =>
+    source$.pipe(
+      concatLatestFrom(() => store.select(selector)),
+      map(([action, state]: [A, MinaState]) => ({ action, state })),
+    );
 
-export const selectLatestStateSlice = <R extends object, A>(
-  store: Store<MinaState>,
-  selector: Selector<MinaState, any>,
-  path: string,
-): OperatorFunction<A, { action: A; state: R }> => (source$: Observable<A>): Observable<{ action: A; state: R }> =>
-  source$.pipe(
-    selectActionAndState(store, selector),
-    map(({ action, state }: { action: A; state: MinaState }) => ({
-      action,
-      state: path.split('.').reduce((acc: any, key: string) => acc[key], state),
-    })),
-  );
+export const selectLatestStateSlice =
+  <R extends object, A>(
+    store: Store<MinaState>,
+    selector: Selector<MinaState, any>,
+    path: string,
+  ): OperatorFunction<A, { action: A; state: R }> =>
+  (source$: Observable<A>): Observable<{ action: A; state: R }> =>
+    source$.pipe(
+      selectActionAndState(store, selector),
+      map(({ action, state }: { action: A; state: MinaState }) => ({
+        action,
+        state: path
+          .split('.')
+          .reduce((acc: any, key: string) => acc[key], state),
+      })),
+    );
 
-export const catchErrorAndRepeat2 = <T>(errType: MinaErrorType, action?: {
-  type: string;
-  payload?: any
-}): OperatorFunction<T, T | Action<any>> => (source: Observable<T>) =>
-  source.pipe(
-    catchError((error: Error) => [
-      addError(error, errType),
-      action,
-    ]),
-    repeat(),
-  );
+export const catchErrorAndRepeat2 =
+  <T>(
+    errType: MinaErrorType,
+    action?: {
+      type: string;
+      payload?: any;
+    },
+  ): OperatorFunction<T, T | Action<any>> =>
+  (source: Observable<T>) =>
+    source.pipe(
+      catchError((error: Error) => [addError(error, errType), action]),
+      repeat(),
+    );

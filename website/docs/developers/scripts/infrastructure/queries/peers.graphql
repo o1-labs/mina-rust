@@ -1,0 +1,1 @@
+{ daemonStatus { peers { peerId address connectionStatus } } }

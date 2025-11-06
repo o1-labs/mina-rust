@@ -16,17 +16,26 @@ enum NetworkBlocksActionTypes {
 }
 
 export const NETWORK_BLOCKS_INIT = NetworkBlocksActionTypes.NETWORK_BLOCKS_INIT;
-export const NETWORK_BLOCKS_CLOSE = NetworkBlocksActionTypes.NETWORK_BLOCKS_CLOSE;
-export const NETWORK_BLOCKS_GET_BLOCKS = NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_BLOCKS;
-export const NETWORK_BLOCKS_GET_BLOCKS_SUCCESS = NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_BLOCKS_SUCCESS;
+export const NETWORK_BLOCKS_CLOSE =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_CLOSE;
+export const NETWORK_BLOCKS_GET_BLOCKS =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_BLOCKS;
+export const NETWORK_BLOCKS_GET_BLOCKS_SUCCESS =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_BLOCKS_SUCCESS;
 export const NETWORK_BLOCKS_SORT = NetworkBlocksActionTypes.NETWORK_BLOCKS_SORT;
-export const NETWORK_BLOCKS_TOGGLE_SIDE_PANEL = NetworkBlocksActionTypes.NETWORK_BLOCKS_TOGGLE_SIDE_PANEL;
-export const NETWORK_BLOCKS_TOGGLE_FILTER = NetworkBlocksActionTypes.NETWORK_BLOCKS_TOGGLE_FILTER;
-export const NETWORK_BLOCKS_SET_ACTIVE_BLOCK = NetworkBlocksActionTypes.NETWORK_BLOCKS_SET_ACTIVE_BLOCK;
-export const NETWORK_BLOCKS_GET_EARLIEST_BLOCK = NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_EARLIEST_BLOCK;
-export const NETWORK_BLOCKS_SET_EARLIEST_BLOCK = NetworkBlocksActionTypes.NETWORK_BLOCKS_SET_EARLIEST_BLOCK;
+export const NETWORK_BLOCKS_TOGGLE_SIDE_PANEL =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_TOGGLE_SIDE_PANEL;
+export const NETWORK_BLOCKS_TOGGLE_FILTER =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_TOGGLE_FILTER;
+export const NETWORK_BLOCKS_SET_ACTIVE_BLOCK =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_SET_ACTIVE_BLOCK;
+export const NETWORK_BLOCKS_GET_EARLIEST_BLOCK =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_GET_EARLIEST_BLOCK;
+export const NETWORK_BLOCKS_SET_EARLIEST_BLOCK =
+  NetworkBlocksActionTypes.NETWORK_BLOCKS_SET_EARLIEST_BLOCK;
 
-export interface NetworkBlocksAction extends FeatureAction<NetworkBlocksActionTypes> {
+export interface NetworkBlocksAction
+  extends FeatureAction<NetworkBlocksActionTypes> {
   readonly type: NetworkBlocksActionTypes;
 }
 
@@ -53,7 +62,7 @@ export class NetworkBlocksGetBlocksSuccess implements NetworkBlocksAction {
 export class NetworkBlocksSort implements NetworkBlocksAction {
   readonly type = NETWORK_BLOCKS_SORT;
 
-  constructor(public payload: TableSort<NetworkBlock>) { }
+  constructor(public payload: TableSort<NetworkBlock>) {}
 }
 
 export class NetworkBlocksToggleSidePanel implements NetworkBlocksAction {
@@ -63,27 +72,26 @@ export class NetworkBlocksToggleSidePanel implements NetworkBlocksAction {
 export class NetworkBlocksToggleFilter implements NetworkBlocksAction {
   readonly type = NETWORK_BLOCKS_TOGGLE_FILTER;
 
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class NetworkBlocksSetActiveBlock implements NetworkBlocksAction {
   readonly type = NETWORK_BLOCKS_SET_ACTIVE_BLOCK;
 
-  constructor(public payload: { height: number, fetchNew?: boolean }) { }
+  constructor(public payload: { height: number; fetchNew?: boolean }) {}
 }
 
 export class NetworkBlocksGetEarliestBlock implements NetworkBlocksAction {
   readonly type = NETWORK_BLOCKS_GET_EARLIEST_BLOCK;
 
-  constructor(public payload: MinaNode) { }
+  constructor(public payload: MinaNode) {}
 }
 
 export class NetworkBlocksSetEarliestBlock implements NetworkBlocksAction {
   readonly type = NETWORK_BLOCKS_SET_EARLIEST_BLOCK;
 
-  constructor(public payload: { height: number }) { }
+  constructor(public payload: { height: number }) {}
 }
-
 
 export type NetworkBlocksActions =
   | NetworkBlocksInit
@@ -95,5 +103,4 @@ export type NetworkBlocksActions =
   | NetworkBlocksToggleFilter
   | NetworkBlocksSetActiveBlock
   | NetworkBlocksGetEarliestBlock
-  | NetworkBlocksSetEarliestBlock
-  ;
+  | NetworkBlocksSetEarliestBlock;

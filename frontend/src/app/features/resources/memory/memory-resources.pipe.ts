@@ -1,8 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-    name: 'resSize',
-    standalone: false
+  name: 'resSize',
+  standalone: false,
 })
 export class ResourcesSizePipe implements PipeTransform {
   transform(kilobytes: number): string {

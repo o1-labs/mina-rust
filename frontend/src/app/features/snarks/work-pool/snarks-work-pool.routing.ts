@@ -3,7 +3,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { SNARKS_TITLE } from '@app/app.routing';
 import { SnarksWorkPoolComponent } from '@snarks/work-pool/snarks-work-pool.component';
 
-
 const routes: Routes = [
   {
     path: '',

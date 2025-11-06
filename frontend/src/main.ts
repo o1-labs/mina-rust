@@ -10,8 +10,7 @@ if (CONFIG.production) {
   initSentry();
 }
 
-bootstrapApplication(AppComponent, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig).catch(err => console.error(err));
 
 function initSentry(): void {
   if (CONFIG.sentry) {
@@ -24,10 +23,13 @@ function initSentry(): void {
       ],
       tracesSampleRate: 1.0,
       profilesSampleRate: 1.0,
-      tracePropagationTargets: [...CONFIG.sentry?.tracingOrigins, ...CONFIG.configs.map((config) => config.url).filter(Boolean)],
+      tracePropagationTargets: [
+        ...CONFIG.sentry?.tracingOrigins,
+        ...CONFIG.configs.map(config => config.url).filter(Boolean),
+      ],
       replaysSessionSampleRate: 1.0,
       replaysOnErrorSampleRate: 0.1,
-      beforeSend: (event) => {
+      beforeSend: event => {
         event.fingerprint = [clientFingerprint];
         return event;
       },

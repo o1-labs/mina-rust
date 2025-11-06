@@ -1,0 +1,22 @@
+name: Frontend Ubuntu 22.04
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v5
+
+      - name: Frontend build
+        uses: ./.github/actions/frontend-build
+        with:
+          test-build-commands: 'true'

@@ -18,8 +18,11 @@
   <div class="fx-row-vert-cent h-lg lh-lg flex-between">
     <span class="tertiary">State Hash</span>
     <span>
-    <mina-copy [display]="activeSlot?.hash | truncateMid" [value]="activeSlot?.hash"></mina-copy>
-  </span>
+      <mina-copy
+        [display]="activeSlot?.hash | truncateMid"
+        [value]="activeSlot?.hash"
+      ></mina-copy>
+    </span>
   </div>
   <div class="fx-row-vert-cent h-lg lh-lg flex-between">
     <div class="tertiary">Height</div>
@@ -28,9 +31,11 @@
 </div>
 <div class="fx-row-vert-cent h-lg lh-lg flex-between pl-12 pr-12">
   <div class="tertiary">Minascan</div>
-  <button class="btn-primary fx-row-vert-cent"
-          (click)="viewInMinaScan()"
-          [disabled]="!activeSlot?.hash">
+  <button
+    class="btn-primary fx-row-vert-cent"
+    (click)="viewInMinaScan()"
+    [disabled]="!activeSlot?.hash"
+  >
     <span class="mina-icon f-18 primary icon-300 mr-5">open_in_new</span>
     View in Minascan
   </button>

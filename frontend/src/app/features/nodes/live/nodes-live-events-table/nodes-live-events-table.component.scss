@@ -1,31 +1,30 @@
-@use 'openmina';
+@use 'mina-rust';
 
 span {
-
   &.Fetching {
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
   }
 
   &.Fetched {
-    color: openmina.$base-secondary;
+    color: mina-rust.$base-secondary;
   }
 
   &.Applying {
-    color: openmina.$selected-primary;
+    color: mina-rust.$selected-primary;
   }
 
   &.Applied {
-    color: openmina.$success-primary;
+    color: mina-rust.$success-primary;
   }
 
   .height {
-    color: openmina.$base-primary;
-    background-color: openmina.$base-container;
+    color: mina-rust.$base-primary;
+    background-color: mina-rust.$base-container;
   }
 
   .best-tip span {
-    color: openmina.$special-selected-alt-1-primary;
-    background-color: openmina.$special-selected-alt-1-container;
+    color: mina-rust.$special-selected-alt-1-primary;
+    background-color: mina-rust.$special-selected-alt-1-container;
   }
 
   .height,

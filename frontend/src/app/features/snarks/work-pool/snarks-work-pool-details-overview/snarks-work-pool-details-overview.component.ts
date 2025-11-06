@@ -4,20 +4,25 @@ import { selectSnarksWorkPoolActiveWorkPoolDetail } from '@snarks/work-pool/snar
 import { WorkPoolDetail } from '@shared/types/snarks/work-pool/work-pool-detail.type';
 
 @Component({
-    selector: 'mina-snarks-work-pool-details-overview',
-    templateUrl: './snarks-work-pool-details-overview.component.html',
-    styleUrls: ['./snarks-work-pool-details-overview.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-snarks-work-pool-details-overview',
+  templateUrl: './snarks-work-pool-details-overview.component.html',
+  styleUrls: ['./snarks-work-pool-details-overview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class SnarksWorkPoolDetailsOverviewComponent extends StoreDispatcher implements OnInit {
-
+export class SnarksWorkPoolDetailsOverviewComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   activeWorkPool: WorkPoolDetail;
 
   ngOnInit(): void {
-    this.select(selectSnarksWorkPoolActiveWorkPoolDetail, (detail: WorkPoolDetail) => {
-      this.activeWorkPool = detail;
-      this.detect();
-    });
+    this.select(
+      selectSnarksWorkPoolActiveWorkPoolDetail,
+      (detail: WorkPoolDetail) => {
+        this.activeWorkPool = detail;
+        this.detect();
+      },
+    );
   }
 }

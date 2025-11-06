@@ -1,0 +1,14 @@
+mutation SendDelegation(
+  $input: SendDelegationInput!
+  $signature: UserCommandSignature!
+) {
+  sendDelegation(input: $input, signature: $signature) {
+    delegation {
+      id
+      hash
+      delegator
+      delegate
+      fee
+    }
+  }
+}

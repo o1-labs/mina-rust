@@ -15,20 +15,14 @@ import MergeBackScript from "!!raw-loader!../developers/scripts/release/merge-ba
 
 <!-- prettier-ignore-start -->
 
-:::warning Work in Progress
-
-This release process documentation is currently being validated and may change.
-Please coordinate with the release manager before following these procedures for
-production releases.
-
-:::
-
 This document outlines the complete process for creating and publishing Mina
 Rust releases.
 
-:::info Release Branch Strategy All releases are made from the `main` branch.
-The release process involves creating a release branch from `develop`, merging
-it to `main`, and then tagging from `main`.
+:::info Release Branch Strategy
+
+All releases are made from the `main` branch. The release process involves
+creating a release branch from `develop`, merging it to `main`, and then tagging
+from `main`.
 
 :::
 
@@ -103,6 +97,7 @@ Copy and paste this checklist when announcing a release in progress:
 - [ ] Main branch merged back to develop
 - [ ] Documentation updated
 - [ ] Release announced in #announcements
+- [ ] Platform lead contacted for infrastructure updates
 - [ ] Known issues documented (if any)
 
 **Tracking:** [Link to PR/Issue] **Status:** 🟡 In Progress
@@ -147,71 +142,7 @@ _Updates will be posted in this thread_
 
 ## Release Steps
 
-### 1. Create Release Branch (for major/minor releases)
-
-<!-- prettier-ignore-start -->
-
-:::info Release Branch Naming Convention
-
-Release branches **must** follow the format `release/vX.Y.Z` where:
-
-- The version **must** start with a lowercase `v`
-- X, Y, and Z are version numbers following semantic versioning (all three
-  components required)
-
-**Valid examples:**
-
-- `release/v1.5.0`
-- `release/v1.2.3`
-- `release/v2.0.0`
-
-**Invalid examples:**
-
-- `release/1.5.0` ❌ (missing 'v' prefix)
-- `release/v1.5` ❌ (missing patch version)
-- `release/V1.5.0` ❌ (uppercase 'V')
-
-This naming convention is enforced by CI checks. Any push to a branch starting
-with `release/` that doesn't follow this format will fail validation. :::
-
-<!-- prettier-ignore-stop -->
-
-```bash
-# Create release branch from develop
-git checkout develop
-git pull origin develop
-git checkout -b release/v1.5.0
-git push -u origin release/v1.5.0
-```
-
-<!-- prettier-ignore-start -->
-
-:::info Docker Images for Release Branches After pushing the release branch
-
-CI will automatically build and push Docker images tagged with the branch name.
-These images are available for local testing while the release PR is being
-reviewed.
-
-**Images will be available as:**
-
-- `o1labs/mina-rust:v1.5.0`
-- `o1labs/mina-rust-frontend:v1.5.0`
-
-**To test locally:** See
-[Docker Images documentation](../developers/docker-images) for complete usage
-instructions.
-
-```bash
-# Example usage
-docker pull o1labs/mina-rust:v1.5.0
-docker run -p 8302:8302 o1labs/mina-rust:v1.5.0
-```
-
-:::
-
-<!-- prettier-ignore-stop -->
-
-### 2. Update Version Numbers
+### 1. Update Version Numbers
 
 ```bash
 # Update all Cargo.toml version fields
@@ -242,6 +173,72 @@ You may also need to manually update:
 
 - Documentation examples
 - Any hardcoded version references in other files
+
+### 2. Create Release Branch (for major/minor releases)
+
+<!-- prettier-ignore-start -->
+
+:::info Release Branch Naming Convention
+
+Release branches **must** follow the format `release/vX.Y.Z` where:
+
+- The version **must** start with a lowercase `v`
+- X, Y, and Z are version numbers following semantic versioning (all three
+  components required)
+
+**Valid examples:**
+
+- `release/v1.5.0`
+- `release/v1.2.3`
+- `release/v2.0.0`
+
+**Invalid examples:**
+
+- `release/1.5.0` ❌ (missing 'v' prefix)
+- `release/v1.5` ❌ (missing patch version)
+- `release/V1.5.0` ❌ (uppercase 'V')
+
+This naming convention is enforced by CI checks. Any push to a branch starting
+with `release/` that doesn't follow this format will fail validation.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+```bash
+# Create release branch from develop
+git checkout develop
+git pull origin develop
+git checkout -b release/v1.5.0
+git push -u origin release/v1.5.0
+```
+
+<!-- prettier-ignore-start -->
+
+:::info Docker Images for Release Branches
+
+After pushing the release branch, CI will automatically build and push Docker
+images tagged with the branch name. These images are available for local testing
+while the release PR is being reviewed.
+
+**Images will be available as:**
+
+- `o1labs/mina-rust:v1.5.0`
+- `o1labs/mina-rust-frontend:v1.5.0`
+
+**To test locally:** See
+[Docker Images documentation](../developers/docker-images) for complete usage
+instructions.
+
+```bash
+# Example usage
+docker pull o1labs/mina-rust:v1.5.0
+docker run -p 8302:8302 o1labs/mina-rust:v1.5.0
+```
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ### 3. Create Release PR
 
@@ -281,14 +278,7 @@ git checkout main
 git pull origin main
 
 # Create and push annotated tag
-make release-create-tag TAG=v1.5.0 MESSAGE="Release v1.5.0
-
-## Highlights
-- Feature 1: Description
-- Feature 2: Description
-- Bug fix: Description
-
-See CHANGELOG.md for complete details."
+make release-create-tag TAG=v1.5.0 MESSAGE="Release v1.5.0. See CHANGELOG.md for complete details."
 ```
 
 <!-- prettier-ignore-start -->
@@ -401,16 +391,29 @@ make release-merge-back
 
 This target includes safety confirmations since it pushes directly to develop.
 
-### Tag Docker Images as Latest (for major releases)
+### Infrastructure Updates
 
-For major releases, you may want to tag as `latest`:
+When releasing a new version of the Mina Rust node, o1Labs infrastructure must
+also be updated to use the new version.
 
-```bash
-# This would typically be done via additional CI job or manually
-docker pull o1labs/mina-rust:v2.0.0
-docker tag o1labs/mina-rust:v2.0.0 o1labs/mina-rust:latest
-docker push o1labs/mina-rust:latest
-```
+<!-- prettier-ignore-start -->
+
+:::important Contact Platform Lead
+
+After completing the release process, **contact the platform lead** to
+coordinate infrastructure updates. The platform team has specific procedures for
+deploying new node versions across o1Labs infrastructure.
+
+**Action Required:**
+
+- Notify platform lead of the new release version
+- Provide release notes and any deployment considerations
+- Coordinate timing of infrastructure rollout
+- Verify successful deployment across environments
+
+:::
+
+<!-- prettier-ignore-stop -->
 
 ## Hotfix Process
 

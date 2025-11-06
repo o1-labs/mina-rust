@@ -1,0 +1,193 @@
+# Check OCaml References
+#
+# This workflow validates OCaml reference comments in the Rust codebase
+# and automatically updates stale commit hashes.
+#
+# Run locally with:
+#   gh act schedule -W .github/workflows/check-ocaml-refs.yaml
+#   gh act workflow_dispatch -W .github/workflows/check-ocaml-refs.yaml
+#   gh act workflow_dispatch -W .github/workflows/check-ocaml-refs.yaml --input branch=develop
+
+name: Check OCaml References
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+  schedule:
+    # Run every Monday at 9:00 AM UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: 'OCaml repository URL'
+        required: false
+        default: 'https://github.com/MinaProtocol/mina.git'
+      branch:
+        description: 'OCaml repository branch'
+        required: false
+        default: 'compatible'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-refs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Run OCaml reference validation
+        id: check
+        env:
+          OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
+          OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
+        shell: bash
+        run: |
+          set +e
+          # Capture output to file
+          ./.github/scripts/check-ocaml-refs.sh \
+            --repo "$OCAML_REPO" \
+            --branch "$OCAML_BRANCH" 2>&1 | tee validation_output.txt
+          exit_code=$?
+          if [ $exit_code -ne 0 ]; then
+            echo "has_issues=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_issues=false" >> $GITHUB_OUTPUT
+          fi
+          # Store output for PR comment
+          echo "output_file=validation_output.txt" >> $GITHUB_OUTPUT
+          exit 0
+
+      - name: Prepare PR comment
+        if: github.event_name == 'pull_request'
+        id: prepare-comment
+        env:
+          HAS_ISSUES: ${{ steps.check.outputs.has_issues }}
+          OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
+          OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
+        run: |
+          # Determine status message
+          if [ "$HAS_ISSUES" = "true" ]; then
+            STATUS_MSG="❌ Validation failed"
+          else
+            STATUS_MSG="✓ Validation passed"
+          fi
+
+          # Create comment body with hidden identifier
+          cat > comment.md <<COMMENT_EOF
+          <!-- ocaml-ref-validation -->
+          ## OCaml Reference Validation Results
+
+          **Repository**: ${OCAML_REPO}
+          **Branch**: ${OCAML_BRANCH}
+          **Status**: ${STATUS_MSG}
+
+          <details>
+          <summary>Click to see full validation output</summary>
+
+          \`\`\`
+          COMMENT_EOF
+
+          # Append validation output
+          cat validation_output.txt >> comment.md
+
+          # Close the code block and details
+          cat >> comment.md <<'COMMENT_EOF'
+          ```
+
+          </details>
+          COMMENT_EOF
+
+      - name: Find existing OCaml validation comment
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v4
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: '<!-- ocaml-ref-validation -->'
+
+      - name: Post PR comment with validation results
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: comment.md
+          edit-mode: replace
+
+      - name: Update references if stale
+        if: steps.check.outputs.has_issues != 'true' && github.event_name != 'pull_request'
+        env:
+          OCAML_REPO: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
+          OCAML_BRANCH: ${{ github.event.inputs.branch || 'compatible' }}
+        run: |
+          ./.github/scripts/check-ocaml-refs.sh \
+            --repo "$OCAML_REPO" \
+            --branch "$OCAML_BRANCH" \
+            --update
+
+      - name: Check for changes
+        if: github.event_name != 'pull_request'
+        id: changes
+        run: |
+          if git diff --quiet; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.changes.outputs.has_changes == 'true' && github.event_name != 'pull_request'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: |
+            Update OCaml reference verification dates
+
+            Automated update of OCaml reference commit hashes and verification
+            dates based on latest compatible branch.
+          branch: update-ocaml-refs-${{ github.run_number }}
+          delete-branch: true
+          title: 'Update OCaml reference verification dates'
+          body: |
+            ## Automated OCaml Reference Update
+
+            This PR updates the OCaml reference comments in the Rust codebase to
+            reflect the latest commit from the OCaml repository.
+
+            ### Changes
+            - Updated commit hashes to match latest OCaml compatible branch
+            - Updated verification dates to today
+
+            ### Validation
+            All OCaml file references have been validated to ensure they still
+            exist at the specified paths.
+
+            **Repository**: ${{ github.event.inputs.repo || 'https://github.com/MinaProtocol/mina.git' }}
+            **Branch**: ${{ github.event.inputs.branch || 'compatible' }}
+
+            This PR was automatically generated by the `check-ocaml-refs`
+            workflow.
+          labels: |
+            automation
+            documentation
+
+      - name: Post summary
+        if: always()
+        run: |
+          echo "## OCaml Reference Validation Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ steps.check.outputs.has_issues }}" == "true" ]; then
+            echo "❌ Validation failed - some OCaml references are invalid" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "✓ Validation completed - results posted as PR comment" >> $GITHUB_STEP_SUMMARY
+          elif [ "${{ steps.changes.outputs.has_changes }}" == "true" ]; then
+            echo "✓ Validation passed - created PR to update stale references" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "✓ All references are up to date" >> $GITHUB_STEP_SUMMARY
+          fi

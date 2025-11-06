@@ -324,6 +324,7 @@ impl TryFrom<InputGraphQLAuthorization> for MinaBaseControlStableV2 {
                 )?;
                 Ok(MinaBaseControlStableV2::Proof(Box::new(proof)))
             }
+            (None, None) => Ok(MinaBaseControlStableV2::NoneGiven),
             _ => Err(ConversionError::Custom(
                 "Either signature or proof must be provided, but not both".into(),
             )),
@@ -1567,6 +1568,15 @@ mod test {
     }
 
     #[test]
+    fn test_parse_zkapp_bug_1464_no_proof_nor_signature() {
+        let input = create_input_graphql_zkapp_bug_1464();
+        let _converted: MinaBaseUserCommandStableV2 = input
+            .zkapp_command
+            .try_into()
+            .expect("Failed to parse input");
+    }
+
+    #[test]
     fn test_zkapp_from_input() {
         let bytes = include_bytes!("../../../../tests/files/zkapps/valid_zkapp.bin");
         let zkapp =
@@ -1613,6 +1623,15 @@ mod test {
         };
         let converted: Result<MinaBaseControlStableV2, _> = proof.try_into();
         assert!(converted.is_ok());
+
+        let proof = InputGraphQLAuthorization {
+            signature: None,
+            proof: None,
+        };
+        let converted: MinaBaseControlStableV2 =
+            proof.try_into().expect("Error parsing None given auth");
+
+        assert_eq!(converted, MinaBaseControlStableV2::NoneGiven);
     }
 
     fn create_input_graphql_zkapp() -> InputGraphQLZkapp {
@@ -1832,6 +1851,122 @@ mod test {
                         authorization: InputGraphQLAuthorization {
                             proof: None,
                             signature: Some("7mXFnDxZBE5iXBfw9LRPXST3sSodXAdTJSWFqX3hBoDA3wv5s2s9TLMDCXgatMvMH4bDttAFyJuezWmbSA81FXeMFZgqcxtt".to_string()),
+                        },
+                    },
+                ],
+            },
+        }
+    }
+
+    fn create_input_graphql_zkapp_bug_1464() -> InputGraphQLZkapp {
+        InputGraphQLZkapp {
+            zkapp_command: InputGraphQLZkappCommand {
+                memo: Some("E4YdMZb5VHHE51HPFPs1zUHnyus1q7RW61tWq1F4FNYrp5FKtKZMh".to_string()),
+                fee_payer: InputGraphQLFeePayer {
+                    body: InputGraphQLFeePayerBody {
+                        public_key: "B62qmGcEhZsZ2EMh2EzRXDJEmaD9PUJcW5xdNq2im2xNVuX2bsEPjoj".to_string(),
+                        fee: "200000000".to_string(),
+                        valid_until: None,
+                        nonce: "250".to_string(),
+                    },
+                    authorization: "7mXMa44TWfDGtQmsfGtkRogZVzGVYqosP6qkXCBApsjoZ2ye2Y5AL2VWzp7m5CxkTjZhcoqtDVJkiQRm38tAmQdhpTTsSEr6".to_string(),
+                },
+                account_updates: vec![
+                    InputGraphQLAccountUpdate {
+                        body: InputGraphQLAccountUpdateBody {
+                            call_depth: 0,
+                            public_key: "B62qmGcEhZsZ2EMh2EzRXDJEmaD9PUJcW5xdNq2im2xNVuX2bsEPjoj".to_string(),
+                            token_id: "wSHV2S4qX9jFsLjQo8r1BsMLH2ZRKsZx6EJd1sbozGPieEC4Jf".to_string(),
+                            update: InputGraphQLAccountUpdateUpdate {
+                                app_state: vec![
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                    None,
+                                ],
+                                delegate: None,
+                                verification_key: None,
+                                permissions: None,
+                                zkapp_uri: None,
+                                token_symbol: None,
+                                timing: None,
+                                voting_for: None,
+                            },
+                            balance_change: InputGraphQLBalanceChange {
+                                magnitude: "0".to_string(),
+                                sgn: "Positive".to_string(),
+                            },
+                            increment_nonce: false,
+                            events: vec![vec![
+                        "852".to_owned(),
+                        "993".to_owned(),
+                        "540".to_owned(),
+                        "951".to_owned(),
+                        "340".to_owned()
+                            ]],
+                            actions: vec![],
+                            call_data: "0".to_string(),
+                            preconditions: InputGraphQLPreconditions {
+                                network: InputGraphQLPreconditionsNetwork {
+                                    snarked_ledger_hash: None,
+                                    blockchain_length: None,
+                                    min_window_density: None,
+                                    total_currency: None,
+                                    global_slot_since_genesis: None,
+                                    staking_epoch_data: InputGraphQLPreconditionsNetworkEpochData {
+                                        ledger: InputGraphQLPreconditionsNetworkLedger {
+                                            hash: None,
+                                            total_currency: None,
+                                        },
+                                        seed: None,
+                                        start_checkpoint: None,
+                                        lock_checkpoint: None,
+                                        epoch_length: None,
+                                    },
+                                    next_epoch_data: InputGraphQLPreconditionsNetworkEpochData {
+                                        ledger: InputGraphQLPreconditionsNetworkLedger {
+                                            hash: None,
+                                            total_currency: None,
+                                        },
+                                        seed: None,
+                                        start_checkpoint: None,
+                                        lock_checkpoint: None,
+                                        epoch_length: None,
+                                    },
+                                },
+                                account: InputGraphQLPreconditionsAccount {
+                                    balance: None,
+                                    nonce: None,
+                                    receipt_chain_hash: None,
+                                    delegate: None,
+                                    state: vec![
+                                        None, None, None, None, None, None, None, None
+                                    ],
+                                    action_state: None,
+                                    proved_state: None,
+                                    is_new: None,
+                                },
+                                valid_while: None,
+                            },
+                            use_full_commitment: false,
+                            implicit_account_creation_fee: false,
+                            may_use_token: InputGraphQLMayUseToken {
+                                parents_own_token: false,
+                                inherit_from_parent: false,
+                            },
+                            authorization_kind: InputGraphQLAuthorizationKind {
+                                is_signed: false,
+                                is_proved: false,
+                                verification_key_hash: Some("3392518251768960475377392625298437850623664973002200885669375116181514017494".parse().unwrap()),
+                            },
+                        },
+                        authorization: InputGraphQLAuthorization {
+                            proof: None,
+                            signature: None
                         },
                     },
                 ],

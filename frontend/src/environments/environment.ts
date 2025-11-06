@@ -13,7 +13,15 @@ export const environment: Readonly<MinaEnv> = {
       dashboard: [],
       nodes: ['overview', 'live', 'bootstrap'],
       state: ['actions'],
-      network: ['messages', 'connections', 'blocks', 'topology', 'node-dht', 'graph-overview', 'bootstrap-stats'],
+      network: [
+        'messages',
+        'connections',
+        'blocks',
+        'topology',
+        'node-dht',
+        'graph-overview',
+        'bootstrap-stats',
+      ],
       snarks: ['scan-state', 'work-pool'],
       resources: ['memory'],
       'block-production': ['won-slots'],
@@ -166,4 +174,3 @@ export const environment: Readonly<MinaEnv> = {
     // },
   ],
 };
-

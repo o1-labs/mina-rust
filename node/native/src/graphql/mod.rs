@@ -104,10 +104,11 @@ impl From<ConversionError> for Error {
 ///
 /// This is used to share state between the GraphQL queries and mutations.
 ///
-/// The caching used here is only valid for the lifetime of the context
-/// i.e. for one request which is the goal as we can have multiple sources for one request.
+/// The caching used here is only valid for the lifetime of the context i.e. for
+/// one request which is the goal as we can have multiple sources for one
+/// request.
 /// This optimizes the number of request to the state machine
-pub(crate) struct Context {
+pub struct Context {
     rpc_sender: RpcSender,
     account_loader: AccountLoader,
     // Caches
@@ -198,69 +199,49 @@ enum SyncStatus {
     CATCHUP,
 }
 
-#[derive(Clone, Debug)]
-struct ProtocolState {
-    consensus_state: ConsensusState,
-    blockchain_state: BlockchainState,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ProtocolState {
-    fn consensus_state(&self) -> &ConsensusState {
-        &self.consensus_state
-    }
-
-    fn blockchain_state(&self) -> &BlockchainState {
-        &self.blockchain_state
-    }
-}
-
-#[derive(Clone, Debug)]
-struct ConsensusState {
-    block_height: i32,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl ConsensusState {
-    fn block_height(&self) -> i32 {
-        self.block_height
-    }
-}
-
-#[derive(Clone, Debug)]
-struct BlockchainState {
-    snarked_ledger_hash: String,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl BlockchainState {
-    fn snarked_ledger_hash(&self) -> &str {
-        &self.snarked_ledger_hash
-    }
-}
-
-#[derive(Clone, Debug)]
-struct BestChain {
-    state_hash: String,
-    protocol_state: ProtocolState,
-}
-
-#[juniper::graphql_object(context = Context)]
-impl BestChain {
-    fn state_hash(&self) -> &str {
-        &self.state_hash
-    }
-
-    fn protocol_state(&self) -> &ProtocolState {
-        &self.protocol_state
-    }
-}
-
 #[derive(Clone, Copy, Debug)]
-struct Query;
+pub struct Query;
 
+/// GraphQL Query endpoints exposed by the Mina node
+///
+/// # Available Queries:
+///
+/// ## Account Management
+/// - `account` - Retrieve account information for a public key
+/// - `current_snark_worker` - Get information about the current SNARK worker
+///
+/// ## Blockchain State
+/// - `sync_status` - Get the synchronization status of the node
+/// - `best_chain` - Retrieve the best chain of blocks
+/// - `block` - Get a specific block by hash or height
+/// - `genesis_block` - Retrieve the genesis block
+/// - `genesis_constants` - Get genesis configuration constants
+/// - `daemon_status` - Get the daemon status information
+///
+/// ## Transaction Pool
+/// - `pooled_user_commands` - Query pending user commands in the transaction
+///   pool
+/// - `pooled_zkapp_commands` - Query pending zkApp commands in the transaction
+///   pool
+/// - `transaction_status` - Check the status of a transaction
+///
+/// ## SNARK Pool
+/// - `snark_pool` - Get completed SNARK jobs
+/// - `pending_snark_work` - Get pending SNARK work items
+///
+/// ## Network Information
+/// - `network_id` - Get the chain-agnostic network identifier
+/// - `version` - Get the node version (git commit hash)
 #[juniper::graphql_object(context = Context)]
 impl Query {
+    /// Retrieve account information for a given public key
+    ///
+    /// # Arguments
+    /// - `public_key`: Base58-encoded public key
+    /// - `token`: Optional token ID (defaults to MINA token if not provided)
+    ///
+    /// # Returns
+    /// Account information including balance, nonce, delegate, and other fields
     async fn account(
         public_key: String,
         token: Option<String>,
@@ -287,6 +268,10 @@ impl Query {
             .try_into()?)
     }
 
+    /// Get the current synchronization status of the node
+    ///
+    /// # Returns
+    /// One of: CONNECTING, LISTENING, OFFLINE, BOOTSTRAP, SYNCED, CATCHUP
     async fn sync_status(context: &Context) -> juniper::FieldResult<SyncStatus> {
         let state: RpcSyncStatsGetResponse = context
             .rpc_sender
@@ -308,6 +293,13 @@ impl Query {
         }
     }
 
+    /// Retrieve the best chain of blocks from the transition frontier
+    ///
+    /// # Arguments
+    /// - `max_length`: Maximum number of blocks to return
+    ///
+    /// # Returns
+    /// List of blocks in the best chain, ordered from newest to oldest
     async fn best_chain(
         max_length: i32,
         context: &Context,
@@ -324,12 +316,20 @@ impl Query {
             .collect::<Result<Vec<_>, _>>()?)
     }
 
+    /// Get daemon status information including chain ID and configuration
+    ///
+    /// # Returns
+    /// Daemon status with chain ID, configuration, and other metadata
     async fn daemon_status(
         _context: &Context,
     ) -> juniper::FieldResult<constants::GraphQLDaemonStatus> {
         Ok(constants::GraphQLDaemonStatus)
     }
 
+    /// Retrieve genesis configuration constants
+    ///
+    /// # Returns
+    /// Genesis constants including protocol parameters and constraints
     async fn genesis_constants(
         context: &Context,
     ) -> juniper::FieldResult<constants::GraphQLGenesisConstants> {
@@ -346,6 +346,15 @@ impl Query {
         )?)
     }
 
+    /// Check the status of a transaction
+    ///
+    /// # Arguments
+    /// - `payment`: Base64-encoded signed command (mutually exclusive with
+    ///   zkapp_transaction)
+    /// - `zkapp_transaction`: Base64-encoded zkApp command (mutually exclusive with payment)
+    ///
+    /// # Returns
+    /// Transaction status (PENDING, INCLUDED, or UNKNOWN)
     async fn transaction_status(
         payment: Option<String>,
         zkapp_transaction: Option<String>,
@@ -381,7 +390,14 @@ impl Query {
         Ok(GraphQLTransactionStatus::from(res))
     }
 
-    /// Retrieve a block with the given state hash or height, if contained in the transition frontier
+    /// Retrieve a block with the given state hash or height from the transition frontier
+    ///
+    /// # Arguments
+    /// - `height`: Block height (mutually exclusive with state_hash)
+    /// - `state_hash`: Block state hash (mutually exclusive with height)
+    ///
+    /// # Returns
+    /// Block data including transactions, SNARK jobs, and metadata
     async fn block(
         height: Option<i32>,
         state_hash: Option<String>,
@@ -488,6 +504,10 @@ impl Query {
             .collect::<Result<Vec<_>, _>>()?)
     }
 
+    /// Retrieve the genesis block
+    ///
+    /// # Returns
+    /// The genesis block data
     async fn genesis_block(context: &Context) -> juniper::FieldResult<GraphQLBlock> {
         let block = context
             .rpc_sender
@@ -502,6 +522,10 @@ impl Query {
         })?)
     }
 
+    /// Get completed SNARK jobs from the SNARK pool
+    ///
+    /// # Returns
+    /// List of completed SNARK jobs with proofs and fees
     async fn snark_pool(context: &Context) -> juniper::FieldResult<Vec<GraphQLSnarkJob>> {
         let jobs: RpcSnarkPoolCompletedJobsResponse = context
             .rpc_sender
@@ -512,6 +536,10 @@ impl Query {
         Ok(jobs.iter().map(GraphQLSnarkJob::from).collect())
     }
 
+    /// Get pending SNARK work items that need to be completed
+    ///
+    /// # Returns
+    /// List of pending SNARK work items with job specifications
     async fn pending_snark_work(
         context: &Context,
     ) -> juniper::FieldResult<Vec<GraphQLPendingSnarkWork>> {
@@ -528,6 +556,9 @@ impl Query {
     }
 
     /// The chain-agnostic identifier of the network
+    ///
+    /// # Returns
+    /// Network identifier in the format "mina:<network_name>"
     #[graphql(name = "networkID")]
     async fn network_id(_context: &Context) -> juniper::FieldResult<String> {
         let res = format!("mina:{}", NetworkConfig::global().name);
@@ -535,11 +566,18 @@ impl Query {
     }
 
     /// The version of the node (git commit hash)
+    ///
+    /// # Returns
+    /// Git commit hash of the current node build
     async fn version(_context: &Context) -> juniper::FieldResult<String> {
         let res = BuildEnv::get().git.commit_hash;
         Ok(res)
     }
 
+    /// Get information about the current SNARK worker if configured
+    ///
+    /// # Returns
+    /// SNARK worker configuration including public key, account, and fee
     async fn current_snark_worker(
         &self,
         context: &Context,
@@ -621,10 +659,25 @@ where
 }
 
 #[derive(Clone, Debug)]
-struct Mutation;
+pub struct Mutation;
 
+/// GraphQL Mutation endpoints exposed by the Mina node
+///
+/// # Available Mutations:
+///
+/// ## Transaction Submission
+/// - `send_zkapp` - Submit a zkApp transaction to the network
+/// - `send_payment` - Send a payment transaction
+/// - `send_delegation` - Send a delegation transaction
 #[juniper::graphql_object(context = Context)]
 impl Mutation {
+    /// Submit a zkApp transaction to the network
+    ///
+    /// # Arguments
+    /// - `input`: zkApp command with account updates and fee payer information
+    ///
+    /// # Returns
+    /// Transaction response with hash and zkApp command details
     async fn send_zkapp(
         input: zkapp::SendZkappInput,
         context: &Context,
@@ -632,6 +685,14 @@ impl Mutation {
         inject_tx(input.try_into()?, context).await
     }
 
+    /// Send a payment transaction
+    ///
+    /// # Arguments
+    /// - `input`: Payment details including sender, receiver, amount, fee, and memo
+    /// - `signature`: Transaction signature
+    ///
+    /// # Returns
+    /// Payment response with transaction hash and details
     async fn send_payment(
         input: user_command::InputGraphQLPayment,
         signature: user_command::UserCommandSignature,
@@ -662,6 +723,14 @@ impl Mutation {
         inject_tx(command, context).await
     }
 
+    /// Send a delegation transaction
+    ///
+    /// # Arguments
+    /// - `input`: Delegation details including delegator, delegate, fee, and memo
+    /// - `signature`: Transaction signature
+    ///
+    /// # Returns
+    /// Delegation response with transaction hash and details
     async fn send_delegation(
         input: user_command::InputGraphQLDelegation,
         signature: user_command::UserCommandSignature,
@@ -704,41 +773,11 @@ pub fn routes(
             .and(warp::path("playground"))
             .and(playground_filter))
         .or(warp::get().and(warp::path("graphiql")).and(graphiql_filter))
-
-    // warp::get()
-    //     .and(warp::path("graphiql"))
-    //     .and(juniper_warp::graphiql_filter("/graphql", None))
-    //     .or(warp::path("graphql").and(graphql_filter))
 }
 
-// let routes = (warp::post()
-//         .and(warp::path("graphql"))
-//         .and(juniper_warp::make_graphql_filter(
-//             schema.clone(),
-//             warp::any().map(|| Context),
-//         )))
-//     .or(
-//         warp::path("subscriptions").and(juniper_warp::subscriptions::make_ws_filter(
-//             schema,
-//             ConnectionConfig::new(Context),
-//         )),
-//     )
-//     .or(warp::get()
-//         .and(warp::path("playground"))
-//         .and(juniper_warp::playground_filter(
-//             "/graphql",
-//             Some("/subscriptions"),
-//         )))
-//     .or(warp::get()
-//         .and(warp::path("graphiql"))
-//         .and(juniper_warp::graphiql_filter(
-//             "/graphql",
-//             Some("/subscriptions"),
-//         )))
-//     .or(homepage)
-//     .with(log);
-
-/// Helper function used by [`Query::pooled_user_commands`] and [`Query::pooled_zkapp_commands`] to parse public key, transaction hashes and command ids
+/// Helper function used by [`Query::pooled_user_commands`] and
+/// [`Query::pooled_zkapp_commands`] to parse public key, transaction hashes and
+/// command ids
 fn parse_pooled_commands_query<ID, F>(
     public_key: Option<String>,
     hashes: Option<Vec<String>>,

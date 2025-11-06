@@ -1,7 +1,9 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .mina-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 300 !important;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 300 !important;
 }
 
 .bg-base {
@@ -9,7 +11,14 @@
 }
 
 .background-gradient {
-  background: linear-gradient(125deg, openmina.$base-background 0%, openmina.$base-background 50%, openmina.$success-container 60%, openmina.$base-surface 85%, openmina.$base-surface 100%);
+  background: linear-gradient(
+    125deg,
+    mina-rust.$base-background 0%,
+    mina-rust.$base-background 50%,
+    mina-rust.$success-container 60%,
+    mina-rust.$base-surface 85%,
+    mina-rust.$base-surface 100%
+  );
   background-size: 500%;
   background-position: 0 50%;
   transition: background-position 0.7s ease;
@@ -23,7 +32,7 @@
   .steps {
     position: relative;
     padding-left: 40px;
-    color: openmina.$base-tertiary;
+    color: mina-rust.$base-tertiary;
 
     &::before {
       content: '';
@@ -32,7 +41,7 @@
       left: 10px;
       width: 1px;
       height: calc(100% + 10px);
-      background-color: openmina.$base-divider;
+      background-color: mina-rust.$base-divider;
     }
 
     .step {
@@ -45,7 +54,7 @@
         left: -29px;
         width: 20px;
         height: 1px;
-        background-color: openmina.$base-divider;
+        background-color: mina-rust.$base-divider;
       }
     }
   }
@@ -56,28 +65,28 @@
 
   &.pending {
     .group-title {
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
     }
 
     .steps .step {
-      color: openmina.$base-tertiary;
+      color: mina-rust.$base-tertiary;
     }
   }
 
   &.success {
     .group-title {
-      color: openmina.$success-primary;
+      color: mina-rust.$success-primary;
     }
 
     .steps::before,
     .steps .step::before {
-      background-color: openmina.$base-tertiary;
+      background-color: mina-rust.$base-tertiary;
     }
   }
 
   &.loading {
     .step {
-      color: openmina.$base-secondary;
+      color: mina-rust.$base-secondary;
     }
   }
 
@@ -86,14 +95,14 @@
     height: 20px;
 
     span {
-      background-color: openmina.$base-tertiary;
+      background-color: mina-rust.$base-tertiary;
       width: 10px;
       height: 10px;
       border-radius: 10px;
     }
 
     &.success span {
-      background-color: openmina.$success-primary;
+      background-color: mina-rust.$success-primary;
     }
   }
 }

@@ -38,7 +38,7 @@ use crate::{
         transaction_logic::protocol_state::{EpochLedger, ProtocolStateView},
     },
     staged_ledger::hash::StagedLedgerHash,
-    zkapps::intefaces::{SignedAmountBranchParam, SignedAmountInterface},
+    zkapps::interfaces::{SignedAmountBranchParam, SignedAmountInterface},
     ToInputs,
 };
 

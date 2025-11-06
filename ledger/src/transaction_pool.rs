@@ -1,15 +1,3 @@
-use backtrace::Backtrace;
-use serde::{Deserialize, Serialize};
-use std::{
-    borrow::{Borrow, Cow},
-    collections::{hash_map::Entry, BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
-};
-
-use itertools::Itertools;
-use mina_core::{bug_condition, consensus::ConsensusConstants};
-use mina_curves::pasta::Fp;
-use mina_p2p_messages::{bigint::BigInt, v2};
-
 use crate::{
     scan_state::{
         currency::{Amount, Balance, BlockTime, Fee, Magnitude, Nonce, Slot},
@@ -26,6 +14,16 @@ use crate::{
     },
     verifier::{Verifier, VerifierError},
     Account, AccountId, BaseLedger, Mask, TokenId, VerificationKey, VerificationKeyWire,
+};
+use backtrace::Backtrace;
+use itertools::Itertools;
+use mina_core::{bug_condition, consensus::ConsensusConstants};
+use mina_curves::pasta::Fp;
+use mina_p2p_messages::{bigint::BigInt, v2};
+use serde::{Deserialize, Serialize};
+use std::{
+    borrow::{Borrow, Cow},
+    collections::{hash_map::Entry, BTreeMap, BTreeSet, HashMap, HashSet, VecDeque},
 };
 
 #[derive(Debug, thiserror::Error)]
@@ -588,16 +586,6 @@ pub struct IndexedPoolConfig {
     pub consensus_constants: consensus::Constants,
     slot_tx_end: Option<Slot>,
 }
-
-// module Config = struct
-//   type t =
-//     { constraint_constants : Genesis_constants.Constraint_constants.t
-//     ; consensus_constants : Consensus.Constants.t
-//     ; time_controller : Block_time.Controller.t
-//     ; slot_tx_end : Mina_numbers.Global_slot_since_hard_fork.t option
-//     }
-//   [@@deriving sexp_of, equal, compare]
-// end
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct IndexedPool {

@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -49,13 +49,38 @@ jobs:
           # - ./github/workflows/docs.yaml
           # - ./github/workflows/fmt.yaml
           # - ./github/workflows/lint.yaml
-          toolchain: nightly-2025-08-18
+          toolchain: nightly
+
+      - name: Verify code references in documentation (PR mode)
+        if: github.event_name == 'pull_request'
+        id: verify-pr
+        run: |
+          bash .github/scripts/verify-code-references.sh --pr-comment /tmp/pr-comment.md
+          if [ -f /tmp/pr-comment.md ]; then
+            echo "has_comment=true" >> $GITHUB_OUTPUT
+            echo "Comment file created, will post to PR"
+            cat /tmp/pr-comment.md
+          else
+            echo "has_comment=false" >> $GITHUB_OUTPUT
+            echo "No comment file created"
+          fi
+
+      - name: Comment PR with verification results
+        if: github.event_name == 'pull_request' && steps.verify-pr.outputs.has_comment == 'true'
+        uses: thollander/actions-comment-pull-request@v3
+        with:
+          file-path: /tmp/pr-comment.md
+          comment-tag: code-reference-verification
+
+      - name: Verify code references in documentation (non-PR mode)
+        if: github.event_name != 'pull_request'
+        run: bash .github/scripts/verify-code-references.sh
 
       - name: Build documentation
         run: make docs-build
 
       - name: Upload build artifacts for testing
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: docs-build-test
           path: website/build
@@ -85,7 +110,7 @@ jobs:
         uses: actions/configure-pages@v5
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -108,7 +133,7 @@ jobs:
           # - ./github/workflows/docs.yaml
           # - ./github/workflows/fmt.yaml
           # - ./github/workflows/lint.yaml
-          toolchain: nightly-2025-08-18
+          toolchain: nightly
 
       - name: Build documentation
         run: make docs-build
@@ -134,7 +159,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
@@ -176,7 +201,7 @@ jobs:
           zip -r "mina-docs-${{ steps.version.outputs.version }}.zip" website/build
 
       - name: Upload versioned documentation as release asset
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: versioned-docs-${{ steps.version.outputs.version }}
           path: |

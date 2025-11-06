@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 div {
   white-space: nowrap;
@@ -10,14 +10,13 @@ span.mr-5 {
   border-radius: 2px;
 }
 
-
 form {
   width: 200px;
-  background-color: openmina.$base-container;
-  color: openmina.$base-tertiary;
+  background-color: mina-rust.$base-container;
+  color: mina-rust.$base-tertiary;
 
   &:hover {
-    background-color: openmina.$base-divider;
+    background-color: mina-rust.$base-divider;
   }
 
   input {
@@ -45,13 +44,13 @@ form {
     display: none;
 
     &:hover {
-      color: openmina.$base-primary;
+      color: mina-rust.$base-primary;
     }
   }
 
   &.active {
-    background-color: openmina.$selected-container;
-    color: openmina.$selected-primary;
+    background-color: mina-rust.$selected-container;
+    color: mina-rust.$selected-primary;
 
     .p-absolute:last-child {
       display: block;

@@ -1,8 +1,10 @@
 pub mod build_info;
+pub mod internal;
 pub mod misc;
 pub mod node;
 pub mod replay;
 pub mod snark;
+pub mod wallet;
 
 #[derive(Debug, clap::Parser)]
 #[command(name = "mina", about = "Mina Cli")]
@@ -37,16 +39,22 @@ pub enum Command {
     Misc(misc::Misc),
     Replay(replay::Replay),
     BuildInfo(build_info::Command),
+    /// Wallet operations for managing accounts and sending transactions.
+    Wallet(wallet::Wallet),
+    /// Internal utilities for debugging and introspection.
+    Internal(internal::Internal),
 }
 
 impl Command {
-    pub fn run(self) -> anyhow::Result<()> {
+    pub fn run(self, network: Network) -> anyhow::Result<()> {
         match self {
             Self::Snark(v) => v.run(),
             Self::Node(v) => v.run(),
             Self::Misc(v) => v.run(),
             Self::Replay(v) => v.run(),
             Self::BuildInfo(v) => v.run(),
+            Self::Wallet(v) => v.run(network),
+            Self::Internal(v) => v.run(),
         }
     }
 }

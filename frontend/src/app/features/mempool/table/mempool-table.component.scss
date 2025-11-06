@@ -1,11 +1,13 @@
-@use 'openmina';
+@use 'mina-rust';
 
 :host ::ng-deep .mina-table .row.active > span > span {
-  color: openmina.$selected-primary !important;
+  color: mina-rust.$selected-primary !important;
 }
 
 .mina-icon {
-  font-variation-settings: 'FILL' 1, 'wght' 400 !important;
+  font-variation-settings:
+    'FILL' 1,
+    'wght' 400 !important;
 }
 
 .benchmark,
@@ -15,13 +17,13 @@
 }
 
 .benchmark {
-  background-color: openmina.$selected-container;
-  color: openmina.$selected-primary;
+  background-color: mina-rust.$selected-container;
+  color: mina-rust.$selected-primary;
 }
 
 .account {
-  background-color: openmina.$special-selected-alt-2-container;
-  color: openmina.$special-selected-alt-2-primary;
+  background-color: mina-rust.$special-selected-alt-2-container;
+  color: mina-rust.$special-selected-alt-2-primary;
 }
 
 .status {
@@ -29,12 +31,12 @@
   border-radius: 4px;
 
   &.ZKApp {
-    background-color: openmina.$special-selected-alt-1-container;
-    color: openmina.$special-selected-alt-1-primary;
+    background-color: mina-rust.$special-selected-alt-1-container;
+    color: mina-rust.$special-selected-alt-1-primary;
   }
 
   &.Payment {
-    background-color: openmina.$special-selected-alt-3-container;
-    color: openmina.$special-selected-alt-3-primary;
+    background-color: mina-rust.$special-selected-alt-3-container;
+    color: mina-rust.$special-selected-alt-3-primary;
   }
 }

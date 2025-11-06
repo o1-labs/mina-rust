@@ -1,8 +1,7 @@
-use std::{collections::HashMap, rc::Rc};
-
-use mina_signer::Keypair;
-use rand::Rng;
-
+use super::{
+    zkapp_command::GenZkappCommandParams, Failure, Role, LEDGER_DEPTH, MAX_ACCOUNT_UPDATES,
+    MAX_TOKEN_UPDATES, MINIMUM_USER_COMMAND_FEE,
+};
 use crate::{
     gen_keypair,
     scan_state::{
@@ -11,16 +10,15 @@ use crate::{
             for_tests::HashableCompressedPubKey,
             valid,
             zkapp_command::{self, verifiable},
+            TransactionStatus::Applied,
         },
     },
     util, Account, AccountId, AuthRequired, BaseLedger, Mask, MyCowMut, Permissions, TokenId,
     VerificationKey, VerificationKeyWire, ZkAppAccount, TXN_VERSION_CURRENT,
 };
-
-use super::{
-    zkapp_command::GenZkappCommandParams, Failure, Role, LEDGER_DEPTH, MAX_ACCOUNT_UPDATES,
-    MAX_TOKEN_UPDATES, MINIMUM_USER_COMMAND_FEE,
-};
+use mina_signer::Keypair;
+use rand::Rng;
+use std::{collections::HashMap, rc::Rc};
 
 fn zkapp_command_with_ledger(
     num_keypairs: Option<usize>,
@@ -187,8 +185,6 @@ fn zkapp_command_with_ledger(
             global_slot: None,
         });
 
-    use crate::scan_state::transaction_logic::TransactionStatus::Applied;
-
     let zkapp_command =
         zkapp_command::valid::to_valid(zkapp_command, &Applied, |hash, account_id| {
             verifiable::find_vk_via_ledger(ledger.clone(), hash, account_id)
@@ -265,7 +261,6 @@ pub fn sequence_zkapp_command_with_ledger(
             global_slot: None,
         });
 
-        use crate::scan_state::transaction_logic::TransactionStatus::Applied;
         let zkapp_command =
             zkapp_command::valid::to_valid(zkapp_command, &Applied, |hash, account_id| {
                 verifiable::find_vk_via_ledger(ledger.clone(), hash, account_id)

@@ -1,4 +1,4 @@
-# Run Block Producing Node
+# Run a block producer
 
 This guide is intended for setting up block producer nodes on **Mina Devnet**
 only. Do not use this guide for Mina Mainnet until necessary security audits are
@@ -11,21 +11,45 @@ complete.
 Ensure Docker and Docker Compose are installed on your system -
 [Docker Installation Guide](../appendix/docker-installation)
 
-## Download & Start the Node
+## Using Docker Compose
 
-1. **Download the Latest Release**
+1. **Download the Docker Compose File**
 
-- Visit the [Mina Rust Releases](https://github.com/o1-labs/mina-rust/releases)
-- Download the latest `mina-rust-vX.Y.Z-docker-compose.zip`
-- Extract the Files:
+   Create a directory for your block producer and download the docker-compose
+   file:
 
-  ```bash
-  unzip mina-rust-vX.Y.Z-docker-compose.zip
-  cd mina-rust-vX.Y.Z-docker-compose
-  mkdir mina-workdir
-  ```
+   ```bash
+   # Create a directory for your block producer
+   mkdir mina-block-producer && cd mina-block-producer
 
-2. **Prepare Your Keys**
+   # Create the working directory for node data
+   mkdir mina-workdir
+
+   # Download the block producer docker-compose file (choose one method)
+   # Using wget:
+   wget https://raw.githubusercontent.com/o1-labs/mina-rust/v0.18.0/docker-compose.block-producer.yml
+
+   # Or using curl:
+   curl -O https://raw.githubusercontent.com/o1-labs/mina-rust/v0.18.0/docker-compose.block-producer.yml
+
+   # Create an empty .env file to avoid warnings (optional - has defaults)
+   touch .env
+   ```
+
+   For the latest development version, replace `v0.18.0` with `develop` in the
+   URL.
+
+2. **Verify Docker Image Version** (Optional but recommended)
+
+   Before starting, verify you have the correct version:
+
+   ```bash
+   docker run --rm o1labs/mina-rust:latest build-info
+   ```
+
+   This shows the exact version, commit hash, and build details.
+
+3. **Prepare Your Keys**
 
    [Docker Compose](https://github.com/o1-labs/mina-rust/blob/develop/docker-compose.block-producer.yml)
    references `mina-workdir`. It stores a private key and logs for block
@@ -33,24 +57,42 @@ Ensure Docker and Docker Compose are installed on your system -
 
    **Option A: Generate a new key pair (if you don't have one)**
 
-   If you don't have a block producer key, you can generate one using the
-   Makefile target:
+   If you don't have a block producer key, you can generate one using the Mina
+   CLI:
 
    ```bash
-   # Clone the repository first if you haven't already
-   git clone https://github.com/o1-labs/mina-rust.git
-   cd mina-rust
+   # Generate a new encrypted key pair using Docker
+   # This creates the key directly in the mina-workdir/producer-key file
+   docker run --rm -v $(pwd)/mina-workdir:/root/.mina o1labs/mina-rust:latest \
+     misc mina-encrypted-key "YourPassword" --file /root/.mina/producer-key
 
-   # Generate a new encrypted key pair
-   make generate-block-producer-key
-
-   # Or generate with a password
-   make generate-block-producer-key MINA_PRIVKEY_PASS="YourPassword"
+   # Fix file permissions to match your local user (recommended)
+   sudo chown $(id -u):$(id -g) mina-workdir/producer-key
    ```
 
-   This will create:
-   - `mina-workdir/producer-key` (encrypted private key)
-   - `mina-workdir/producer-key.pub` (public key)
+   This will create an encrypted private key file at
+   `mina-workdir/producer-key`. The key will be encrypted with the password you
+   provide.
+
+   <!-- prettier-ignore-start -->
+
+   :::tip File Permissions
+
+   Docker containers typically run as root, so generated files will be owned by
+   root. It's recommended to change ownership to your local user using `chown`
+   after generation to avoid permission issues when accessing or backing up the
+   key file.
+
+   :::
+   <!-- prettier-ignore-stop -->
+
+   The command also outputs the public key which you should save for reference:
+
+   ```bash
+   # To see just the public key, you can run:
+   docker run --rm -v $(pwd)/mina-workdir:/root/.mina o1labs/mina-rust:latest \
+     misc mina-encrypted-key "YourPassword" --file /root/.mina/producer-key | grep "Public key:"
+   ```
 
    **Option B: Use an existing key**
 
@@ -64,7 +106,7 @@ Ensure Docker and Docker Compose are installed on your system -
    Replace `/path/to/your/private_key` with the actual path to your private key
    file.
 
-3. **Launch Block Producer**
+4. **Launch Block Producer**
 
    Use `MINA_PRIVKEY_PASS` to set the private key password. Optionally, use
    `COINBASE_RECEIVER` to set a different coinbase receiver:
@@ -98,11 +140,10 @@ Ensure Docker and Docker Compose are installed on your system -
    docker compose -f docker-compose.block-producer.yml up -d --pull always
    ```
 
-4. **Go to Dashboard**
+5. **Go to Dashboard**
 
-   Visit [http://localhost:8070](http://localhost:8070) to
-   [monitor sync](http://localhost:8070/dashboard) and
-   [block production](http://localhost:8070/block-production).
+   Visit [http://localhost:8070](http://localhost:8070) to monitor sync and
+   block production.
 
 ## Using Make Command
 

@@ -1,14 +1,13 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .filter {
-
   &:hover:not(.active) {
-    background-color: openmina.$base-divider;
-    color: openmina.$base-secondary !important;
+    background-color: mina-rust.$base-divider;
+    color: mina-rust.$base-secondary !important;
   }
 
   &.active {
-    background-color: openmina.$selected-container;
-    color: openmina.$selected-primary !important;
+    background-color: mina-rust.$selected-container;
+    color: mina-rust.$selected-primary !important;
   }
 }

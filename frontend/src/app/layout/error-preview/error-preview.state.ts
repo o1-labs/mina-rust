@@ -5,4 +5,5 @@ export class ErrorPreviewState {
   errors: MinaError[];
 }
 
-export const selectErrorPreviewErrors = (state: MinaState): MinaError[] => state.error.errors;
+export const selectErrorPreviewErrors = (state: MinaState): MinaError[] =>
+  state.error.errors;

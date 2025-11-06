@@ -5,7 +5,10 @@ import { MinaState } from '@app/app.setup';
 import { AppSelectors } from '@app/app.state';
 import { filter, map } from 'rxjs';
 import { Routes } from '@shared/enums/routes.enum';
-import { FeaturesConfig, MinaNode } from '@shared/types/core/environment/mina-env.type';
+import {
+  FeaturesConfig,
+  MinaNode,
+} from '@shared/types/core/environment/mina-env.type';
 import { getFeaturesConfig, getFirstFeature } from '@shared/constants/config';
 
 export const networkGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {

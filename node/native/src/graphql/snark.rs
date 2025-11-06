@@ -25,7 +25,8 @@ pub struct GraphQLWorkDescription {
     pub source_second_pass_ledger_hash: String,
     /// Base58Check-encoded hash of the target second-pass ledger
     pub target_second_pass_ledger_hash: String,
-    /// Total transaction fee that is not accounted for in the transition from source ledger to target ledger
+    /// Total transaction fee that is not accounted for in the transition from
+    /// source ledger to target ledger
     pub fee_excess: GraphQLFeeExcesses,
     /// Increase/Decrease in total supply
     pub supply_change: GraphQLSupplyChange,

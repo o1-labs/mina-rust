@@ -1,102 +1,92 @@
 [package]
 name = "p2p"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 license = "Apache-2.0"
 
 [dependencies]
-aes-gcm = "0.10.3"
-anyhow = "1.0.70"
-base64 = "0.22"
-binprot = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
-binprot_derive = { git = "https://github.com/openmina/binprot-rs", rev = "400b52c" }
-bitflags = { version = "2.4.1", features = ["serde"] }
-bs58 = "0.4.0"
-bytes = "*"
-cfg-if = "1.0.0"
-derive_more = "0.99.17"
-ed25519-dalek = { version = "2.1.1", features = ["serde", "pem"] }
-faster-stun = { version = "1.0.1", optional = true }
-hex = { version = "0.4.3" }
-multihash = "0.18.1"
-rand = { version = "0.8", features = ["small_rng"] }
-reqwest = { version = "0.11.22", optional = true }
+aes-gcm = { workspace = true }
+anyhow = { workspace = true }
+base64 = { workspace = true }
+binprot = { workspace = true }
+binprot_derive = { workspace = true }
+bitflags = { workspace = true, features = ["serde"] }
+bs58 = { workspace = true }
+bytes = { workspace = true }
+cfg-if = { workspace = true }
+derive_more = { workspace = true }
+ed25519-dalek = { workspace = true }
+faster-stun = { workspace = true, optional = true }
+hex = { workspace = true }
+multihash = { workspace = true }
+rand = { workspace = true, features = ["small_rng"] }
+reqwest = { workspace = true, optional = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 serde_with = { workspace = true }
-sha2 = "0.10.6"
-smallvec = "1.10.0"
-strum = "0.26"
-strum_macros = "0.26"
-thiserror = "1.0.37"
-unsigned-varint = { version = "0.8.0" }
-url = "2.3.1"
-x25519-dalek = { version = "2.0.1", features = ["static_secrets"] }
+sha2 = { workspace = true }
+smallvec = { workspace = true }
+strum = { workspace = true }
+strum_macros = { workspace = true }
+thiserror = { workspace = true }
+unsigned-varint = { workspace = true }
+url = { workspace = true }
+x25519-dalek = { workspace = true }
 
 graphannis-malloc_size_of = { workspace = true }
 graphannis-malloc_size_of_derive = { workspace = true }
 
 # crypto
-blake2 = { version = "0.10.6" }
-chacha20poly1305 = { version = "0.10.1" }
-curve25519-dalek = { version = "4.1", features = ["legacy_compatibility"] }
-hkdf = { version = "0.12.4" }
-libp2p-identity = { version = "=0.2.7", features = [
-  "ed25519",
-  "rand",
-  "serde",
-] }
-multiaddr = { version = "0.18.1" }
-zeroize = { version = "1.8" }
+blake2 = { workspace = true }
+chacha20poly1305 = { workspace = true }
+curve25519-dalek = { workspace = true }
+hkdf = { workspace = true }
+libp2p-identity = { workspace = true, features = ["ed25519", "rand", "serde"] }
+multiaddr = { workspace = true }
+zeroize = { workspace = true }
 
 mina-p2p-messages = { workspace = true }
 redux = { workspace = true }
 
-crypto-bigint = { version = "0.5.5", features = [
-  "generic-array",
-  "serde",
-  "alloc",
-] }
-mina-core = { path = "../core" }
-mina-macros = { path = "../macros" }
-quick-protobuf = "0.8.1"
-salsa-simple = { path = "../tools/salsa-simple" }
+crypto-bigint = { workspace = true }
+mina-core = { workspace = true }
+mina-macros = { workspace = true }
+quick-protobuf = { workspace = true }
+salsa-simple = { workspace = true }
 
-prost = { version = "0.12.4" }
+prost = { workspace = true }
 
-mina-fuzzer = { path = "../fuzzer", optional = true }
+mina-fuzzer = { workspace = true, optional = true }
 
 [build-dependencies]
-prost-build = { version = "0.14.1" }
+prost-build = { workspace = true }
 
 [dev-dependencies]
-crypto-bigint = { version = "0.5.5", features = ["rand_core"] }
-warp = "0.3.6"
-tokio = { version = "1.26", features = ["macros", "rt-multi-thread"] }
-clap = { version = "4.5.2", features = ["derive", "env"] }
+crypto-bigint = { workspace = true, features = ["rand_core"] }
+warp = { workspace = true }
+tokio = { workspace = true, features = ["macros", "rt-multi-thread"] }
+clap = { workspace = true, features = ["derive", "env"] }
 p2p-testing = { path = "testing" }
 
 
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }
-tokio = { version = "1.26", features = ["rt"] }
-webrtc = { git = "https://github.com/openmina/webrtc.git", rev = "aeaa62682b97f6984627bedd6e6811fe17af18eb", optional = true }
-datachannel = { git = "https://github.com/openmina/datachannel-rs.git", rev = "1bfb064d0ff3e54a93ae0288409902aab8d102d3", optional = true, features = [
-  "vendored",
-] }
-rcgen = { version = "0.13", features = ["pem", "x509-parser"], optional = true }
-reqwest = { version = "0.11", features = ["json"] }
-mio = { version = "1.0.4", features = ["os-poll", "net"] }
-libc = { version = "0.2.151" }
-local-ip-address = "0.6.1"
+tokio = { workspace = true, features = ["rt"] }
+webrtc = { workspace = true, optional = true }
+datachannel = { workspace = true, optional = true }
+rcgen = { workspace = true, optional = true }
+reqwest = { workspace = true, features = ["json"] }
+mio = { workspace = true }
+libc = { workspace = true }
+local-ip-address = { workspace = true }
 
 [target.'cfg(target_arch = "wasm32")'.dependencies]
-wasm-bindgen = "0.2"
-wasm-bindgen-futures = "0.4"
-gloo-timers = { version = "0.3", features = ["futures"] }
-gloo-utils = "0.2"
-js-sys = "0.3.64"
-web-sys = { version = "0.3", features = [
+wasm-bindgen = { workspace = true }
+wasm-bindgen-futures = { workspace = true }
+gloo-timers = { workspace = true }
+gloo-utils = { workspace = true }
+js-sys = { workspace = true }
+web-sys = { workspace = true, features = [
   "MessageEvent",
   "RtcPeerConnection",
   "RtcConfiguration",
@@ -114,8 +104,8 @@ web-sys = { version = "0.3", features = [
   "Headers",
   "Response",
 ] }
-tokio = { version = "1.26", features = ["macros"] }
-getrandom = { version = "0.2", features = ["js"] }
+tokio = { workspace = true, features = ["macros"] }
+getrandom = { workspace = true, features = ["js"] }
 
 [features]
 serializable_callbacks = []

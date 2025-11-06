@@ -1,38 +1,61 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Inject, TemplateRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Inject,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { untilDestroyed } from '@ngneat/until-destroy';
 import { debounceTime } from 'rxjs';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { ActionCreator, Action } from '@ngrx/store';
 import { SharedModule } from '@shared/shared.module';
-import { BaseStoreDispatcher, hasValue, isMobile, SortDirection, TableColumnList, TableSort } from '@openmina/shared';
+import {
+  BaseStoreDispatcher,
+  hasValue,
+  isMobile,
+  SortDirection,
+  TableColumnList,
+  TableSort,
+} from '@openmina/shared';
 
 const DESKTOP_ROW_HEIGHT = 36;
 
 @Component({
-    imports: [SharedModule, CommonModule],
-    selector: 'mina-table',
-    templateUrl: './mina-table.component.html',
-    styleUrls: ['./mina-table.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-100 flex-column' }
+  imports: [SharedModule, CommonModule],
+  selector: 'mina-table',
+  templateUrl: './mina-table.component.html',
+  styleUrls: ['./mina-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'h-100 flex-column' },
 })
-export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<any> implements AfterViewInit {
-
+export class MinaTableComponent<T extends object>
+  extends BaseStoreDispatcher<any>
+  implements AfterViewInit
+{
   rowSize: number = DESKTOP_ROW_HEIGHT;
   isMobile: boolean;
 
   rows: T[] = [];
   activeRow: T;
   tableHeads: TableColumnList<T>;
-  rowTemplate: TemplateRef<{ row: T, i: number }>;
+  rowTemplate: TemplateRef<{ row: T; i: number }>;
   currentSort: TableSort<T>;
   thGroupsTemplate: TemplateRef<void>;
   propertyForActiveCheck: keyof T;
   gridTemplateColumns: Array<number | 'auto' | '1fr'> = [];
   minWidth: number;
-  sortClz: new (payload: TableSort<T>) => { type: string, payload: TableSort<T> };
-  sortAction: ActionCreator<string, (props: { sort: TableSort<T>; }) => { sort: TableSort<T>; } & Action<string>>;
+  sortClz: new (payload: TableSort<T>) => {
+    type: string;
+    payload: TableSort<T>;
+  };
+  sortAction: ActionCreator<
+    string,
+    (props: { sort: TableSort<T> }) => { sort: TableSort<T> } & Action<string>
+  >;
   sortSelector: (state: any) => TableSort<T>;
   rowClickCallback: (row: T, isRealClick: boolean) => void;
   trackByFn: (index: number, row: T) => any = (_: number, row: T) => row;
@@ -43,11 +66,20 @@ export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<an
   @ViewChild('toTop') private toTop: ElementRef<HTMLDivElement>;
   private hiddenToTop: boolean = true;
 
-  constructor(@Inject(DOCUMENT) private document: Document,
-              private el: ElementRef) { super(); }
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    private el: ElementRef,
+  ) {
+    super();
+  }
 
   init(): void {
-    this.minWidth = this.minWidth || this.gridTemplateColumns.reduce<number>((acc: number, curr: number | string) => acc + Number(curr), 0);
+    this.minWidth =
+      this.minWidth ||
+      this.gridTemplateColumns.reduce<number>(
+        (acc: number, curr: number | string) => acc + Number(curr),
+        0,
+      );
     this.addGridTemplateColumnsInCssFile();
     this.listenToSortingChanges();
     this.detect();
@@ -60,14 +92,20 @@ export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<an
 
   private addGridTemplateColumnsInCssFile(): void {
     let value = `mina-table #table${this.tableLevel}.mina-table .row{grid-template-columns:`;
-    this.gridTemplateColumns.forEach(v => value += typeof v === 'number' ? `${v}px ` : `${v} `);
-    this.document.getElementById('table-style' + this.tableLevel).textContent = value + '}';
+    this.gridTemplateColumns.forEach(
+      v => (value += typeof v === 'number' ? `${v}px ` : `${v} `),
+    );
+    this.document.getElementById('table-style' + this.tableLevel).textContent =
+      value + '}';
   }
 
   sortTable(sortBy: string | keyof T): void {
-    const sortDirection = sortBy !== this.currentSort.sortBy
-      ? this.currentSort.sortDirection
-      : this.currentSort.sortDirection === SortDirection.ASC ? SortDirection.DSC : SortDirection.ASC;
+    const sortDirection =
+      sortBy !== this.currentSort.sortBy
+        ? this.currentSort.sortDirection
+        : this.currentSort.sortDirection === SortDirection.ASC
+          ? SortDirection.DSC
+          : SortDirection.ASC;
     const sort = { sortBy: sortBy as keyof T, sortDirection };
     if (this.sortClz) {
       this.dispatch(this.sortClz, sort);
@@ -83,7 +121,10 @@ export class MinaTableComponent<T extends object> extends BaseStoreDispatcher<an
   }
 
   scrollToElement(rowFinder: (row: T) => boolean): void {
-    const topElements = Math.round(this.vs.elementRef.nativeElement.offsetHeight / 2 / this.rowSize) - 3;
+    const topElements =
+      Math.round(
+        this.vs.elementRef.nativeElement.offsetHeight / 2 / this.rowSize,
+      ) - 3;
     const jobIndex = this.rows.findIndex(rowFinder);
     this.vs.scrollToIndex(jobIndex - topElements);
   }

@@ -28,46 +28,76 @@ import { MinaRustBaseEffect } from '@shared/base-classes/mina-rust-base.effect';
   providedIn: 'root',
 })
 export class StateActionsEffects extends MinaRustBaseEffect<StateActionsActions> {
-
   readonly getActions$: Effect;
   readonly getEarliestSlot$: Effect;
 
-  constructor(private router: Router,
-              private actions$: Actions,
-              private actionsService: StateActionsService,
-              store: Store<MinaState>) {
+  constructor(
+    private router: Router,
+    private actions$: Actions,
+    private actionsService: StateActionsService,
+    store: Store<MinaState>,
+  ) {
     super(store, selectMinaState);
 
-    this.getEarliestSlot$ = createEffect(() => this.actions$.pipe(
-      ofType(STATE_ACTIONS_GET_EARLIEST_SLOT, STATE_ACTIONS_CLOSE),
-      this.latestActionState<StateActionsGetEarliestSlot | StateActionsClose>(),
-      switchMap(({ action, state }) =>
-        action.type === STATE_ACTIONS_CLOSE
-          ? EMPTY
-          : this.actionsService.getEarliestSlot().pipe(
-            switchMap((payload: number) => {
-              const actions: StateActionsActions[] = [{ type: STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS, payload }];
-              if (state.state.actions.activeSlot === undefined || state.state.actions.activeSlot > payload || action.payload.force) {
-                this.router.navigate([Routes.STATE, Routes.ACTIONS, payload ?? ''], { queryParamsHandling: 'merge' });
-                actions.push({ type: STATE_ACTIONS_GET_ACTIONS, payload: { slot: payload } });
-              }
-              return actions;
-            }),
-          ),
+    this.getEarliestSlot$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(STATE_ACTIONS_GET_EARLIEST_SLOT, STATE_ACTIONS_CLOSE),
+        this.latestActionState<
+          StateActionsGetEarliestSlot | StateActionsClose
+        >(),
+        switchMap(({ action, state }) =>
+          action.type === STATE_ACTIONS_CLOSE
+            ? EMPTY
+            : this.actionsService.getEarliestSlot().pipe(
+                switchMap((payload: number) => {
+                  const actions: StateActionsActions[] = [
+                    { type: STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS, payload },
+                  ];
+                  if (
+                    state.state.actions.activeSlot === undefined ||
+                    state.state.actions.activeSlot > payload ||
+                    action.payload.force
+                  ) {
+                    this.router.navigate(
+                      [Routes.STATE, Routes.ACTIONS, payload ?? ''],
+                      { queryParamsHandling: 'merge' },
+                    );
+                    actions.push({
+                      type: STATE_ACTIONS_GET_ACTIONS,
+                      payload: { slot: payload },
+                    });
+                  }
+                  return actions;
+                }),
+              ),
+        ),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS,
+          null,
+        ),
       ),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, STATE_ACTIONS_GET_EARLIEST_SLOT_SUCCESS, null),
-    ));
+    );
 
-    this.getActions$ = createEffect(() => this.actions$.pipe(
-      ofType(STATE_ACTIONS_GET_ACTIONS, STATE_ACTIONS_CLOSE),
-      this.latestActionState<StateActionsGetActions | StateActionsClose>(),
-      switchMap(({ action, state }) =>
-        action.type === STATE_ACTIONS_CLOSE
-          ? EMPTY
-          : this.actionsService.getActions(state.state.actions.activeSlot),
+    this.getActions$ = createEffect(() =>
+      this.actions$.pipe(
+        ofType(STATE_ACTIONS_GET_ACTIONS, STATE_ACTIONS_CLOSE),
+        this.latestActionState<StateActionsGetActions | StateActionsClose>(),
+        switchMap(({ action, state }) =>
+          action.type === STATE_ACTIONS_CLOSE
+            ? EMPTY
+            : this.actionsService.getActions(state.state.actions.activeSlot),
+        ),
+        map((payload: [StateActionsStats, StateActionGroup[]]) => ({
+          type: STATE_ACTIONS_GET_ACTIONS_SUCCESS,
+          payload,
+        })),
+        catchErrorAndRepeat(
+          MinaErrorType.GENERIC,
+          STATE_ACTIONS_GET_ACTIONS_SUCCESS,
+          [],
+        ),
       ),
-      map((payload: [StateActionsStats, StateActionGroup[]]) => ({ type: STATE_ACTIONS_GET_ACTIONS_SUCCESS, payload })),
-      catchErrorAndRepeat(MinaErrorType.GENERIC, STATE_ACTIONS_GET_ACTIONS_SUCCESS, []),
-    ));
+    );
   }
 }

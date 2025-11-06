@@ -5,10 +5,11 @@ import { BaseStoreDispatcher } from '@openmina/shared';
 
 @UntilDestroy()
 @Directive()
-export abstract class StoreDispatcher extends BaseStoreDispatcher<MinaState> implements OnDestroy {
-
+export abstract class StoreDispatcher
+  extends BaseStoreDispatcher<MinaState>
+  implements OnDestroy
+{
   override ngOnDestroy(): void {
     super.ngOnDestroy();
   }
-
 }

@@ -1,11 +1,12 @@
-<mina-horizontal-resizable-container [leftTemplate]="left"
-                                     [rightTemplate]="right"
-                                     [show]="openSidePanel"
-                                     [minWidth]="610"
-                                     [maxWidthElement]="el.nativeElement"
-                                     [maxWidth]="el.nativeElement.offsetWidth - 650"
-                                     localStorageKey="nl-live-spw">
-</mina-horizontal-resizable-container>
+<mina-horizontal-resizable-container
+  [leftTemplate]="left"
+  [rightTemplate]="right"
+  [show]="openSidePanel"
+  [minWidth]="610"
+  [maxWidthElement]="el.nativeElement"
+  [maxWidth]="el.nativeElement.offsetWidth - 650"
+  localStorageKey="nl-live-spw"
+></mina-horizontal-resizable-container>
 
 <ng-template #left>
   <mina-nodes-live-toolbar></mina-nodes-live-toolbar>

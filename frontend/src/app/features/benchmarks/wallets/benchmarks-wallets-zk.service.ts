@@ -1,5 +1,13 @@
 import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, filter, map, Observable, of, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  filter,
+  map,
+  Observable,
+  of,
+  switchMap,
+} from 'rxjs';
 import { BenchmarksZkapp } from '@shared/types/benchmarks/transactions/benchmarks-zkapp.type';
 import { fromPromise } from 'rxjs/internal/observable/innerFrom';
 import { CONFIG } from '@shared/constants/config';
@@ -8,9 +16,12 @@ import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class BenchmarksWalletsZkService {
-
-  private readonly updates = new BehaviorSubject<{ step: string, duration: number }>(null);
-  private readonly o1jsInterface: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly updates = new BehaviorSubject<{
+    step: string;
+    duration: number;
+  }>(null);
+  private readonly o1jsInterface: BehaviorSubject<any> =
+    new BehaviorSubject<any>(null);
   private readonly document: Document = inject(DOCUMENT);
 
   readonly updates$ = this.updates.asObservable();
@@ -21,17 +32,23 @@ export class BenchmarksWalletsZkService {
     });
   }
 
-  sendZkApp(zkApps: BenchmarksZkapp[]): Observable<Partial<{
-    zkApps: BenchmarksZkapp[],
-    error: Error
-  }>> {
+  sendZkApp(zkApps: BenchmarksZkapp[]): Observable<
+    Partial<{
+      zkApps: BenchmarksZkapp[];
+      error: Error;
+    }>
+  > {
     return this.o1jsInterface.pipe(
       filter(Boolean),
       switchMap((o1js: any) => {
         const executeSequentially = async (): Promise<any[]> => {
           const results: any[] = [];
           for (const zkApp of zkApps) {
-            const response = await o1js.updateZkApp(CONFIG.globalConfig?.graphQL, zkApp, this.updates);
+            const response = await o1js.updateZkApp(
+              CONFIG.globalConfig?.graphQL,
+              zkApp,
+              this.updates,
+            );
             results.push(response);
           }
           return results;
@@ -40,7 +57,9 @@ export class BenchmarksWalletsZkService {
         return fromPromise(executeSequentially());
       }),
       map((responses: any[]) => {
-        const errors = responses.filter(response => response.errors && response.errors[0]);
+        const errors = responses.filter(
+          response => response.errors && response.errors[0],
+        );
         if (errors.length > 0) {
           let error = new Error(errors[0].errors[0]);
           error.name = errors[0].status;

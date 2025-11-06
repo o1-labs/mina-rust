@@ -15,11 +15,16 @@ enum NodesLiveActionTypes {
 
 export const NODES_LIVE_INIT = NodesLiveActionTypes.NODES_LIVE_INIT;
 export const NODES_LIVE_GET_NODES = NodesLiveActionTypes.NODES_LIVE_GET_NODES;
-export const NODES_LIVE_GET_NODES_SUCCESS = NodesLiveActionTypes.NODES_LIVE_GET_NODES_SUCCESS;
-export const NODES_LIVE_SORT_EVENTS = NodesLiveActionTypes.NODES_LIVE_SORT_EVENTS;
-export const NODES_LIVE_SET_ACTIVE_NODE = NodesLiveActionTypes.NODES_LIVE_SET_ACTIVE_NODE;
-export const NODES_LIVE_TOGGLE_SIDE_PANEL = NodesLiveActionTypes.NODES_LIVE_TOGGLE_SIDE_PANEL;
-export const NODES_LIVE_TOGGLE_FILTER = NodesLiveActionTypes.NODES_LIVE_TOGGLE_FILTER;
+export const NODES_LIVE_GET_NODES_SUCCESS =
+  NodesLiveActionTypes.NODES_LIVE_GET_NODES_SUCCESS;
+export const NODES_LIVE_SORT_EVENTS =
+  NodesLiveActionTypes.NODES_LIVE_SORT_EVENTS;
+export const NODES_LIVE_SET_ACTIVE_NODE =
+  NodesLiveActionTypes.NODES_LIVE_SET_ACTIVE_NODE;
+export const NODES_LIVE_TOGGLE_SIDE_PANEL =
+  NodesLiveActionTypes.NODES_LIVE_TOGGLE_SIDE_PANEL;
+export const NODES_LIVE_TOGGLE_FILTER =
+  NodesLiveActionTypes.NODES_LIVE_TOGGLE_FILTER;
 export const NODES_LIVE_CLOSE = NodesLiveActionTypes.NODES_LIVE_CLOSE;
 
 export interface NodesLiveAction extends FeatureAction<NodesLiveActionTypes> {
@@ -33,25 +38,25 @@ export class NodesLiveInit implements NodesLiveAction {
 export class NodesLiveGetNodes implements NodesLiveAction {
   readonly type = NODES_LIVE_GET_NODES;
 
-  constructor(public payload?: { force?: boolean }) { }
+  constructor(public payload?: { force?: boolean }) {}
 }
 
 export class NodesLiveGetNodesSuccess implements NodesLiveAction {
   readonly type = NODES_LIVE_GET_NODES_SUCCESS;
 
-  constructor(public payload: NodesLiveNode[]) { }
+  constructor(public payload: NodesLiveNode[]) {}
 }
 
 export class NodesLiveSortEvents implements NodesLiveAction {
   readonly type = NODES_LIVE_SORT_EVENTS;
 
-  constructor(public payload: TableSort<NodesLiveBlockEvent>) { }
+  constructor(public payload: TableSort<NodesLiveBlockEvent>) {}
 }
 
 export class NodesLiveSetActiveNode implements NodesLiveAction {
   readonly type = NODES_LIVE_SET_ACTIVE_NODE;
 
-  constructor(public payload: { hash: string }) { }
+  constructor(public payload: { hash: string }) {}
 }
 
 export class NodesLiveToggleSidePanel implements NodesLiveAction {
@@ -61,7 +66,7 @@ export class NodesLiveToggleSidePanel implements NodesLiveAction {
 export class NodesLiveToggleFilter implements NodesLiveAction {
   readonly type = NODES_LIVE_TOGGLE_FILTER;
 
-  constructor(public payload: string) { }
+  constructor(public payload: string) {}
 }
 
 export class NodesLiveClose implements NodesLiveAction {
@@ -76,5 +81,4 @@ export type NodesLiveActions =
   | NodesLiveSetActiveNode
   | NodesLiveToggleSidePanel
   | NodesLiveToggleFilter
-  | NodesLiveClose
-  ;
+  | NodesLiveClose;

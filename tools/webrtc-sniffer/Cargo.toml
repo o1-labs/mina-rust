@@ -1,26 +1,25 @@
 [package]
 name = "webrtc-sniffer"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 
 [dependencies]
-clap = { version = "4.5", features = ["derive", "env"] }
-ctrlc = { version = "3.4" }
-env_logger = { version = "0.11.6" }
-etherparse = { version = "0.17.0" }
-hex = { version = "0.4.3" }
-log = { version = "0.4.25" }
-nom = { version = "8.0.0" }
-pcap = { version = "2.3" }
-sudo = { version = "0.6.0" }
-thiserror = { version = "2.0" }
-
-aes = { version = "0.8" }
-aes-gcm = { version = "0.10" }
-cbc = { version = "0.1", features = ["block-padding", "alloc"] }
-hkdf = { version = "0.12" }
-hmac = { version = "0.12" }
-p256 = { version = "0.13", features = ["default", "ecdh", "ecdsa"] }
-p384 = { version = "0.13" }
-rand = { version = "0.8" }
-sha2 = { version = "0.10.8" }
+aes = { workspace = true }
+aes-gcm = { workspace = true }
+cbc = { workspace = true }
+clap = { workspace = true, features = ["derive", "env"] }
+ctrlc = { workspace = true }
+env_logger = { workspace = true }
+etherparse = { workspace = true }
+hex = { workspace = true }
+hkdf = { workspace = true }
+hmac = { workspace = true }
+log = { workspace = true }
+nom = { workspace = true }
+p256 = { workspace = true }
+p384 = { workspace = true }
+pcap = { workspace = true }
+rand = { workspace = true }
+sha2 = { workspace = true }
+sudo = { workspace = true }
+thiserror = { workspace = true }

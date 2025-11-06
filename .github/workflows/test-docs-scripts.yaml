@@ -67,7 +67,6 @@ jobs:
           node --version
           npm --version
           protoc --version
-          sqlite3 --version
           wasm-pack --version
           shellcheck --version
 
@@ -79,7 +78,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest]
 
     steps:
       - name: Checkout repository
@@ -124,7 +123,6 @@ jobs:
           node --version
           npm --version
           protoc --version
-          sqlite3 --version
           wasm-pack --version
           shellcheck --version
 
@@ -141,7 +139,7 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Install Nix
-        uses: DeterminateSystems/nix-installer-action@v19
+        uses: DeterminateSystems/nix-installer-action@v20
 
       - name: Setup Nix Cache
         uses: DeterminateSystems/magic-nix-cache-action@v13
@@ -171,7 +169,7 @@ jobs:
       - name: Verify installations
         run: |
           echo "Verifying installed tools..."
-          nix develop --command bash -c "rustc --version && cargo --version && node --version && npm --version && protoc --version && sqlite3 --version && wasm-pack --version"
+          nix develop --command bash -c "rustc --version && cargo --version && node --version && npm --version && protoc --version && wasm-pack --version"
 
 
   docker-ubuntu:
@@ -205,7 +203,7 @@ jobs:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest]
 
     steps:
       - name: Checkout repository
@@ -221,13 +219,36 @@ jobs:
           # We'll just check if it was installed via Homebrew
           docker --version || echo "Docker installed but not running (expected on macOS CI)"
 
+  test-benchmark-commands:
+    name: Verify Benchmark Commands
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Verify benchmark scripts and commands
+        run: |
+          # Check if scripts exist and are executable
+          test -x ./website/docs/developers/scripts/benchmarks/build-benchmarks.sh
+          test -x ./website/docs/developers/scripts/benchmarks/run-all-benchmarks.sh
+          test -x ./website/docs/developers/scripts/benchmarks/run-database-benchmark.sh
+
+          # Verify the make targets referenced in scripts exist in Makefile
+          grep -q "^build-benches:" Makefile
+          grep -q "^bench:" Makefile
+          grep -q "^bench-database:" Makefile
+
+          echo "SUCCESS: All benchmark commands verified"
+
   test-update-ocaml-node-script:
     name: Test Update OCaml Node Script
     runs-on: ${{ matrix.os }}
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'test-doc-scripts')
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest]
+        os: [macos-13, macos-14, macos-15, macos-latest, ubuntu-latest]
 
     steps:
       - name: Checkout repository

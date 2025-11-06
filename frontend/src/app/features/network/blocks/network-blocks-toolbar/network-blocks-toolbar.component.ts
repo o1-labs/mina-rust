@@ -16,21 +16,25 @@ import { Router } from '@angular/router';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 
 @Component({
-    selector: 'mina-network-blocks-toolbar',
-    templateUrl: './network-blocks-toolbar.component.html',
-    styleUrls: ['./network-blocks-toolbar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'border-bottom flex-column' },
-    standalone: false
+  selector: 'mina-network-blocks-toolbar',
+  templateUrl: './network-blocks-toolbar.component.html',
+  styleUrls: ['./network-blocks-toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'border-bottom flex-column' },
+  standalone: false,
 })
-export class NetworkBlocksToolbarComponent extends StoreDispatcher implements OnInit {
-
+export class NetworkBlocksToolbarComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   activeFilters: string[] = [];
   allFilters: string[] = [];
   activeBlock: number;
   earliestBlock: number;
 
-  constructor(private router: Router) { super(); }
+  constructor(private router: Router) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToFiltersChanges();
@@ -47,7 +51,9 @@ export class NetworkBlocksToolbarComponent extends StoreDispatcher implements On
 
   getBlock(height: number): void {
     this.dispatch(NetworkBlocksSetActiveBlock, { height, fetchNew: true });
-    this.router.navigate([Routes.NETWORK, Routes.BLOCKS, height], { queryParamsHandling: 'merge' });
+    this.router.navigate([Routes.NETWORK, Routes.BLOCKS, height], {
+      queryParamsHandling: 'merge',
+    });
   }
 
   private listenToFiltersChanges(): void {
@@ -67,9 +73,14 @@ export class NetworkBlocksToolbarComponent extends StoreDispatcher implements On
       this.detect();
     });
 
-    this.select(selectNetworkBlocksEarliestBlock, (earliestBlock: number) => {
-      this.earliestBlock = earliestBlock;
-      this.detect();
-    }, filter(Boolean), filter(earliestBlock => this.earliestBlock !== earliestBlock));
+    this.select(
+      selectNetworkBlocksEarliestBlock,
+      (earliestBlock: number) => {
+        this.earliestBlock = earliestBlock;
+        this.detect();
+      },
+      filter(Boolean),
+      filter(earliestBlock => this.earliestBlock !== earliestBlock),
+    );
   }
 }

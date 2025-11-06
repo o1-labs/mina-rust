@@ -1,23 +1,25 @@
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { selectSnarksWorkPoolFilters, selectSnarksWorkPools } from '@snarks/work-pool/snarks-work-pool.state';
+import {
+  selectSnarksWorkPoolFilters,
+  selectSnarksWorkPools,
+} from '@snarks/work-pool/snarks-work-pool.state';
 import { SnarksWorkPoolToggleFilter } from '@snarks/work-pool/snarks-work-pool.actions';
 import { WorkPool } from '@shared/types/snarks/work-pool/work-pool.type';
 
 @Component({
-    selector: 'mina-snarks-work-pool-toolbar',
-    templateUrl: './snarks-work-pool-toolbar.component.html',
-    styleUrls: ['./snarks-work-pool-toolbar.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'fx-row-vert-cent h-lg border-bottom' },
-    standalone: false
+  selector: 'mina-snarks-work-pool-toolbar',
+  templateUrl: './snarks-work-pool-toolbar.component.html',
+  styleUrls: ['./snarks-work-pool-toolbar.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'fx-row-vert-cent h-lg border-bottom' },
+  standalone: false,
 })
-export class SnarksWorkPoolToolbarComponent extends StoreDispatcher implements OnInit {
-
-  readonly allFilters: string[] = [
-    'local',
-    'remote',
-  ];
+export class SnarksWorkPoolToolbarComponent
+  extends StoreDispatcher
+  implements OnInit
+{
+  readonly allFilters: string[] = ['local', 'remote'];
   activeFilters: string[] = [];
   total: number;
   available: number;
@@ -45,9 +47,10 @@ export class SnarksWorkPoolToolbarComponent extends StoreDispatcher implements O
       this.total = wp.length;
       this.committed = wp.filter((w: WorkPool) => w.commitment).length;
       this.snarked = wp.filter((w: WorkPool) => w.snark).length;
-      this.available = wp.filter((w: WorkPool) => !w.commitment && !w.snark).length;
+      this.available = wp.filter(
+        (w: WorkPool) => !w.commitment && !w.snark,
+      ).length;
       this.detect();
     });
-
   }
 }

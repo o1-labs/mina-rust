@@ -1,7 +1,20 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { ScanStateSetActiveLeaf, ScanStateToggleSidePanel } from '@snarks/scan-state/scan-state.actions';
-import { selectScanStateActiveLeaf, selectScanStateBlock } from '@snarks/scan-state/scan-state.state';
+import {
+  ScanStateSetActiveLeaf,
+  ScanStateToggleSidePanel,
+} from '@snarks/scan-state/scan-state.actions';
+import {
+  selectScanStateActiveLeaf,
+  selectScanStateBlock,
+} from '@snarks/scan-state/scan-state.state';
 import { ScanStateBlock } from '@shared/types/snarks/scan-state/scan-state-block.type';
 import { filter } from 'rxjs';
 import { Router } from '@angular/router';
@@ -14,14 +27,16 @@ import { getFeaturesConfig } from '@shared/constants/config';
 import { getWindow } from '@openmina/shared';
 
 @Component({
-    selector: 'mina-scan-state-side-panel',
-    templateUrl: './scan-state-side-panel.component.html',
-    styleUrls: ['./scan-state-side-panel.component.scss'],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-scan-state-side-panel',
+  templateUrl: './scan-state-side-panel.component.html',
+  styleUrls: ['./scan-state-side-panel.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class ScanStateSidePanelComponent extends StoreDispatcher implements OnInit {
-
+export class ScanStateSidePanelComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   activeStep: number = 0;
   block: ScanStateBlock = {} as ScanStateBlock;
   workingSnarkersLength: number;
@@ -33,9 +48,13 @@ export class ScanStateSidePanelComponent extends StoreDispatcher implements OnIn
 
   private overlayRef: OverlayRef;
 
-  constructor(private router: Router,
-              private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef) { super(); }
+  constructor(
+    private router: Router,
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.listenToBlockChange();
@@ -49,12 +68,19 @@ export class ScanStateSidePanelComponent extends StoreDispatcher implements OnIn
   }
 
   private listenToBlockChange(): void {
-    this.select(selectScanStateBlock, (block: ScanStateBlock) => {
-      this.block = block;
-      this.workingSnarkersLength = block.workingSnarkers.filter(s => s.leafs.length).length;
-      this.hasError = block.workingSnarkers.length !== this.workingSnarkersLength;
-      this.detect();
-    }, filter(Boolean));
+    this.select(
+      selectScanStateBlock,
+      (block: ScanStateBlock) => {
+        this.block = block;
+        this.workingSnarkersLength = block.workingSnarkers.filter(
+          s => s.leafs.length,
+        ).length;
+        this.hasError =
+          block.workingSnarkers.length !== this.workingSnarkersLength;
+        this.detect();
+      },
+      filter(Boolean),
+    );
   }
 
   private listenToActiveJobID(): void {
@@ -68,8 +94,9 @@ export class ScanStateSidePanelComponent extends StoreDispatcher implements OnIn
   }
 
   private listenToActiveNode(): void {
-    this.select(AppSelectors.activeNode, (node) => {
-      this.workingPoolEnabled = getFeaturesConfig(node).snarks?.includes('work-pool');
+    this.select(AppSelectors.activeNode, node => {
+      this.workingPoolEnabled =
+        getFeaturesConfig(node).snarks?.includes('work-pool');
       this.detect();
     });
   }
@@ -86,10 +113,13 @@ export class ScanStateSidePanelComponent extends StoreDispatcher implements OnIn
   }
 
   private routeToJobId(jobId: string | undefined): void {
-    this.router.navigate([Routes.SNARKS, Routes.SCAN_STATE, this.block.height], {
-      queryParamsHandling: 'merge',
-      queryParams: { jobId },
-    });
+    this.router.navigate(
+      [Routes.SNARKS, Routes.SCAN_STATE, this.block.height],
+      {
+        queryParamsHandling: 'merge',
+        queryParams: { jobId },
+      },
+    );
   }
 
   openNavDropdown(event: MouseEvent): void {
@@ -101,16 +131,19 @@ export class ScanStateSidePanelComponent extends StoreDispatcher implements OnIn
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       width: 200,
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(event.target as HTMLElement)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'top',
-          offsetY: 35,
-          offsetX: -12,
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'top',
+            offsetY: 35,
+            offsetX: -12,
+          },
+        ]),
     });
     event.stopPropagation();
 

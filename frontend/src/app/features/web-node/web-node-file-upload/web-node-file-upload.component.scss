@@ -1,4 +1,4 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .header {
   height: 56px;
@@ -42,15 +42,19 @@
       }
 
       .check_circle {
-        font-variation-settings: 'FILL' 1, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+        font-variation-settings:
+          'FILL' 1,
+          'wght' 300,
+          'GRAD' 0,
+          'opsz' 20;
       }
 
       &.special-node-bg {
-        background-color: openmina.$success-container;
+        background-color: mina-rust.$success-container;
       }
 
       .close-file:hover {
-        background-color: openmina.$base-divider !important;
+        background-color: mina-rust.$base-divider !important;
       }
     }
 
@@ -69,10 +73,9 @@
   }
 }
 
-
 button.whitey {
-  background-color: openmina.$base-background;
-  color: openmina.$base-primary;
+  background-color: mina-rust.$base-background;
+  color: mina-rust.$base-primary;
   filter: invert(1);
 
   &.disabled {
@@ -81,6 +84,6 @@ button.whitey {
   }
 
   &:hover:not(.disabled) {
-    background-color: openmina.$base-surface;
+    background-color: mina-rust.$base-surface;
   }
 }

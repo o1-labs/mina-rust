@@ -53,15 +53,9 @@ export const MENU_ITEMS: MenuItem[] = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: { class: 'flex-column flex-between h-100 pb-5' },
   standalone: true,
-  imports: [
-    OpenminaEagerSharedModule,
-    RouterLink,
-    NgIf,
-    NgForOf,
-  ],
+  imports: [OpenminaEagerSharedModule, RouterLink, NgIf, NgForOf],
 })
 export class MenuComponent extends ManualDetection implements OnInit {
-
   protected readonly TooltipPosition = TooltipPosition;
 
   menuItems: MenuItem[] = this.allowedMenuItems;
@@ -77,9 +71,13 @@ export class MenuComponent extends ManualDetection implements OnInit {
 
   private overlayRef: OverlayRef;
 
-  constructor(private overlay: Overlay,
-              private store: Store<MinaState>,
-              private themeService: ThemeSwitcherService) { super(); }
+  constructor(
+    private overlay: Overlay,
+    private store: Store<MinaState>,
+    private themeService: ThemeSwitcherService,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.currentTheme = this.themeService.activeTheme;
@@ -88,12 +86,13 @@ export class MenuComponent extends ManualDetection implements OnInit {
     this.listenToEnvBuild();
 
     let lastUrl: string;
-    this.store.select(getMergedRoute)
+    this.store
+      .select(getMergedRoute)
       .pipe(
         filter(Boolean),
         map((route: MergedRoute) => route.url),
         filter(url => url !== lastUrl),
-        tap(url => lastUrl = url),
+        tap(url => (lastUrl = url)),
         untilDestroyed(this),
       )
       .subscribe((url: string) => {
@@ -108,7 +107,8 @@ export class MenuComponent extends ManualDetection implements OnInit {
   }
 
   private listenToCollapsingMenu(): void {
-    this.store.select(AppSelectors.menu)
+    this.store
+      .select(AppSelectors.menu)
       .pipe(untilDestroyed(this))
       .subscribe((menu: AppMenu) => {
         this.menu = menu;
@@ -117,7 +117,8 @@ export class MenuComponent extends ManualDetection implements OnInit {
   }
 
   private listenToActiveNodeChange(): void {
-    this.store.select(AppSelectors.activeNode)
+    this.store
+      .select(AppSelectors.activeNode)
       .pipe(
         filter(node => !!node),
         untilDestroyed(this),
@@ -128,11 +129,9 @@ export class MenuComponent extends ManualDetection implements OnInit {
         this.detect();
       });
 
-    this.store.select(AppSelectors.activeNodeDetails)
-      .pipe(
-        filter(Boolean),
-        untilDestroyed(this),
-      )
+    this.store
+      .select(AppSelectors.activeNodeDetails)
+      .pipe(filter(Boolean), untilDestroyed(this))
       .subscribe(({ chainId, network }) => {
         this.chainId = chainId;
         this.network = network as MinaNetwork;
@@ -141,11 +140,9 @@ export class MenuComponent extends ManualDetection implements OnInit {
   }
 
   private listenToEnvBuild(): void {
-    this.store.select(AppSelectors.envBuild)
-      .pipe(
-        filter(Boolean),
-        untilDestroyed(this),
-      )
+    this.store
+      .select(AppSelectors.envBuild)
+      .pipe(filter(Boolean), untilDestroyed(this))
       .subscribe((env: AppEnvBuild | undefined) => {
         this.envBuild = env;
         this.detect();
@@ -153,8 +150,12 @@ export class MenuComponent extends ManualDetection implements OnInit {
   }
 
   private get allowedMenuItems(): MenuItem[] {
-    const features = getAvailableFeatures(this.activeNode || { features: {} } as any);
-    return MENU_ITEMS.filter((opt: MenuItem) => features.find(f => f === opt.name.toLowerCase().split(' ').join('-')));
+    const features = getAvailableFeatures(
+      this.activeNode || ({ features: {} } as any),
+    );
+    return MENU_ITEMS.filter((opt: MenuItem) =>
+      features.find(f => f === opt.name.toLowerCase().split(' ').join('-')),
+    );
   }
 
   showHideMenu(): void {
@@ -172,7 +173,9 @@ export class MenuComponent extends ManualDetection implements OnInit {
   }
 
   collapseMenu(): void {
-    this.store.dispatch(AppActions.changeMenuCollapsing({ isCollapsing: !this.menu.collapsed }));
+    this.store.dispatch(
+      AppActions.changeMenuCollapsing({ isCollapsing: !this.menu.collapsed }),
+    );
   }
 
   openEnvBuildModal(): void {
@@ -183,7 +186,11 @@ export class MenuComponent extends ManualDetection implements OnInit {
       height: '99%',
       maxWidth: 600,
       maxHeight: 460,
-      positionStrategy: this.overlay.position().global().centerVertically().centerHorizontally(),
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerVertically()
+        .centerHorizontally(),
     });
 
     const portal = new ComponentPortal(EnvBuildModalComponent);
@@ -191,10 +198,7 @@ export class MenuComponent extends ManualDetection implements OnInit {
     component.instance.envBuild = this.envBuild;
     component.instance.detect();
 
-    merge(
-      component.instance.close,
-      this.overlayRef.backdropClick(),
-    )
+    merge(component.instance.close, this.overlayRef.backdropClick())
       .pipe(take(1))
       .subscribe(() => this.overlayRef.dispose());
   }

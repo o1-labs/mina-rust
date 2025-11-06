@@ -11,14 +11,21 @@ enum MemoryResourcesActionTypes {
   MEMORY_RESOURCES_CLOSE = 'MEMORY_RESOURCES_CLOSE',
 }
 
-export const MEMORY_RESOURCES_GET = MemoryResourcesActionTypes.MEMORY_RESOURCES_GET;
-export const MEMORY_RESOURCES_GET_SUCCESS = MemoryResourcesActionTypes.MEMORY_RESOURCES_GET_SUCCESS;
-export const MEMORY_RESOURCES_SET_ACTIVE_RESOURCE = MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_ACTIVE_RESOURCE;
-export const MEMORY_RESOURCES_SET_GRANULARITY = MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_GRANULARITY;
-export const MEMORY_RESOURCES_SET_TREEMAP_VIEW = MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_TREEMAP_VIEW;
-export const MEMORY_RESOURCES_CLOSE = MemoryResourcesActionTypes.MEMORY_RESOURCES_CLOSE;
+export const MEMORY_RESOURCES_GET =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_GET;
+export const MEMORY_RESOURCES_GET_SUCCESS =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_GET_SUCCESS;
+export const MEMORY_RESOURCES_SET_ACTIVE_RESOURCE =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_ACTIVE_RESOURCE;
+export const MEMORY_RESOURCES_SET_GRANULARITY =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_GRANULARITY;
+export const MEMORY_RESOURCES_SET_TREEMAP_VIEW =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_SET_TREEMAP_VIEW;
+export const MEMORY_RESOURCES_CLOSE =
+  MemoryResourcesActionTypes.MEMORY_RESOURCES_CLOSE;
 
-export interface MemoryResourcesAction extends FeatureAction<MemoryResourcesActionTypes> {
+export interface MemoryResourcesAction
+  extends FeatureAction<MemoryResourcesActionTypes> {
   readonly type: MemoryResourcesActionTypes;
 }
 
@@ -54,12 +61,10 @@ export class MemoryResourcesClose implements MemoryResourcesAction {
   readonly type = MEMORY_RESOURCES_CLOSE;
 }
 
-
 export type MemoryResourcesActions =
   | MemoryResourcesGet
   | MemoryResourcesGetSuccess
   | MemoryResourcesSetActiveResource
   | MemoryResourcesSetGranularity
   | MemoryResourcesSetTreemapView
-  | MemoryResourcesClose
-  ;
+  | MemoryResourcesClose;

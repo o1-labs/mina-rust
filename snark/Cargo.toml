@@ -1,6 +1,6 @@
 [package]
 name = "snark"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 license = "Apache-2.0"
 
@@ -14,23 +14,23 @@ mina-signer = { workspace = true }
 o1-utils = { workspace = true }
 poly-commitment = { workspace = true }
 
-ark-ec.workspace = true
-ark-poly.workspace = true
-derive_more = "0.99.17"
-hex = "0.4"
+ark-ec = { workspace = true }
+ark-poly = { workspace = true }
+derive_more = { workspace = true }
+hex = { workspace = true }
 ledger = { workspace = true }
 mina-p2p-messages = { workspace = true }
-num-bigint = "0.4"
-once_cell = "1"
+num-bigint = { workspace = true }
+once_cell = { workspace = true }
 poseidon = { workspace = true }
-rand = "0.8"
-rayon = "1.5"
+rand = { workspace = true }
+rayon = { workspace = true }
 redux = { workspace = true }
-serde = { version = "1.0", features = ["rc"] }
-serde_json = { version = "1.0", features = ["float_roundtrip"] }
-sha2 = "0.10"
-strum_macros = "0.26"
-thiserror = "1.0.50"
+serde = { workspace = true, features = ["rc"] }
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+sha2 = { workspace = true }
+strum_macros = { workspace = true }
+thiserror = { workspace = true }
 
 mina-core = { path = "../core" }
 
@@ -41,4 +41,4 @@ linkme = { workspace = true }
 redux = { workspace = true, features = ["serializable_callbacks"] }
 
 [target.'cfg(target_family = "wasm")'.dev-dependencies]
-wasm-bindgen-test = "0.3.0"
+wasm-bindgen-test = { workspace = true }

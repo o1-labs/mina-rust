@@ -12,16 +12,24 @@ export interface NetworkNodeDhtState {
   sidePanelWidth: number;
 }
 
-const select = <T>(selector: (state: NetworkNodeDhtState) => T): MemoizedSelector<MinaState, T> => createSelector(
-  selectNetworkNodeDhtState,
-  selector,
-);
+const select = <T>(
+  selector: (state: NetworkNodeDhtState) => T,
+): MemoizedSelector<MinaState, T> =>
+  createSelector(selectNetworkNodeDhtState, selector);
 
-export const selectNetworkNodeDhtPeers = select((network: NetworkNodeDhtState): NetworkNodeDhtPeer[] => network.peers);
-export const selectNetworkNodeDhtActivePeer = select((network: NetworkNodeDhtState): NetworkNodeDhtPeer => network.activePeer);
-export const selectNetworkNodeDhtKeyPeersBucketsOpenSidePanel = select((network: NetworkNodeDhtState): [string, NetworkNodeDhtPeer[], NetworkNodeDhtBucket[], boolean] => [
-  network.thisKey,
-  network.peers,
-  network.buckets,
-  !!network.activePeer,
-]);
+export const selectNetworkNodeDhtPeers = select(
+  (network: NetworkNodeDhtState): NetworkNodeDhtPeer[] => network.peers,
+);
+export const selectNetworkNodeDhtActivePeer = select(
+  (network: NetworkNodeDhtState): NetworkNodeDhtPeer => network.activePeer,
+);
+export const selectNetworkNodeDhtKeyPeersBucketsOpenSidePanel = select(
+  (
+    network: NetworkNodeDhtState,
+  ): [string, NetworkNodeDhtPeer[], NetworkNodeDhtBucket[], boolean] => [
+    network.thisKey,
+    network.peers,
+    network.buckets,
+    !!network.activePeer,
+  ],
+);

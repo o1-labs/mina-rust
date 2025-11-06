@@ -1,5 +1,5 @@
 export interface FuzzingLineCounter {
-  colStart: number
-  colEnd: number
-  count: number
+  colStart: number;
+  colEnd: number;
+  count: number;
 }

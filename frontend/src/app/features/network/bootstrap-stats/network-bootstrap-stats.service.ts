@@ -11,27 +11,42 @@ import { ONE_BILLION } from '@openmina/shared';
   providedIn: 'root',
 })
 export class NetworkBootstrapStatsService {
-
-  constructor(private rust: RustService) { }
+  constructor(private rust: RustService) {}
 
   getDhtBootstrapStats(): Observable<NetworkBootstrapStatsRequest[]> {
-    return this.rust.get<BootstrapStatsResponse>('/discovery/bootstrap_stats').pipe(
-      map((response: BootstrapStatsResponse) => this.mapBootstrapStats(response)),
-    );
+    return this.rust
+      .get<BootstrapStatsResponse>('/discovery/bootstrap_stats')
+      .pipe(
+        map((response: BootstrapStatsResponse) =>
+          this.mapBootstrapStats(response),
+        ),
+      );
   }
 
-  private mapBootstrapStats(response: BootstrapStatsResponse): NetworkBootstrapStatsRequest[] {
+  private mapBootstrapStats(
+    response: BootstrapStatsResponse,
+  ): NetworkBootstrapStatsRequest[] {
     return response.requests.map((request: BootstrapStatsRequest) => ({
       type: request.type,
       address: request.address,
       start: request.start,
       finish: request.finish,
-      durationInSecs: request.finish ? Math.ceil((request.finish - request.start) / ONE_BILLION) : undefined,
+      durationInSecs: request.finish
+        ? Math.ceil((request.finish - request.start) / ONE_BILLION)
+        : undefined,
       peerId: request.peer_id,
       error: request.error,
       typeErr: request.type + (request.error ? `- ${request.error}` : ''),
-      existingPeers: request.closest_peers?.filter(([, type]: [string, NetworkBootstrapPeerType]) => type === NetworkBootstrapPeerType.EXISTING).length || 0,
-      newPeers: request.closest_peers?.filter(([, type]: [string, NetworkBootstrapPeerType]) => type === NetworkBootstrapPeerType.NEW).length || 0,
+      existingPeers:
+        request.closest_peers?.filter(
+          ([, type]: [string, NetworkBootstrapPeerType]) =>
+            type === NetworkBootstrapPeerType.EXISTING,
+        ).length || 0,
+      newPeers:
+        request.closest_peers?.filter(
+          ([, type]: [string, NetworkBootstrapPeerType]) =>
+            type === NetworkBootstrapPeerType.NEW,
+        ).length || 0,
       closestPeers: request.closest_peers || [],
     }));
   }

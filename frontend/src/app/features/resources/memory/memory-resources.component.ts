@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import {
   MemoryResourcesClose,
@@ -13,19 +19,22 @@ import { selectMemoryResourcesState } from '@resources/resources.state';
 import { HorizontalMenuComponent } from '@openmina/shared';
 
 @Component({
-    selector: 'app-memory-resources',
-    templateUrl: './memory-resources.component.html',
-    styleUrls: ['./memory-resources.component.scss'],
-    host: { class: 'flex-column h-100 pb-10' },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'app-memory-resources',
+  templateUrl: './memory-resources.component.html',
+  styleUrls: ['./memory-resources.component.scss'],
+  host: { class: 'flex-column h-100 pb-10' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class MemoryResourcesComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class MemoryResourcesComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   activeResource: MemoryResource;
   breadcrumbs: MemoryResource[];
 
-  @ViewChild(HorizontalMenuComponent) private horizontalMenu: HorizontalMenuComponent;
+  @ViewChild(HorizontalMenuComponent)
+  private horizontalMenu: HorizontalMenuComponent;
 
   ngOnInit(): void {
     this.listenToActiveNodeChange();
@@ -33,19 +42,27 @@ export class MemoryResourcesComponent extends StoreDispatcher implements OnInit,
   }
 
   private listenToActiveNodeChange(): void {
-    this.select(AppSelectors.activeNode, () => {
-      this.dispatch(MemoryResourcesGet);
-    }, filter(Boolean));
+    this.select(
+      AppSelectors.activeNode,
+      () => {
+        this.dispatch(MemoryResourcesGet);
+      },
+      filter(Boolean),
+    );
   }
 
   private listenToActiveResource(): void {
-    this.select(selectMemoryResourcesState, (state: MemoryResourcesState) => {
-      this.activeResource = state.activeResource;
-      this.breadcrumbs = state.breadcrumbs;
-      this.detect();
-      this.horizontalMenu.checkView();
-      this.horizontalMenu.scrollRight();
-    }, filter(s => !!s.resource));
+    this.select(
+      selectMemoryResourcesState,
+      (state: MemoryResourcesState) => {
+        this.activeResource = state.activeResource;
+        this.breadcrumbs = state.breadcrumbs;
+        this.detect();
+        this.horizontalMenu.checkView();
+        this.horizontalMenu.scrollRight();
+      },
+      filter(s => !!s.resource),
+    );
   }
 
   setActiveResource(breadcrumb: MemoryResource): void {

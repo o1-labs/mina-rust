@@ -1,6 +1,6 @@
 [package]
 name = "cli"
-version = "0.17.0"
+version = "0.18.0"
 edition = "2021"
 license = "Apache-2.0"
 
@@ -9,43 +9,42 @@ name = "mina"
 path = "src/main.rs"
 
 [dependencies]
-hex = "0.4"
+anyhow = { workspace = true }
+backtrace = { workspace = true }
+bytes = { workspace = true }
+clap = { workspace = true, features = ["derive", "env"] }
+console = { workspace = true }
+dialoguer = { workspace = true }
+hex = { workspace = true }
 ledger = { workspace = true }
-libp2p-identity = { version = "=0.2.7", features = ["peerid"] }
-mina-p2p-messages = { workspace = true }
-num_cpus = "1.0"
-rand = "0.8.0"
-rayon = "1.5"
-redux = { workspace = true }
-serde = "1.0.158"
-sha2 = "0.10"
-tokio = { version = "1.26.0" }
-vrf = { workspace = true }
-
-anyhow = "1.0.81"
-clap = { version = "4.3", features = ["derive", "env"] }
-console = "0.15.5"
-reqwest = { version = "0.11.24", features = ["blocking", "json"] }
-time = { version = "0.3", features = ["formatting", "macros", "parsing"] }
-
-backtrace = "0.3"
-bytes = "1.4.0"
-dialoguer = "0.10.4"
+libp2p-identity = { workspace = true, features = ["peerid"] }
 mina-core = { path = "../core" }
-mina-node-account = { path = "../node/account" }
+mina-node-account = { workspace = true }
 mina-node-native = { path = "../node/native" }
-nix = { version = "0.26.2", features = ["signal"] }
+mina-p2p-messages = { workspace = true }
+mina-signer = { workspace = true }
+nix = { workspace = true, features = ["signal"] }
 node = { path = "../node", features = ["replay"] }
-serde_json = "1.0.107"
-shellexpand = "3.1.0"
-tracing = "0.1.37"
+num_cpus = { workspace = true }
+rand = { workspace = true }
+rayon = { workspace = true }
+redux = { workspace = true }
+reqwest = { workspace = true, features = ["blocking", "json"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+sha2 = { workspace = true }
+shellexpand = { workspace = true }
+time = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+vrf = { workspace = true }
 
 [target.'cfg(not(target_family = "wasm"))'.dependencies]
 redux = { workspace = true, features = ["serializable_callbacks"] }
-tikv-jemallocator = "0.6"
+tikv-jemallocator = { workspace = true }
 
 [dev-dependencies]
-tempfile = "3.8.0"
+tempfile = { workspace = true }
 
 [features]
 default = ["p2p-libp2p", "p2p-webrtc"]

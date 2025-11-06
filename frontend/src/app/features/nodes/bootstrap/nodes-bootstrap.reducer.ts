@@ -21,14 +21,18 @@ const initialState: NodesBootstrapState = {
   },
 };
 
-export function reducer(state: NodesBootstrapState = initialState, action: NodesBootstrapActions): NodesBootstrapState {
+export function reducer(
+  state: NodesBootstrapState = initialState,
+  action: NodesBootstrapActions,
+): NodesBootstrapState {
   switch (action.type) {
-
     case NODES_BOOTSTRAP_GET_NODES_SUCCESS: {
       return {
         ...state,
         nodes: sortNodes(action.payload, state.sort),
-        activeNode: state.activeNode ? action.payload.find(node => node.index === state.activeNode.index) : undefined,
+        activeNode: state.activeNode
+          ? action.payload.find(node => node.index === state.activeNode.index)
+          : undefined,
       };
     }
 
@@ -64,6 +68,9 @@ export function reducer(state: NodesBootstrapState = initialState, action: Nodes
   }
 }
 
-function sortNodes(node: NodesBootstrapNode[], tableSort: TableSort<NodesBootstrapNode>): NodesBootstrapNode[] {
+function sortNodes(
+  node: NodesBootstrapNode[],
+  tableSort: TableSort<NodesBootstrapNode>,
+): NodesBootstrapNode[] {
   return sort<NodesBootstrapNode>(node, tableSort, ['bestTip']);
 }

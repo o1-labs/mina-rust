@@ -11,15 +11,23 @@ enum NetworkConnectionsActionTypes {
   NETWORK_CONNECTIONS_PAUSE = 'NETWORK_CONNECTIONS_PAUSE',
 }
 
-export const NETWORK_CONNECTIONS_INIT = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_INIT;
-export const NETWORK_CONNECTIONS_CLOSE = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_CLOSE;
-export const NETWORK_CONNECTIONS_GET_CONNECTIONS = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GET_CONNECTIONS;
-export const NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS;
-export const NETWORK_CONNECTIONS_SELECT_CONNECTION = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_SELECT_CONNECTION;
-export const NETWORK_CONNECTIONS_GO_LIVE = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GO_LIVE;
-export const NETWORK_CONNECTIONS_PAUSE = NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_PAUSE;
+export const NETWORK_CONNECTIONS_INIT =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_INIT;
+export const NETWORK_CONNECTIONS_CLOSE =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_CLOSE;
+export const NETWORK_CONNECTIONS_GET_CONNECTIONS =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GET_CONNECTIONS;
+export const NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS;
+export const NETWORK_CONNECTIONS_SELECT_CONNECTION =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_SELECT_CONNECTION;
+export const NETWORK_CONNECTIONS_GO_LIVE =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_GO_LIVE;
+export const NETWORK_CONNECTIONS_PAUSE =
+  NetworkConnectionsActionTypes.NETWORK_CONNECTIONS_PAUSE;
 
-export interface NetworkConnectionsAction extends FeatureAction<NetworkConnectionsActionTypes> {
+export interface NetworkConnectionsAction
+  extends FeatureAction<NetworkConnectionsActionTypes> {
   readonly type: NetworkConnectionsActionTypes;
 }
 
@@ -31,17 +39,23 @@ export class NetworkConnectionsClose implements NetworkConnectionsAction {
   readonly type = NETWORK_CONNECTIONS_CLOSE;
 }
 
-export class NetworkConnectionsGetConnections implements NetworkConnectionsAction {
+export class NetworkConnectionsGetConnections
+  implements NetworkConnectionsAction
+{
   readonly type = NETWORK_CONNECTIONS_GET_CONNECTIONS;
 }
 
-export class NetworkConnectionsGetConnectionsSuccess implements NetworkConnectionsAction {
+export class NetworkConnectionsGetConnectionsSuccess
+  implements NetworkConnectionsAction
+{
   readonly type = NETWORK_CONNECTIONS_GET_CONNECTIONS_SUCCESS;
 
   constructor(public payload: NetworkConnection[]) {}
 }
 
-export class NetworkConnectionsSelectConnection implements NetworkConnectionsAction {
+export class NetworkConnectionsSelectConnection
+  implements NetworkConnectionsAction
+{
   readonly type = NETWORK_CONNECTIONS_SELECT_CONNECTION;
 
   constructor(public payload: NetworkConnection) {}
@@ -62,5 +76,4 @@ export type NetworkConnectionsActions =
   | NetworkConnectionsGetConnectionsSuccess
   | NetworkConnectionsSelectConnection
   | NetworkConnectionsGoLive
-  | NetworkConnectionsPause
-  ;
+  | NetworkConnectionsPause;

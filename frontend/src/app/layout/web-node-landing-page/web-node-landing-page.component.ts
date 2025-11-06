@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
 import { AppSelectors } from '@app/app.state';
 import { filter } from 'rxjs';
@@ -10,8 +16,10 @@ import { filter } from 'rxjs';
   styleUrl: './web-node-landing-page.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class WebNodeLandingPageComponent extends StoreDispatcher implements OnInit {
-
+export class WebNodeLandingPageComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   @Output() goToNode: EventEmitter<void> = new EventEmitter<void>();
   @Output() stopRequests: EventEmitter<void> = new EventEmitter<void>();
 
@@ -20,8 +28,12 @@ export class WebNodeLandingPageComponent extends StoreDispatcher implements OnIn
   }
 
   private listenToActiveNode(): void {
-    this.select(AppSelectors.activeNode, () => {
-      this.stopRequests.emit();
-    }, filter(Boolean));
+    this.select(
+      AppSelectors.activeNode,
+      () => {
+        this.stopRequests.emit();
+      },
+      filter(Boolean),
+    );
   }
 }

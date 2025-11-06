@@ -1,7 +1,15 @@
-import { ChangeDetectionStrategy, Component, OnInit, TemplateRef, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  TemplateRef,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import {
   getMergedRoute,
-  HorizontalMenuComponent, isDesktop,
+  HorizontalMenuComponent,
+  isDesktop,
   MergedRoute,
   OpenminaEagerSharedModule,
   removeParamsFromURL,
@@ -24,19 +32,14 @@ import { EnvBuildModalComponent } from '@app/layout/env-build-modal/env-build-mo
 
 @UntilDestroy()
 @Component({
-    selector: 'mina-menu-tabs',
-    imports: [
-        HorizontalMenuComponent,
-        RouterLink,
-        OpenminaEagerSharedModule,
-    ],
-    templateUrl: './menu-tabs.component.html',
-    styleUrl: './menu-tabs.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'flex-column w-100' }
+  selector: 'mina-menu-tabs',
+  imports: [HorizontalMenuComponent, RouterLink, OpenminaEagerSharedModule],
+  templateUrl: './menu-tabs.component.html',
+  styleUrl: './menu-tabs.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { class: 'flex-column w-100' },
 })
 export class MenuTabsComponent extends StoreDispatcher implements OnInit {
-
   menuItems: MenuItem[] = this.allowedMenuItems;
   activeRoute: string;
   activeNode: MinaNode;
@@ -52,9 +55,13 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
 
   private overlayRef: OverlayRef;
 
-  constructor(private overlay: Overlay,
-              private viewContainerRef: ViewContainerRef,
-              private themeService: ThemeSwitcherService) {super();}
+  constructor(
+    private overlay: Overlay,
+    private viewContainerRef: ViewContainerRef,
+    private themeService: ThemeSwitcherService,
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.currentTheme = this.themeService.activeTheme;
@@ -63,12 +70,13 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
     this.listenToNetwork();
 
     let lastUrl: string;
-    this.store.select(getMergedRoute)
+    this.store
+      .select(getMergedRoute)
       .pipe(
         filter(Boolean),
         map((route: MergedRoute) => route.url),
         filter(url => url !== lastUrl),
-        tap(url => lastUrl = url),
+        tap(url => (lastUrl = url)),
         untilDestroyed(this),
       )
       .subscribe((url: string) => {
@@ -86,18 +94,25 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
     this.currentTheme = this.themeService.activeTheme;
   }
 
-
   private listenToActiveNodeChange(): void {
-    this.select(AppSelectors.activeNode, (node: MinaNode) => {
-      this.activeNode = node;
-      this.menuItems = this.allowedMenuItems;
-      this.detect();
-    }, filter(node => !!node));
+    this.select(
+      AppSelectors.activeNode,
+      (node: MinaNode) => {
+        this.activeNode = node;
+        this.menuItems = this.allowedMenuItems;
+        this.detect();
+      },
+      filter(node => !!node),
+    );
   }
 
   private get allowedMenuItems(): MenuItem[] {
-    const features = getAvailableFeatures(this.activeNode || { features: {} } as any);
-    return MENU_ITEMS.filter((opt: MenuItem) => features.find(f => f === opt.name.toLowerCase().split(' ').join('-')));
+    const features = getAvailableFeatures(
+      this.activeNode || ({ features: {} } as any),
+    );
+    return MENU_ITEMS.filter((opt: MenuItem) =>
+      features.find(f => f === opt.name.toLowerCase().split(' ').join('-')),
+    );
   }
 
   private listenToEnvBuild(): void {
@@ -108,11 +123,15 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
   }
 
   private listenToNetwork(): void {
-    this.select(AppSelectors.activeNodeDetails, ({ chainId, network }) => {
-      this.chainId = chainId;
-      this.network = network as MinaNetwork;
-      this.detect();
-    }, filter(Boolean));
+    this.select(
+      AppSelectors.activeNodeDetails,
+      ({ chainId, network }) => {
+        this.chainId = chainId;
+        this.network = network as MinaNetwork;
+        this.detect();
+      },
+      filter(Boolean),
+    );
   }
 
   openMore(anchor: HTMLDivElement): void {
@@ -124,16 +143,19 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       width: window.innerWidth - 6,
-      positionStrategy: this.overlay.position()
+      positionStrategy: this.overlay
+        .position()
         .flexibleConnectedTo(anchor)
-        .withPositions([{
-          originX: 'start',
-          originY: 'top',
-          overlayX: 'start',
-          overlayY: 'bottom',
-          offsetY: -10,
-          offsetX: -4,
-        }]),
+        .withPositions([
+          {
+            originX: 'start',
+            originY: 'top',
+            overlayX: 'start',
+            overlayY: 'bottom',
+            offsetY: -10,
+            offsetX: -4,
+          },
+        ]),
     });
 
     const portal = new TemplatePortal(this.dropdown, this.viewContainerRef);
@@ -153,7 +175,11 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
       backdropClass: 'openmina-backdrop',
       width: 'calc(100% - 8px)',
       height: 'calc(100% - 8px)',
-      positionStrategy: this.overlay.position().global().centerVertically().centerHorizontally(),
+      positionStrategy: this.overlay
+        .position()
+        .global()
+        .centerVertically()
+        .centerHorizontally(),
     });
 
     const portal = new ComponentPortal(EnvBuildModalComponent);
@@ -161,13 +187,8 @@ export class MenuTabsComponent extends StoreDispatcher implements OnInit {
     component.instance.envBuild = this.envBuild;
     component.instance.detect();
 
-    merge(
-      component.instance.close,
-      this.overlayRef.backdropClick(),
-    )
+    merge(component.instance.close, this.overlayRef.backdropClick())
       .pipe(take(1))
       .subscribe(() => this.overlayRef.dispose());
-
   }
-
 }

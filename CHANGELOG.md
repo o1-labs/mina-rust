@@ -7,7 +7,161 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
-## v0.17.0
+## [0.18.0] - 2025-11-04
+
+### OCaml node
+
+- Update the CI and code to compare with the latest release 3.3.0-alpha1-6929a7e
+  ([#1454](https://github.com/o1-labs/mina-rust/pull/1454))
+
+### Added
+
+- **Website**: Update Docusaurus to version 3.9.2 from 3.9.1 for latest
+  features and bug fixes
+  ([#1583](https://github.com/o1-labs/mina-rust/pull/1583))
+- **Website**: Migrate deprecated `onBrokenMarkdownLinks` configuration option
+  to the new `markdown.hooks.onBrokenMarkdownLinks` format for Docusaurus v4
+  compatibility ([#1583](https://github.com/o1-labs/mina-rust/pull/1583))
+- **Development Tools**: Add `setup-taplo` and `setup` Makefile targets to
+  simplify development environment setup. Update `release-validate` script to
+  test only packages that are tested in CI, avoiding untested packages with
+  failing tests
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
+- **CI**: Add validation workflows for block producer nodes infrastructure,
+  including connectivity and API capability testing similar to plain nodes
+  ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
+- **Website**: Add block producer nodes documentation page with GraphQL query
+  examples for latest canonical block and transaction information. Include note
+  that block production functionality is under development
+  ([#1571](https://github.com/o1-labs/mina-rust/pull/1571))
+- **CLI**: add GraphQL introspection and execution commands under `mina
+  internal graphql`. Three new commands enable dynamic endpoint discovery
+  (`list`), detailed schema inspection (`inspect <endpoint>`), and arbitrary
+  query execution (`run [query]`) with support for multiple input methods
+  (command line, stdin, file) and variables. All commands use GraphQL
+  introspection API for dynamic discovery without hardcoded endpoints. CI tests
+  validate commands against o1Labs infrastructure
+  ([#1565](https://github.com/o1-labs/mina-rust/pull/1565))
+- **CI**: add devnet and mainnet Caml nodes to remote GraphQL test suite to
+  ensure compatibility between Rust and OCaml implementations
+  ([#1542](https://github.com/o1-labs/mina-rust/pull/1542))
+- **CI**: add workflow to test GraphQL queries with the OCaml node
+  ([#1465](https://github.com/o1-labs/mina-rust/pull/1465))
+- **Website**: add o1Labs infrastructure entry, describing the nodes managed by
+  o1Labs, including seed and plain nodes
+  ([#1430](https://github.com/o1-labs/mina-rust/pull/1430)). The infrastructure
+  is tested accordingly in the CI at every push.
+- **Website**: add comparison list of implemented and missing GraphQL endpoints
+  ([#1486](https://github.com/o1-labs/mina-rust/pull/1466))
+- **Frontend**: use a Makefile for scripts in package.json
+  ([#1468](https://github.com/o1-labs/mina-rust/pull/1468))
+- **Frontend**: define one Makefile target per build configuration
+  ([#1469](https://github.com/o1-labs/mina-rust/pull/1469))
+- **Frontend**: revamping the Docker image, and provide a better support and
+  documentation for the different configuration.
+  ([#1473](https://github.com/o1-labs/mina-rust/pull/1473))
+- **Website**: add "Join devnet" page with instructions for community members to
+  join the devnet program and test the Rust node implementation
+  ([#1425](https://github.com/o1-labs/mina-rust/issues/1425))
+- **Website**: add documentation guidelines
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1493))
+- **Website**: add search bar with Algolia
+  ([#1493](https://github.com/o1-labs/mina-rust/pull/1509))
+- **Ledger/ZkAppCommand**: show how to build a ZkAppCommand from scratch, with
+  dummy values ([#1514](https://github.com/o1-labs/mina-rust/pull/1514))
+- **CI/Documentation**: add a script to check the references to the OCaml code
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525)).
+- **mina-node-account**: move tests into `node/account/tests`, document the
+  library and run the tests in CI
+  ([#1540](https://github.com/o1-labs/mina-rust/pull/1540)).
+- **Ledger**: add tests to verify some properties transaction application
+  should have on the ledger. Also, document the different types of transactions
+  that can be used to modify the ledger
+([#1541](https://github.com/o1-labs/mina-rust/pull/1541))
+- **CLI**: introduce a subcommand `wallet` to be able to send transactions, get
+  the public key and address from the secret key, get balance and generate
+  wallets from the CLI. End-to-end tests are added in the CI and a new target
+  `make test-wallet` has been added. This focuses on basic payments
+  ([#1543](https://github.com/o1-labs/mina-rust/pull/1543))
+- **Makefile**: add targets to only build and run tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
+- **CI**: add a step in tests to run the unit/integration tests of the package
+  `mina-node-native` ([#1549](https://github.com/o1-labs/mina-rust/pull/1549))
+- **Tests**: add account creation test cases for payment and coinbase
+  transactions, verifying correct handling of account creation fees during
+  the first pass of transaction application
+  ([#1581](https://github.com/o1-labs/mina-rust/pull/1581))
+- **tools**: remove stack allocation from tools
+  ([#1576](https://github.com/o1-labs/mina-rust/pull/1576))
+
+### Changed
+
+- **Development Tools**: Update taplo configuration to exclude `node_modules` and
+  `target` directories from TOML formatting checks
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
+- **Build System**: Move salsa-simple from tools/ to vendor/ and alphabetize
+  workspace members. salsa-simple is a vendored XSalsa20 implementation with
+  serde support, not a command-line tool
+  ([#1580](https://github.com/o1-labs/mina-rust/pull/1580))
+- **CI**: Speed up CI by decoupling test runs from full build completion.
+  Created dedicated single-platform build jobs that run only on ubuntu-22.04
+  to produce artifacts needed for testing, allowing tests to start as soon as
+  those builds complete instead of waiting for all cross-platform matrix builds
+  ([#1427](https://github.com/o1-labs/mina-rust/issues/1427))
+- **CI**: Update CI to test on specific macOS versions (13, 14, 15) instead of
+  only macos-latest, providing better coverage across macOS versions that
+  developers are using ([#1421](https://github.com/o1-labs/mina-rust/pull/1421))
+- **Website**: update GraphQL API page by extracting all endpoints and run it in
+  CI, at every push, with the o1Labs managed plain nodes
+  ([#1421](https://github.com/o1-labs/mina-rust/pull/1421)).
+- **Frontend**: rename all occurences of openmina.scss to mina-rust.scss
+  ([#1467](https://github.com/o1-labs/mina-rust/pull/1467))
+- **Website**: bump up to docusaurus 3.9.1
+  ([#1500](https://github.com/o1-labs/mina-rust/pull/1500))
+- **Dependencies**: move all dependencies to the workspace Cargo.toml
+  ([#1513](https://github.com/o1-labs/mina-rust/pull/1513))
+- **scan_state**: refactorize `transaction_logic.rs` in smaller modules
+  ([#1515](https://github.com/o1-labs/mina-rust/pull/1515))
+- **CI/tests**: run the step `build-wasm` for each push and PR to `develop`
+  ([#1497](https://github.com/o1-labs/mina-rust/pull/1497))
+- **ledger/scan_state/transaction_logic**: update OCaml references in `mod.rs`
+  ([#1525](https://github.com/o1-labs/mina-rust/pull/1525))
+- **ledger/scan_state/transaction_logic**: move submodule `for_tests` into a
+  new file `zkapp_command/for_tests.rs`
+  ([#1527](https://github.com/o1-labs/mina-rust/pull/1527)).
+- **Ledger/scan-state/transaction-logic**: split
+  `ledger::scan_state::transaction_logic::zkapp_command` into submodules in a
+  new directory `zkapp_command`
+  ([#1528](https://github.com/o1-labs/mina-rust/pull/1528/))
+- **Codebase**: remove unused `ledger/src/poseidon/fp.rs` file
+  ([#1538](https://github.com/o1-labs/mina-rust/pull/1538))
+- **Ledger**: convert unused binary to proper criterion benchmarks. Benchmarks
+  are now built as part of the existing build workflows across all platforms,
+  reusing build caches for efficiency
+  ([#1539](https://github.com/o1-labs/mina-rust/pull/1539))
+- **Ledger**: document, clean and add tests for the crate `mina-tree`
+  ([#1531](https://github.com/o1-labs/mina-rust/pull/1531).
+- **GraphQL**: fixed parsing when neither signature nor proof is given.
+  See issue [#1464](https://github.com/o1-labs/mina-rust/issues/1464).
+  Fixed in [#1546](https://github.com/o1-labs/mina-rust/pull/1546/)
+  ([#1546](https://github.com/o1-labs/mina-rust/pull/1546))
+- **transactions**: fixed a typo in `p2p_request_transactions_if_needed` where snark count was used instead of transaction count
+  ([#1563](https://github.com/o1-labs/mina-rust/pull/1563)).
+- **tools**: remove heartbeat-processors
+  ([#1577](https://github.com/o1-labs/mina-rust/pull/1577))
+- **tools**: remove producer-dashboard
+  ([#1578](https://github.com/o1-labs/mina-rust/pull/1578))
+- **CI**: build benches for each PR with the workflow `tests`, and fix the step
+  in the workflow `build` by adding the missing SQLx/SQLite setup
+  ([#1548](https://github.com/o1-labs/mina-rust/pull/1548))
+
+### Fixed
+
+- **Development Tools**: Fix `fix-trailing-whitespace` Makefile target to work
+  correctly on macOS by removing conflicting `-e` flag in sed command
+  ([#1573](https://github.com/o1-labs/mina-rust/pull/1573))
+
+## [0.17.0] - 2025-04-08
 
 ### OCaml node
 
@@ -526,7 +680,9 @@ First public release.
 - Alpha version of the node which can connect and syncup to the berkeleynet network, and keep applying new blocks to maintain consensus state and ledger up to date.
 - Web-based frontend for the node.
 
-[Unreleased]: https://github.com/openmina/openmina/compare/v0.16.0...develop
+[Unreleased]: https://github.com/openmina/openmina/compare/v0.18.0...develop
+[0.18.0]: https://github.com/openmina/openmina/compare/v0.17.0...v0.18.0
+[0.17.0]: https://github.com/openmina/openmina/compare/v0.16.0...v0.17.0
 [0.16.0]: https://github.com/openmina/openmina/compare/v0.15.0...v0.16.0
 [0.15.0]: https://github.com/openmina/openmina/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/openmina/openmina/compare/v0.13.0...v0.14.0

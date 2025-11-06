@@ -2268,7 +2268,7 @@ pub mod transaction_snark {
             transaction_logic::{checked_cons_signed_command_payload, Coinbase},
         },
         sparse_ledger::SparseLedger,
-        zkapps::intefaces::{SignedAmountBranchParam, SignedAmountInterface},
+        zkapps::interfaces::{SignedAmountBranchParam, SignedAmountInterface},
         AccountId, PermissionTo, PermsConst, Timing, TimingAsRecordChecked, ToInputs,
     };
     use ::poseidon::hash::{params::MINA_PROTO_STATE_BODY, Inputs, LazyParam};

@@ -1,9 +1,14 @@
 @if (supported) {
   @if (showFileUpload) {
-    <mina-web-node-file-upload (startWebNode)="showFileUpload = false"></mina-web-node-file-upload>
+    <mina-web-node-file-upload
+      (startWebNode)="showFileUpload = false"
+    ></mina-web-node-file-upload>
   } @else {
     <mina-web-node-initialization></mina-web-node-initialization>
   }
 } @else {
-  <mina-web-node-not-supported [isPhone]="isPhone" (bypassUnsupportedDevice)="supported = true"></mina-web-node-not-supported>
+  <mina-web-node-not-supported
+    [isPhone]="isPhone"
+    (bypassUnsupportedDevice)="supported = true"
+  ></mina-web-node-not-supported>
 }

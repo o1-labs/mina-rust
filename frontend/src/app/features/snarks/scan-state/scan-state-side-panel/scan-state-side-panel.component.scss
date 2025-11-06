@@ -1,14 +1,14 @@
-@use 'openmina';
+@use 'mina-rust';
 
 .job {
   min-width: 110px;
 
   &.error-job {
-    background-color: openmina.$warn-container;
-    color: openmina.$warn-secondary;
+    background-color: mina-rust.$warn-container;
+    color: mina-rust.$warn-secondary;
 
     &:hover {
-      color: openmina.$warn-primary;
+      color: mina-rust.$warn-primary;
     }
   }
 

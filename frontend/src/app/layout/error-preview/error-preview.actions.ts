@@ -9,7 +9,8 @@ enum ErrorPreviewActionTypes {
 export const ADD_ERROR = ErrorPreviewActionTypes.ADD_ERROR;
 export const MARK_ERRORS_AS_SEEN = ErrorPreviewActionTypes.MARK_ERRORS_AS_SEEN;
 
-export interface ErrorPreviewAction extends FeatureAction<ErrorPreviewActionTypes> {
+export interface ErrorPreviewAction
+  extends FeatureAction<ErrorPreviewActionTypes> {
   readonly type: ErrorPreviewActionTypes;
 }
 
@@ -23,7 +24,4 @@ export class MarkErrorsAsSeen implements ErrorPreviewAction {
   readonly type = MARK_ERRORS_AS_SEEN;
 }
 
-export type ErrorPreviewActions =
-  | ErrorAdd
-  | MarkErrorsAsSeen
-  ;
+export type ErrorPreviewActions = ErrorAdd | MarkErrorsAsSeen;

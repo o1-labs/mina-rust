@@ -8,14 +8,19 @@ import { isMobile, ONE_BILLION, ONE_THOUSAND } from '@openmina/shared';
 import { getTimeDiff } from '@shared/helpers/date.helper';
 
 @Component({
-    selector: 'mina-block-production-won-slots-epoch',
-    templateUrl: './block-production-won-slots-epoch.component.html',
-    styleUrl: './block-production-won-slots-epoch.component.scss',
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    host: { class: 'h-lg pl-12 pr-12 f-600 fx-row-vert-cent border-bottom flex-between' },
-    standalone: false
+  selector: 'mina-block-production-won-slots-epoch',
+  templateUrl: './block-production-won-slots-epoch.component.html',
+  styleUrl: './block-production-won-slots-epoch.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    class: 'h-lg pl-12 pr-12 f-600 fx-row-vert-cent border-bottom flex-between',
+  },
+  standalone: false,
 })
-export class BlockProductionWonSlotsEpochComponent extends StoreDispatcher implements OnInit {
+export class BlockProductionWonSlotsEpochComponent
+  extends StoreDispatcher
+  implements OnInit
+{
   readonly isMobile = isMobile();
 
   epoch: string;
@@ -28,22 +33,38 @@ export class BlockProductionWonSlotsEpochComponent extends StoreDispatcher imple
   }
 
   private listenToEpoch(): void {
-    this.select(BlockProductionWonSlotsSelectors.slots, (slots: BlockProductionWonSlotsSlot[]) => {
-      this.epoch = 'Epoch ' + slots[0].epoch;
-      this.detect();
-    }, filter(slots => slots.length > 0));
+    this.select(
+      BlockProductionWonSlotsSelectors.slots,
+      (slots: BlockProductionWonSlotsSlot[]) => {
+        this.epoch = 'Epoch ' + slots[0].epoch;
+        this.detect();
+      },
+      filter(slots => slots.length > 0),
+    );
   }
 
   private listenToEpoch2(): void {
-    this.select(BlockProductionWonSlotsSelectors.epoch, (epoch: BlockProductionWonSlotsEpoch) => {
-      const epochStartTime = this.addMinutesToTimestamp(Math.floor(epoch.currentTime / ONE_BILLION), -(epoch.currentGlobalSlot - epoch.start) * 3);
-      this.startedAgo = getTimeDiff(Math.floor(epochStartTime * ONE_THOUSAND)).diff;
-      this.publicKey = epoch.publicKey;
-      this.detect();
-    }, filter(Boolean));
+    this.select(
+      BlockProductionWonSlotsSelectors.epoch,
+      (epoch: BlockProductionWonSlotsEpoch) => {
+        const epochStartTime = this.addMinutesToTimestamp(
+          Math.floor(epoch.currentTime / ONE_BILLION),
+          -(epoch.currentGlobalSlot - epoch.start) * 3,
+        );
+        this.startedAgo = getTimeDiff(
+          Math.floor(epochStartTime * ONE_THOUSAND),
+        ).diff;
+        this.publicKey = epoch.publicKey;
+        this.detect();
+      },
+      filter(Boolean),
+    );
   }
 
-  private addMinutesToTimestamp(timestampInSeconds: number, minutesToAdd: number): number {
+  private addMinutesToTimestamp(
+    timestampInSeconds: number,
+    minutesToAdd: number,
+  ): number {
     const secondsToAdd = minutesToAdd * 60;
     return timestampInSeconds + secondsToAdd;
   }

@@ -1,7 +1,27 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, EMPTY, filter, from, fromEvent, map, merge, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  EMPTY,
+  filter,
+  from,
+  fromEvent,
+  map,
+  merge,
+  Observable,
+  of,
+  switchMap,
+  tap,
+  throwError,
+  timer,
+} from 'rxjs';
 import base from 'base-x';
-import { any, isBrowser, safelyExecuteInBrowser, getLocalStorage } from '@openmina/shared';
+import {
+  any,
+  isBrowser,
+  safelyExecuteInBrowser,
+  getLocalStorage,
+} from '@openmina/shared';
 import { HttpClient } from '@angular/common/http';
 import { sendSentryEvent } from '@shared/helpers/webnode.helper';
 import { DashboardPeerStatus } from '@shared/types/dashboard/dashboard.peer';
@@ -21,26 +41,32 @@ export interface PrivateStake {
   providedIn: 'root',
 })
 export class WebNodeService {
-
-  private readonly webnode$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
+  private readonly webnode$: BehaviorSubject<any> = new BehaviorSubject<any>(
+    null,
+  );
   private readonly wasm$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
 
-  private webNodeKeyPair: { publicKey: string, privateKey: string };
+  private webNodeKeyPair: { publicKey: string; privateKey: string };
   private webNodeNetwork: String;
   private webNodeStartTime: number;
   private sentryEvents: any = {};
 
-  readonly webnodeProgress$: BehaviorSubject<string> = new BehaviorSubject<string>('');
+  readonly webnodeProgress$: BehaviorSubject<string> =
+    new BehaviorSubject<string>('');
 
   memory: WebAssembly.MemoryDescriptor;
   privateStake: PrivateStake;
   noBlockProduction: boolean = false;
 
-  constructor(private http: HttpClient,
-              private firestore: FirestoreService,
-              private sentryService: SentryService) {
+  constructor(
+    private http: HttpClient,
+    private firestore: FirestoreService,
+    private sentryService: SentryService,
+  ) {
     FileProgressHelper.initDownloadProgress();
-    const basex = base('123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz');
+    const basex = base(
+      '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',
+    );
     safelyExecuteInBrowser(() => {
       any(window).bs58btc = {
         encode: (buffer: Uint8Array | number[]) => 'z' + basex.encode(buffer),
@@ -82,10 +108,22 @@ export class WebNodeService {
         switchMap(() => {
           const DEFAULT_NETWORK = 'devnet';
           if (!args) {
-            return this.http.get<{ publicKey: string, privateKey: string }>('assets/webnode/web-node-secrets.json')
-              .pipe(map(blockProducer => ({ blockProducer, network: DEFAULT_NETWORK })));
+            return this.http
+              .get<{
+                publicKey: string;
+                privateKey: string;
+              }>('assets/webnode/web-node-secrets.json')
+              .pipe(
+                map(blockProducer => ({
+                  blockProducer,
+                  network: DEFAULT_NETWORK,
+                })),
+              );
           }
-          const data = { network: args['network'] || DEFAULT_NETWORK, blockProducer: {} as any };
+          const data = {
+            network: args['network'] || DEFAULT_NETWORK,
+            blockProducer: {} as any,
+          };
           if (!!args['block_producer']) {
             data['blockProducer'] = {
               privateKey: args['block_producer'].sec_key,
@@ -106,55 +144,63 @@ export class WebNodeService {
 
   startWasm$(): Observable<any> {
     if (isBrowser()) {
-      return of(any(window).webnode)
-        .pipe(
-          switchMap((wasm: any) => {
-            this.wasm$.next(wasm);
-            return from(wasm.default(undefined, new WebAssembly.Memory(this.memory)))
-              .pipe(map(() => wasm));
-          }),
-          switchMap((wasm) => {
-            this.webnodeProgress$.next('Loaded');
-            const urls = (() => {
-              if (typeof this.webNodeNetwork === 'number') {
-                const url = `${window.location.origin}/clusters/${this.webNodeNetwork}/`;
-                return {
-                  seeds: url + 'seeds',
-                  genesisConfig: url + 'genesis/config',
-                };
-              } else {
-                return {
-                  seeds: 'https://bootnodes.minaprotocol.com/networks/devnet-webrtc.txt',
-                };
-              }
-            })();
-            console.log('webnode config:', !!this.webNodeKeyPair.privateKey, this.webNodeNetwork, urls);
-            let privateKey = this.privateStake ? [this.privateStake.stake, this.privateStake.password] : this.webNodeKeyPair.privateKey;
-            if (this.noBlockProduction) {
-              privateKey = null;
+      return of(any(window).webnode).pipe(
+        switchMap((wasm: any) => {
+          this.wasm$.next(wasm);
+          return from(
+            wasm.default(undefined, new WebAssembly.Memory(this.memory)),
+          ).pipe(map(() => wasm));
+        }),
+        switchMap(wasm => {
+          this.webnodeProgress$.next('Loaded');
+          const urls = (() => {
+            if (typeof this.webNodeNetwork === 'number') {
+              const url = `${window.location.origin}/clusters/${this.webNodeNetwork}/`;
+              return {
+                seeds: url + 'seeds',
+                genesisConfig: url + 'genesis/config',
+              };
+            } else {
+              return {
+                seeds:
+                  'https://bootnodes.minaprotocol.com/networks/devnet-webrtc.txt',
+              };
             }
+          })();
+          console.log(
+            'webnode config:',
+            !!this.webNodeKeyPair.privateKey,
+            this.webNodeNetwork,
+            urls,
+          );
+          let privateKey = this.privateStake
+            ? [this.privateStake.stake, this.privateStake.password]
+            : this.webNodeKeyPair.privateKey;
+          if (this.noBlockProduction) {
+            privateKey = null;
+          }
 
-            return from(wasm.run(privateKey, urls.seeds, urls.genesisConfig));
-          }),
-          tap((webnode: any) => {
-            any(window).webnode = webnode;
-            this.webnode$.next(webnode);
-            this.webnodeProgress$.next('Started');
-          }),
-          catchError((error) => {
-            sendSentryEvent('WebNode failed to start: ' + error.message);
-            return throwError(() => new Error(error.message));
-          }),
-          switchMap(() => this.webnode$.asObservable()),
-          filter(() => CONFIG.globalConfig.heartbeats),
-          switchMap(() => timer(0, 60000)),
-          switchMap(() => this.heartBeat$),
-          switchMap(heartBeat => this.firestore.addHeartbeat(heartBeat)),
-          catchError(error => {
-            console.log('Error from heartbeat api:', error);
-            return of(null);
-          }),
-        );
+          return from(wasm.run(privateKey, urls.seeds, urls.genesisConfig));
+        }),
+        tap((webnode: any) => {
+          any(window).webnode = webnode;
+          this.webnode$.next(webnode);
+          this.webnodeProgress$.next('Started');
+        }),
+        catchError(error => {
+          sendSentryEvent('WebNode failed to start: ' + error.message);
+          return throwError(() => new Error(error.message));
+        }),
+        switchMap(() => this.webnode$.asObservable()),
+        filter(() => CONFIG.globalConfig.heartbeats),
+        switchMap(() => timer(0, 60000)),
+        switchMap(() => this.heartBeat$),
+        switchMap(heartBeat => this.firestore.addHeartbeat(heartBeat)),
+        catchError(error => {
+          console.log('Error from heartbeat api:', error);
+          return of(null);
+        }),
+      );
     }
     return EMPTY;
   }
@@ -185,7 +231,12 @@ export class WebNodeService {
         // if (!this.sentryEvents.sentPeersEvent && peers.length > 0) {
         //   this.sentryEvents.sentPeersEvent = true;
         // }
-        if (!this.sentryEvents.firstPeerConnected && peers.some((p: any) => p.connection_status === DashboardPeerStatus.CONNECTED)) {
+        if (
+          !this.sentryEvents.firstPeerConnected &&
+          peers.some(
+            (p: any) => p.connection_status === DashboardPeerStatus.CONNECTED,
+          )
+        ) {
           const seconds = (Date.now() - this.webNodeStartTime) / 1000;
           this.sentryService.updatePeersConnected(seconds, this.publicKey);
           this.sentryEvents.firstPeerConnected = true;
@@ -212,21 +263,27 @@ export class WebNodeService {
   get accounts$(): Observable<any> {
     return this.webnode$.asObservable().pipe(
       filter(Boolean),
-      switchMap(webnode => from(any(webnode).ledger().latest().accounts().all())),
+      switchMap(webnode =>
+        from(any(webnode).ledger().latest().accounts().all()),
+      ),
     );
   }
 
   get bestChainUserCommands$(): Observable<any> {
     return this.webnode$.asObservable().pipe(
       filter(Boolean),
-      switchMap(webnode => from(any(webnode).transition_frontier().best_chain().user_commands())),
+      switchMap(webnode =>
+        from(any(webnode).transition_frontier().best_chain().user_commands()),
+      ),
     );
   }
 
   sendPayment$(payment: any): Observable<any> {
     return this.webnode$.asObservable().pipe(
       filter(Boolean),
-      switchMap(webnode => from(any(webnode).transaction_pool().inject().payment(payment))),
+      switchMap(webnode =>
+        from(any(webnode).transaction_pool().inject().payment(payment)),
+      ),
     );
   }
 

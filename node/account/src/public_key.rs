@@ -1,5 +1,3 @@
-use std::{fmt, str::FromStr};
-
 use mina_p2p_messages::{
     b58::FromBase58CheckError,
     binprot::{
@@ -8,9 +6,9 @@ use mina_p2p_messages::{
     },
     v2::{NonZeroCurvePoint, NonZeroCurvePointUncompressedStableV1},
 };
-use serde::{Deserialize, Serialize};
-
 use mina_signer::{CompressedPubKey, PubKey};
+use serde::{Deserialize, Serialize};
+use std::{fmt, str::FromStr};
 
 #[derive(
     BinProtWrite, BinProtRead, Serialize, Deserialize, Debug, Ord, PartialOrd, Eq, PartialEq, Clone,

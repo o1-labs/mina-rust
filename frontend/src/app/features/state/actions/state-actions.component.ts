@@ -1,24 +1,37 @@
-import { ChangeDetectionStrategy, Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+} from '@angular/core';
 import { StoreDispatcher } from '@shared/base-classes/store-dispatcher.class';
-import { StateActionsClose, StateActionsGetEarliestSlot } from '@state/actions/state-actions.actions';
+import {
+  StateActionsClose,
+  StateActionsGetEarliestSlot,
+} from '@state/actions/state-actions.actions';
 import { selectStateActionsOpenSidePanel } from '@state/actions/state-actions.state';
 import { Subscription, timer } from 'rxjs';
 import { AppSelectors } from '@app/app.state';
 import { untilDestroyed } from '@ngneat/until-destroy';
 
 @Component({
-    selector: 'mina-state-actions',
-    templateUrl: './state-actions.component.html',
-    styleUrls: ['./state-actions.component.scss'],
-    host: { class: 'flex-column h-100' },
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: false
+  selector: 'mina-state-actions',
+  templateUrl: './state-actions.component.html',
+  styleUrls: ['./state-actions.component.scss'],
+  host: { class: 'flex-column h-100' },
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: false,
 })
-export class StateActionsComponent extends StoreDispatcher implements OnInit, OnDestroy {
-
+export class StateActionsComponent
+  extends StoreDispatcher
+  implements OnInit, OnDestroy
+{
   show: boolean;
 
-  constructor(public el: ElementRef) { super(); }
+  constructor(public el: ElementRef) {
+    super();
+  }
 
   ngOnInit(): void {
     this.checkEarliestSlot();

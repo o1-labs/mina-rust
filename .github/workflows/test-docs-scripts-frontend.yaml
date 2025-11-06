@@ -1,0 +1,114 @@
+name: Test Documentation Scripts - Frontend
+
+# Test locally with:
+# ```bash
+# # Ubuntu 22.04 (recommended)
+# gh extension exec act \
+#   --workflows .github/workflows/test-docs-scripts-frontend.yaml \
+#   --matrix os:ubuntu-22.04
+#
+# # Ubuntu 24.04 (requires platform mapping)
+# gh extension exec act \
+#   --workflows .github/workflows/test-docs-scripts-frontend.yaml \
+#   --matrix os:ubuntu-24.04 \
+#   -P ubuntu-24.04=catthehacker/ubuntu:act-24.04
+# ```
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+
+jobs:
+  test-frontend-scripts:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04, macos-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Make scripts executable
+        run: |
+          chmod +x website/docs/developers/scripts/frontend/*.sh
+
+      - name: Install Node.js on Linux
+        if: runner.os == 'Linux'
+        run: |
+          bash website/docs/developers/scripts/frontend/install-nodejs-linux.sh
+          # Set up nvm environment for future steps
+          echo "NVM_DIR=$HOME/.nvm" >> $GITHUB_ENV
+
+      - name: Install Node.js on macOS
+        if: runner.os == 'macOS'
+        run: |
+          bash website/docs/developers/scripts/frontend/install-nodejs-macos.sh
+
+      - name: Install Angular CLI using documentation script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/install-angular-cli.sh
+
+      - name: Install gtimeout on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install coreutils
+          # Create symlink for timeout command
+          sudo ln -sf /usr/local/bin/gtimeout /usr/local/bin/timeout
+
+      - name: Test install dependencies script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/install-dependencies.sh
+
+      - name: Test build production script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-production.sh
+
+      - name: Test format code script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/format-code.sh
+
+      - name: Test build leaderboard script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-leaderboard.sh
+
+      - name: Test build webnode script
+        run: |
+          # Source nvm if available (Linux)
+          if [ -n "$NVM_DIR" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+            \. "$NVM_DIR/nvm.sh"
+          fi
+          bash website/docs/developers/scripts/frontend/build-webnode.sh
+
+      - name: Prepare for Cypress tests (Ubuntu 22.04)
+        if: matrix.os == 'ubuntu-22.04'
+        run: |
+          bash website/docs/developers/scripts/frontend/install-cypress-deps-ubuntu-22-04.sh
+
+      - name: Prepare for Cypress tests (Ubuntu 24.04)
+        if: matrix.os == 'ubuntu-24.04'
+        run: |
+          bash website/docs/developers/scripts/frontend/install-cypress-deps-ubuntu-24-04.sh
+
+      # Note: Cypress works out of the box on macOS, no additional dependencies needed

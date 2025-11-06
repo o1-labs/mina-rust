@@ -1,0 +1,42 @@
+name: Load Versions
+description: Load version numbers from centralized config file
+
+outputs:
+  rust-stable:
+    description: "Rust stable version"
+    value: ${{ steps.load.outputs.rust-stable }}
+  rust-nightly:
+    description: "Rust nightly version"
+    value: ${{ steps.load.outputs.rust-nightly }}
+  ocaml-version:
+    description: "OCaml version"
+    value: ${{ steps.load.outputs.ocaml-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Load version configuration
+      id: load
+      shell: bash
+      run: |
+        VERSIONS_FILE="${{ github.action_path }}/../../config/versions.yaml"
+
+        # Read versions from YAML file using yq
+        RUST_STABLE=$(yq eval '.rust.stable' "$VERSIONS_FILE")
+        RUST_NIGHTLY=$(yq eval '.rust.nightly' "$VERSIONS_FILE")
+        OCAML_VERSION=$(yq eval '.ocaml.version' "$VERSIONS_FILE")
+
+        # Set outputs
+        echo "rust-stable=$RUST_STABLE" >> $GITHUB_OUTPUT
+        echo "rust-nightly=$RUST_NIGHTLY" >> $GITHUB_OUTPUT
+        echo "ocaml-version=$OCAML_VERSION" >> $GITHUB_OUTPUT
+
+        # Also set as environment variables for convenience
+        echo "RUST_STABLE_VERSION=$RUST_STABLE" >> $GITHUB_ENV
+        echo "RUST_NIGHTLY_VERSION=$RUST_NIGHTLY" >> $GITHUB_ENV
+        echo "OCAML_VERSION=$OCAML_VERSION" >> $GITHUB_ENV
+
+        echo "Loaded versions:"
+        echo "  Rust stable: $RUST_STABLE"
+        echo "  Rust nightly: $RUST_NIGHTLY"
+        echo "  OCaml: $OCAML_VERSION"

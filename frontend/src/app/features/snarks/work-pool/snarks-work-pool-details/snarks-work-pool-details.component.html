@@ -1,12 +1,24 @@
 <div class="h-lg tab-group pl-12 pb-10 pr-10">
-  <button class="tab mr-10" [class.selected]="selectedTabIndex === 0"
-          (click)="selectTab(0)">Overview
+  <button
+    class="tab mr-10"
+    [class.selected]="selectedTabIndex === 0"
+    (click)="selectTab(0)"
+  >
+    Overview
   </button>
-  <button class="tab mr-10" [class.selected]="selectedTabIndex === 1"
-          (click)="selectTab(1)">Specs
+  <button
+    class="tab mr-10"
+    [class.selected]="selectedTabIndex === 1"
+    (click)="selectTab(1)"
+  >
+    Specs
   </button>
-  <button class="tab mr-10" [class.selected]="selectedTabIndex === 2"
-          (click)="selectTab(2)">Accounts ({{ accounts.length }})
+  <button
+    class="tab mr-10"
+    [class.selected]="selectedTabIndex === 2"
+    (click)="selectTab(2)"
+  >
+    Accounts ({{ accounts.length }})
   </button>
 </div>
 
@@ -25,7 +37,9 @@
       </ng-container>
       <ng-container *ngSwitchCase="2">
         <div class="h-100 overflow-y-auto">
-          <mina-snarks-work-pool-details-accounts [accounts]="accounts"></mina-snarks-work-pool-details-accounts>
+          <mina-snarks-work-pool-details-accounts
+            [accounts]="accounts"
+          ></mina-snarks-work-pool-details-accounts>
         </div>
       </ng-container>
     </ng-container>

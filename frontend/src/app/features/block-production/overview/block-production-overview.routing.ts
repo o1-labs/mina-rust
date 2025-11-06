@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {
-  BlockProductionOverviewComponent,
-} from '@app/features/block-production/overview/block-production-overview.component';
+import { BlockProductionOverviewComponent } from '@app/features/block-production/overview/block-production-overview.component';
 import { BLOCK_PRODUCTION_TITLE } from '@app/app.routing';
 
 const routes: Routes = [
