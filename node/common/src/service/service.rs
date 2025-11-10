@@ -1,5 +1,14 @@
-use std::sync::Arc;
-
+use super::{
+    archive::ArchiveService,
+    block_producer::BlockProducerService,
+    p2p::webrtc_with_libp2p::P2pServiceCtx,
+    replay::ReplayerState,
+    rpc::{RpcSender, RpcService},
+    snark_worker::SnarkWorker,
+    snarks::SnarkBlockVerifyArgs,
+    EventReceiver, EventSender,
+};
+use crate::rpc::RpcReceiver;
 use node::{
     core::{channels::mpsc, invariants::InvariantsState},
     event_source::Event,
@@ -14,19 +23,7 @@ use sha3::{
     digest::{core_api::XofReaderCoreWrapper, ExtendableOutput, Update},
     Shake256, Shake256ReaderCore,
 };
-
-use crate::rpc::RpcReceiver;
-
-use super::{
-    archive::ArchiveService,
-    block_producer::BlockProducerService,
-    p2p::webrtc_with_libp2p::P2pServiceCtx,
-    replay::ReplayerState,
-    rpc::{RpcSender, RpcService},
-    snark_worker::SnarkWorker,
-    snarks::SnarkBlockVerifyArgs,
-    EventReceiver, EventSender,
-};
+use std::sync::Arc;
 
 pub struct NodeService {
     pub rng_seed: [u8; 32],

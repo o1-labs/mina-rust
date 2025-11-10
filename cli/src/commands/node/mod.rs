@@ -1,24 +1,18 @@
-use std::{fs::File, path::PathBuf, sync::Arc};
-
 use anyhow::Context;
 use ledger::proofs::provers::BlockProver;
+use mina_node_account::AccountPublicKey;
+use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
 use node::{
     account::AccountSecretKey,
-    snark::{BlockVerifier, TransactionVerifier},
-    transition_frontier::genesis::GenesisConfig,
-};
-
-use mina_node_account::AccountPublicKey;
-use reqwest::Url;
-
-use node::{
     core::log::inner::Level,
     p2p::{connection::outgoing::P2pConnectionOutgoingInitOpts, identity::SecretKey},
     service::Recorder,
+    snark::{BlockVerifier, TransactionVerifier},
+    transition_frontier::genesis::GenesisConfig,
     SnarkerStrategy,
 };
-
-use mina_node_native::{archive::config::ArchiveStorageOptions, tracing, NodeBuilder};
+use reqwest::Url;
+use std::{fs::File, path::PathBuf, sync::Arc};
 
 /// Mina node configuration and runtime options
 ///
