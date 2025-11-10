@@ -85,3 +85,33 @@ jobs:
       - name: Test block producer node API capabilities
         run: ./.github/scripts/test-block-producer-node-capabilities.sh
 
+  test-archive-nodes:
+    name: Test Archive Node Connectivity
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test archive node HTTP endpoints
+        run: ./.github/scripts/test-archive-node-connectivity.sh
+
+  test-rosetta-nodes:
+    name: Test Rosetta Node Connectivity
+    timeout-minutes: 2
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Test Rosetta API endpoints
+        run: ./.github/scripts/test-rosetta-node-connectivity.sh
+

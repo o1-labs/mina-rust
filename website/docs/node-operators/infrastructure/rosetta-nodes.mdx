@@ -1,0 +1,115 @@
+---
+title: Rosetta Nodes
+description: o1Labs Rosetta node infrastructure for exchange integration
+sidebar_position: 8
+---
+
+import CodeBlock from "@theme/CodeBlock";
+import NetworkList from "!!raw-loader!../../developers/scripts/rosetta/network-list.sh";
+import NetworkStatus from "!!raw-loader!../../developers/scripts/rosetta/network-status.sh";
+import NetworkOptions from "!!raw-loader!../../developers/scripts/rosetta/network-options.sh";
+
+# Rosetta Nodes
+
+o1Labs maintains Rosetta API nodes for both mainnet and devnet networks. Rosetta
+is a standard interface for blockchain integration, primarily used by exchanges
+and custodians for account balance tracking and transaction construction.
+
+## Available Rosetta Nodes
+
+The following Rosetta nodes are officially maintained by o1Labs:
+
+- **Devnet**:
+  [`https://devnet-rosetta.gcp.o1test.net/`](https://devnet-rosetta.gcp.o1test.net/network/status)
+- **Mainnet**:
+  [`https://mainnet-rosetta.gcp.o1test.net/`](https://mainnet-rosetta.gcp.o1test.net/)
+
+## Implementation Status
+
+<!-- prettier-ignore-start -->
+
+:::info OCaml Implementation
+
+The mina-rust codebase does not currently have a Rosetta interface
+implementation. The available Rosetta nodes run the OCaml implementation from
+the Mina Protocol codebase.
+
+For more information about the OCaml Rosetta implementation, see:
+
+- [Mina Protocol Rosetta Implementation](https://github.com/MinaProtocol/mina/tree/compatible/src/app/rosetta)
+- [Rosetta Documentation for Exchange Operators](https://github.com/MinaProtocol/docs2/blob/main/docs/exchange-operators/index.mdx)
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+## APIs and Data
+
+The Rosetta API provides standardized endpoints for blockchain interaction.
+Below are basic examples for querying network information.
+
+### Network List
+
+Query available networks:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/rosetta/network-list.sh"
+>
+  {NetworkList}
+</CodeBlock>
+
+### Network Status
+
+Query current network status:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/rosetta/network-status.sh"
+>
+  {NetworkStatus}
+</CodeBlock>
+
+### Network Options
+
+Query network configuration options:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/rosetta/network-options.sh"
+>
+  {NetworkOptions}
+</CodeBlock>
+
+### Example Usage
+
+```bash
+# Query devnet network list
+./website/docs/developers/scripts/rosetta/network-list.sh \
+  https://devnet-rosetta.gcp.o1test.net
+
+# Query mainnet network status
+./website/docs/developers/scripts/rosetta/network-status.sh \
+  https://mainnet-rosetta.gcp.o1test.net mina mainnet
+
+# Query devnet network options
+./website/docs/developers/scripts/rosetta/network-options.sh \
+  https://devnet-rosetta.gcp.o1test.net mina devnet
+```
+
+## Use Cases
+
+Rosetta nodes are primarily used for:
+
+- **Exchange integration**: Standardized API for cryptocurrency exchanges
+- **Account tracking**: Monitor balances and transaction history
+- **Transaction construction**: Build and submit transactions
+- **Network information**: Query network status and configuration
+
+## Reference Information
+
+### Related Documentation
+
+- [Plain Nodes](./plain-nodes) - GraphQL API access nodes
+- [Archive Nodes](./archive-nodes) - Historical data access
+- [Seed Nodes](./seed-nodes) - P2P network bootstrap nodes

@@ -1,0 +1,2 @@
+https://devnet-rosetta.gcp.o1test.net
+https://mainnet-rosetta.gcp.o1test.net

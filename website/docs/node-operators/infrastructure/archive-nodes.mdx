@@ -4,25 +4,90 @@ description: o1Labs archive node infrastructure for historical data access
 sidebar_position: 3
 ---
 
+import CodeBlock from "@theme/CodeBlock";
+import TestDevnetConnectivity from "!!raw-loader!../../developers/scripts/archive/test-devnet-connectivity.sh";
+import TestMainnetConnectivity from "!!raw-loader!../../developers/scripts/archive/test-mainnet-connectivity.sh";
+import QueryDevnetBlockCount from "!!raw-loader!../../developers/scripts/archive/query-devnet-block-count.sh";
+
 # Archive Nodes
+
+o1Labs maintains archive node API infrastructure for both mainnet and devnet
+networks. Archive nodes store complete blockchain history and provide database
+query interfaces for historical data access.
+
+## Available Archive Nodes
+
+The following archive node APIs are officially maintained by o1Labs:
+
+- **Devnet**:
+  [`devnet-archive-node-api.gcp.o1test.net`](https://devnet-archive-node-api.gcp.o1test.net/)
+- **Mainnet**:
+  [`archive-node-api.gcp.o1test.net`](https://archive-node-api.gcp.o1test.net/)
 
 <!-- prettier-ignore-start -->
 
-:::caution Under Construction
+:::info OCaml Implementation
 
-This page is currently under construction. o1Labs archive node infrastructure
-documentation will be added here once the archive nodes are deployed and
-available.
+These archive nodes run the OCaml implementation from the Mina Protocol
+codebase. The mina-rust codebase does not currently have archive node
+functionality, and o1Labs does not run any Rust archive nodes.
 
-Archive nodes will provide:
+:::
 
-- Historical blockchain data access
-- Complete transaction history
-- Block and state archival
-- Database query interfaces
+<!-- prettier-ignore-stop -->
 
-Check back soon for complete documentation on accessing o1Labs archive
-infrastructure.
+## Archive Node Capabilities
+
+Archive nodes provide:
+
+- **Historical blockchain data**: Complete transaction and block history
+- **Database query interfaces**: SQL access to archived data
+- **Transaction history**: Full account transaction records
+- **Block and state archival**: Complete blockchain state snapshots
+
+## Using Archive Nodes
+
+### Database Connection
+
+The archive node APIs provide HTTP access to query the PostgreSQL database.
+These endpoints are primarily intended for querying historical blockchain data.
+
+### Example Queries
+
+Basic connectivity test for devnet:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/archive/test-devnet-connectivity.sh"
+>
+  {TestDevnetConnectivity}
+</CodeBlock>
+
+Basic connectivity test for mainnet:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/archive/test-mainnet-connectivity.sh"
+>
+  {TestMainnetConnectivity}
+</CodeBlock>
+
+Query recent blocks:
+
+<CodeBlock
+  language="bash"
+  title="website/docs/developers/scripts/archive/query-devnet-block-count.sh"
+>
+  {QueryDevnetBlockCount}
+</CodeBlock>
+
+<!-- prettier-ignore-start -->
+
+:::info Documentation
+
+For comprehensive archive database queries and analysis, see the
+[Archive Database Queries](../../developers/archive-database-queries) guide
+which provides detailed SQL examples and schema documentation.
 
 :::
 
