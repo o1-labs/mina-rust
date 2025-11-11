@@ -114,6 +114,7 @@ const sidebars: SidebarsConfig = {
         'developers/frontend/node-dashboard',
         'developers/frontend/webnode',
         'developers/frontend/environment-configuration',
+        'developers/frontend/api-endpoints',
       ],
     },
     {

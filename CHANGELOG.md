@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
+
+- **Documentation**: Add comprehensive API endpoints reference for the Node
+  Dashboard, documenting all endpoints and specific data fields used by the
+  frontend ([#1566](https://github.com/o1-labs/mina-rust/issues/1566))
+
 ## [0.18.0] - 2025-11-04
 
 ### OCaml node
