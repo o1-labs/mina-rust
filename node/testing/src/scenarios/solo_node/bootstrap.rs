@@ -1,15 +1,13 @@
-use std::time::Duration;
-
-use mina_core::constants::constraint_constants;
-use node::transition_frontier::sync::TransitionFrontierSyncState;
-use redux::Instant;
-
 use crate::{
     hosts,
     node::RustNodeTestingConfig,
     scenario::{ListenerNode, ScenarioStep},
     scenarios::ClusterRunner,
 };
+use mina_core::constants::constraint_constants;
+use node::transition_frontier::sync::TransitionFrontierSyncState;
+use redux::Instant;
+use std::time::Duration;
 
 /// Set up single Rust node and bootstrap snarked ledger, bootstrap ledger and blocks.
 ///
