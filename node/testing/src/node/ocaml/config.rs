@@ -96,22 +96,12 @@ pub enum OcamlNodeExecutable {
     ///
     /// # Arguments
     /// * `String` - Path to the mina executable
-    ///
-    /// # Example
-    /// ```
-    /// OcamlNodeExecutable::Installed("/usr/local/bin/mina".to_string())
-    /// ```
     Installed(String),
 
     /// Use specific Docker image
     ///
     /// # Arguments
     /// * `String` - Docker image tag
-    ///
-    /// # Example
-    /// ```
-    /// OcamlNodeExecutable::Docker("minaprotocol/mina-daemon:3.0.0".to_string())
-    /// ```
     Docker(String),
 
     /// Use default Docker image

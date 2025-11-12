@@ -56,19 +56,6 @@
 //!   since Berkeley.
 //! - **Node**: Provides verification services to the main node
 //!
-//! ## Example Usage
-//!
-//! ```rust,no_run
-//! use snark::{SnarkConfig, SnarkState};
-//!
-//! // Initialize SNARK state with configuration
-//! let config = SnarkConfig { /* ... */ };
-//! let state = SnarkState::new(config);
-//!
-//! // The state machine handles verification requests through actions
-//! // dispatched by the main node's Redux store
-//! ```
-//!
 //! ## Performance Considerations
 //!
 //! - Verifier indices and SRS parameters are cached for reuse

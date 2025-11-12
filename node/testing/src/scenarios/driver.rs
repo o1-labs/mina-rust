@@ -206,9 +206,15 @@ impl<'cluster> Driver<'cluster> {
     /// # Example
     ///
     /// ```no_run
+    /// # use std::time::Duration;
+    /// # use mina_node_testing::scenarios::Driver;
+    /// # use node::event_source::Event;
+    /// # async fn example(driver: &mut Driver<'_>) -> anyhow::Result<()> {
     /// driver.wait_for(Duration::from_secs(5), |node_id, event, state| {
-    ///     matches!(event, Event::BlockReceived { .. })
+    ///     matches!(event, Event::P2p(_))
     /// }).await?;
+    /// # Ok(())
+    /// # }
     /// ```
     pub async fn wait_for(
         &mut self,

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Fixed
+
+- **CI**: ensure that `cargo test --doc` works in each crate, fix
+  [#1555](https://github.com/o1-labs/mina-rust/issues/1555), see
+  [#1556](https://github.com/o1-labs/mina-rust/pull/1556)
+
 ## [0.18.0] - 2025-11-04
 
 ### OCaml node

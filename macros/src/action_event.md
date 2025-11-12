@@ -6,6 +6,21 @@ For action containers, it simply delegates to inner actions.
 
 ```rust
 # use mina_core::ActionEvent;
+# extern crate redux;
+# struct DummyContext {
+#     time: String,
+#     node_id: String,
+# }
+# impl mina_core::log::EventContext for DummyContext {
+#     fn timestamp(&self) -> redux::Timestamp { mina_core::log::system_time() }
+#     fn time(&self) -> &dyn tracing::Value { &self.time }
+#     fn node_id(&self) -> &dyn tracing::Value { &self.node_id }
+#     fn log_node_id(&self) -> bool { false }
+# }
+# let context = DummyContext {
+#     time: "0".to_string(),
+#     node_id: "test".to_string(),
+# };
 #
 #[derive(ActionEvent)]
 enum ActionContainer {
@@ -17,7 +32,7 @@ enum Action1 {
     Done,
 }
 
-ActionContainer::SubAction1(Action1::Init).action_event(context);
+ActionContainer::SubAction1(Action1::Init).action_event(&context);
 ```
 
 ```rust
@@ -156,6 +171,8 @@ a field's enum variant), logging can be delegated to a function implementing
 that logic.
 
 ```rust
+# fn foo<T: mina_core::log::EventContext>(_context: &T) {}
+# fn bar<T: mina_core::log::EventContext>(_context: &T, _f1: &bool) {}
 #[derive(mina_core::ActionEvent)]
 pub enum Action {
     #[action_event(expr(foo(context)))]

@@ -17,18 +17,6 @@
 //!
 //! - [`Cluster::add_rust_node`] - Add Rust implementation nodes
 //! - [`Cluster::add_ocaml_node`] - Add OCaml implementation nodes
-//!
-//! # Example
-//!
-//! ```rust,no_run
-//! let mut cluster = Cluster::new(ClusterConfig::default());
-//!
-//! // Add Rust node with custom configuration
-//! let rust_node = cluster.add_rust_node(RustNodeTestingConfig::default());
-//!
-//! // Add OCaml node for cross-implementation testing
-//! let ocaml_node = cluster.add_ocaml_node(OcamlNodeTestingConfig::default());
-//! ```
 
 mod config;
 pub use config::{ClusterConfig, ProofKind};
