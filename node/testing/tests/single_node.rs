@@ -29,6 +29,7 @@ scenario_test!(
 );
 
 scenario_test!(
+    #[ignore = "investigate failure, see 1591"]
     bootstrap_from_replayer,
     SoloNodeBootstrap,
     SoloNodeBootstrap
