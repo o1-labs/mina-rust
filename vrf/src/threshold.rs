@@ -225,55 +225,78 @@ mod test {
 
     use super::*;
 
-    // TODO: move to regular fns, rework step
-    fn first_non_zero(stake: BigInt, total_currency: BigInt, step: BigInt) -> BigInt {
-        let ten = BigInt::from_str("10").unwrap();
-        let mut stake = stake;
-        if step == BigInt::zero() {
-            stake + BigInt::one()
-        } else {
-            loop {
-                let thrs = Threshold::new(stake.clone(), total_currency.clone());
+    #[test]
+    fn test_threshold_nonzero() {
+        /// Binary search to find the exact point where threshold becomes non-zero
+        fn binary_search(total_currency: BigInt) -> BigInt {
+            let mut low = BigInt::zero();
+            let mut high  = total_currency.clone();
+            while low < high {
+                let mid: BigInt = (&low + &high) / 2;
+                let thrs = Threshold::new(mid.clone(), total_currency.clone());
 
-                if thrs.threshold_rational != BigRational::zero() {
-                    println!("stake: {stake} nanoMINA");
-                    return first_non_zero(stake - step.clone(), total_currency, step / ten);
+                if thrs.threshold_rational == BigRational::zero() {
+                    low = mid + BigInt::one();
+                } else {
+                    high = mid.clone();
                 }
-                stake += step.clone();
             }
+            low
+        }
+
+        // Different total currency values to test
+        let test_cases = vec![
+            ("1025422352000001000", "Test case 1"),      // Original value
+            ("1157953132840039233", "Test case 2"),      // Another value from comments
+            ("1000000000000000000", "1 billion MINA"),   // 1 billion MINA
+            ("5000000000000000000", "5 billion MINA"),   // 5 billion MINA
+            ("10000000000000000000", "10 billion MINA"), // 10 billion MINA
+            ("100000000000000000", "100 million MINA"),  // 100 million MINA
+        ];
+
+        for (total_currency_str, description) in test_cases {
+            let total_currency = BigInt::from_str(total_currency_str).unwrap();
+
+            let first_non_zero_stake = binary_search(total_currency.clone());
+
+            // Verify we found the exact transition point
+            assert!(
+                first_non_zero_stake > BigInt::zero() && first_non_zero_stake <= total_currency,
+                "First non-zero stake should be between 1 and total_currency for {}",
+                description
+            );
+
+            // Verify the transition point
+            let last_zero_stake = &first_non_zero_stake - BigInt::one();
+            let thrs_zero = Threshold::new(last_zero_stake, total_currency.clone());
+            assert_eq!(
+                thrs_zero.threshold_rational,
+                BigRational::zero(),
+                "Threshold should be zero for stake one less than first non-zero for {}",
+                description
+            );
+
+            let thrs_first = Threshold::new(first_non_zero_stake.clone(), total_currency.clone());
+            assert!(
+                thrs_first.threshold_rational > BigRational::zero(),
+                "Threshold should be non-zero for first non-zero stake for {}",
+                description
+            );
+
+            // Convert to MINA for display
+            let first_non_zero_mina = first_non_zero_stake.to_f64().unwrap() / 1_000_000_000.0;
+
+            println!(
+                "First non-zero stake: {} nanoMINA ({:.6} MINA)",
+                first_non_zero_stake, first_non_zero_mina
+            );
+            println!(
+                "First non-zero threshold: {:.15}",
+                thrs_first.threshold_rational.to_f64().unwrap()
+            );
         }
     }
 
-    #[test]
-    #[ignore]
-    fn test_threshold_nonzero() {
-        // let total_currency = BigInt::from_str("1157953132840039233").unwrap();
-        // let initial_stake = BigInt::zero();
-        // let initial_step = BigInt::from_str("10000000000000000000").unwrap();
-
-        let total_currency = BigInt::from_str("1025422352000001000").unwrap();
-        let initial_stake = BigInt::zero();
-        let initial_step = BigInt::from_str("10000000000000000000").unwrap();
-
-        let first_non_zero_nanomina =
-            first_non_zero(initial_stake, total_currency.clone(), initial_step);
-
-        let last_zero = first_non_zero_nanomina.clone() - BigInt::one();
-
-        let thrs_zero = Threshold::new(last_zero, total_currency.clone());
-        assert_eq!(thrs_zero.threshold_rational, BigRational::zero());
-
-        let thrs_first = Threshold::new(first_non_zero_nanomina.clone(), total_currency);
-        assert!(thrs_first.threshold_rational > BigRational::zero());
-
-        let first_non_zero_mina = first_non_zero_nanomina.to_f64().unwrap() / 1_000_000_000.0;
-
-        println!("First non zero stake: {first_non_zero_mina} MINA");
-        println!(
-            "First non zero threshold: {}",
-            thrs_first.threshold_rational.to_f64().unwrap()
-        );
-    }
 
     #[test]
     #[ignore]
