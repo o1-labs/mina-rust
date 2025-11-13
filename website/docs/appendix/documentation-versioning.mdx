@@ -1,0 +1,277 @@
+---
+title: Documentation Versioning
+description:
+  Guide to managing and using versioned documentation in the Mina Rust project
+sidebar_position: 3
+---
+
+# Documentation Versioning
+
+The Mina Rust documentation uses
+[Docusaurus versioning](https://docusaurus.io/docs/versioning) to maintain
+documentation for multiple releases. This allows users to access documentation
+for specific versions of the software.
+
+## How Versioning Works
+
+### Version Structure
+
+- **Current Version (`develop`)**: The latest development documentation,
+  available at the root path (`/docs/`)
+- **Released Versions**: Specific release versions (e.g., `1.0.0`), available at
+  versioned paths (`/docs/1.0.0/`)
+
+### Accessing Different Versions
+
+Users can switch between documentation versions using the version dropdown in
+the navigation bar. Each version maintains its own complete documentation tree.
+
+## Managing Documentation Versions
+
+### Creating a New Version
+
+Create a new documentation version during the release process:
+
+```bash
+# Create version for release 1.2.3
+make docs-version-create VERSION=1.2.3
+
+# Or as part of the release workflow
+make release-docs-version VERSION=1.2.3
+```
+
+This command:
+
+- Takes a snapshot of the current `docs/` directory
+- Creates versioned copies in `website/versioned_docs/version-1.2.3/`
+- Updates `website/versions.json` to include the new version
+- Makes the version available in the dropdown menu
+
+### Creating a Version for a Previous Release
+
+Sometimes you need to create documentation versions for releases that were made
+before the versioning system was implemented. This process involves checking out
+the specific commit for that release and creating the version from that
+historical state.
+
+#### Step-by-Step Process
+
+1. **Find the release commit or tag**:
+
+   ```bash
+   # Look for the specific release tag
+   git tag --list | grep v0.17.0
+
+   # Or find the commit hash for the release
+   git log --oneline --grep="v0.17.0" --grep="Release.*0.17.0"
+   ```
+
+2. **Create a temporary branch from the release commit**:
+
+   ```bash
+   # If you have a tag for v0.17.0
+   git checkout -b temp-v0.17.0-docs v0.17.0
+
+   # Or if you have the commit hash
+   git checkout -b temp-v0.17.0-docs <commit-hash>
+   ```
+
+3. **Install documentation dependencies**:
+
+   ```bash
+   cd website
+   npm install
+   ```
+
+4. **Create the version from the historical documentation**:
+
+   ```bash
+   # Create version 0.17.0 from the current (historical) docs
+   npm run docusaurus docs:version 0.17.0
+   ```
+
+5. **Copy the versioned files to your main branch**:
+
+   ```bash
+   # Switch back to your main development branch
+   git checkout develop  # or main
+
+   # Copy the versioned documentation files
+   cp -r /path/to/temp-branch/website/versioned_docs/version-0.17.0/ website/versioned_docs/
+   cp /path/to/temp-branch/website/versioned_sidebars/version-0.17.0-sidebars.json website/versioned_sidebars/
+
+   # Update versions.json to include the new version
+   # Edit website/versions.json to add "0.17.0" to the array
+   ```
+
+6. **Clean up the temporary branch**:
+
+   ```bash
+   git branch -D temp-v0.17.0-docs
+   ```
+
+7. **Verify and commit the changes**:
+
+   ```bash
+   # Test that the documentation builds correctly
+   make docs-build-only
+
+   # Commit the versioned documentation
+   git add website/versioned_docs/version-0.17.0/
+   git add website/versioned_sidebars/version-0.17.0-sidebars.json
+   git add website/versions.json
+   git commit -m "Add documentation version for v0.17.0"
+   ```
+
+#### Example: Creating v0.17.0 Documentation
+
+```bash
+# Example workflow for creating v0.17.0 documentation
+git checkout -b temp-v0.17.0-docs v0.17.0
+cd website && npm install
+npm run docusaurus docs:version 0.17.0
+git checkout develop
+cp -r ../temp-v0.17.0-docs/website/versioned_docs/version-0.17.0/ website/versioned_docs/
+cp ../temp-v0.17.0-docs/website/versioned_sidebars/version-0.17.0-sidebars.json website/versioned_sidebars/
+# Edit website/versions.json to add "0.17.0"
+git branch -D temp-v0.17.0-docs
+make docs-build-only
+```
+
+#### Important Notes for Previous Releases
+
+- **Documentation State**: The versioned documentation will reflect the exact
+  state of the docs at that historical commit
+- **Missing Features**: If the historical documentation was incomplete or
+  missing, the versioned docs will also be incomplete
+- **Broken Links**: Links that reference newer features or pages may be broken
+  in historical versions
+- **Manual Editing**: You may need to manually edit the versioned documentation
+  to fix any issues specific to that release
+- **Testing**: Always test the documentation build after adding historical
+  versions
+
+### Listing Available Versions
+
+```bash
+# List all available documentation versions
+make docs-version-list
+```
+
+### Cleaning Up Versions
+
+:::warning Destructive Operation This command permanently removes all versioned
+documentation. Use with caution. :::
+
+```bash
+# Remove all versioned documentation (interactive confirmation)
+make docs-version-clean
+```
+
+## Version Behavior
+
+### Current Version (develop)
+
+- Always shows the latest documentation from the `docs/` directory
+- Available at the root documentation path
+- Labeled as "develop" in the version dropdown
+- No version banners or warnings
+
+### Released Versions
+
+- Snapshot of documentation at the time of release
+- Available at `/docs/{version}/` paths
+- Shows a banner indicating the version is no longer actively maintained
+- Provides a link back to the current (develop) version
+
+### Version Dropdown
+
+The version dropdown in the navigation bar:
+
+- Lists all available versions
+- Shows the current selection
+- Allows quick switching between versions
+- Maintains the current page context when switching (if the page exists in the
+  target version)
+
+## Best Practices
+
+### When to Create Versions
+
+- **Always** create a documentation version as part of the release process
+- Create versions for major and minor releases
+- Consider creating versions for significant patch releases with documentation
+  changes
+- Do not create versions for minor documentation updates between releases
+
+### Maintaining Version Quality
+
+- Ensure documentation is complete and accurate before creating a version
+- Test all links and examples in the documentation before versioning
+- Update any version-specific information (installation instructions,
+  compatibility notes)
+
+### Documentation Updates
+
+- **Current documentation**: Edit files in `website/docs/`
+- **Versioned documentation**: Edit files in
+  `website/versioned_docs/version-{version}/`
+- **Sidebar configuration**: Versioned sidebars are stored in
+  `website/versioned_sidebars/`
+
+## File Structure
+
+```
+website/
+├── docs/                           # Current (develop) documentation
+├── versioned_docs/
+│   └── version-1.0.0/             # Versioned documentation
+├── versioned_sidebars/
+│   └── version-1.0.0-sidebars.json # Versioned sidebars
+└── versions.json                   # List of available versions
+```
+
+## Integration with Release Process
+
+Documentation versioning is integrated into the release workflow:
+
+1. **Version Creation**: Part of the release process after tag creation
+2. **Automated**: Uses the same version number as the software release
+3. **Consistent**: Ensures documentation versions match software versions
+4. **Preserved**: Maintains historical documentation for all releases
+
+For complete release process details, see the
+[Release Process](./release-process.mdx) guide.
+
+## Troubleshooting
+
+### Version Not Appearing in Dropdown
+
+1. Check that `website/versions.json` includes the version
+2. Verify files exist in `website/versioned_docs/version-{version}/`
+3. Rebuild the documentation site
+
+### Broken Links in Versioned Docs
+
+- Versioned documentation uses absolute paths within the version
+- Links between versions are not automatically updated
+- Test documentation thoroughly before creating versions
+
+### Large Repository Size
+
+- Versioned documentation duplicates content
+- Consider the trade-off between version history and repository size
+- Remove very old versions if repository size becomes problematic
+
+## Related Commands
+
+```bash
+# Documentation building and serving
+make docs-build          # Build with API docs
+make docs-serve          # Serve locally with hot reload
+make docs-clean          # Clean build artifacts
+
+# Release integration
+make release-help        # Show all release commands
+make release-docs-version VERSION=x.y.z  # Create docs version for release
+```

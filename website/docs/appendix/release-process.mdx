@@ -82,6 +82,7 @@ Copy and paste this checklist when announcing a release in progress:
 - [ ] Required approvals obtained
 - [ ] PR merged to main
 - [ ] Git tag created and pushed
+- [ ] Documentation version created
 - [ ] Docker images building (automated)
 - [ ] GitHub release draft created
 
@@ -301,7 +302,44 @@ This automatically:
 - Creates an annotated tag with the provided message
 - Pushes the tag to origin (which triggers Docker image builds)
 
-### 6. Create GitHub Release
+### 6. Create Documentation Version
+
+```bash
+# Create a versioned copy of the documentation
+make release-docs-version VERSION=1.5.0
+```
+
+This command:
+
+- Creates a snapshot of the current documentation under
+  `website/versioned_docs/version-1.5.0/`
+- Preserves the exact state of documentation at the time of release
+- Allows users to access documentation for previous versions
+- Updates the version dropdown to include the new version
+
+The versioned documentation will be available at `/docs/1.5.0/` and can be
+accessed through the version dropdown in the website navigation.
+
+<!-- prettier-ignore-start -->
+
+:::info Automated CI Deployment
+
+When a release tag is created (e.g., `v1.5.0`), the GitHub Actions CI will
+automatically:
+
+- Create a versioned copy of the documentation
+- Build the documentation with the new version included
+- Deploy the updated documentation to GitHub Pages
+- Upload versioned documentation archives as release assets
+
+This means the documentation versioning and deployment is handled automatically
+as part of the tag creation process.
+
+:::
+
+<!-- prettier-ignore-stop -->
+
+### 7. Create GitHub Release
 
 ```bash
 # Create GitHub release from tag
@@ -317,7 +355,7 @@ gh release create v1.5.0 \
   --draft
 ```
 
-### 7. Verify Automated Processes
+### 8. Verify Automated Processes
 
 After pushing the tag, verify:
 
@@ -353,7 +391,7 @@ After pushing the tag, verify:
    - Visit
      [Docker Hub - mina-rust-frontend](https://hub.docker.com/r/o1labs/mina-rust-frontend/tags)
 
-### 8. Publish GitHub Release
+### 9. Publish GitHub Release
 
 Once verification is complete:
 
@@ -362,7 +400,7 @@ Once verification is complete:
 gh release edit v1.5.0 --draft=false
 ```
 
-### 9. Update Documentation
+### 10. Update Documentation
 
 - Update any documentation that references version numbers
 - Announce release in relevant channels
