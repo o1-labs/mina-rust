@@ -22,13 +22,27 @@
 //! Transaction application follows a two-phase model to enable efficient proof
 //! generation:
 //!
-//! 1. **First Pass** ([`apply_transaction_first_pass`]): Validates
-//!    preconditions and begins application. For zkApp commands, applies the fee
-//!    payer and first phase of account updates.
+//! 1. **First Pass** ([`transaction_partially_applied::apply_transaction_first_pass`]):
+//!    Validates preconditions, applies fees, creates accounts if needed, and returns
+//!    [`transaction_partially_applied::TransactionPartiallyApplied`]. For zkApp commands,
+//!    applies the fee payer and first phase of account updates.
 //!
-//! 2. **Second Pass** ([`apply_transaction_second_pass`]): Completes
-//!    application. For zkApp commands, applies the second phase of account
-//!    updates and finalizes state.
+//! 2. **Second Pass** ([`transaction_partially_applied::apply_transaction_second_pass`]):
+//!    Completes application and returns final [`transaction_applied::TransactionApplied`] status.
+//!    For zkApp commands, applies the second phase of account updates and finalizes state.
+//!
+//! User commands may require both passes, while protocol transactions ([`FeeTransfer`],
+//! [`Coinbase`]) complete entirely in the first pass.
+//!
+//! # Account Creation
+//!
+//! Creating new accounts requires an account creation fee (1 MINA by default, configured
+//! in [`ConstraintConstants::account_creation_fee`]). The fee is deducted from the
+//! amount being transferred to the new account:
+//!
+//! - **Payments**: Receiver gets `amount - account_creation_fee` (if creating account)
+//! - **Fee transfers**: Receiver gets `fee_amount - account_creation_fee` (if creating account)
+//! - **Coinbase**: Receiver gets `coinbase_amount - account_creation_fee` (if creating account)
 //!
 //! # Key Types
 //!
@@ -52,6 +66,15 @@
 //! - [`verifiable`]: Verifiable user commands ready for proof verification
 //! - [`zkapp_command`]: zkApp command processing
 //! - [`zkapp_statement`]: zkApp statement types for proof generation
+//!
+//! # Examples
+//!
+//! See the integration tests in `ledger/tests/` for comprehensive examples:
+//! - `test_transaction_logic_first_pass_coinbase.rs` - Coinbase application
+//! - `test_transaction_logic_first_pass_fee_transfer.rs` - Fee transfer application
+//! - `test_transaction_logic_first_pass_signed_command.rs` - Payment application
+//!
+//! [`ConstraintConstants::account_creation_fee`]: mina_core::constants::ConstraintConstants::account_creation_fee
 
 use self::{
     local_state::{apply_zkapp_command_first_pass, apply_zkapp_command_second_pass, LocalStateEnv},
@@ -412,6 +435,28 @@ impl FeeTransfer {
     }
 }
 
+/// Fee transfer component of a coinbase transaction.
+///
+/// Represents a payment from the block producer to a SNARK worker as part of
+/// the coinbase reward distribution. The fee is deducted from the block producer's
+/// reward and added to the SNARK worker's account.
+///
+/// This is different from a standalone [`FeeTransfer`] transaction, which distributes
+/// transaction fees collected from user commands. Coinbase fee transfers specifically
+/// split the block reward between the block producer and SNARK worker.
+///
+/// # Fields
+///
+/// - `receiver_pk`: Public key of the SNARK worker receiving the fee
+/// - `fee`: Amount to transfer to the SNARK worker (deducted from coinbase reward)
+///
+/// # Example
+///
+/// When a [`Coinbase`] includes a fee transfer, the reward is split:
+/// - Coinbase receiver gets: `coinbase_amount - fee`
+/// - Fee transfer receiver gets: `fee`
+///
+/// See [`Coinbase::create`] for validation rules and same-receiver optimization.
 #[derive(Debug, Clone, PartialEq)]
 pub struct CoinbaseFeeTransfer {
     pub receiver_pk: CompressedPubKey,
@@ -431,9 +476,69 @@ impl CoinbaseFeeTransfer {
     }
 }
 
+/// Protocol-generated block reward transaction.
+///
+/// Coinbase transactions issue new MINA tokens to block producers as compensation
+/// for producing blocks. They are generated automatically by the protocol and cannot
+/// be submitted by users.
+///
+/// # Structure
+///
+/// - `receiver`: Block producer receiving the reward
+/// - `amount`: Coinbase reward amount (720 MINA by default, see [`ConstraintConstants::coinbase_amount`])
+/// - `fee_transfer`: Optional payment to SNARK worker
+///
+/// # Fee Transfer Interaction
+///
+/// When a coinbase includes a fee transfer, the reward is split between the block
+/// producer and SNARK worker:
+/// - Coinbase receiver gets: `coinbase_amount - fee_transfer_amount`
+/// - Fee transfer receiver gets: `fee_transfer_amount`
+///
+/// This mechanism allows block producers to share rewards with SNARK workers who
+/// produce the SNARK proofs required for block validation.
+///
+/// # Account Creation
+///
+/// If receiver accounts don't exist, they are created automatically with the
+/// account creation fee (see [`ConstraintConstants::account_creation_fee`]) deducted
+/// from their portion of the reward.
+///
+/// # Validation and Creation
+///
+/// Use [`Coinbase::create`] to construct a valid coinbase. The constructor:
+/// - Validates that fee transfer amount ≤ coinbase amount
+/// - Removes fee transfer if receiver equals fee transfer receiver (same-receiver optimization)
+///
+/// # Application Logic
+///
+/// Coinbase transactions are applied in the first pass via
+/// [`transaction_partially_applied::apply_coinbase`]. They:
+/// - Do not pay fees
+/// - Require no signatures
+/// - Do not increment nonces
+/// - Cannot be submitted by users
+/// - Complete entirely in the first pass
+///
+/// Individual account updates within a coinbase can fail if permission checks fail,
+/// but the transaction itself always produces a result (with tokens burned if updates fail).
+///
+/// # Examples
+///
+/// See `ledger/tests/test_transaction_logic_first_pass_coinbase.rs` for comprehensive
+/// test cases including:
+/// - Basic coinbase application
+/// - Coinbase with fee transfers
+/// - Account creation scenarios
+/// - Same receiver optimization
+/// - Failure handling
+///
 /// OCaml reference: src/lib/mina_base/coinbase.ml L:17-21
 /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
 /// Last verified: 2025-10-10
+///
+/// [`ConstraintConstants::coinbase_amount`]: mina_core::constants::ConstraintConstants::coinbase_amount
+/// [`ConstraintConstants::account_creation_fee`]: mina_core::constants::ConstraintConstants::account_creation_fee
 #[derive(Debug, Clone, PartialEq)]
 pub struct Coinbase {
     pub receiver: CompressedPubKey,
@@ -449,6 +554,37 @@ impl Coinbase {
         }
     }
 
+    /// Creates a new coinbase transaction with validation.
+    ///
+    /// # Same Receiver Optimization
+    ///
+    /// If the fee transfer receiver equals the coinbase receiver, the fee transfer
+    /// is removed since it would just move funds within the same account:
+    ///
+    /// ```ignore
+    /// let coinbase = Coinbase::create(
+    ///     Amount::from_u64(720_000_000_000),
+    ///     receiver_pk.clone(),
+    ///     Some(CoinbaseFeeTransfer { receiver_pk, fee }),
+    /// )?;
+    /// // fee_transfer will be None since both receivers are the same
+    /// assert!(coinbase.fee_transfer.is_none());
+    /// ```
+    ///
+    /// # Validation
+    ///
+    /// Returns an error if the fee transfer amount exceeds the coinbase amount.
+    ///
+    /// # Errors
+    ///
+    /// Returns `Err("Coinbase.create: invalid coinbase")` if:
+    /// - Fee transfer amount > coinbase amount
+    ///
+    /// # Arguments
+    ///
+    /// * `amount` - Total coinbase reward amount
+    /// * `receiver` - Block producer receiving the reward
+    /// * `fee_transfer` - Optional fee transfer to SNARK worker
     pub fn create(
         amount: Amount,
         receiver: CompressedPubKey,
@@ -1065,20 +1201,31 @@ impl GenericTransaction for Transaction {
 ///
 /// ## Protocol transactions
 ///
-/// - [`FeeTransfer`](Transaction::FeeTransfer): System-generated transaction
-///   that distributes collected transaction fees to block producers. Created
-///   automatically during block production and does not require user signatures.
-/// - [`Coinbase`](Transaction::Coinbase): System-generated transaction that
-///   rewards block producers for successfully producing a block. May include an
-///   optional fee transfer component to split rewards.
+/// Protocol transactions are generated automatically by the system and have
+/// distinct properties:
+/// - Cannot be submitted by users
+/// - Do not require signatures
+/// - Do not pay fees or increment nonces
+/// - Complete entirely in the first pass of application
 ///
-/// # Transaction processing
+/// **Types:**
+/// - [`FeeTransfer`](Transaction::FeeTransfer): Distributes collected transaction
+///   fees to block producers. Created automatically during block production.
+/// - [`Coinbase`](Transaction::Coinbase): Issues block production rewards. May
+///   include an optional fee transfer component to share rewards with SNARK workers.
 ///
-/// All transactions are processed through the two-phase application model
-/// ([`apply_transaction_first_pass`] and [`apply_transaction_second_pass`]) to
-/// enable efficient proof generation. Protocol transactions (fee transfers and
-/// coinbase) complete entirely in the first pass, while user commands may
-/// require both passes.
+/// # Transaction Processing
+///
+/// All transactions are processed through the two-phase application model to
+/// enable efficient proof generation:
+///
+/// 1. **First pass** ([`transaction_partially_applied::apply_transaction_first_pass`]) -
+///    Validates and begins application
+/// 2. **Second pass** ([`transaction_partially_applied::apply_transaction_second_pass`]) -
+///    Completes application
+///
+/// Protocol transactions (fee transfers and coinbase) complete entirely in the first
+/// pass, while user commands may require both passes.
 ///
 /// # Serialization
 ///

@@ -91,13 +91,6 @@ const sidebars: SidebarsConfig = {
       label: 'Transactions',
       items: [
         'developers/transactions',
-        {
-          type: 'category',
-          label: 'Transaction types',
-          items: [
-            'developers/transactions/coinbase',
-          ],
-        },
       ],
     },
     {

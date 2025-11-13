@@ -160,8 +160,16 @@ pub struct ConstraintConstants {
     /// The amount is specified in nanomina, where 1 MINA = 10⁹ nanomina. Block producers
     /// may receive additional rewards through the supercharged coinbase mechanism.
     ///
+    /// When accounts are created as part of coinbase distribution, the [`account_creation_fee`]
+    /// is deducted from the recipient's portion of the reward.
+    ///
     /// **Value**: 720,000,000,000 nanomina (720 MINA)
     /// **Usage**: Block producer rewards, economic incentives, reward calculations
+    ///
+    /// See the `Coinbase` type in `mina_tree::scan_state::transaction_logic` and the
+    /// `apply_coinbase` function for implementation details of coinbase transaction application.
+    ///
+    /// [`account_creation_fee`]: ConstraintConstants::account_creation_fee
     pub coinbase_amount: u64,
 
     /// Multiplier for supercharged coinbase rewards.
@@ -190,11 +198,20 @@ pub struct ConstraintConstants {
     /// Fee required to create a new account in nanomina.
     ///
     /// When a transaction creates a new account that doesn't exist on the ledger,
-    /// this fee is charged in addition to the transaction fee. This prevents
-    /// spam account creation and manages ledger growth.
+    /// this fee is deducted from the amount being transferred to the new account.
+    /// This applies to all transaction types:
+    /// - **Payments**: Receiver gets `amount - account_creation_fee`
+    /// - **Fee transfers**: Receiver gets `fee - account_creation_fee`
+    /// - **Coinbase**: Receiver gets `coinbase_amount - account_creation_fee`
+    ///
+    /// This fee prevents spam account creation and manages ledger growth while
+    /// ensuring the sender doesn't pay extra beyond the specified amount.
     ///
     /// **Value**: 1,000,000,000 nanomina (1 MINA)
     /// **Usage**: Account creation, transaction validation, fee calculations
+    ///
+    /// See transaction application logic in `mina_tree::scan_state::transaction_logic`
+    /// for implementation details.
     pub account_creation_fee: u64,
 
     /// Optional fork constants defining a protocol upgrade point.

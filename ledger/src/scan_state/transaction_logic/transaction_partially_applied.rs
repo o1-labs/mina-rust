@@ -440,17 +440,85 @@ impl FailureCollection {
     }
 }
 
-/// Structure of the failure status:
-///  I. No fee transfer and coinbase transfer fails: `[[failure]]`
-///  II. With fee transfer-
-///   Both fee transfer and coinbase fails:
-///     `[[failure-of-fee-transfer]; [failure-of-coinbase]]`
-///   Fee transfer succeeds and coinbase fails:
-///     `[[];[failure-of-coinbase]]`
-///   Fee transfer fails and coinbase succeeds:
-///     `[[failure-of-fee-transfer];[]]`
+/// Applies a coinbase transaction to the ledger (first pass).
 ///
-/// <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L2022>
+/// Coinbase transactions issue block rewards to block producers and optionally
+/// share rewards with SNARK workers via fee transfers. This function handles
+/// both reward distribution and automatic account creation.
+///
+/// # Application Logic
+///
+/// The application proceeds in two stages:
+///
+/// 1. **Apply fee transfer (if present)**:
+///    - Deducts fee from coinbase receiver's reward
+///    - Adds fee to fee transfer receiver's balance
+///    - Creates fee transfer receiver account if needed
+///    - Deducts account creation fee from the fee amount if creating account
+///
+/// 2. **Apply coinbase reward**:
+///    - Adds remaining coinbase amount to receiver's balance
+///    - Creates receiver account if needed
+///    - Deducts account creation fee from the reward if creating account
+///
+/// # Account Creation
+///
+/// When creating accounts, the account creation fee (see
+/// [`ConstraintConstants::account_creation_fee`]) is deducted from the amount
+/// being transferred to that account. Both the fee transfer receiver and coinbase
+/// receiver may have accounts created in a single transaction.
+///
+/// # Failure Handling
+///
+/// Unlike user commands, coinbase transactions cannot completely fail. However,
+/// individual account updates can fail if permission checks fail. The failure
+/// structure is:
+///
+/// - No fee transfer + coinbase fails: `[[failure]]`
+/// - Fee transfer + both fail: `[[fee_transfer_failure]; [coinbase_failure]]`
+/// - Fee transfer succeeds + coinbase fails: `[[]; [coinbase_failure]]`
+/// - Fee transfer fails + coinbase succeeds: `[[fee_transfer_failure]; []]`
+///
+/// When updates fail, the tokens that would have been transferred are considered
+/// burned and included in the result's `burned_tokens` field.
+///
+/// # Timing Updates
+///
+/// Coinbase receiver timing is only updated when there is no fee transfer, to
+/// avoid adding extra constraints in transaction SNARKs. This is safe because
+/// timing rules won't be violated when balance increases (timing constraints
+/// are checked on withdrawals, not deposits). See issue #5973 in the OCaml
+/// implementation.
+///
+/// # Arguments
+///
+/// * `constraint_constants` - Protocol constants including account creation fee and coinbase amount
+/// * `txn_global_slot` - Current slot number for timing updates
+/// * `ledger` - Mutable ledger to apply changes to
+/// * `coinbase` - The coinbase transaction to apply
+///
+/// # Returns
+///
+/// Returns [`transaction_applied::CoinbaseApplied`] containing:
+/// - Transaction status (applied or failed with specific failures)
+/// - List of newly created accounts
+/// - Amount of tokens burned (if any updates failed)
+///
+/// # Errors
+///
+/// Returns `Err` if:
+/// - Coinbase amount arithmetic overflows
+/// - Fee transfer amount exceeds coinbase amount
+/// - Account balance arithmetic overflows
+///
+/// # Examples
+///
+/// See `ledger/tests/test_transaction_logic_first_pass_coinbase.rs` for comprehensive
+/// test cases.
+///
+/// OCaml reference: <https://github.com/MinaProtocol/mina/blob/2ee6e004ba8c6a0541056076aab22ea162f7eb3a/src/lib/transaction_logic/mina_transaction_logic.ml#L2022>
+///
+/// [`ConstraintConstants::account_creation_fee`]: mina_core::constants::ConstraintConstants::account_creation_fee
 pub fn apply_coinbase<L>(
     constraint_constants: &ConstraintConstants,
     txn_global_slot: &Slot,
