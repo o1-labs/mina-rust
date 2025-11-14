@@ -1,5 +1,4 @@
 use std::rc::Rc;
-
 use crate::{
     proofs::{
         prover::make_padded_proof_from_p2p,
@@ -26,7 +25,6 @@ use kimchi::proof::{PointEvaluations, ProverCommitments, RecursionChallenge};
 use mina_curves::pasta::{Fp, Fq, Pallas};
 use mina_p2p_messages::{bigint::InvalidBigInt, v2};
 use poly_commitment::{commitment::b_poly_coefficients, ipa::OpeningProof};
-
 use crate::proofs::{
     public_input::{
         plonk_checks::{derive_plonk, InCircuit},
@@ -41,7 +39,6 @@ use crate::proofs::{
     },
     BACKEND_TICK_ROUNDS_N, BACKEND_TOCK_ROUNDS_N,
 };
-
 use super::{
     constants::ProofConstants,
     field::{Boolean, CircuitVar, FieldWitness, GroupAffine},
