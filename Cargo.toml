@@ -160,7 +160,6 @@ num_cpus = "1.0"
 num_enum = "0.5.7"
 o1-utils = { git = "https://github.com/o1-labs/proof-systems", rev = "0b0fd5fe73964d2a3628c788e40ead819a8a806d" }
 object = "0.37.1"
-ocaml-interop = { git = "https://github.com/sebastiencs/ocaml-interop.git", branch = "closure-values" }
 once_cell = "1"
 p256 = { version = "0.13", features = ["default", "ecdh", "ecdsa"] }
 p384 = "0.13"
