@@ -14,8 +14,7 @@ use super::{zkapp_command::AccessedOrNot, Memo, TransactionStatus};
 
 /// Common fields shared by all signed command payloads.
 ///
-/// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:34-48
-/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L34-L48
 /// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq)]
 pub struct Common {
@@ -42,8 +41,7 @@ pub struct PaymentPayload {
 
 /// Stake delegation payload for delegating stake to another account.
 ///
-/// OCaml reference: src/lib/mina_base/stake_delegation.ml L:11-13
-/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/stake_delegation.ml#L11-L13
 /// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum StakeDelegationPayload {
@@ -55,16 +53,14 @@ pub enum StakeDelegationPayload {
 }
 
 impl StakeDelegationPayload {
-    /// OCaml reference: src/lib/mina_base/stake_delegation.ml L:35-37
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/stake_delegation.ml#L35-L37
     /// Last verified: 2025-10-10
     pub fn receiver(&self) -> AccountId {
         let Self::SetDelegate { new_delegate } = self;
         AccountId::new(new_delegate.clone(), TokenId::default())
     }
 
-    /// OCaml reference: src/lib/mina_base/stake_delegation.ml L:33-33
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/stake_delegation.ml#L33-L33
     /// Last verified: 2025-10-10
     pub fn receiver_pk(&self) -> &CompressedPubKey {
         let Self::SetDelegate { new_delegate } = self;
@@ -75,8 +71,7 @@ impl StakeDelegationPayload {
 /// The body of a signed command, which can be either a payment or stake
 /// delegation.
 ///
-/// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:179-181
-/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L179-L181
 /// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Body {
@@ -88,8 +83,7 @@ pub enum Body {
 
 /// Signed command payload containing common fields and the transaction body.
 ///
-/// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:239-243
-/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L239-L243
 /// Last verified: 2025-10-10
 #[derive(Debug, Clone, PartialEq)]
 pub struct SignedCommandPayload {
@@ -121,8 +115,7 @@ impl SignedCommandPayload {
     }
 }
 
-/// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:352-362
-/// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L352-L362
 /// Last verified: 2025-10-10
 mod weight {
     use super::*;
@@ -163,16 +156,14 @@ impl SignedCommand {
         self.payload.common.valid_until
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:292-292
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L292-L292
     /// Last verified: 2025-10-10
     pub fn fee_payer(&self) -> AccountId {
         let public_key = self.payload.common.fee_payer_pk.clone();
         AccountId::new(public_key, TokenId::default())
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:290-290
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L290-L290
     /// Last verified: 2025-10-10
     pub fn fee_payer_pk(&self) -> &CompressedPubKey {
         &self.payload.common.fee_payer_pk
@@ -187,8 +178,7 @@ impl SignedCommand {
         weight::of_body(body)
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:288-288
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L288-L288
     /// Last verified: 2025-10-10
     pub fn fee_token(&self) -> TokenId {
         TokenId::default()
@@ -198,8 +188,7 @@ impl SignedCommand {
         self.payload.common.fee
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:304-304
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L304-L304
     /// Last verified: 2025-10-10
     pub fn receiver(&self) -> AccountId {
         match &self.payload.body {
@@ -210,8 +199,7 @@ impl SignedCommand {
         }
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:302-302
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L302-L302
     /// Last verified: 2025-10-10
     pub fn receiver_pk(&self) -> &CompressedPubKey {
         match &self.payload.body {
@@ -235,8 +223,7 @@ impl SignedCommand {
         FeeExcess::of_single((self.fee_token(), Signed::<Fee>::of_unsigned(self.fee())))
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command_payload.ml L:320-338
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command_payload.ml#L320-L338
     /// Last verified: 2025-10-10
     pub fn account_access_statuses(
         &self,
@@ -260,15 +247,13 @@ impl SignedCommand {
             .collect()
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command.ml L:417-420
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command.ml#L417-L420
     /// Last verified: 2025-10-10
     pub fn public_keys(&self) -> [&CompressedPubKey; 2] {
         [self.fee_payer_pk(), self.receiver_pk()]
     }
 
-    /// OCaml reference: src/lib/mina_base/signed_command.ml L:422-424
-    /// Commit: 5da42ccd72e791f164d4d200cf1ce300262873b3
+    /// OCaml reference: https://github.com/MinaProtocol/mina/blob/5da42ccd72e791f164d4d200cf1ce300262873b3/src/lib/mina_base/signed_command.ml#L422-L424
     /// Last verified: 2025-10-10
     pub fn check_valid_keys(&self) -> bool {
         self.public_keys()

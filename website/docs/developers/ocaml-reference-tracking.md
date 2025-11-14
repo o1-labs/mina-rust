@@ -23,12 +23,12 @@ comments that reference the corresponding OCaml code. This helps developers:
 
 ## Comment format
 
-OCaml references are added as doc comments directly above the Rust type or
+OCaml references use GitHub permalinks to reference the corresponding OCaml
+code. These comments are added as doc comments directly above the Rust type or
 function:
 
 ```rust
-/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-113
-/// Commit: 55582d249cdb225f722dbbb3b1420ce7570d501f
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/55582d249cdb225f722dbbb3b1420ce7570d501f/src/lib/mina_base/transaction_status.ml#L9-L113
 /// Last verified: 2025-10-08
 pub enum TransactionFailure {
     // ...
@@ -37,13 +37,16 @@ pub enum TransactionFailure {
 
 ### Format specification
 
-- **Line 1**: `/// OCaml reference: <path> L:<start>-<end>`
-  - `<path>`: Path to the OCaml file relative to the Mina repository root
-  - `L:<start>-<end>`: Line range in the OCaml file (optional but recommended)
-- **Line 2**: `/// Commit: <commit-hash>`
-  - Full commit hash from the Mina repository
-- **Line 3**: `/// Last verified: <YYYY-MM-DD>`
+- **Line 1**: `/// OCaml reference: <permalink>`
+  - `<permalink>`: GitHub permalink to the exact code in the Mina repository
+  - Format:
+    `https://github.com/MinaProtocol/mina/blob/<commit>/<path>#L<start>-L<end>`
+  - The permalink combines repository, commit, path, and line range
+- **Line 2**: `/// Last verified: <YYYY-MM-DD>`
   - Date when the reference was last verified to be accurate
+
+The permalink format makes it easy to click directly to the referenced code and
+ensures the reference points to a specific commit.
 
 ## Validation script
 

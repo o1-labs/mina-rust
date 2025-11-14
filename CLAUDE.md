@@ -169,14 +169,19 @@ to track correspondence and detect when updates are needed.
 
 **Comment format:**
 
+Use GitHub permalinks to reference OCaml code:
+
 ```rust
-/// OCaml reference: src/lib/mina_base/transaction_status.ml L:9-113
-/// Commit: 55582d249cdb225f722dbbb3b1420ce7570d501f
+/// OCaml reference: https://github.com/MinaProtocol/mina/blob/55582d249cdb225f722dbbb3b1420ce7570d501f/src/lib/mina_base/transaction_status.ml#L9-L113
 /// Last verified: 2025-10-08
 pub enum TransactionFailure {
     // ...
 }
 ```
+
+The permalink format combines the repository, commit hash, file path, and line
+range into a single clickable URL. This makes it easier to navigate to the
+referenced code and verify correspondence.
 
 **Validation:**
 
