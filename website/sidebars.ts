@@ -88,6 +88,20 @@ const sidebars: SidebarsConfig = {
     },
     {
       type: 'category',
+      label: 'Transactions',
+      items: [
+        'developers/transactions',
+        {
+          type: 'category',
+          label: 'Transaction types',
+          items: [
+            'developers/transactions/coinbase',
+          ],
+        },
+      ],
+    },
+    {
+      type: 'category',
       label: 'APIs and Data',
       items: [
         'developers/graphql-api',
