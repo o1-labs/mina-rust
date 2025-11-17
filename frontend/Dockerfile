@@ -105,15 +105,21 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-# Add NodeSource GPG key and repository and install Node.js
-RUN bash -c " \
-    export NODE_MAJOR=$(echo ${NODE_VERSION} | cut -d. -f1); \
-    mkdir -p /etc/apt/keyrings; \
-    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg; \
-    echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$${NODE_MAJOR}.x nodistro main\" | tee /etc/apt/sources.list.d/nodesource.list; \
-    apt-get update; \
-    apt-get install -y nodejs; \
-    "
+# Fail the build if any command in a pipe fails
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+
+# Download and install Node.js with checksum verification
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "x86_64" ]; then ARCH="x64"; fi && \
+    if [ "$ARCH" = "aarch64" ]; then ARCH="arm64"; fi && \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" -o node.tar.xz && \
+    curl -fsSL "https://nodejs.org/dist/v${NODE_VERSION}/SHASUMS256.txt" -o SHASUMS256.txt && \
+    grep "node-v${NODE_VERSION}-linux-${ARCH}.tar.xz" SHASUMS256.txt | awk '{print $1 "  node.tar.xz"}' | sha256sum -c - && \
+    tar -xJf node.tar.xz && \
+    cp -r "node-v${NODE_VERSION}-linux-${ARCH}"/* /usr/local/ && \
+    rm node.tar.xz && \
+    rm -r "node-v${NODE_VERSION}-linux-${ARCH}" && \
+    rm SHASUMS256.txt
 
 # Add Node.js to PATH
 ENV PATH="/usr/local/bin:${PATH}"
