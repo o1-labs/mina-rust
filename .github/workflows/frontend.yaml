@@ -16,9 +16,13 @@ jobs:
       - name: Git checkout
         uses: actions/checkout@v5
 
+      - id: versions
+        uses: ./.github/actions/load-versions
+
       - name: Frontend build and test
         uses: ./.github/actions/frontend-build
         with:
+          node-version: ${{ steps.versions.outputs.node-version }}
           run-prettier-check: 'true'
           run-tests: 'true'
           test-build-commands: 'false'

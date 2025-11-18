@@ -9,9 +9,6 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  NODE_VERSION: '20'
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -25,10 +22,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
 
+      - id: versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ steps.versions.outputs.node-version }}
           cache: 'npm'
           cache-dependency-path: website/package-lock.json
 
@@ -109,10 +109,13 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
+      - id: versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ steps.versions.outputs.node-version }}
           cache: 'npm'
           cache-dependency-path: website/package-lock.json
 
@@ -158,10 +161,13 @@ jobs:
         with:
           fetch-depth: 0
 
+      - id: versions
+        uses: ./.github/actions/load-versions
+
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ steps.versions.outputs.node-version }}
           cache: 'npm'
           cache-dependency-path: website/package-lock.json
 
