@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Changes
+
+- Remove ocaml-interop dependency, fix
+  [#1235](https://github.com/o1-labs/mina-rust/issues/1235)
+([#1646](https://github.com/o1-labs/mina-rust/pull/1646))
+
 ## [0.18.0] - 2025-11-04
 
 ### OCaml node
