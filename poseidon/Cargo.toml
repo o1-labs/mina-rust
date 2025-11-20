@@ -10,6 +10,7 @@ workspace = true
 ark-ff = { workspace = true }
 ark-serialize = { workspace = true }
 mina-curves = { workspace = true }
+mina-poseidon.workspace = true
 o1-utils = { workspace = true }
 once_cell = { workspace = true }
 serde = { workspace = true }

@@ -10,17 +10,7 @@ mod params;
 
 pub use params::*;
 
-pub trait SpongeConstants {
-    const SPONGE_CAPACITY: usize = 1;
-    const SPONGE_WIDTH: usize = 3;
-    const SPONGE_RATE: usize = 2;
-    const PERM_ROUNDS_FULL: usize;
-    const PERM_ROUNDS_PARTIAL: usize;
-    const PERM_HALF_ROUNDS_FULL: usize;
-    const PERM_SBOX: u32;
-    const PERM_FULL_MDS: bool;
-    const PERM_INITIAL_ARK: bool;
-}
+pub use mina_poseidon::constants::SpongeConstants;
 
 #[derive(Clone)]
 pub struct PlonkSpongeConstantsKimchi {}
@@ -97,22 +87,8 @@ pub fn poseidon_block_cipher<F: Field, SC: SpongeConstants>(
     }
 }
 
-pub fn sbox<F: Field, SC: SpongeConstants>(mut x: F) -> F {
-    // Faster than calling x.pow(SC::PERM_SBOX)
-
-    if SC::PERM_SBOX == 7 {
-        let mut res = x.square();
-        res *= x;
-        let res = res.square();
-        res * x
-    } else {
-        let a = x;
-        for _ in 0..SC::PERM_SBOX - 1 {
-            x.mul_assign(a);
-        }
-        x
-    }
-    // x.pow([SC::PERM_SBOX as u64])
+pub fn sbox<F: Field, SC: SpongeConstants>(x: F) -> F {
+    mina_poseidon::poseidon::sbox::<F, SC>(x)
 }
 
 #[derive(Clone, Debug)]
