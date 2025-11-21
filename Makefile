@@ -7,6 +7,7 @@
 # - ./github/workflows/fmt.yaml
 # - ./github/workflows/lint.yaml
 NIGHTLY_RUST_VERSION = "nightly"
+NODE_VERSION := $(shell cat .nvmrc)
 
 # WebAssembly
 WASM_BINDGEN_CLI_VERSION = "0.2.99"
@@ -394,6 +395,7 @@ docker-build-frontend: ## Build frontend Docker image
 	esac; \
 	echo "Building for platform: $$PLATFORM"; \
 	docker buildx build \
+		--build-arg NODE_VERSION=$(NODE_VERSION) \
 		--platform $$PLATFORM \
 		--tag $(DOCKER_ORG)/mina-rust-frontend:$(GIT_COMMIT) \
 		--file ./frontend/Dockerfile \
